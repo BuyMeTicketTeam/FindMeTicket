@@ -1,0 +1,125 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  color: inherit;
+}
+body {
+   font-family: 'Roboto';
+}
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.field__name {
+  margin-bottom: 7px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+.input {
+  min-width: 300px;
+  border-radius: 0;
+  border: 2px solid #000;
+  padding: 3px;
+  font-size: 18px;
+}
+.tip {
+  max-height: 0;
+  opacity: 0;
+  max-width: 300px;
+  color: #13008d;
+  font-weight: 500;
+  transition: 0.8s;
+}
+.input:focus ~ .tip {
+  max-height: 100px;
+  opacity: 1;
+  transition: 0.8s;
+}
+.button {
+  background: #000;
+  color: #fff;
+  min-width: 226px;
+  border-radius: 10px;
+  border: 2px solid #000;
+  padding: 8px 20px;
+  transition: 0.3s;
+}
+.btn-full {
+  width: 100%;
+}
+.button:hover {
+  transition: 0.3s;
+  cursor: pointer;
+  background: #fff;
+  color: #000;
+}
+
+.error {
+  min-width: 300px;
+  background: rgb(180, 8, 8);
+  padding: 10px;
+  color: #fff;
+  border-radius: 5px;
+  margin: 8px 0;
+}
+
+.select {
+  border: none;
+  margin-right: 15px;
+}
+.select:focus-visible {
+  outline: none;
+}
+
+.title {
+  margin: 20px 0;
+}
+
+.checkbox {
+  position: relative;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.checkbox a {
+  margin-left: 5px;
+}
+.checkbox::after {
+  position: absolute;
+  left: 0;
+  content: '';
+  display: block;
+  width: 15px;
+  height: 15px;
+  border: 1px solid#000;
+}
+.checkbox__field {
+  visibility:hidden;
+}
+.checkbox__field:checked ~ .checkbox::before {
+  left: -1px;
+  top: -4px;
+  position: absolute;
+  content: '';
+  display: block;
+  width: 15px;
+  height: 20px;
+  background: url('../public/img/tick.svg');
+}
+.checkbox__field.error ~ .checkbox::after {
+  border: 1px solid rgb(180, 8, 8);
+}
+.checkbox__field.error ~ .checkbox {
+  color: rgb(180, 8, 8);
+}
