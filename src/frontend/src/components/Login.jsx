@@ -33,8 +33,9 @@ export default function Popup({ changePopup }) {
         {error !== '' && <p className="error">{error}</p>}
         <Field name="Login" value={login} type="text" onInputChange={onLoginChange} />
         <Field name="Password" value={password} type="password" onInputChange={onPasswordChange} />
+        <div className="link"><a href="/reset">Forgot password</a></div>
         <Button className="btn-full" name="Login" onButton={onButton} />
-        <div className="link"><a href="/register">Register</a></div>
+        <div className="link link-register"><a href="/register">Register</a></div>
       </div>
     </div>
   );

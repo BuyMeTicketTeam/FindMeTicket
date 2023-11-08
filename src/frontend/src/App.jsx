@@ -1,14 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Index from './pages/index';
-import Register from './pages/Register';
+import Index from './main/index';
+import Register from './register';
 import Header from './components/Header';
-import Confirm from './pages/Confirm';
+import Confirm from './confirm/index';
 import './App.css';
 import './styles/header.css';
 import './styles/login.css';
-import './styles/register.css';
-import './styles/confirm.css';
 
 function App() {
   return (

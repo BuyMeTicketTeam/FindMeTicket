@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LoginBtn from './LoginBtn';
 import LanguageSelect from './LanguageSelect';
-import Popup from './Popup';
+import Login from './Login';
 
 export default function Header() {
   const [popupLogin, changePopup] = useState(false);
@@ -16,7 +16,7 @@ export default function Header() {
       </ul>
       <LanguageSelect />
       <LoginBtn status={false} changePopup={changePopup} />
-      {popupLogin && <Popup changePopup={changePopup} />}
+      {popupLogin && <Login changePopup={changePopup} />}
     </header>
   );
 }

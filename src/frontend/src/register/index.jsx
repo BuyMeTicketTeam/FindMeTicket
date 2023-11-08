@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Field from '../components/Field';
 import Button from '../components/Button';
+import './register.css';
 
 export default function Register() {
   const [nickname, onNicknameChange] = useState('');
