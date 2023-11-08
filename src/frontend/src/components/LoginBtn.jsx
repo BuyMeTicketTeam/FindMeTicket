@@ -5,6 +5,6 @@ export default function LoginBtn({ status, changePopup }) {
     return <button className="login" type="button">Profile</button>;
   }
   return (
-    <button className="login" onClick={() => { changePopup(true); }} type="button">Login</button>
+    <button data-testid="login-btn" className="login" onClick={() => { changePopup(true); }} type="button">Login</button>
   );
 }

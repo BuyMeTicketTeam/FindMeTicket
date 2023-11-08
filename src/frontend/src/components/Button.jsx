@@ -1,7 +1,9 @@
 import React from 'react';
 
-export default function Button({ name, className, onButton }) {
+export default function Button({
+  name, className, onButton, dataTestId,
+}) {
   return (
-    <button className={`button ${className}`} onClick={() => onButton(true)} type="button">{name}</button>
+    <button data-testid={dataTestId} className={`button ${className}`} onClick={() => onButton(true)} type="button">{name}</button>
   );
 }

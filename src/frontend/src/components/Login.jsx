@@ -27,12 +27,12 @@ export default function Popup({ changePopup }) {
     }
   }, [button]);
   return (
-    <div className="background">
+    <div data-testid="login" className="background">
       <div className="popup__body">
-        <button type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
+        <button data-testid="close" type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
         {error !== '' && <p className="error">{error}</p>}
-        <Field name="Login" value={login} type="text" onInputChange={onLoginChange} />
-        <Field name="Password" value={password} type="password" onInputChange={onPasswordChange} />
+        <Field dataTestId="login-input" name="Login" value={login} type="text" onInputChange={onLoginChange} />
+        <Field dataTestId="password-input" name="Password" value={password} type="password" onInputChange={onPasswordChange} />
         <div className="link"><a href="/reset">Forgot password</a></div>
         <Button className="btn-full" name="Login" onButton={onButton} />
         <div className="link link-register"><a href="/register">Register</a></div>

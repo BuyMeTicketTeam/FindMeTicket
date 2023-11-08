@@ -1,7 +1,7 @@
 import React from 'react';
-
-export default function Input({ value, onInputChange, type }) {
+// eslint-disable-next-line object-curly-newline
+export default function Input({ value, onInputChange, type, dataTestId }) {
   return (
-    <input type={type} className="input" value={value} onChange={(e) => onInputChange(e.target.value)} />
+    <input data-testid={dataTestId} type={type} className="input" value={value} onChange={(e) => onInputChange(e.target.value)} />
   );
 }
