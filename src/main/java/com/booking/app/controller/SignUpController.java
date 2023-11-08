@@ -3,7 +3,7 @@ package com.booking.app.controller;
 
 import com.booking.app.controller.api.UserAuthAPI;
 import com.booking.app.controller.dto.*;
-import com.booking.app.exceptionhandling.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import com.booking.app.services.UserSecurityService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

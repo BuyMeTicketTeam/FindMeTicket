@@ -1,6 +1,5 @@
-package com.booking.app.exceptionhandling.exception;
+package com.booking.app.exception.exception;
 
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

@@ -1,9 +1,9 @@
-package com.booking.app.exceptionhandling;
+package com.booking.app.exception;
 
-import com.booking.app.exceptionhandling.exception.ResourceNotFoundException;
-import com.booking.app.exceptionhandling.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.PasswordNotMatchesException;
+import com.booking.app.exception.exception.ResourceNotFoundException;
+import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,7 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.StringJoiner;
 
 @RestControllerAdvice
@@ -72,16 +71,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PasswordNotMatchesException.class)
+    public ResponseEntity<ErrorDetails> passwordMatches(PasswordNotMatchesException exception, WebRequest webRequest) {
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public ResponseEntity<ErrorDetails> illegalArguments(Exception exception, WebRequest webRequest) {
-//        ErrorDetails errorDetails = new ErrorDetails(
-//                LocalDateTime.now(),
-//                exception.getMessage(),
-//                webRequest.getDescription(false),
-//                "USER_NOT_FOUND"
-//        );
-//        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-//    }
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+
+
 
 }

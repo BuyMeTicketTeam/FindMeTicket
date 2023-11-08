@@ -2,7 +2,7 @@ package com.booking.app.services.impl;
 
 import com.booking.app.controller.dto.UserDTO;
 import com.booking.app.entity.User;
-import com.booking.app.exceptionhandling.exception.ResourceNotFoundException;
+import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.UserDataRepository;
 import com.booking.app.services.UserService;

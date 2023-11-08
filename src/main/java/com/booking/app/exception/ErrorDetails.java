@@ -1,8 +1,7 @@
-package com.booking.app.exceptionhandling;
+package com.booking.app.exception;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 import java.time.LocalDateTime;
 

@@ -19,7 +19,8 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-
+    public static final String sign_up = "/signup";
+    public static final String sign_in = "/signin";
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
@@ -29,7 +30,7 @@ public class SecurityConfiguration {
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())).
 //                addFilter(new CsrfCookieFilter())
                 .authorizeHttpRequests()
-                .requestMatchers("/signup").permitAll()
+                .requestMatchers(sign_up).permitAll()
                 .requestMatchers("/api/v1/users/get").hasAnyAuthority("ADMIN", "USER")
                 .requestMatchers("/api/v1/users/get/delete/**").hasAnyAuthority("ADMIN")
                 .anyRequest().permitAll()

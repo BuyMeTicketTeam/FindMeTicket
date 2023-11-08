@@ -6,7 +6,7 @@ import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.enums.EnumRole;
-import com.booking.app.exceptionhandling.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserDataRepository;
@@ -31,9 +31,9 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserSecurity userSecurity = userSecurityRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", username)));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserSecurity userSecurity = userSecurityRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", email)));
         return userSecurity;
     }
 
@@ -46,14 +46,12 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         }
 
         String hashPwd = passwordEncoder.encode(securityDTO.getPassword());
-        //String hashPwd = (securityDTO.getPassword());
         UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
 
         securityEntity.setPassword(hashPwd);
 
         Role role = roleRepository.findByEnumRole(EnumRole.USER);
-
-        User user = securityEntity.getUser();
+        User user = new User();
 
         user.setRole(role);
         user.setSecurity(securityEntity);
