@@ -19,23 +19,7 @@ export default function Confirm() {
         } else {
           setSeconds(seconds - 1);
         }
-      }, 1000);
-    }
-  }, [seconds, minutes]);
-  useEffect(() => {
-    if (sendAg) {
-      setMinutes(10);
-      fetch('/userReqCode', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            onError('Some error');
-          }
-        });
+      });
       onSendAg(false);
     }
   }, [sendAg]);
