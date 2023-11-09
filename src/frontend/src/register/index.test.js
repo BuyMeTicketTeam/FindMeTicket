@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Index from './index';
 
 test('nickname input event', () => {
-  render(<Index />);
+  render (<Index />);
   const nicknameInput = screen.getByTestId('nickname-input');
   fireEvent.input(nicknameInput, {
     target: { value: 'Stepan' },

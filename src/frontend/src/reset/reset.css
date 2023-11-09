@@ -1,0 +1,19 @@
+.reset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+  }
+  .reset__btn {
+    margin-top: 10px;
+  }
+  
+  .reset__error {
+    color: rgb(180, 8, 8);
+    margin-bottom: 5px;
+    min-width: 300px;
+    text-align: left;
+    font-weight: 500;
+  }
+  
+
