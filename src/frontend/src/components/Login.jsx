@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Field from './Field';
 import Button from './Button';
 
@@ -35,7 +36,7 @@ export default function Popup({ changePopup }) {
         <Field dataTestId="password-input" name="Password" value={password} type="password" onInputChange={onPasswordChange} />
         <div className="link"><a href="/reset">Forgot password</a></div>
         <Button className="btn-full" name="Login" onButton={onButton} />
-        <div className="link link-register"><a href="/register">Register</a></div>
+        <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>Register</Link></div>
       </div>
     </div>
   );

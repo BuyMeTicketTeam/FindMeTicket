@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Field from '../components/Field';
 import Button from '../components/Button';
 import './register.css';
@@ -11,6 +12,7 @@ export default function Register() {
   const [button, onButton] = useState(false);
   const [error, onError] = useState('');
   const [policy, onPolicy] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     if (button && policy) {
       fetch('/userRegister', {
@@ -30,7 +32,7 @@ export default function Register() {
             onError('Some error');
             onButton(false);
           } else {
-            window.location.href = '/confirm';
+            navigate('/confirm');
           }
         });
     } else if (button && !policy) {
@@ -39,7 +41,7 @@ export default function Register() {
     }
   }, [button]);
   return (
-    <div className="register">
+    <div data-testid="register" className="register">
       <h1 className="title">Registration</h1>
       {error !== '' && <p data-testid="error" className="error">{error}</p>}
       <Field dataTestId="nickname-input" tipDataTestId="nickname-tip" name="Nickname" value={nickname} type="text" onInputChange={onNicknameChange} tip="Name must contain at least one character" />
