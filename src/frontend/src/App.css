@@ -30,6 +30,12 @@ img {
   border: 2px solid #000;
   padding: 3px;
   font-size: 18px;
+  background: #fff;
+}
+.input.input-error {
+  border: 2px solid rgb(180, 8, 8);
+  outline-color: rgb(180, 8, 8);
+  box-shadow: 0px 0px 7px rgb(180, 8, 8);
 }
 .tip {
   max-height: 0;

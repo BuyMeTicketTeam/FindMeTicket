@@ -62,7 +62,7 @@ export default function Confirm() {
       <h1 className="title">Confirm your email</h1>
       <p className="confirm__text">We send you a letter with a confirm code.</p>
       <p className="confirm__text"><b>You have 10 minutes to confirm it.</b></p>
-      <Input value={code} onInputChange={onCodeChange} type="text" />
+      <Input dataTestId="confirm-input" value={code} onInputChange={onCodeChange} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
       <Button name="Send" className="confirm__btn" onButton={onButton} />
       <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => onSendAg(true)} type="button">{`Send a letter again: ${minutes}:${seconds}`}</button>
