@@ -1,8 +1,8 @@
 package com.booking.app.controller;
 
 import com.booking.app.controller.api.UserAPI;
-import com.booking.app.controller.dto.ResponseDTO;
-import com.booking.app.controller.dto.UserDTO;
+import com.booking.app.dto.ResponseDTO;
+import com.booking.app.dto.UserDTO;
 import com.booking.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

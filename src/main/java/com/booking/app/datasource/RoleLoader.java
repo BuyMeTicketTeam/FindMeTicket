@@ -1,7 +1,7 @@
 package com.booking.app.datasource;
 
 import com.booking.app.entity.Role;
-import com.booking.app.enums.EnumRole;
+import com.booking.app.entity.enums.EnumRole;
 import com.booking.app.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

@@ -1,15 +1,10 @@
-package com.booking.app.controller.dto;
+package com.booking.app.dto;
 
-import com.booking.app.mapper.CustomDateDeserializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.sql.Date;
-import java.time.LocalDate;
 
 
 @Data

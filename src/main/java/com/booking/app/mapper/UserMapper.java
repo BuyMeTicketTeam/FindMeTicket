@@ -1,8 +1,8 @@
 package com.booking.app.mapper;
 
-import com.booking.app.controller.dto.LoginDTO;
-import com.booking.app.controller.dto.RegistrationDTO;
-import com.booking.app.controller.dto.UserDTO;
+import com.booking.app.dto.LoginDTO;
+import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.UserDTO;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import org.mapstruct.Mapper;

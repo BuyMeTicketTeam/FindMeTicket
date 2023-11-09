@@ -1,7 +1,7 @@
 package com.booking.app.controller.api;
 
-import com.booking.app.controller.dto.ResponseDTO;
-import com.booking.app.controller.dto.UserDTO;
+import com.booking.app.dto.ResponseDTO;
+import com.booking.app.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

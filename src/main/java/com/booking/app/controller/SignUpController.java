@@ -2,7 +2,9 @@ package com.booking.app.controller;
 
 
 import com.booking.app.controller.api.UserAuthAPI;
-import com.booking.app.controller.dto.*;
+import com.booking.app.dto.LoginDTO;
+import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.ResponseDTO;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import com.booking.app.services.UserSecurityService;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,7 @@ public class SignUpController implements UserAuthAPI {
 
     private final UserSecurityService service;
 
-    @PreAuthorize("hasRole(USER)")
+    @PreAuthorize("hasRole(ROLE_USER)")
     @PostMapping
     @Override
     public ResponseDTO<LoginDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException {

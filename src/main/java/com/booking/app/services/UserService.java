@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.controller.dto.UserDTO;
+import com.booking.app.dto.UserDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 

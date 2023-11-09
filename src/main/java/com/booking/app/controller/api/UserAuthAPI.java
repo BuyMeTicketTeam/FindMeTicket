@@ -2,6 +2,9 @@ package com.booking.app.controller.api;
 
 
 import com.booking.app.controller.dto.*;
+import com.booking.app.dto.LoginDTO;
+import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.ResponseDTO;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

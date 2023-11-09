@@ -1,4 +1,4 @@
-package com.booking.app.enums;
+package com.booking.app.entity.enums;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

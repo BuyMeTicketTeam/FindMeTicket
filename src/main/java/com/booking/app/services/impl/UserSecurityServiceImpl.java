@@ -1,11 +1,11 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.controller.dto.LoginDTO;
-import com.booking.app.controller.dto.RegistrationDTO;
+import com.booking.app.dto.LoginDTO;
+import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
-import com.booking.app.enums.EnumRole;
+import com.booking.app.entity.enums.EnumRole;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +38,9 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", email)));
         return userSecurity;
     }
+
+
+
 
 
     @Override
@@ -69,5 +74,11 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return mapper.toDtoLogin(userSecurityEntity);
 
     }
+
+    @Override
+    public Optional<UserSecurity> findByEmail(String email) {
+       return userSecurityRepository.findByEmail(email);
+    }
+
 
 }

@@ -1,13 +1,10 @@
-package com.booking.app.controller.dto;
+package com.booking.app.dto;
 
-import com.booking.app.enums.EnumRole;
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
+import com.booking.app.entity.enums.EnumRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
