@@ -58,7 +58,7 @@ export default function Confirm() {
     }
   }, [button]);
   return (
-    <div className="confirm">
+    <div data-testid="confirm" className="confirm">
       <h1 className="title">Confirm your email</h1>
       <p className="confirm__text">We send you a letter with a confirm code.</p>
       <p className="confirm__text"><b>You have 10 minutes to confirm it.</b></p>

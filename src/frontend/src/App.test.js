@@ -49,12 +49,21 @@ test('password input event', () => {
   expect(passwordInput.value).toBe('123456');
 });
 
-// jest.mock('fetch');
+test('link to register', () => {
+  render(<App />);
+  const loginBtn = screen.getByTestId('login-btn');
+  fireEvent.click(loginBtn);
+  const toRegisterBtn = screen.getByTestId('to-register-btn');
+  fireEvent.click(toRegisterBtn);
+  expect(screen.queryByTestId('register')).toBeInTheDocument();
+});
+
 // describe('login check', () => {
 //   let response;
 //   beforeEach(() => {
 //     response = {
-//     }
+//       success: true,
+//     };
 //   });
 //   test('success login', () => {
 //     render(<App />);
