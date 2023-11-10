@@ -46,7 +46,7 @@ img {
   transition: 0.8s;
 }
 .input:focus ~ .tip {
-  max-height: 100px;
+  max-height: 200px;
   opacity: 1;
   transition: 0.8s;
 }

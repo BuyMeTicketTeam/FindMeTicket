@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Field from '../components/Field';
 import Button from '../components/Button';
+import ListTip from './ListTip';
 import './register.css';
 
 export default function Register() {
@@ -44,7 +45,7 @@ export default function Register() {
     <div data-testid="register" className="register">
       <h1 className="title">Registration</h1>
       {error !== '' && <p data-testid="error" className="error">{error}</p>}
-      <Field dataTestId="nickname-input" tipDataTestId="nickname-tip" name="Nickname" value={nickname} type="text" onInputChange={onNicknameChange} tip="Name must contain at least one character" />
+      <Field dataTestId="nickname-input" tipDataTestId="nickname-tip" name="Nickname" value={nickname} type="text" onInputChange={onNicknameChange} placeholder="Svillana2012" tip={<ListTip />} />
       <Field dataTestId="email-input" name="Email" value={email} type="email" onInputChange={onEmailChange} tip="Email must contain @" />
       <Field dataTestId="password-input" name="Password" value={password} type="password" onInputChange={onPasswordChange} tip="Password must be at least 8 characters and contain number" />
       <Field dataTestId="confirm-pass-input" name="Confirm password" value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
