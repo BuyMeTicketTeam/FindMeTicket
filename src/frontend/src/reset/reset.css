@@ -15,5 +15,10 @@
     text-align: left;
     font-weight: 500;
   }
+  .reset__text {
+    max-width: 300px;
+    margin-bottom: 10px;
+  }
+
   
 

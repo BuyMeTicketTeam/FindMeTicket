@@ -5,6 +5,7 @@ import './confirm.css';
 
 export default function Confirm() {
   const [code, onCodeChange] = useState('');
+  const [codeError, onCodeError] = useState(false);
   const [button, onButton] = useState(false);
   const [error, onError] = useState('');
   const [minutes, setMinutes] = useState(10);
@@ -23,33 +24,27 @@ export default function Confirm() {
       onSendAg(false);
     }
   }, [sendAg]);
-  useEffect(() => {
-    if (button === true) {
-      fetch('/userCode', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code,
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            onError('Some error');
-          }
-        });
-    }
-  }, [button]);
+    useEffect(() => {
+      if (button === true) {
+        onCodeError(false);
+        onButton(false);
+        if
+        (code.match(/^[a-zA-Z0-9\s]{5}$/) === null) {
+          onError('Поле nickname заповнено не вірно');
+          onCodeError(true);
+          
+        }
+      }
+    }, [button]);
   return (
     <div data-testid="confirm" className="confirm">
       <h1 className="title">Confirm your email</h1>
       <p className="confirm__text">We send you a letter with a confirm code.</p>
       <p className="confirm__text"><b>You have 10 minutes to confirm it.</b></p>
-      <Input dataTestId="confirm-input" value={code} onInputChange={onCodeChange} type="text" />
+      <Input error={codeError} dataTestId="confirm-input" value={code}  onInputChange={onCodeChange} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
       <Button name="Send" className="confirm__btn" onButton={onButton} />
       <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => onSendAg(true)} type="button">{`Send a letter again: ${minutes}:${seconds}`}</button>
     </div>
   );
-}
+  }
