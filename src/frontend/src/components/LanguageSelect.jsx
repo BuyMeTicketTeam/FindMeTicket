@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function LanguageSelect() {
-  const [value, changeValue] = useState('Ua');
+export default function LanguageSelect({ language, changeLanguage }) {
   return (
-    <select className="select" value={value} onChange={(e) => changeValue(e.target.value)}>
-      <option value="Ua">Ua</option>
-      <option value="Eng">Eng</option>
+    <select className="select" value={language} onChange={(e) => changeLanguage(e.target.value)}>
+      <option value="Ua">UA</option>
+      <option value="Eng">ENG</option>
     </select>
   );
 }
