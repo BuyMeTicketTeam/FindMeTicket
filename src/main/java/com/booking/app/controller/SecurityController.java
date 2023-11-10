@@ -12,24 +12,27 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/signup")
+@RequestMapping
 @AllArgsConstructor
-public class SignUpController implements UserAuthAPI {
+public class SecurityController implements UserAuthAPI {
 
     private final UserSecurityService service;
 
-    @PreAuthorize("hasRole(ROLE_USER)")
-    @PostMapping
+  //  @PreAuthorize("hasRole(ROLE_USER)")
+    @PostMapping("/register")
     @Override
     public ResponseDTO<LoginDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException {
         return new ResponseDTO<>(service.register(dto));
     }
 
 
-    @GetMapping
+    @PostMapping("/login")
     @Override
     public ResponseDTO<LoginDTO> signIn(LoginDTO dto) {
         return null;
     }
+
+
+
 
 }

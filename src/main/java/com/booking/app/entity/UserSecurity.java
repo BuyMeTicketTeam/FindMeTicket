@@ -15,8 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
 public class UserSecurity implements UserDetails {
 
     @Id
@@ -37,13 +36,13 @@ public class UserSecurity implements UserDetails {
     @OneToOne
     private User user;
 
-    private Boolean accountNonExpired;
+    private boolean accountNonExpired;
 
-    private Boolean accountNonLocked = true;
+    private boolean accountNonLocked;
 
-    private Boolean credentialsNonExpired;
+    private boolean credentialsNonExpired;
 
-    private Boolean enabled;
+    private boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -51,7 +50,7 @@ public class UserSecurity implements UserDetails {
     }
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountNonExpired;
     }
 
     @Override
@@ -61,12 +60,12 @@ public class UserSecurity implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
 

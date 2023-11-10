@@ -22,7 +22,7 @@ public class LoginDTO {
     private final String password;
 
 
-   @Valid
+    @Valid
     private final UserDTO user;
 
 

@@ -1,5 +1,6 @@
 package com.booking.app.security;
 
+import com.booking.app.entity.UserSecurity;
 import com.booking.app.security.jwt.JwtTokenTool;
 import com.booking.app.services.UserSecurityService;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,7 +31,6 @@ public class SecurityConfiguration {
     private final JwtTokenTool jwtTokenTool;
     private final UserSecurityService securityService;
 
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -37,22 +38,17 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.cors()
-                .and()
-                .csrf().disable()
+        return http.cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/register").permitAll()
                 .requestMatchers("/api/v1/users/get").hasAnyAuthority("ADMIN", "USER")
                 .requestMatchers("/api/v1/users/get/delete/**").hasAnyAuthority("ADMIN")
                 .anyRequest().permitAll()
-                .and().formLogin().and().build();
+                .and().sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .formLogin().and().build();
 
 
     }
-
-
-
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

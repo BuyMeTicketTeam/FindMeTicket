@@ -124,10 +124,9 @@ public class JwtTokenTool {
             return null;
         }
         UserSecurity user = optionalUser.get();
-        if (!user.getAccountNonLocked()) {
+        if (!user.isAccountNonLocked()) {
             return null;
         }
-       // userService.updateLastVisit(user);
         return new UsernamePasswordAuthenticationToken(
                 user.getEmail(), "", Collections.singleton(new SimpleGrantedAuthority(user.getUser().getRole().getEnumRole().name())));
     }

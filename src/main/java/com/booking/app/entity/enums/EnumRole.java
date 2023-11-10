@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 
 public enum EnumRole {
 
-    ADMIN("ADMIN"),
-    USER("USER");
+    ADMIN("ROLE_ADMIN"),
+    USER("ROLE_USER");
 
-    private  final  String role;
+    private final String role;
 
-    EnumRole(String role){
+    EnumRole(String role) {
         this.role = role;
     }
 
-        public Set<SimpleGrantedAuthority> getSimpleGrantedAuthorities() {
+    public Set<SimpleGrantedAuthority> getSimpleGrantedAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role));
     }
 

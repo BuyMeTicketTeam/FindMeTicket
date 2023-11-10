@@ -18,7 +18,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -40,45 +43,40 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     }
 
 
-
-
-
+    @Transactional
     @Override
     public LoginDTO register(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException {
-
-        if(userSecurityRepository.findByEmail(securityDTO.getEmail()).isPresent()) {
+        if (userSecurityRepository.findByEmail(securityDTO.getEmail()).isPresent()) {
             throw new UserAlreadyExistAuthenticationException("We’re sorry. This email already exists…");
         }
 
-        String hashPwd = passwordEncoder.encode(securityDTO.getPassword());
         UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
+        securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
 
-        securityEntity.setPassword(hashPwd);
-
-        Role role = roleRepository.findByEnumRole(EnumRole.USER);
-        User user = new User();
-
-        user.setRole(role);
+        User user = createNewRegisteredUser(securityEntity);
         user.setSecurity(securityEntity);
-
         user.getSecurity().setUser(user);
-
-        UserSecurity userSecurityEntity = user.getSecurity();
-        userSecurityEntity.setAccountNonExpired(true);
-        userSecurityEntity.setAccountNonLocked(true);
-        userSecurityEntity.setCredentialsNonExpired(true);
-        userSecurityEntity.setEnabled(true);
 
         userDataRepository.save(user);
 
-        return mapper.toDtoLogin(userSecurityEntity);
+        return mapper.toDtoLogin(securityEntity);
 
+    }
+
+    private User createNewRegisteredUser(UserSecurity userSecurity) {
+        // TODO might not to address to DB
+        Role role = roleRepository.findByEnumRole(EnumRole.USER);
+        return User.builder()
+                .registrationDate(LocalDate.now())
+                .security(userSecurity)
+                .role(role)
+
+                .build();
     }
 
     @Override
     public Optional<UserSecurity> findByEmail(String email) {
-       return userSecurityRepository.findByEmail(email);
+        return userSecurityRepository.findByEmail(email);
     }
-
 
 }

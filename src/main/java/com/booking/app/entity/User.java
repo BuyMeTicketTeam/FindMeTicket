@@ -29,8 +29,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-//    @Column(name = "username")
-//    private String username;
 
     @Column(name = "registration_date")
     @CreatedDate
@@ -42,6 +40,10 @@ public class User {
     @ManyToOne
     @JoinColumn(referencedColumnName = "id",name = "role_id")
     private Role role;
+
+    @JoinColumn(referencedColumnName = "id", name = "verify_id")
+    @OneToOne
+    private VerifyEmail verifyEmail;
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserSecurity security;

@@ -1,7 +1,6 @@
 package com.booking.app.controller.api;
 
 
-import com.booking.app.controller.dto.*;
 import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.ResponseDTO;
@@ -34,5 +33,7 @@ public interface UserAuthAPI {
             @ApiResponse(responseCode = "200", description = "User has been authenticated")
     })
     ResponseDTO<LoginDTO> signIn(@RequestBody @NotNull @Valid LoginDTO dto);
+
+
 
 }
