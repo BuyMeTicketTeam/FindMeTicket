@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import './reset.css';
 
 export default function Index() {
+  const { t } = useTranslation('translation', { keyPrefix: 'reset' });
   const [code, onCodeChange] = useState('');
   const [codeError, onCodeError] = useState(false);
   const [button, onButton] = useState(false);
@@ -39,11 +41,11 @@ export default function Index() {
   }, [button]);
   return (
     <div className="reset">
-      <h1 className="title">Password reset</h1>
-      <p className="reset__text">Введіть свою електронну пошту, на яку вам прийде код зміни пароля.</p>
+      <h1 className="title">{t('password-reset')}</h1>
+      <p className="reset__text">{t('email')}</p>
       <Input error={codeError} value={code} onInputChange={onCodeChange} type="text" placeholder="mail@mail.com" />
       {error !== '' && <p className="reset__error">{error}</p>}
-      <Button name="Send" className="reset__btn" onButton={onButton} />
+      <Button name={t('send')} className="reset__btn" onButton={onButton} />
     </div>
   );
 }

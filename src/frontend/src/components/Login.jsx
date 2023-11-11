@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Field from './Field';
 import Button from './Button';
 
 export default function Popup({ changePopup }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'login' });
   const [login, onLoginChange] = useState('');
   const [loginError, onLoginError] = useState(false);
   const [password, onPasswordChange] = useState('');
@@ -16,10 +18,10 @@ export default function Popup({ changePopup }) {
       onPasswordError(false);
       onButton(false);
       if (login.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) === null) {
-        onError('Поле email заповнено не вірно');
+        onError(t('login-error'));
         onLoginError(true);
       } else if (password.match(/^(?=.*[A-Za-z])(?=.*\d).{8,30}$/) === null) {
-        onError('Поле паролю заповнено не вірно');
+        onError(t('password-error'));
         onPasswordError(true);
       } else {
         fetch('/userData', {
@@ -45,11 +47,11 @@ export default function Popup({ changePopup }) {
       <div className="popup__body">
         <button data-testid="close" type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
         {error !== '' && <p className="error">{error}</p>}
-        <Field error={loginError} dataTestId="login-input" name="Email" tip="Будь ласка введіть свою електронну адресу" value={login} type="text" onInputChange={onLoginChange} placeholder="mail@mail.com" />
-        <Field error={passwordError} dataTestId="password-input" name="Password" tip="Будь ласка введіть свій пароль" value={password} type="password" onInputChange={onPasswordChange} />
-        <div className="link"><Link to="/reset">Forgot password</Link></div>
-        <Button className="btn-full" name="Login" onButton={onButton} />
-        <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>Register</Link></div>
+        <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={onLoginChange} placeholder="mail@mail.com" />
+        <Field error={passwordError} dataTestId="password-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={onPasswordChange} />
+        <div className="link"><a href="/reset">{t('forgot-password')}</a></div>
+        <Button className="btn-full" name={t('login-buttom')} onButton={onButton} />
+        <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
       </div>
     </div>
   );
