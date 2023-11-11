@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Validated
 public interface GoogleApi {
-    @Operation(summary = "Make authentication by Google")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", message = HttpStatuses.OK, response = SuccessSignInDto.class),
-            @ApiResponse(responseCode = "400", message = BAD_GOOGLE_TOKEN)
-    })
-    @GetMapping
-    public SuccessSignInDto authenticate(@RequestParam @NotBlank String idToken);
+//    @Operation(summary = "Make authentication by Google")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", message = HttpStatuses.OK, response = SuccessSignInDto.class),
+//            @ApiResponse(responseCode = "400", message = BAD_GOOGLE_TOKEN)
+//    })
+//    @GetMapping
+//    public SuccessSignInDto authenticate(@RequestParam @NotBlank String idToken);
 }

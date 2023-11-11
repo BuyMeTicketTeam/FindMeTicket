@@ -37,27 +37,28 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         String email = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        UserSecurity byEmail = userService.findByEmail(email).orElseThrow(
-                () -> new BadEmailOrPasswordException(BAD_EMAIL_OR_PASSWORD)
-        );
-
-        OwnSecurity ownSecurity = byEmail.getOwnSecurity();
-
-        if (ownSecurity == null) {
-            throw new BadEmailOrPasswordException(BAD_EMAIL_OR_PASSWORD);
-        }
-
-        if (!passwordEncoder.matches(password, ownSecurity.getPassword())) {
-            throw new BadEmailOrPasswordException(BAD_EMAIL_OR_PASSWORD);
-        }
-
-        if (byEmail.getVerifyEmail() != null) {
-            throw new UserUnverifiedException(USER_NOT_VERIFIED);
-        }
-
-        if (byEmail.getUserStatus() == UserStatus.DEACTIVATED) {
-            throw new UserDeactivatedException(USER_DEACTIVATED);
-        }
+        UserSecurity byEmail = userService.findByEmail(email).get();
+//                .orElseThrow(
+//                () -> new BadEmailOrPasswordException(BAD_EMAIL_OR_PASSWORD)
+//        );
+//
+//        OwnSecurity ownSecurity = byEmail.getOwnSecurity();
+//
+//        if (ownSecurity == null) {
+//            throw new BadEmailOrPasswordException(BAD_EMAIL_OR_PASSWORD);
+//        }
+//
+//        if (!passwordEncoder.matches(password, ownSecurity.getPassword())) {
+//            throw new BadEmailOrPasswordException(BAD_EMAIL_OR_PASSWORD);
+//        }
+//
+//        if (byEmail.getVerifyEmail() != null) {
+//            throw new UserUnverifiedException(USER_NOT_VERIFIED);
+//        }
+//
+//        if (byEmail.getUserStatus() == UserStatus.DEACTIVATED) {
+//            throw new UserDeactivatedException(USER_DEACTIVATED);
+//        }
 
         return new UsernamePasswordAuthenticationToken(
                 email,

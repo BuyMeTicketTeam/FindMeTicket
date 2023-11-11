@@ -13,6 +13,7 @@ import com.booking.app.repositories.UserDataRepository;
 import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.services.UserSecurityService;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,6 +34,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final UserDataRepository userDataRepository;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
 
     @Override

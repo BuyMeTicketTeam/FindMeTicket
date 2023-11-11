@@ -1,10 +1,8 @@
 package com.booking.app.security.jwt;
 
-import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.entity.enums.EnumRole;
 import com.booking.app.services.UserSecurityService;
-import com.booking.app.services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,13 +13,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-@Component
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class JwtTokenTool {
     @Value("${accessTokenValidTimeInMinutes}")
     private Integer accessTokenValidTimeInMinutes;

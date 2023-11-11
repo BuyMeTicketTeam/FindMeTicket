@@ -6,6 +6,7 @@ import com.booking.app.services.UserSecurityService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -29,7 +30,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class SecurityConfiguration {
     private final JwtTokenTool jwtTokenTool;
-    private final UserSecurityService securityService;
+   // private final UserSecurityService securityService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -56,9 +57,6 @@ public class SecurityConfiguration {
     }
 
 
-    /**
-     * Bean {@link CorsConfigurationSource} that uses for CORS setup.
-     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

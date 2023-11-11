@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+
+        }
+
+        header{
+            background-color: grey;
+        }
+
+        .logo{
+            text-align: center;
+        }
+
+        .logo_text{
+            text-align: center;
+        }
+
+        .welcome-message {
+            padding-top: 70px;
+            text-align: center;
+        }
+
+        .blue-button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .blue-button:hover {
+            background-color: darkblue;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <div class="logo">
+            <img src="https://i.postimg.cc/h40tjJnS/photo-2023-11-11-00-31-28.jpg" alt="Error">
+            </div>
+            <div class="logo_text"> 
+                <h1>
+                Підтвердьте електрону пошту
+                </h1>
+            </div>
+        </header>
+        <main>
+            <div class="welcome-message">
+                <p><b th:text="${nickname}"></b></p><br>
+                <p>Ласкаво просимо на FindMeTicket! </p>
+                <p>Ми раді, що ви на борту.</p>
+                <p>Щоб завершити налаштування облікового запису, скористайтеся кодом підтвердження нижче:</p>
+                <div class="buttons">
+                    <button class="blue-button">Підтвердьте електрону пошту</button>
+                </div>
+                <p>Код підтвердження: </p>
+                <p> <b th:text="${token}"></b></p>
+                <br>
+                <p>Даний код дійсний 10хв.</p><br>
+                <p>Будь ласка, введіть цей код у поле верифікації під час реєстрації.</p>
+                <p>У разі спливу 10 хвилин Ви маєте можливість отримати код заново!</p>
+                <p><a href="#" target="_blank"></a></p>
+                <p>Якщо ви не зареєструвалися, ви можете ігнорувати цей лист.</p><br>
+                <p>Дякуємо за вибір FindMeTicket!</p><br>
+                <p>Найкращі побажання, команда FindMeTicket</p>
+                <p></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
