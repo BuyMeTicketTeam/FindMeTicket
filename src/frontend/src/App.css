@@ -38,12 +38,14 @@ img {
   box-shadow: 0px 0px 7px rgb(180, 8, 8);
 }
 .tip {
+  position: relative;
   max-height: 0;
   opacity: 0;
   max-width: 300px;
   color: #13008d;
   font-weight: 500;
   transition: 0.8s;
+  z-index: -1;
 }
 .input:focus ~ .tip {
   max-height: 200px;

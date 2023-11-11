@@ -47,7 +47,7 @@ export default function Popup({ changePopup }) {
         {error !== '' && <p className="error">{error}</p>}
         <Field error={loginError} dataTestId="login-input" name="Email" tip="Будь ласка введіть свою електронну адресу" value={login} type="text" onInputChange={onLoginChange} placeholder="mail@mail.com" />
         <Field error={passwordError} dataTestId="password-input" name="Password" tip="Будь ласка введіть свій пароль" value={password} type="password" onInputChange={onPasswordChange} />
-        <div className="link"><a href="/reset">Forgot password</a></div>
+        <div className="link"><Link to="/reset">Forgot password</Link></div>
         <Button className="btn-full" name="Login" onButton={onButton} />
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>Register</Link></div>
       </div>
