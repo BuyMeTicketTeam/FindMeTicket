@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Input from '../components/Input';
+import { useTranslation } from 'react-i18next';
 import Button from '../components/Button';
 import './confirm.css';
 
 export default function Confirm() {
+  const { t } = useTranslation('translation', { keyPrefix: 'confirm' });
   const [code, onCodeChange] = useState('');
   const [codeError, onCodeError] = useState(false);
   const [button, onButton] = useState(false);
@@ -30,20 +32,20 @@ export default function Confirm() {
         onButton(false);
         if
         (code.match(/^[a-zA-Z0-9\s]{5}$/) === null) {
-          onError('Поле nickname заповнено не вірно');
+          onError (t('confirm-error'));
           onCodeError(true);
           
         }
       }
     }, [button]);
   return (
-    <div data-testid="confirm" className="confirm">
-      <h1 className="title">Confirm your email</h1>
-      <p className="confirm__text">We send you a letter with a confirm code.</p>
-      <p className="confirm__text"><b>You have 10 minutes to confirm it.</b></p>
+    <div data-testid="confirm" className= "confirm">
+      <h1 className="title">{t('confirm-email')}</h1>
+      <p className="confirm__text">{t('confirm-code')}</p>
+      <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
       <Input error={codeError} dataTestId="confirm-input" value={code}  onInputChange={onCodeChange} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
-      <Button name="Send" className="confirm__btn" onButton={onButton} />
+      <Button name={t('send')} className="confirm__btn" onButton={onButton} />
       <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => onSendAg(true)} type="button">{`Send a letter again: ${minutes}:${seconds}`}</button>
     </div>
   );

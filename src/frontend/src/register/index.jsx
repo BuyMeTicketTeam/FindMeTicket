@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Field from '../components/Field';
 import Button from '../components/Button';
 import ListTip from './ListTip';
 import './register.css';
 
 export default function Register() {
+  const { t } = useTranslation('translation', { keyPrefix: 'register' });
   const [nickname, onNicknameChange] = useState('');
   const [nicknameError, onNicknameError] = useState(false);
   const [email, onEmailChange] = useState('');
@@ -42,7 +44,7 @@ export default function Register() {
         });
     } else if (button && !policy) {
       onButton(false);
-      onError('You need to agree with the privacy policy');
+      onError(t('privacy-policy'));
     }
   }, [button]);
   useEffect(() => {
@@ -54,17 +56,17 @@ export default function Register() {
       onButton(false);
       if
       (nickname.match(/^[a-zA-Z0-9\s]{5,20}$/) === null) {
-        onError('Поле nickname заповнено не вірно');
+        onError(t('nickname-error'));
         onNicknameError(true);
       } else if
       (email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) === null) {
-        onError('Поле email заповнено не вірно');
+        onError(t('email-error'));
         onEmailError(true);
       } else if (password.match(/^(?=.*[A-Za-z])(?=.*\d).{8,30}$/) === null) {
-        onError('Поле паролю заповнено не вірно');
+        onError(t('password-error'));
         onPasswordError(true);
       } else if (password !== confirmPassword) {
-        onError('Паролі не збігаються');
+        onError(t('confirm-password-error'));
         onConfirmPasswordError(true);
       } else {
         fetch('/userRegister', {
@@ -85,16 +87,16 @@ export default function Register() {
 
   return (
     <div data-testid="register" className="register">
-      <h1 className="title">Registration</h1>
+      <h1 className="title">{t('registration')}</h1>
       {error !== '' && <p data-testid="error" className="error">{error}</p>}
-      <Field error={nicknameError} dataTestId="nickname-input" tipDataTestId="nickname-tip" name="Nickname" value={nickname} type="text" onInputChange={onNicknameChange} placeholder="Svillana2012" tip={<ListTip />} />
-      <Field error={emailError} dataTestId="email-input" name="Email" value={email} type="email" onInputChange={onEmailChange} tip="Email must contain @" />
-      <Field error={passwordError} dataTestId="password-input" name="Password" value={password} type="password" onInputChange={onPasswordChange} tip="Password must be at least 8 characters and contain number" />
-      <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name="Confirm password" value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
+      <Field error={nicknameError} dataTestId="nickname-input" tipDataTestId="nickname-tip" name={t('nickname')} value={nickname} type="text" onInputChange={onNicknameChange} placeholder="Svillana2012" tip={<ListTip />} />
+      <Field error={emailError} dataTestId="email-input" name={t('email')} value={email} type="email" onInputChange={onEmailChange} tip={t('tip-email')} />
+      <Field error={passwordError} dataTestId="password-input" name={t('password')} value={password} type="password" onInputChange={onPasswordChange} tip={t('tip-password')}  />
+      <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name={t('confirm-password')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
       <input data-testid="checkbox" id="policy" type="checkbox" className="checkbox__field" onClick={() => onPolicy(!policy)} />
       <label htmlFor="policy" className="checkbox">
-        I agree with the
-        <a href="/">privacy policy</a>
+      {t('agree')}
+        <a href="/">{t('privacy policy')}</a>
       </label>
       <Button dataTestId="register-btn" name="Register" onButton={onButton} />
     </div>

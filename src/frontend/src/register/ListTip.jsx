@@ -1,14 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 
 export default function ListTip() {
+  const { t } = useTranslation('translation', { keyPrefix: 'tip' });
   return (
     <>
-      Ваш nickname повинен відповідати наступним вимогам:
+      {t('nickname-tip')}
       <ul style={{ marginLeft: '20px', marginTop: '10px' }}>
-        <li>5-20 буквенно-цифрових символів</li>
-        <li>Малі та великі літери</li>
-        <li>Тільки латинські символи</li>
-        <li>Пробіли допускаються</li>
+        <li>{t('nickname-tip2')}</li>
+        <li>{t('nickname-tip3')}</li>
+        <li>{t('nickname-tip4')}</li>
+        <li>{t('nickname-tip5')}</li>
       </ul>
     </>
   );
