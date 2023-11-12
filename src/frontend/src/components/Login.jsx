@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Field from './Field';
 import Button from './Button';
+import makeQuerry from '../helper/querry';
 
 export default function Popup({ changePopup }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
@@ -24,20 +25,16 @@ export default function Popup({ changePopup }) {
         onError(t('password-error'));
         onPasswordError(true);
       } else {
-        fetch('/userData', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            login,
-            password,
-          }),
-        })
+        makeQuerry('login', JSON.stringify(login, password))
           .then((response) => {
-            if (!response.ok) {
-              onError('Some error');
+            if (response.status === 200) {
+              changePopup(false);
+            } else if (response.status === 401) {
+              onError(response.body?.message);
+            } else if (response.status === 404) {
+              onError("З'єднання з сервером відсутнє");
             }
+            console.log(response.status);
           });
       }
     }
