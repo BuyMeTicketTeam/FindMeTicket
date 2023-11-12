@@ -9,6 +9,7 @@ a {
 }
 body {
    font-family: 'Roboto';
+   background: url('../public/img/mountains.jpg');
 }
 img {
   max-width: 100%;

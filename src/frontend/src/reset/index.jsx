@@ -17,7 +17,7 @@ export default function Index() {
     onButton(false);
     if (button === true) {
       if (code.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) === null) {
-        onError('Поле nickname заповнено не вірно');
+        onError(t('reset-error'));
         onCodeError(true);
       } else {
         fetch('/userCode', {

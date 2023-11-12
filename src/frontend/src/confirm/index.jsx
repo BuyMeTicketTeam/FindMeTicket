@@ -48,9 +48,24 @@ export default function Confirm() {
       onCodeError(false);
       onButton(false);
       if
-      (code.match(/^[a-zA-Z0-9\s]{5}$/) === null) {
-        onError('Поле nickname заповнено не вірно');
+      (code.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) === null) {
+        onError(t('confirm-error'));
         onCodeError(true);
+      } else {
+        fetch('/userCode', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            code,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              onError('Some error');
+            }
+          });
       }
     }
   }, [button]);
@@ -62,7 +77,7 @@ export default function Confirm() {
       <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={onCodeChange} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
       <Button name={t('send')} className="confirm__btn" onButton={onButton} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => onSendAg(true)} type="button">{`Send a letter again: ${minutes}:${seconds}`}</button>
+      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => onSendAg(true)} type="button">{t('time', { minutes, seconds })}</button>
     </div>
   );
 }

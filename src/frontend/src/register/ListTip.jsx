@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-
 export default function ListTip() {
   const { t } = useTranslation('translation', { keyPrefix: 'tip' });
   return (

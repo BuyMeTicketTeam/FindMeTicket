@@ -61,7 +61,7 @@ export default function Index() {
         onError(t('password-error'));
         onPasswordError(true);
       } else if (password !== confirmPassword) {
-        onError('confirm-password-error');
+        onError(t('confirm-password-error'));
         onConfirmPasswordError(true);
       } else {
         fetch('/newPassword', {

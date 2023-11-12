@@ -49,7 +49,7 @@ export default function Popup({ changePopup }) {
         {error !== '' && <p className="error">{error}</p>}
         <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={onLoginChange} placeholder="mail@mail.com" />
         <Field error={passwordError} dataTestId="password-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={onPasswordChange} />
-        <div className="link"><a href="/reset">{t('forgot-password')}</a></div>
+        <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
         <Button className="btn-full" name={t('login-buttom')} onButton={onButton} />
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
       </div>
