@@ -4,15 +4,17 @@ import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
+import jakarta.mail.MessagingException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Validated
 public interface UserSecurityService {
-    @Transactional
-    LoginDTO register(RegistrationDTO user) throws UserAlreadyExistAuthenticationException;
+
+    LoginDTO register(RegistrationDTO user) throws UserAlreadyExistAuthenticationException, MessagingException, IOException;
 
 
     Optional<UserSecurity> findByEmail(String email);

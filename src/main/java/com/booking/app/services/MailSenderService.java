@@ -8,5 +8,5 @@ import java.io.IOException;
 public interface MailSenderService {
     void sendEmailRecoverPassword(String contextPath, String token, UserSecurity user);
 
-    void sendEmailWithActivationToken(String contextPath, String token, UserSecurity user) throws IOException, MessagingException;
+    void sendEmailWithActivationToken(String token, UserSecurity user) throws IOException, MessagingException;
 }

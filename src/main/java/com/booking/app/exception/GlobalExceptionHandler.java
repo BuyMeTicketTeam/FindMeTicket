@@ -1,5 +1,6 @@
 package com.booking.app.exception;
 
+import com.booking.app.annotation.UserNotConfirmedException;
 import com.booking.app.exception.exception.PasswordNotMatchesException;
 import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
@@ -85,6 +86,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(UserNotConfirmedException.class)
+    public ResponseEntity<ErrorDetails> passwordMatches(UserNotConfirmedException exception, WebRequest webRequest) {
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.CONFLICT
+        );
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
 
 
 }

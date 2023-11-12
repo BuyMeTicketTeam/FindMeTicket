@@ -20,12 +20,12 @@ import java.io.IOException;
 public class SecurityController implements UserAuthAPI {
 
     private final UserSecurityService service;
-    private final MailSenderService mailService;
+
 
     //  @PreAuthorize("hasRole(ROLE_USER)")
     @PostMapping("/register")
     @Override
-    public ResponseDTO<LoginDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException {
+    public ResponseDTO<LoginDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         return new ResponseDTO<>(service.register(dto));
     }
 
@@ -35,12 +35,13 @@ public class SecurityController implements UserAuthAPI {
         return null;
     }
 
-    @PostMapping("/send-email")
-    public String sendEmail() throws IOException, MessagingException {
-        UserSecurity build = UserSecurity.builder().email("").build();
-        mailService.sendEmailWithActivationToken("/send-email", "FDSF33", build);
-        return "Success";
-    }
+
+
+
+
+    @PostMapping("/reset")
+
+
 
 
 }

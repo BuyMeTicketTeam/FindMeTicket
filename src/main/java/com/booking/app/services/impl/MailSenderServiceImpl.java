@@ -1,26 +1,16 @@
 package com.booking.app.services.impl;
 
-
-import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.services.MailSenderService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +28,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     }
 
     @Override
-    public void sendEmailWithActivationToken(String contextPath, String token, UserSecurity user) throws IOException, MessagingException {
+    public void sendEmailWithActivationToken(String token, UserSecurity user) throws IOException, MessagingException {
         Context context = new Context();
         context.setVariable("nickname", user.getUsername());
         context.setVariable("token", token);

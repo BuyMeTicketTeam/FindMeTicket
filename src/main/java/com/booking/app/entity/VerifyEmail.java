@@ -1,12 +1,16 @@
 package com.booking.app.entity;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+
+import java.sql.Time;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -20,11 +24,17 @@ public class VerifyEmail {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(mappedBy = "verifyEmail",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "verifyEmail", cascade = CascadeType.ALL)
     private User user;
 
+    @NotNull
     private String token;
 
-    private LocalDateTime expiryDate;
+    @NotNull
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date expiryTime;
+
+
+
 }
 

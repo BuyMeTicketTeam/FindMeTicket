@@ -4,6 +4,7 @@ import com.booking.app.entity.UserSecurity;
 import com.booking.app.security.jwt.JwtTokenTool;
 import com.booking.app.services.UserSecurityService;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

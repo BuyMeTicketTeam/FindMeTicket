@@ -15,7 +15,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
+@Setter
+@Getter
+@ToString
 public class UserSecurity implements UserDetails {
 
     @Id
