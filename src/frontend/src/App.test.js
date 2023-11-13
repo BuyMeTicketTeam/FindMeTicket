@@ -1,7 +1,9 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import App from './App';
+import Login from './components/Login';
 
 test('render header', () => {
   render(<App />);
@@ -58,21 +60,42 @@ test('link to register', () => {
   expect(screen.queryByTestId('register')).toBeInTheDocument();
 });
 
-// describe('login check', () => {
-//   let response;
-//   beforeEach(() => {
-//     response = {
-//       success: true,
-//     };
-//   });
-//   test('success login', () => {
-//     render(<App />);
-//     const loginBtn = screen.getByTestId('login-btn');
-//     fireEvent.click(loginBtn);
-//     const passwordInput = screen.getByTestId('password-input');
-//     fireEvent.input(passwordInput, {
-//       target: { value: '123456' },
-//     });
-//     expect(passwordInput.value).toBe('123456');
-//   });
-// });
+describe('login check', () => {
+  // let container = null;
+  // beforeEach(() => {
+  // // подготавливаем DOM-элемент, куда будем рендерить
+  //   container = document.createElement('div');
+  //   document.body.appendChild(container);
+  // });
+
+  // afterEach(() => {
+  // // подчищаем после завершения
+  //   unmountComponentAtNode(container);
+  //   container.remove();
+  //   container = null;
+  // });
+
+  it('renders user data', async () => {
+    // const fakeUser = {
+    //   name: 'Joni Baez',
+    //   age: '32',
+    //   address: '123, Charming Avenue',
+    // };
+    const status = 400;
+    jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve({
+      // json: () => Promise.resolve(fakeUser),
+      status: () => Promise.resolve(status),
+    }));
+
+    // Используем act асинхронно, чтобы передать успешно завершённые промисы
+    await act(async () => {
+      render(<Login />);
+    });
+    const sendBtn = screen.getByTestId('send-request');
+    fireEvent.click(sendBtn);
+    expect(screen.queryByTestId('error')).toBeInTheDocument();
+
+    // выключаем фиктивный fetch, чтобы убедиться, что тесты полностью изолированы
+    global.fetch.mockRestore();
+  });
+});

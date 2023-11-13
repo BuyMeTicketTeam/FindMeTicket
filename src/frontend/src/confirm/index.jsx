@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import makeQuerry from '../helper/querry';
 import './confirm.css';
 
 export default function Confirm() {
@@ -10,6 +11,7 @@ export default function Confirm() {
   const [codeError, onCodeError] = useState(false);
   const [button, onButton] = useState(false);
   const [error, onError] = useState('');
+  const [succes, onSucces] = useState(false);
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [sendAg, onSendAg] = useState(false);
@@ -28,19 +30,21 @@ export default function Confirm() {
   }, [seconds, minutes]);
   useEffect(() => {
     if (sendAg) {
-      setMinutes(10);
-      fetch('/userReqCode', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const body = {
+        email: sessionStorage.getItem('email'),
+        code,
+      };
+      makeQuerry('resend-confirm-token', JSON.stringify(body))
         .then((response) => {
-          if (!response.ok) {
-            onError('Some error');
+          if (response.status === 200) {
+            setMinutes(10);
+            onSendAg(false);
+          } else if (response.status === 404) {
+            onError("З'єднання з сервером відсутнє");
+          } else {
+            onError('Помилка серверу. Спробуйте ще раз');
           }
         });
-      onSendAg(false);
     }
   }, [sendAg]);
   useEffect(() => {
@@ -48,22 +52,25 @@ export default function Confirm() {
       onCodeError(false);
       onButton(false);
       if
-      (code.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) === null) {
+      (code.match(/^[a-zA-Z0-9\s]{5}$/) === null) {
         onError(t('confirm-error'));
         onCodeError(true);
       } else {
-        fetch('/userCode', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            code,
-          }),
-        })
+        const body = {
+          email: sessionStorage.getItem('email'),
+          code,
+        };
+        makeQuerry('confirm-email', JSON.stringify(body))
           .then((response) => {
-            if (!response.ok) {
-              onError('Some error');
+            if (response.status === 200) {
+              onSucces(true);
+              onError('');
+            } else if (response.status === 400) {
+              onError('Код не правильний');
+            } else if (response.status === 404) {
+              onError("З'єднання з сервером відсутнє");
+            } else {
+              onError('Помилка серверу. Спробуйте ще раз');
             }
           });
       }
@@ -72,6 +79,7 @@ export default function Confirm() {
   return (
     <div data-testid="confirm" className="confirm">
       <h1 className="title">{t('confirm-email')}</h1>
+      {succes && <p className="confirm__success">Пошту підтвержено!!!</p>}
       <p className="confirm__text">{t('confirm-code')}</p>
       <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
       <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={onCodeChange} type="text" />

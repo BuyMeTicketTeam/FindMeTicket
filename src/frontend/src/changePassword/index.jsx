@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Field from '../components/Field';
 import Button from '../components/Button';
+import makeQuerry from '../helper/querry';
 
 export default function Index() {
   const [code, onCodeChange] = useState('');
@@ -16,6 +17,7 @@ export default function Index() {
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [sendAg, onSendAg] = useState(false);
+  const [succes, onSucces] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
@@ -32,19 +34,21 @@ export default function Index() {
   }, [seconds, minutes]);
   useEffect(() => {
     if (sendAg) {
-      setMinutes(10);
-      fetch('/sendEmail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const body = {
+        email: sessionStorage.getItem('email'),
+        code,
+      };
+      makeQuerry('resend-confirm-token', JSON.stringify(body))
         .then((response) => {
-          if (!response.ok) {
-            onError('Some error');
+          if (response.status === 200) {
+            setMinutes(10);
+            onSendAg(false);
+          } else if (response.status === 404) {
+            onError("З'єднання з сервером відсутнє");
+          } else {
+            onError('Помилка серверу. Спробуйте ще раз');
           }
         });
-      onSendAg(false);
     }
   }, [sendAg]);
   useEffect(() => {
@@ -64,19 +68,21 @@ export default function Index() {
         onError(t('confirm-password-error'));
         onConfirmPasswordError(true);
       } else {
-        fetch('/newPassword', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            code,
-            password,
-          }),
-        })
+        const body = {
+          code,
+          password,
+          email: sessionStorage.getItem('email'),
+        };
+        makeQuerry('new-password', JSON.stringify(body))
           .then((response) => {
-            if (!response.ok) {
-              onError('Some error');
+            if (response.status === 200) {
+              onSucces(true);
+            } else if (response.status === 400) {
+              onError('Код не правильний');
+            } else if (response.status === 404) {
+              onError("З'єднання з сервером відсутнє");
+            } else {
+              onError('Помилка серверу. Спробуйте ще раз');
             }
           });
       }
@@ -85,6 +91,7 @@ export default function Index() {
   return (
     <div className="confirm">
       <h1 className="title">{t('title')}</h1>
+      {succes && <p className="confirm__success">Пароль змінено!!!</p>}
       <p className="confirm__text">{t('confirm-text1')}</p>
       <p className="confirm__text"><b>{t('confirm-text2')}</b></p>
       {error !== '' && <p data-testid="error" className="error">{error}</p>}

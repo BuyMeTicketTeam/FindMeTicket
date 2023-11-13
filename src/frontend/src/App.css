@@ -9,7 +9,6 @@ a {
 }
 body {
    font-family: 'Roboto';
-   background: url('../public/img/mountains.jpg');
 }
 img {
   max-width: 100%;
@@ -131,4 +130,18 @@ img {
 }
 .checkbox__field.error ~ .checkbox {
   color: rgb(180, 8, 8);
+}
+
+.confirm__success {
+  min-width: 300px;
+  background: green;
+  padding: 10px;
+  color: #fff;
+  border-radius: 5px;
+  margin: 8px 0;
+}
+
+.main-block {
+  height: calc(100vh - 60px);
+  background: url('../public/img/mountains.jpg');
 }

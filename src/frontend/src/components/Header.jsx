@@ -6,13 +6,13 @@ import LoginBtn from './LoginBtn';
 import LanguageSelect from './LanguageSelect';
 import Login from './Login';
 
-export default function Header() {
+export default function Header({ authorization, onAuthorization }) {
   const [popupLogin, changePopup] = useState(false);
   const [language, changeLanguage] = useState('Ua');
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   return (
     <header data-testid="header" className="header">
-      <div className="logo"><Link to="/"><img src="../img/logo.png" alt="logo" /></Link></div>
+      <div className="logo"><Link to="/"><img src="../img/logo2.png" alt="logo" /></Link></div>
       <ul className="menu">
         <li className="menu__item"><a href="/">{t('news')}</a></li>
         <li className="menu__item"><a href="/">{t('reviews')}</a></li>
@@ -20,8 +20,8 @@ export default function Header() {
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
       <LanguageSelect language={language} changeLanguage={changeLanguage} />
-      <LoginBtn status={false} changePopup={changePopup} />
-      {popupLogin && <Login changePopup={changePopup} />}
+      <LoginBtn status={authorization} changePopup={changePopup} />
+      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
     </header>
   );
 }

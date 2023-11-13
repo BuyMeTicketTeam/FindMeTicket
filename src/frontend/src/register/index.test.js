@@ -1,10 +1,15 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import Index from './index';
 
-test('nickname input event', () => {
-  render(<Index />);
+test('nickname-v2-event', () => {
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
   const nicknameInput = screen.getByTestId('nickname-input');
   fireEvent.input(nicknameInput, {
     target: { value: 'Stepan' },
@@ -13,7 +18,11 @@ test('nickname input event', () => {
 });
 
 test('email input event', () => {
-  render(<Index />);
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
   const nicknameInput = screen.getByTestId('email-input');
   fireEvent.input(nicknameInput, {
     target: { value: 'Stepan@mail.com' },
@@ -22,7 +31,11 @@ test('email input event', () => {
 });
 
 test('password input event', () => {
-  render(<Index />);
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
   const nicknameInput = screen.getByTestId('password-input');
   fireEvent.input(nicknameInput, {
     target: { value: '1234' },
@@ -31,7 +44,11 @@ test('password input event', () => {
 });
 
 test('confirm password input event', () => {
-  render(<Index />);
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
   const nicknameInput = screen.getByTestId('confirm-pass-input');
   fireEvent.input(nicknameInput, {
     target: { value: '1234' },
@@ -41,7 +58,11 @@ test('confirm password input event', () => {
 
 describe('checkbox event', () => {
   test('have check', () => {
-    render(<Index />);
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
     const checkbox = screen.getByTestId('checkbox');
     const buttonReg = screen.getByTestId('register-btn');
     fireEvent.click(checkbox);
@@ -49,7 +70,11 @@ describe('checkbox event', () => {
     expect(screen.queryByTestId('error')).toBeNull();
   });
   test('do not have check', () => {
-    render(<Index />);
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
     const buttonReg = screen.getByTestId('register-btn');
     fireEvent.click(buttonReg);
     expect(screen.queryByTestId('error')).toBeTruthy();

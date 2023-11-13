@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Field from '../components/Field';
 import Button from '../components/Button';
 import ListTip from './ListTip';
+import makeQuerry from '../helper/querry';
 import './register.css';
 
 export default function Register() {
@@ -42,23 +43,22 @@ export default function Register() {
         onError(t('confirm-password-error'));
         onConfirmPasswordError(true);
       } else if (button && policy) {
-        fetch('/userRegister', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nickname,
-            email,
-            password,
-          }),
-        })
+        const body = {
+          email,
+          password,
+          nickname,
+        };
+        makeQuerry('register', JSON.stringify(body))
           .then((response) => {
-            if (response.ok) {
-              onError('Some error');
-              onButton(false);
-            } else {
+            if (response.status === 201) {
               navigate('/confirm');
+              sessionStorage.setItem('email', email);
+            } else if (response.status === 409) {
+              onError('Користувач з ціїю електронною адресою вже зареєстрований');
+            } else if (response.status === 404) {
+              onError("З'єднання з сервером відсутнє");
+            } else {
+              onError('Помилка серверу. Спробуйте ще раз');
             }
           });
       } else {
