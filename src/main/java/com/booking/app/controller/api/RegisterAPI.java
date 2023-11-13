@@ -1,10 +1,6 @@
 package com.booking.app.controller.api;
 
-
-import com.booking.app.dto.LoginDTO;
-import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.ResetPasswordDTO;
-import com.booking.app.dto.ResponseDTO;
+import com.booking.app.dto.*;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,35 +9,31 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.IOException;
 
-
 @Validated
-public interface UserAuthAPI {
+public interface RegisterAPI {
 
     @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Register User")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
-            @ApiResponse(responseCode = "409", description = "This login email already exists…"),
-            @ApiResponse(responseCode = "400", description = "Invalid request data")
+            @ApiResponse(responseCode = "409", description = "We’re sorry. This email already exists")
     })
-    ResponseDTO<LoginDTO> signUp(@Valid @NotNull RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException;
+    ResponseDTO<EmailDTO> signUp(@Valid @NotNull RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException;
 
-    @Operation(summary = "Authentication User")
+    @Operation(summary = "Email confirmation")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User has been authenticated")
+            @ApiResponse(responseCode = "200", description = "Email is confirmed"),
+            @ApiResponse(responseCode = "400", description = "Token from email is not right")
     })
-    ResponseDTO<LoginDTO> signIn(@RequestBody @NotNull @Valid LoginDTO dto);
+    ResponseEntity<?> confirmEmailToken(@RequestBody @NotNull @Valid TokenConfirmationDTO dto);
 
-
-    ResponseDTO<LoginDTO> resetPassword(@RequestBody @NotNull @Valid ResetPasswordDTO dto);
-    ResponseDTO<LoginDTO> resetPassword(@RequestBody @NotNull @Valid ResetPasswordDTO dto);
-
-
-
+    ResponseEntity<?> resendConfirmEmailToken(@NotNull @Valid TokenConfirmationDTO dto) throws MessagingException, IOException;
 }

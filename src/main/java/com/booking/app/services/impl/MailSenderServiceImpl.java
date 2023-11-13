@@ -1,30 +1,37 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.entity.UserSecurity;
+import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.services.MailSenderService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MailSenderServiceImpl implements MailSenderService {
+    @Value("${TOKEN_SYMBOLS}")
+    private String TOKEN_SYMBOLS;
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final UserSecurityRepository userSecurityRepository;
 
-    public void sendMessage(UserSecurity user) throws IOException, MessagingException {
 
-    }
+
 
     @Override
-    public void sendEmailRecoverPassword(String contextPath, String token, UserSecurity user) {
-        //     mailSender.send(constructResetTokenEmail(contextPath, token, user));
+    public void sendEmailRecoverPassword(String token, UserSecurity user) {
+
     }
 
     @Override
@@ -43,9 +50,25 @@ public class MailSenderServiceImpl implements MailSenderService {
         helper.setTo(user.getEmail());
 
         mailSender.send(mimeMessage);
-
-        System.out.println("sent");
     }
+    public void sendEmail(String email) throws IOException, MessagingException {
+        Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(email);
+        if(byEmail.isPresent()) {
+            sendEmailWithActivationToken(generateRandomToken(), byEmail.get());
+        }
+    }
+
+    public String generateRandomToken() {
+        final SecureRandom random = new SecureRandom();
+        StringBuilder stringBuilder = new StringBuilder(5);
+        for (int i = 0; i < 5; i++) {
+            int randomIndex = random.nextInt(TOKEN_SYMBOLS.length());
+            char randomChar = TOKEN_SYMBOLS.charAt(randomIndex);
+            stringBuilder.append(randomChar);
+        }
+        return stringBuilder.toString();
+    }
+
 
 
 //    private SimpleMailMessage constructResetTokenEmail(

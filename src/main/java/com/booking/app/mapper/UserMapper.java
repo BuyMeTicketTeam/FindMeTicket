@@ -1,5 +1,6 @@
 package com.booking.app.mapper;
 
+import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.UserDTO;
@@ -21,5 +22,8 @@ public interface UserMapper {
     public RegistrationDTO toDtoRegistration(UserSecurity userSecurity);
 
     public UserSecurity toEntityRegistration(RegistrationDTO registrationDTO);
+
+
+    public EmailDTO toEmail(UserSecurity userSecurity);
 
 }

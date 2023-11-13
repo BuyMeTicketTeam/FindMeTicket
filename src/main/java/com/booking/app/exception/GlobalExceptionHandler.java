@@ -1,6 +1,6 @@
 package com.booking.app.exception;
 
-import com.booking.app.annotation.UserNotConfirmedException;
+import com.booking.app.exception.exception.UserNotConfirmedException;
 import com.booking.app.exception.exception.PasswordNotMatchesException;
 import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;

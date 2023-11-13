@@ -4,7 +4,7 @@ import com.booking.app.dto.UserDTO;
 import com.booking.app.entity.User;
 import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.mapper.UserMapper;
-import com.booking.app.repositories.UserDataRepository;
+import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper mapper;
-    private final UserDataRepository repository;
+    private final UserRepository repository;
 
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, UserDataRepository repository) {
+    public UserServiceImpl(UserMapper userMapper, UserRepository repository) {
         this.mapper = userMapper;
         this.repository = repository;
     }

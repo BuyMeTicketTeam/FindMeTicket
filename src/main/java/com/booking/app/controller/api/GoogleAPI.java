@@ -1,15 +1,9 @@
 package com.booking.app.controller.api;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Validated
-public interface GoogleApi {
+public interface GoogleAPI {
 //    @Operation(summary = "Make authentication by Google")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", message = HttpStatuses.OK, response = SuccessSignInDto.class),

@@ -6,7 +6,9 @@ import jakarta.mail.MessagingException;
 import java.io.IOException;
 
 public interface MailSenderService {
-    void sendEmailRecoverPassword(String contextPath, String token, UserSecurity user);
+    void sendEmailRecoverPassword(String token, UserSecurity user);
 
+    public void sendEmail(String user) throws IOException, MessagingException;
     void sendEmailWithActivationToken(String token, UserSecurity user) throws IOException, MessagingException;
+    public String generateRandomToken();
 }

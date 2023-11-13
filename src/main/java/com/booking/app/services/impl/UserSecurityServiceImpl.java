@@ -1,7 +1,8 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.annotation.UserNotConfirmedException;
-import com.booking.app.dto.LoginDTO;
+import com.booking.app.dto.EmailDTO;
+import com.booking.app.dto.TokenConfirmationDTO;
+import com.booking.app.exception.exception.UserNotConfirmedException;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
@@ -11,15 +12,14 @@ import com.booking.app.entity.enums.EnumRole;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
-import com.booking.app.repositories.UserDataRepository;
+import com.booking.app.repositories.UserRepository;
 import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
-import lombok.AllArgsConstructor;
-import org.joda.time.DateTime;
-import org.springframework.mail.javamail.JavaMailSender;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,25 +29,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserSecurityServiceImpl implements UserDetailsService, UserSecurityService {
 
     private final UserSecurityRepository userSecurityRepository;
     private final RoleRepository roleRepository;
-    private final UserDataRepository userDataRepository;
+    private final UserRepository userRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
@@ -61,10 +55,9 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return userSecurity;
     }
 
-
     @Transactional
     @Override
-    public LoginDTO register(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
+    public EmailDTO register(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(securityDTO.getEmail());
 
         if (byEmail.isPresent() && byEmail.get().isEnabled()) {
@@ -75,7 +68,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         }
 
 
-
         UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
         securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
 
@@ -83,12 +75,11 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         user.setSecurity(securityEntity);
         user.getSecurity().setUser(user);
 
-        userDataRepository.save(user);
-        sendEmail(securityEntity);
+        userRepository.save(user);
+        mailService.sendEmail(securityEntity.getEmail());
 
 
-
-        return mapper.toDtoLogin(securityEntity);
+        return mapper.toEmail(securityEntity);
 
     }
 
@@ -106,7 +97,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         user.setVerifyEmail(verifyEmail);
 
 
-
         return user;
     }
 
@@ -116,37 +106,47 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return userSecurityRepository.findByEmail(email);
     }
 
+    @Transactional
+    @Override
+    public boolean checkConfirmToken(TokenConfirmationDTO dto) {
+        Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(dto.getEmail());
+        LocalDateTime now = LocalDateTime.now();
+        Date dateExpiryTime = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        if (byEmail.isPresent()) {
+            if (!byEmail.get().isEnabled()) {
+                String token = byEmail.get().getUser().getVerifyEmail().getToken();
+                if (dateExpiryTime.before(byEmail.get().getUser().getVerifyEmail().getExpiryTime())) {
+                    if (token.equals(dto.getToken())) {
+                        enableUserById(byEmail);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    @Transactional
+    public void enableUserById(Optional<UserSecurity> byEmail) {
+        userSecurityRepository.enableUserById(byEmail.get().getId());
+    }
+
+
     private VerifyEmail createVerifyEmail(User user) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expiryTime = now.plusMinutes(10); // Adjust the number of minutes as needed
-
-        Date dateExpiryTime = Date.from(expiryTime.atZone(ZoneId.systemDefault()).toInstant());
-
+        LocalDateTime tenMinutes = now.plusMinutes(10);
+        Date dateExpiryTime = Date.from(tenMinutes.atZone(ZoneId.systemDefault()).toInstant());
         return VerifyEmail.builder()
                 .user(user)
                 .expiryTime(dateExpiryTime)
-                .token(generateRandomToken())
+                .token(mailService.generateRandomToken())
                 .user(user)
                 .build();
     }
 
 
-    private String generateRandomToken() {
-        final String ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        final SecureRandom random = new SecureRandom();
-        StringBuilder stringBuilder = new StringBuilder(5);
-        for (int i = 0; i < 5; i++) {
-            int randomIndex = random.nextInt(ALLOWED_CHARACTERS.length());
-            char randomChar = ALLOWED_CHARACTERS.charAt(randomIndex);
-            stringBuilder.append(randomChar);
-        }
-        return stringBuilder.toString();
-    }
-
-
-    public void sendEmail(UserSecurity user) throws IOException, MessagingException {
-        mailService.sendEmailWithActivationToken(user.getUser().getVerifyEmail().getToken(), user);
-    }
 
 
 }

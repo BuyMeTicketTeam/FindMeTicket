@@ -1,4 +1,4 @@
-package com.booking.app.annotation;
+package com.booking.app.exception.exception;
 
 public class UserNotConfirmedException extends RuntimeException {
 

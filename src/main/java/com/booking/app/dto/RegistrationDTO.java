@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-@PasswordMatches
+//@PasswordMatches
 public class RegistrationDTO {
 
     @NotBlank(message = "Invalid Login: Empty login")
@@ -27,11 +27,6 @@ public class RegistrationDTO {
     @NotNull(message = "Password is NULL")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,15}$", message = "Password must be of 8 - 15 characters and contain at least one letter and one number")
     private final String password;
-
-    private final String confirmPassword;
-
-    @Valid
-    private final UserDTO user;
 
 
 }
