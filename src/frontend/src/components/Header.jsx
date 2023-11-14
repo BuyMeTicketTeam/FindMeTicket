@@ -6,8 +6,9 @@ import LoginBtn from './LoginBtn';
 import LanguageSelect from './LanguageSelect';
 import Login from './Login';
 
-export default function Header({ authorization, onAuthorization }) {
-  const [popupLogin, changePopup] = useState(false);
+export default function Header({
+  authorization, onAuthorization, changePopup, popupLogin,
+}) {
   const [language, changeLanguage] = useState('Ua');
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Index from './main/index';
@@ -14,15 +15,16 @@ import './locales/i18n';
 
 function App() {
   const [authorization, onAuthorization] = useState(false);
+  const [popupLogin, changePopup] = useState(false);
   return (
     <Router>
-      <Header authorization={authorization} onAuthorization={onAuthorization} />
+      <Header authorization={authorization} onAuthorization={onAuthorization} changePopup={changePopup} popupLogin={popupLogin} />
       <Routes>
         <Route exact path="/" element={<Index />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/confirm" element={<Confirm />} />
+        <Route path="/confirm" element={<Confirm changePopup={changePopup} />} />
         <Route path="/reset" element={<Reset />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/change-password" element={<ChangePassword changePopup={changePopup} />} />
       </Routes>
     </Router>
   );

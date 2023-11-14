@@ -125,10 +125,10 @@ img {
   height: 20px;
   background: url('../public/img/tick.svg');
 }
-.checkbox__field.error ~ .checkbox::after {
+.checkbox__field.checkbox-error ~ .checkbox::after {
   border: 1px solid rgb(180, 8, 8);
 }
-.checkbox__field.error ~ .checkbox {
+.checkbox__field.checkbox-error ~ .checkbox {
   color: rgb(180, 8, 8);
 }
 
@@ -144,4 +144,8 @@ img {
 .main-block {
   height: calc(100vh - 60px);
   background: url('../public/img/mountains.jpg');
+}
+
+.link-success {
+  font-size: 18px;
 }
