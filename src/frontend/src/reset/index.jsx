@@ -9,17 +9,21 @@ import './reset.css';
 export default function Index() {
   const { t } = useTranslation('translation', { keyPrefix: 'reset' });
   const [email, onEmailChange] = useState('');
-  const [codeError, onCodeError] = useState(false);
+  const [emailError, onEmailError] = useState(false);
   const [button, onButton] = useState(false);
   const [error, onError] = useState('');
   const navigate = useNavigate();
+  function handleEmailChange(value) {
+    onEmailChange(value);
+    onEmailError(false);
+  }
   useEffect(() => {
-    onCodeError(false);
+    onEmailError(false);
     onButton(false);
     if (button === true) {
       if (email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/) === null) {
         onError(t('reset-error'));
-        onCodeError(true);
+        onEmailError(true);
       } else {
         makeQuerry('reset', JSON.stringify(email))
           .then((response) => {
@@ -39,7 +43,7 @@ export default function Index() {
     <div className="reset">
       <h1 className="title">{t('password-reset')}</h1>
       <p className="reset__text">{t('email')}</p>
-      <Input error={codeError} value={email} onInputChange={onEmailChange} type="text" placeholder="mail@mail.com" />
+      <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" />
       {error !== '' && <p className="reset__error">{error}</p>}
       <Button name={t('send')} className="reset__btn" onButton={onButton} />
     </div>

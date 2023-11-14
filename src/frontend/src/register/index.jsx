@@ -21,6 +21,22 @@ export default function Register() {
   const [error, onError] = useState('');
   const [policy, onPolicy] = useState(false);
   const navigate = useNavigate();
+  function handleNicknameChange(value) {
+    onNicknameChange(value);
+    onNicknameError(false);
+  }
+  function handleEmailChange(value) {
+    onEmailChange(value);
+    onEmailError(false);
+  }
+  function handlePasswordChange(value) {
+    onPasswordChange(value);
+    onPasswordError(false);
+  }
+  function handleConfirmPasswordChange(value) {
+    onConfirmPasswordChange(value);
+    onConfirmPasswordError(false);
+  }
   useEffect(() => {
     if (button === true) {
       onNicknameError(false);
@@ -71,10 +87,10 @@ export default function Register() {
     <div data-testid="register" className="register">
       <h1 className="title">{t('registration')}</h1>
       {error !== '' && <p data-testid="error" className="error">{error}</p>}
-      <Field error={nicknameError} dataTestId="nickname-input" tipDataTestId="nickname-tip" name={t('nickname')} value={nickname} type="text" onInputChange={onNicknameChange} placeholder="Svillana2012" tip={<ListTip />} />
-      <Field error={emailError} dataTestId="email-input" name={t('email')} value={email} type="email" onInputChange={onEmailChange} tip={t('tip-email')} placeholder="mail@mail.com" />
-      <Field error={passwordError} dataTestId="password-input" name={t('password')} value={password} type="password" onInputChange={onPasswordChange} tip={t('tip-password')} />
-      <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name={t('confirm-password')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
+      <Field error={nicknameError} dataTestId="nickname-input" tipDataTestId="nickname-tip" name={t('nickname')} value={nickname} type="text" onInputChange={(value) => handleNicknameChange(value)} placeholder="Svillana2012" tip={<ListTip />} />
+      <Field error={emailError} dataTestId="email-input" name={t('email')} value={email} type="email" onInputChange={(value) => handleEmailChange(value)} tip={t('tip-email')} placeholder="mail@mail.com" />
+      <Field error={passwordError} dataTestId="password-input" name={t('password')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} tip={t('tip-password')} />
+      <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name={t('confirm-password')} value={confirmPassword} type="password" onInputChange={(value) => handleConfirmPasswordChange(value)} />
       <input data-testid="checkbox" id="policy" type="checkbox" className="checkbox__field" onClick={() => onPolicy(!policy)} />
       <label htmlFor="policy" className="checkbox">
         {t('agree')}

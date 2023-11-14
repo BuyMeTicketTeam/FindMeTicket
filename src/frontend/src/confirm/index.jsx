@@ -15,6 +15,10 @@ export default function Confirm() {
   const [minutes, setMinutes] = useState(10);
   const [seconds, setSeconds] = useState(0);
   const [sendAg, onSendAg] = useState(false);
+  function handleCodeChange(value) {
+    onCodeChange(value);
+    onCodeError(false);
+  }
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       setTimeout(() => {
@@ -82,7 +86,7 @@ export default function Confirm() {
       {succes && <p className="confirm__success">Пошту підтвержено!!!</p>}
       <p className="confirm__text">{t('confirm-code')}</p>
       <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
-      <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={onCodeChange} type="text" />
+      <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
       <Button name={t('send')} className="confirm__btn" onButton={onButton} />
       <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => onSendAg(true)} type="button">{t('time', { minutes, seconds })}</button>

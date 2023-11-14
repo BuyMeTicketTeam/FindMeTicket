@@ -6,7 +6,7 @@ export default function ListTip() {
   return (
     <>
       {t('nickname-tip')}
-      <ul style={{ marginLeft: '20px', marginTop: '10px' }}>
+      <ul className="listtip">
         <li>{t('nickname-tip2')}</li>
         <li>{t('nickname-tip3')}</li>
         <li>{t('nickname-tip4')}</li>
