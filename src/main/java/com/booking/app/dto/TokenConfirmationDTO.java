@@ -11,6 +11,6 @@ import lombok.Data;
 public class TokenConfirmationDTO {
     @NotNull
     private String email;
-    @NotNull
+
     private String token;
 }

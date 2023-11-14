@@ -1,30 +1,31 @@
 package com.booking.app.entity;
 
-import io.micrometer.core.annotation.Timed;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 
-import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "verify_email")
+@Table(name = "confirm_token")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VerifyEmail {
+public class ConfirmToken {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(mappedBy = "verifyEmail", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "confirmToken", cascade = CascadeType.ALL)
     private User user;
 
     @NotNull

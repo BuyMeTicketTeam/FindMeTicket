@@ -75,13 +75,13 @@
         </header>
         <main>
             <div class="welcome-message">
-                <p>Ласкаво просимо, <b class="nickname" th:text="${nickname}">Stepan</b>!</p>
+                <p>Ласкаво просимо, <b class="nickname" th:text="${nickname}"></b></p>
                 <p>Ми раді, що ви на борту.</p>
                 <p>Щоб завершити налаштування облікового запису, скористайтеся кодом підтвердження нижче:</p>
                 <!-- <div class="buttons">
                     <button class="blue-button">Підтвердьте електрону пошту</button>
                 </div> -->
-                <p class="code" ><b th:text="${token}">MMQOj</b></p>
+                <p class="code" ><b th:text="${token}"></b></p>
                 <br>
                 <p>Даний код дійсний 10хв.</p><br>
                 <p>Будь ласка, введіть цей код у поле верифікації під час реєстрації.</p>

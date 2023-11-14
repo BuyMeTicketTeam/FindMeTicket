@@ -1,7 +1,6 @@
 package com.booking.app.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -41,9 +38,9 @@ public class User {
     @JoinColumn(referencedColumnName = "id",name = "role_id")
     private Role role;
 
-    @JoinColumn(referencedColumnName = "id", name = "verify_id")
+    @JoinColumn(referencedColumnName = "id", name = "confirm_id")
     @OneToOne
-    private VerifyEmail verifyEmail;
+    private ConfirmToken confirmToken;
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserSecurity security;

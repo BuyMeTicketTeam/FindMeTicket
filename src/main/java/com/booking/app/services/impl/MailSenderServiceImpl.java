@@ -1,16 +1,23 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.entity.ConfirmToken;
+import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
+import com.booking.app.services.TokenService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.control.MappingControl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import java.io.IOException;
@@ -20,65 +27,43 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MailSenderServiceImpl implements MailSenderService {
-    @Value("${TOKEN_SYMBOLS}")
-    private String TOKEN_SYMBOLS;
+
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final UserSecurityRepository userSecurityRepository;
-
-
-
-
-    @Override
-    public void sendEmailRecoverPassword(String token, UserSecurity user) {
-
-    }
+    private final VerifyEmailRepository verifyEmailRepository;
+    private final TokenService tokenService;
 
     @Override
-    public void sendEmailWithActivationToken(String token, UserSecurity user) throws IOException, MessagingException {
+    public void sendEmail(String htmlPage, String subject, String token, UserSecurity user) throws MessagingException {
+
         Context context = new Context();
-        context.setVariable("nickname", user.getUsername());
         context.setVariable("token", token);
 
-        String process = templateEngine.process("main", context);
+        String process = templateEngine.process(htmlPage, context);
 
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setSubject("Email confirmation");
+        helper.setSubject(subject);
         helper.setText(process, true);
         helper.setTo(user.getEmail());
 
         mailSender.send(mimeMessage);
     }
-    public void sendEmail(String email) throws IOException, MessagingException {
-        Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(email);
-        if(byEmail.isPresent()) {
-            sendEmailWithActivationToken(generateRandomToken(), byEmail.get());
-        }
+
+    @Transactional
+    @Override
+    public void resendEmail(String email) throws UsernameNotFoundException, MessagingException, IOException {
+        UserSecurity byEmail = userSecurityRepository.findByEmail(email).get();
+        User user = byEmail.getUser();
+        verifyEmailRepository.delete(user.getConfirmToken());
+
+        ConfirmToken confirmToken = tokenService.createConfirmToken(user);
+        user.setConfirmToken(confirmToken);
+
+        verifyEmailRepository.save(confirmToken);
+       sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), byEmail);
     }
-
-    public String generateRandomToken() {
-        final SecureRandom random = new SecureRandom();
-        StringBuilder stringBuilder = new StringBuilder(5);
-        for (int i = 0; i < 5; i++) {
-            int randomIndex = random.nextInt(TOKEN_SYMBOLS.length());
-            char randomChar = TOKEN_SYMBOLS.charAt(randomIndex);
-            stringBuilder.append(randomChar);
-        }
-        return stringBuilder.toString();
-    }
-
-
-
-//    private SimpleMailMessage constructResetTokenEmail(
-//            String contextPath, String token, UserSecurity user) {
-//        String url = contextPath + USER + USER_UPDATE_PASSWORD + "?token=" + token;
-//        String message = "Change your password after clicking reference below."
-//                + "If you didn't request to change password, please won't do anything";
-//        return constructEmail("Reset password", message + "\r\n" + url, user);
-//    }
-
-
 
 }

@@ -7,7 +7,7 @@ import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
-import com.booking.app.entity.VerifyEmail;
+import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.enums.EnumRole;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
 import com.booking.app.mapper.UserMapper;
@@ -16,10 +16,10 @@ import com.booking.app.repositories.UserRepository;
 import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
+import com.booking.app.services.TokenService;
 import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -41,12 +42,11 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
 
     private final UserSecurityRepository userSecurityRepository;
     private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper mapper;
     private final MailSenderService mailService;
-
+    private final TokenService tokenService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -75,51 +75,15 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         user.setSecurity(securityEntity);
         user.getSecurity().setUser(user);
 
-        userRepository.save(user);
-        mailService.sendEmail(securityEntity.getEmail());
+        mailService.sendEmail("confirmMail","Email confirmation",user.getConfirmToken().getToken(), securityEntity);
 
 
         return mapper.toEmail(securityEntity);
 
     }
 
-
-
-
-    @Override
-    public Optional<UserSecurity> findByEmail(String email) {
-        return userSecurityRepository.findByEmail(email);
-    }
-
     @Transactional
-    @Override
-    public boolean checkConfirmToken(TokenConfirmationDTO dto) {
-        Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(dto.getEmail());
-        LocalDateTime now = LocalDateTime.now();
-        Date dateExpiryTime = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
-        if (byEmail.isPresent()) {
-            if (!byEmail.get().isEnabled()) {
-                String token = byEmail.get().getUser().getVerifyEmail().getToken();
-                if (dateExpiryTime.before(byEmail.get().getUser().getVerifyEmail().getExpiryTime())) {
-                    if (token.equals(dto.getToken())) {
-                        enableUserById(byEmail);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-
-
-    @Transactional
-    public void enableUserById(Optional<UserSecurity> byEmail) {
-        userSecurityRepository.enableUserById(byEmail.get().getId());
-    }
-
-
-    private User createNewRegisteredUser(UserSecurity userSecurity) {
+    public User createNewRegisteredUser(UserSecurity userSecurity) {
         Role role = roleRepository.findByEnumRole(EnumRole.USER);
         User user = User.builder()
                 .registrationDate(LocalDate.now())
@@ -127,28 +91,35 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
                 .role(role)
                 .build();
 
-        VerifyEmail verifyEmail = createVerifyEmail(user);
+        ConfirmToken confirmToken = tokenService.createConfirmToken(user);
 
-        verifyEmailRepository.save(verifyEmail);
-        user.setVerifyEmail(verifyEmail);
+        verifyEmailRepository.save(confirmToken);
+        user.setConfirmToken(confirmToken);
 
 
         return user;
     }
 
-    private VerifyEmail createVerifyEmail(User user) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tenMinutes = now.plusMinutes(10);
-        Date dateExpiryTime = Date.from(tenMinutes.atZone(ZoneId.systemDefault()).toInstant());
-        return VerifyEmail.builder()
-                .user(user)
-                .expiryTime(dateExpiryTime)
-                .token(mailService.generateRandomToken())
-                .user(user)
-                .build();
+
+    @Override
+    public Optional<UserSecurity> findByEmail(String email) {
+        return userSecurityRepository.findByEmail(email);
     }
 
 
+
+    @Transactional
+    @Override
+    public boolean enableIfValid(TokenConfirmationDTO dto){
+        if(tokenService.verifyToken(
+                dto.getEmail(),dto.getToken())
+        ){
+            Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
+            userSecurityRepository.enableUserById(userByEmail.get().getId());
+            return true;
+        }
+        return false;
+    }
 
 
 }

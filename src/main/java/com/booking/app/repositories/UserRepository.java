@@ -1,5 +1,6 @@
 package com.booking.app.repositories;
 
+import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,5 +15,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Modifying
     @Query("DELETE FROM User u WHERE u.id = :userId")
     void deleteUserById(@Param("userId") UUID userId);
+
+
+
+
 
 }

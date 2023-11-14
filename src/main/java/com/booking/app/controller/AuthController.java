@@ -7,6 +7,8 @@ import com.booking.app.exception.exception.UserAlreadyExistAuthenticationExcepti
 import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 
@@ -21,8 +23,8 @@ public class AuthController implements AuthAPI {
 
     @PostMapping("/login")
     @Override
-    public ResponseDTO<AuthResponseDTO> signIn(LoginDTO dto) {
-        return null;
+    public ResponseEntity<?> signIn(LoginDTO dto) {
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
