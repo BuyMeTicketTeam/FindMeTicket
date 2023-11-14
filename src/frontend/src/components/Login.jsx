@@ -47,14 +47,21 @@ export default function Popup({ changePopup, onAuthorization }) {
     };
     sendRequest(body);
   }
-
+  function handleLoginChange(value) {
+    onLoginChange(value);
+    onLoginError(false);
+  }
+  function handlePasswordChange(value) {
+    onPasswordChange(value);
+    onPasswordError(false);
+  }
   return (
     <div data-testid="login" className="background">
       <div className="popup__body">
         <button data-testid="close" type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
-        <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={onLoginChange} placeholder="mail@mail.com" />
-        <Field error={passwordError} dataTestId="password-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={onPasswordChange} />
+        <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={(value) => handleLoginChange(value)} placeholder="mail@mail.com" />
+        <Field error={passwordError} dataTestId="password-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} />
         <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
         <Button data-testid="send-request" className="btn-full" name={t('login-buttom')} onButton={() => handleClick()} />
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>

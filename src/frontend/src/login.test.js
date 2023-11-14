@@ -58,7 +58,7 @@ test('link to register', () => {
   expect(screen.queryByTestId('register')).toBeInTheDocument();
 });
 
-// describe('login check', () => {
+// // describe('login check', () => {
 //   // let container = null;
 //   // beforeEach(() => {
 //   // // подготавливаем DOM-элемент, куда будем рендерить
@@ -73,13 +73,13 @@ test('link to register', () => {
 //   //   container = null;
 //   // });
 
-//   it('renders user data', async () => {
+//   // it('renders user data', async () => {
 //     // const fakeUser = {
 //     //   name: 'Joni Baez',
 //     //   age: '32',
 //     //   address: '123, Charming Avenue',
 //     // };
-//     const status = 400;
+//    // const status = 400;
 //     jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve({
 //       // json: () => Promise.resolve(fakeUser),
 //       status: () => Promise.resolve(status),

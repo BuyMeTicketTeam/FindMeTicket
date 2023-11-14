@@ -69,6 +69,10 @@ export default function Confirm({ changePopup }) {
         }
       });
   }
+  function handleCodeChange(value) {
+    onCodeChange(value);
+    onCodeError(false);
+  }
   return (
     <div data-testid="confirm" className="confirm">
       <h1 className="title">{t('confirm-email')}</h1>
@@ -83,7 +87,7 @@ export default function Confirm({ changePopup }) {
       )}
       <p className="confirm__text">{t('confirm-code')}</p>
       <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
-      <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={onCodeChange} type="text" />
+      <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
       <Button name={t('send')} className="confirm__btn" onButton={() => handleSendButton()} />
       <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => handleResendButton()} type="button">{t('time', { minutes, seconds })}</button>
