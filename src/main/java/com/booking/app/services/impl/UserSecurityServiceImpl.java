@@ -111,9 +111,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     @Transactional
     @Override
     public boolean enableIfValid(TokenConfirmationDTO dto){
-        if(tokenService.verifyToken(
-                dto.getEmail(),dto.getToken())
-        ){
+        if(tokenService.verifyToken(dto.getEmail(),dto.getToken())){
             Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
             userSecurityRepository.enableUserById(userByEmail.get().getId());
             return true;

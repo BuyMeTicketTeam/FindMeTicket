@@ -28,25 +28,24 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     private final TokenService tokenService;
 
     @Override
+    @Transactional
     public boolean sendEmailResetPassword(String email) throws MessagingException, IOException {
 
         Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(email);
 
-        if(byEmail.isPresent()) {
+        if (!byEmail.isPresent()) return false;
 
-            User user = byEmail.get().getUser();
+        UserSecurity byEmail1 = userSecurityRepository.findByEmail(email).get();
+        User user = byEmail1.getUser();
+        verifyEmailRepository.delete(user.getConfirmToken());
 
-            //verifyEmailRepository.delete(user.getConfirmToken());
-            //String token = tokenService.generateRandomToken();
-            ConfirmToken confirmToken = tokenService.createConfirmToken(user);
-            user.setConfirmToken(confirmToken);
+        ConfirmToken confirmToken = tokenService.createConfirmToken(user);
+        user.setConfirmToken(confirmToken);
 
-           // userSecurityRepository.save(user.getSecurity());
-            verifyEmailRepository.save(confirmToken);
-            mailSenderService.sendEmail("resetPassword", "Reset password", confirmToken.getToken(), byEmail.get());
-            return true;
-        }
-        return false;
+        verifyEmailRepository.save(confirmToken);
+        mailSenderService.sendEmail("resetPassword", "Reset password", confirmToken.getToken(), byEmail.get());
+        return true;
+
 
     }
 
