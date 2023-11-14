@@ -83,22 +83,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
 
     }
 
-    private User createNewRegisteredUser(UserSecurity userSecurity) {
-        Role role = roleRepository.findByEnumRole(EnumRole.USER);
-        User user = User.builder()
-                .registrationDate(LocalDate.now())
-                .security(userSecurity)
-                .role(role)
-                .build();
 
-        VerifyEmail verifyEmail = createVerifyEmail(user);
-
-        verifyEmailRepository.save(verifyEmail);
-        user.setVerifyEmail(verifyEmail);
-
-
-        return user;
-    }
 
 
     @Override
@@ -133,6 +118,23 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         userSecurityRepository.enableUserById(byEmail.get().getId());
     }
 
+
+    private User createNewRegisteredUser(UserSecurity userSecurity) {
+        Role role = roleRepository.findByEnumRole(EnumRole.USER);
+        User user = User.builder()
+                .registrationDate(LocalDate.now())
+                .security(userSecurity)
+                .role(role)
+                .build();
+
+        VerifyEmail verifyEmail = createVerifyEmail(user);
+
+        verifyEmailRepository.save(verifyEmail);
+        user.setVerifyEmail(verifyEmail);
+
+
+        return user;
+    }
 
     private VerifyEmail createVerifyEmail(User user) {
         LocalDateTime now = LocalDateTime.now();
