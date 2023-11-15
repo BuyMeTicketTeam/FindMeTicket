@@ -7,7 +7,7 @@ import Header from './components/Header';
 import Confirm from './confirm/index';
 import Reset from './reset/index';
 import ChangePassword from './changePassword/index';
-import './testServer';
+// import './testServer';
 import './App.css';
 import './styles/header.css';
 import './styles/login.css';

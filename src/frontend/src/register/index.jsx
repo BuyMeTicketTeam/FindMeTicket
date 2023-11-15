@@ -24,8 +24,9 @@ export default function Register() {
   const [errorPolicy, onErrorPolicy] = useState(false);
   const navigate = useNavigate();
   function sendRequest(body) {
-    makeQuerry('register', JSON.stringify(body))
+    makeQuerry('register', body)
       .then((response) => {
+        console.log(response);
         if (response.status === 201) {
           navigate('/confirm');
           sessionStorage.setItem('email', email);
@@ -72,6 +73,7 @@ export default function Register() {
       email,
       password,
       nickname,
+      confirmPassword,
     };
     sendRequest(body);
   }

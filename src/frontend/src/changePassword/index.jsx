@@ -82,6 +82,7 @@ export default function Index({ changePopup }) {
       code,
       password,
       email: sessionStorage.getItem('email'),
+      confirmPassword,
     };
     sendRequest(body);
   }
