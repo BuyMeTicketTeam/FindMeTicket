@@ -16,16 +16,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
     @Value("${TOKEN_SYMBOLS}")
-    private  String TOKEN_SYMBOLS;
+    private String TOKEN_SYMBOLS;
     private final UserSecurityRepository userSecurityRepository;
 
     @Override
-    @Transactional
     public ConfirmToken createConfirmToken(User user) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tenMinutes = now.plusMinutes(10);
@@ -50,22 +50,22 @@ public class TokenServiceImpl implements TokenService {
         return stringBuilder.toString();
     }
 
-    @Transactional
+
     @Override
     public boolean verifyToken(String email, String givenToken) {
         Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(email);
         LocalDateTime now = LocalDateTime.now();
         Date dateExpiryTime = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+
         if (userByEmail.isPresent()) {
-            if (!userByEmail.get().isEnabled()) {
-                String token = userByEmail.get().getUser().getConfirmToken().getToken();
-                if (dateExpiryTime.before(userByEmail.get().getUser().getConfirmToken().getExpiryTime())) {
-                    if (token.equals(givenToken)) {
-                        return true;
-                    }
+            String token = userByEmail.get().getUser().getConfirmToken().getToken();
+            if (dateExpiryTime.before(userByEmail.get().getUser().getConfirmToken().getExpiryTime())) {
+                if (token.equals(givenToken)) {
+                    return true;
                 }
             }
         }
+
         return false;
     }
 }

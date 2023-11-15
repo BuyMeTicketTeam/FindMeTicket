@@ -2,10 +2,8 @@ package com.booking.app.entity;
 
 import com.booking.app.entity.enums.EnumRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.Set;
 
 
@@ -13,7 +11,8 @@ import java.util.Set;
 @Table(name = "role")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 public class Role{
 

@@ -12,11 +12,14 @@ import com.booking.app.services.TokenService;
 import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
@@ -26,26 +29,29 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     private final UserSecurityRepository userSecurityRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final TokenService tokenService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public boolean sendEmailResetPassword(String email) throws MessagingException, IOException {
 
-        Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(email);
+        Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(email);
 
-        if (!byEmail.isPresent()) return false;
+        if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
+            return false;
+        } else {
+            UserSecurity userSecurity = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
+            User user = userSecurity.getUser();
 
-        UserSecurity byEmail1 = userSecurityRepository.findByEmail(email).get();
-        User user = byEmail1.getUser();
-        verifyEmailRepository.delete(user.getConfirmToken());
+            verifyEmailRepository.delete(user.getConfirmToken());
 
-        ConfirmToken confirmToken = tokenService.createConfirmToken(user);
-        user.setConfirmToken(confirmToken);
+            ConfirmToken confirmToken = tokenService.createConfirmToken(user);
+            user.setConfirmToken(confirmToken);
 
-        verifyEmailRepository.save(confirmToken);
-        mailSenderService.sendEmail("resetPassword", "Reset password", confirmToken.getToken(), byEmail.get());
-        return true;
-
+            verifyEmailRepository.save(confirmToken);
+            mailSenderService.sendEmail("resetPassword", "Reset password", confirmToken.getToken(), userFromDb.get());
+            return true;
+        }
 
     }
 
@@ -53,13 +59,17 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Transactional
     public boolean resetPassword(ResetPasswordDTO dto) {
 
-        if (!tokenService.verifyToken(dto.getEmail(), dto.getToken())) return false;
+        Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(dto.getEmail());
 
-        UserSecurity byEmail = userSecurityRepository.findByEmail(dto.getEmail()).get();
+        if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
+            return false;
+        } else {
+            UserSecurity userSecurity = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
+            if (!tokenService.verifyToken(dto.getEmail(), dto.getToken())) return false;
 
-        byEmail.setPassword(dto.getPassword());
-        userSecurityRepository.save(byEmail);
-        //userSecurityRepository.changePasswordById(byEmail.getId(), dto.getPassword());
-        return true;
+            userSecurity.setPassword(passwordEncoder.encode(dto.getPassword()));
+            userSecurityRepository.save(userSecurity);
+            return true;
+        }
     }
 }

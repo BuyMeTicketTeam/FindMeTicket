@@ -2,7 +2,6 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
-import com.booking.app.exception.exception.UserNotConfirmedException;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
@@ -30,11 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +42,8 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final UserMapper mapper;
     private final MailSenderService mailService;
     private final TokenService tokenService;
+    private final UserRepository repository;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -55,7 +52,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return userSecurity;
     }
 
-    @Transactional
+    //@Transactional
     @Override
     public EmailDTO register(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(securityDTO.getEmail());
@@ -64,10 +61,20 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
             throw new UserAlreadyExistAuthenticationException("We’re sorry. This email already exists");
         }
         if (byEmail.isPresent()) {
-            throw new UserNotConfirmedException("User does not exist due to not confirmed email");
+            deleteUserIfNotConfirmed(byEmail.get());
         }
 
+        return performRegistration(securityDTO);
+    }
 
+
+    @Transactional
+    public void deleteUserIfNotConfirmed(UserSecurity byEmail) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
+        verifyEmailRepository.deleteById(byEmail.getUser().getConfirmToken().getId());
+    }
+
+//    @Transactional
+    public EmailDTO performRegistration(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
         securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
 
@@ -75,12 +82,12 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         user.setSecurity(securityEntity);
         user.getSecurity().setUser(user);
 
-        mailService.sendEmail("confirmMail","Email confirmation",user.getConfirmToken().getToken(), securityEntity);
+        mailService.sendEmail("confirmMail", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
 
 
         return mapper.toEmail(securityEntity);
-
     }
+
 
     @Transactional
     public User createNewRegisteredUser(UserSecurity userSecurity) {
@@ -107,14 +114,16 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     }
 
 
-
     @Transactional
     @Override
-    public boolean enableIfValid(TokenConfirmationDTO dto){
-        if(tokenService.verifyToken(dto.getEmail(),dto.getToken())){
-            Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
+    public boolean enableIfValid(TokenConfirmationDTO dto) {
+        Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
+
+        if (!userByEmail.get().isEnabled() && tokenService.verifyToken(dto.getEmail(), dto.getToken())) {
+
             userSecurityRepository.enableUserById(userByEmail.get().getId());
             return true;
+
         }
         return false;
     }

@@ -31,7 +31,7 @@ public class ResetPasswordController implements ResetPasswordAPI {
         if( service.sendEmailResetPassword(dto.getEmail())){
             return ResponseEntity.status(HttpStatus.OK).body("Reset token has been sent");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Such email doesn't exist in out service");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Such email doesn't exist in out service");
     }
 
     @PostMapping("/new-password")

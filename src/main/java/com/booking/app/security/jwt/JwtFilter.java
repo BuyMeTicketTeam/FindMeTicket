@@ -8,22 +8,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
-    private JwtTokenTool tool;
+    private JwtUtil jwtUtil;
 
     /**
      * Constructor.
      *
-     * @param tool {@link JwtTokenTool} - tool for JWT
+     * @param jwtUtil {@link JwtUtil} - tool for JWT
      */
-    public JwtFilter(JwtTokenTool tool) {
-        this.tool = tool;
+    public JwtFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
     }
 
     /**
@@ -36,9 +35,9 @@ public class JwtFilter extends GenericFilterBean {
      */
     @Override
     public void doFilter(jakarta.servlet.ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = tool.getTokenByBody((HttpServletRequest) request);
-        if (token != null && tool.isTokenValid(token)) {
-            Authentication authentication = tool.getAuthentication(token);
+        String token = jwtUtil.getTokenByBody((HttpServletRequest) request);
+        if (token != null && jwtUtil.isTokenValid(token)) {
+            Authentication authentication = jwtUtil.getAuthentication(token);
             if (authentication != null) {
                 log.info("User successfully authenticate - {}", authentication.getPrincipal());
                 SecurityContextHolder.getContext().setAuthentication(authentication);

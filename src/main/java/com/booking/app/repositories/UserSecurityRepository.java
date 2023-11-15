@@ -24,4 +24,10 @@ public interface UserSecurityRepository extends JpaRepository<UserSecurity,UUID>
     @Query(value = "UPDATE UserSecurity u SET u.password = :password WHERE u.id = :userId")
     void changePasswordById(@Param("userId") UUID userId, @Param("password") String password);
 
+
+
+    @Modifying
+    @Query("DELETE FROM UserSecurity u WHERE u.id = :pid")
+    void deleteByPid(@Param("pid") UUID theId);
+
 }

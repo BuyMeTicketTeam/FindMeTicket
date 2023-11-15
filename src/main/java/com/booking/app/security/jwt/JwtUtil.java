@@ -20,7 +20,7 @@ import java.util.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtTokenTool {
+public class JwtUtil {
     @Value("${accessTokenValidTimeInMinutes}")
     private Integer accessTokenValidTimeInMinutes;
 

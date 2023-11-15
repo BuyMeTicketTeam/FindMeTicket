@@ -9,6 +9,7 @@ import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,8 @@ public class RegisterController implements RegisterAPI {
    // private final MailSenderService mailSenderService;
 
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
+  //  @PostMapping("/register")
     @Override
     public ResponseDTO<EmailDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         return new ResponseDTO<>(service.register(dto));

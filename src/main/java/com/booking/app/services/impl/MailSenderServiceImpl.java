@@ -34,6 +34,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     private final VerifyEmailRepository verifyEmailRepository;
     private final TokenService tokenService;
 
+    @Transactional
     @Override
     public void sendEmail(String htmlPage, String subject, String token, UserSecurity user) throws MessagingException {
 

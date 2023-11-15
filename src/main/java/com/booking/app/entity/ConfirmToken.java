@@ -2,10 +2,7 @@ package com.booking.app.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -16,9 +13,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "confirm_token")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 @Builder
 public class ConfirmToken {
     @Id
