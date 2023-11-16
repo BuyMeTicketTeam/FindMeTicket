@@ -1,6 +1,5 @@
 package com.booking.app.security;
 
-import com.booking.app.security.jwt.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
