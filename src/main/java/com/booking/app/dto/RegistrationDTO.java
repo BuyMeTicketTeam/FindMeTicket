@@ -1,6 +1,5 @@
 package com.booking.app.dto;
 
-
 import com.booking.app.annotation.PasswordMatches;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -24,13 +23,10 @@ public class RegistrationDTO implements ConfirmPasswordUtil {
 
     @NotBlank(message = "Empty password")
     @NotNull(message = "Password is NULL")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,15}$", message = "Password must be of 8 - 15 characters and contain at least one letter and one number")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,30}$", message = "Password must be of 8 - 30 characters and contain at least one letter and one number")
     private final String password;
 
-
     private final String confirmPassword;
-
-
 }
 
 

@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Collections;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
+
     private UserSecurityService userService;
     private PasswordEncoder passwordEncoder;
 
@@ -74,4 +75,5 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
+
 }

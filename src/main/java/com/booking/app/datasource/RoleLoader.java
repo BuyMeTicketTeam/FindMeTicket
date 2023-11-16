@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RoleLoader implements CommandLineRunner {
+
     private final RoleRepository roleRepository;
 
     @Autowired

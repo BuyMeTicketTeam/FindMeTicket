@@ -9,10 +9,7 @@ import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.control.MappingControl;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +59,6 @@ public class MailSenderServiceImpl implements MailSenderService {
         user.setConfirmToken(confirmToken);
 
         verifyEmailRepository.save(confirmToken);
-       sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), byEmail);
+        sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), byEmail);
     }
-
 }

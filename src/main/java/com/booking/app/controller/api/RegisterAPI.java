@@ -8,19 +8,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import java.io.IOException;
 
 @Validated
 public interface RegisterAPI {
 
-    @ResponseStatus(code = HttpStatus.CREATED)
     @Operation(summary = "Register User")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
@@ -34,6 +29,7 @@ public interface RegisterAPI {
             @ApiResponse(responseCode = "400", description = "Token from email is not right")
     })
     ResponseEntity<?> confirmEmailToken(@RequestBody @NotNull @Valid TokenConfirmationDTO dto);
+
     @Operation(summary = "Resend email confirmation")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email is confirmed"),

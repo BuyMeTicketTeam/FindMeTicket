@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+src/main/java/com/booking/app/controller/api/AuthAPI.java
+src/main/java/com/booking/app/controller/api/GoogleAPI.java
+src/main/java/com/booking/app/controller/AuthController.java
+src/main/java/com/booking/app/security/jwt/JwtUtil.java
+src/main/java/com/booking/app/security/jwt/JwtFilter.java
+src/main/java/com/booking/app/security/jwt/JwtAuthenticationProvider.java

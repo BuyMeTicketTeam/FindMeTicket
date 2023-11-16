@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 @Repository
 public interface VerifyEmailRepository extends JpaRepository<ConfirmToken, UUID> {
+
     ConfirmToken findByToken(String token);
 
 }

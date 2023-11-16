@@ -9,17 +9,14 @@ import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.ResetPasswordService;
 import com.booking.app.services.TokenService;
-import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor

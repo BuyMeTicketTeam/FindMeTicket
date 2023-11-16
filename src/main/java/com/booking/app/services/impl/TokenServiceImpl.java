@@ -4,23 +4,20 @@ import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.repositories.UserSecurityRepository;
-import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
+
     @Value("${TOKEN_SYMBOLS}")
     private String TOKEN_SYMBOLS;
     private final UserSecurityRepository userSecurityRepository;
@@ -49,7 +46,6 @@ public class TokenServiceImpl implements TokenService {
         }
         return stringBuilder.toString();
     }
-
 
     @Override
     public boolean verifyToken(String email, String givenToken) {

@@ -7,13 +7,11 @@ import com.booking.app.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api/v1/users")
-//@Slf4j
 public class UserController implements UserAPI {
 
     private final UserService service;
@@ -52,6 +50,4 @@ public class UserController implements UserAPI {
     public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
-
-
 }

@@ -23,7 +23,6 @@ public interface UserMapper {
 
     public UserSecurity toEntityRegistration(RegistrationDTO registrationDTO);
 
-
     public EmailDTO toEmail(UserSecurity userSecurity);
 
 }

@@ -3,11 +3,6 @@ package com.booking.app.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
-
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
 
@@ -19,6 +14,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class ConfirmToken {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -32,8 +28,5 @@ public class ConfirmToken {
     @NotNull
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date expiryTime;
-
-
-
 }
 

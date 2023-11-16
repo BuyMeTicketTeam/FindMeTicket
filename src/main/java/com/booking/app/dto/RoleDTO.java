@@ -10,8 +10,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class RoleDTO {
+
     private final int id;
     @NotNull
     private final EnumRole enumRole;
-
 }

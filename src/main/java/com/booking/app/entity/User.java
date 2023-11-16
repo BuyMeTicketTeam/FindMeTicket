@@ -4,11 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-
 import java.time.LocalDate;
 import java.util.UUID;
-
 
 @Entity
 @Table(name = "users")
@@ -24,7 +21,6 @@ public class User {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
 
     @Column(name = "registration_date")
     @CreatedDate
@@ -43,6 +39,4 @@ public class User {
 
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserSecurity security;
-
-
 }

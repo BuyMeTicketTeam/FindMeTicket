@@ -30,10 +30,7 @@ public class JwtUtil {
     @Value("${tokenKey}")
     private String tokenKey;
 
-
     private UserSecurityService userService;
-
-
 
     @PostConstruct
     void init() {
@@ -139,4 +136,5 @@ public class JwtUtil {
     public String getEmailByToken(String token) {
         return Jwts.parser().setSigningKey(tokenKey).build().parseClaimsJws(token).getBody().getSubject();
     }
+
 }

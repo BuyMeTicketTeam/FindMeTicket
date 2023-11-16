@@ -2,8 +2,6 @@ package com.booking.app.services;
 
 import com.booking.app.dto.UserDTO;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +19,4 @@ public interface UserService {
 
     @Transactional
     void delete(UUID id);
-
-
 }

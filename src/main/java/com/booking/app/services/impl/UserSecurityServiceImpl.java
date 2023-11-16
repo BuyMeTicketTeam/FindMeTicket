@@ -25,8 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -43,7 +41,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final MailSenderService mailService;
     private final TokenService tokenService;
     private final UserRepository repository;
-
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -67,13 +64,12 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return performRegistration(securityDTO);
     }
 
-
     @Transactional
     public void deleteUserIfNotConfirmed(UserSecurity byEmail) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         verifyEmailRepository.deleteById(byEmail.getUser().getConfirmToken().getId());
     }
 
-//    @Transactional
+    //    @Transactional
     public EmailDTO performRegistration(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
         securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
@@ -87,7 +83,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
 
         return mapper.toEmail(securityEntity);
     }
-
 
     @Transactional
     public User createNewRegisteredUser(UserSecurity userSecurity) {
@@ -107,12 +102,10 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return user;
     }
 
-
     @Override
     public Optional<UserSecurity> findByEmail(String email) {
         return userSecurityRepository.findByEmail(email);
     }
-
 
     @Transactional
     @Override
@@ -127,6 +120,4 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         }
         return false;
     }
-
-
 }

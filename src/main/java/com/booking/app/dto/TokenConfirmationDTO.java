@@ -9,8 +9,8 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class TokenConfirmationDTO {
+
     @NotNull
     private String email;
-
     private String token;
 }

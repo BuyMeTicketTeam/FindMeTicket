@@ -12,6 +12,7 @@ import lombok.Data;
 @Builder
 @PasswordMatches
 public class ResetPasswordDTO implements ConfirmPasswordUtil {
+
     @Email
     private String email;
     @NotNull

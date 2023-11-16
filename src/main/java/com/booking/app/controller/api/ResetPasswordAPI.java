@@ -10,13 +10,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.function.EntityResponse;
-
 import java.io.IOException;
 
 @Validated
 public interface ResetPasswordAPI {
+
     @Operation(summary = "Send password reset token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Reset token has been sent")

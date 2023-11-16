@@ -9,7 +9,6 @@ import com.booking.app.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,13 +21,11 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
     private final UserRepository repository;
 
-
     @Autowired
     public UserServiceImpl(UserMapper userMapper, UserRepository repository) {
         this.mapper = userMapper;
         this.repository = repository;
     }
-
 
     @Override
     public UserDTO create(UserDTO userDTO) {
@@ -57,9 +54,4 @@ public class UserServiceImpl implements UserService {
     public void delete(UUID id) {
         repository.deleteUserById(id);
     }
-
-
-
-
-
 }

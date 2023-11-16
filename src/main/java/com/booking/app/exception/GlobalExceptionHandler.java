@@ -4,30 +4,25 @@ import com.booking.app.exception.exception.UserNotConfirmedException;
 import com.booking.app.exception.exception.PasswordNotMatchesException;
 import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
 import java.time.LocalDateTime;
-
 import java.util.List;
 import java.util.StringJoiner;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status, WebRequest webRequest) {
@@ -85,7 +80,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserNotConfirmedException.class)
     public ResponseEntity<ErrorDetails> passwordMatches(UserNotConfirmedException exception, WebRequest webRequest) {
@@ -98,6 +92,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
-
-
 }
