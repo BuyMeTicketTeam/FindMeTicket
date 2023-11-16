@@ -5,6 +5,7 @@ import { codeCheck } from '../helper/regExCheck';
 import Input from '../components/utlis/Input';
 import Button from '../components/utlis/Button';
 import makeQuerry from '../helper/querry';
+import timeOut from '../helper/timer';
 import './confirm.css';
 
 export default function Confirm({ changePopup }) {
@@ -19,14 +20,10 @@ export default function Confirm({ changePopup }) {
   const [resend, onResend] = useState(false);
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
-      setTimeout(() => {
-        if (seconds === 0) {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        } else {
-          setSeconds(seconds - 1);
-        }
-      }, 1000);
+      timeOut(seconds, minutes).then((time) => {
+        setSeconds(time.seconds);
+        setMinutes(time.minutes);
+      });
     }
   }, [seconds, minutes]);
   function sendCode(body) {

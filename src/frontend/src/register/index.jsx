@@ -24,64 +24,73 @@ export default function Register() {
   const [errorPolicy, onErrorPolicy] = useState(false);
   const [send, onSend] = useState(false);
   const navigate = useNavigate();
-  function sendRequest(body) {
-    makeQuerry('register', body)
-      .then((response) => {
-        onSend(false);
-        if (response.status === 200) {
-          navigate('/confirm');
-          sessionStorage.setItem('email', email);
-        } else if (response.status === 409) {
-          onError('Користувач з ціїю електронною адресою вже зареєстрований');
-        } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
-      });
-  }
-  function handleClick() {
-    onNicknameError(false);
-    onEmailError(false);
-    onPasswordError(false);
-    onConfirmPasswordError(false);
+  function validation() {
     if (nicknameCheck(nickname)) {
       onSend(false);
       onError(t('nickname-error'));
       onNicknameError(true);
-      return;
+      return false;
     }
     if (emailCheck(email)) {
       onSend(false);
       onError(t('email-error'));
       onEmailError(true);
-      return;
+      return false;
     }
     if (passwordCheck(password)) {
       onSend(false);
       onError(t('password-error'));
       onPasswordError(true);
-      return;
+      return false;
     }
     if (password !== confirmPassword) {
       onSend(false);
       onError(t('confirm-password-error'));
       onConfirmPasswordError(true);
-      return;
+      return false;
     }
     if (!policy) {
       onSend(false);
       onError(t('privacy-policy'));
       onErrorPolicy(true);
+      return false;
+    }
+    return true;
+  }
+  function resetErrors() {
+    onNicknameError(false);
+    onEmailError(false);
+    onPasswordError(false);
+    onConfirmPasswordError(false);
+  }
+  function responseStatus(response) {
+    if (response.status === 200) {
+      navigate('/confirm');
+      sessionStorage.setItem('email', email);
+    } else if (response.status === 409) {
+      onError('Користувач з ціїю електронною адресою вже зареєстрований');
+    } else if (response.status === 404) {
+      onError("З'єднання з сервером відсутнє");
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
+  }
+  function handleClick() {
+    resetErrors();
+    if (!validation()) {
       return;
     }
     const body = {
       email,
       password,
-      nickname,
+      username: nickname,
       confirmPassword,
     };
-    sendRequest(body);
+    makeQuerry('register', JSON.stringify(body))
+      .then((response) => {
+        onSend(false);
+        responseStatus(response);
+      });
   }
   function handleNicknameChange(value) {
     onNicknameChange(value);

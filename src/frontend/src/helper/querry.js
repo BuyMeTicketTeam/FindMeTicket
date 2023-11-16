@@ -4,7 +4,7 @@ export default async function makeQuerry(address, body) {
     headers: {
       "Content-Type": "application/json",
     },
-    // credentials: 'include',
+    credentials: 'include',
     method: 'POST',
     body,
   });

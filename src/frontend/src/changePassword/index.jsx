@@ -6,6 +6,7 @@ import Field from '../components/utlis/Field';
 import Button from '../components/utlis/Button';
 import makeQuerry from '../helper/querry';
 import { codeCheck, passwordCheck } from '../helper/regExCheck';
+import timeOut from '../helper/timer';
 
 export default function Index({ changePopup }) {
   const [code, onCodeChange] = useState('');
@@ -23,14 +24,10 @@ export default function Index({ changePopup }) {
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
-      setTimeout(() => {
-        if (seconds === 0) {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        } else {
-          setSeconds(seconds - 1);
-        }
-      }, 1000);
+      timeOut(seconds, minutes).then((time) => {
+        setSeconds(time.seconds);
+        setMinutes(time.minutes);
+      });
     }
   }, [seconds, minutes]);
   function handleResendButton() {
