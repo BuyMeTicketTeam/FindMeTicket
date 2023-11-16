@@ -18,6 +18,8 @@ export default function Index({ changePopup }) {
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(30);
   const [succes, onSucces] = useState(false);
+  const [send, onSend] = useState(false);
+  const [resend, onResend] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
@@ -79,13 +81,23 @@ export default function Index({ changePopup }) {
       return;
     }
     const body = {
-      code,
+      token: code,
       password,
       email: sessionStorage.getItem('email'),
       confirmPassword,
     };
     sendRequest(body);
   }
+  useEffect(() => {
+    if (send) {
+      handleSendButton();
+    }
+  }, [send]);
+  useEffect(() => {
+    if (resend) {
+      handleResendButton();
+    }
+  }, [resend]);
   return (
     <div className="confirm">
       <h1 className="title">{t('title')}</h1>
@@ -104,8 +116,8 @@ export default function Index({ changePopup }) {
       <Field dataTestId="" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={onCodeChange} />
       <Field dataTestId="" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} />
       <Field dataTestId="" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
-      <Button name={t('button-title')} className="confirm__btn" onButton={() => handleSendButton()} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => handleResendButton()} type="button">{t('time', { minutes, seconds })}</button>
+      <Button name={send ? 'Обробка...' : t('button-title')} className="confirm__btn" onButton={onSend} />
+      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
     </div>
   );
 }

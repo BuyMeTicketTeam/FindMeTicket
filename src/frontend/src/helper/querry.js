@@ -5,9 +5,8 @@ export default async function makeQuerry(address, body) {
       "Content-Type": "application/json",
     },
     // credentials: 'include',
-    mode: 'no-cors',
     method: 'POST',
-    body: JSON.stringify(body),
+    body,
   });
   return { status: response.status };
 }

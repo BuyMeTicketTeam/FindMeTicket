@@ -15,6 +15,8 @@ export default function Confirm({ changePopup }) {
   const [succes, onSucces] = useState(false);
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(30);
+  const [send, onSend] = useState(false);
+  const [resend, onResend] = useState(false);
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       setTimeout(() => {
@@ -30,6 +32,7 @@ export default function Confirm({ changePopup }) {
   function sendCode(body) {
     makeQuerry('confirm-email', JSON.stringify(body))
       .then((response) => {
+        onSend(false);
         if (response.status === 200) {
           onSucces(true);
           onError('');
@@ -46,13 +49,14 @@ export default function Confirm({ changePopup }) {
     onCodeError(false);
     if
     (codeCheck(code)) {
+      onSend(false);
       onError(t('confirm-error'));
       onCodeError(true);
       return;
     }
     const body = {
       email: sessionStorage.getItem('email'),
-      code,
+      token: code,
     };
     sendCode(body);
   }
@@ -60,10 +64,11 @@ export default function Confirm({ changePopup }) {
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
+        onResend(false);
         if (response.status === 200) {
           setMinutes(2);
         } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
+          onError('Немає акаунту зареєстрованого на цю електронну пошту');
         } else {
           onError('Помилка серверу. Спробуйте ще раз');
         }
@@ -73,24 +78,34 @@ export default function Confirm({ changePopup }) {
     onCodeChange(value);
     onCodeError(false);
   }
+  useEffect(() => {
+    if (send) {
+      handleSendButton();
+    }
+  }, [send]);
+  useEffect(() => {
+    if (resend) {
+      handleResendButton();
+    }
+  }, [resend]);
   return (
     <div data-testid="confirm" className="confirm">
       <h1 className="title">{t('confirm-email')}</h1>
       {succes && (
-      <p className="confirm__success">
+      <div className="confirm__success">
         Пошту підтвержено!!!
         {' '}
         <p>
           <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
         </p>
-      </p>
+      </div>
       )}
       <p className="confirm__text">{t('confirm-code')}</p>
       <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
       <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
-      <Button name={t('send')} className="confirm__btn" onButton={() => handleSendButton()} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={() => handleResendButton()} type="button">{t('time', { minutes, seconds })}</button>
+      <Button name={send ? 'Обробка...' : t('send')} className="confirm__btn" onButton={onSend} />
+      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { passwordCheck, emailCheck } from '../helper/regExCheck';
@@ -13,9 +13,11 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [password, onPasswordChange] = useState('');
   const [passwordError, onPasswordError] = useState(false);
   const [error, onError] = useState('');
+  const [send, onSend] = useState(false);
   function sendRequest(body) {
     makeQuerry('login', JSON.stringify(body))
       .then((response) => {
+        onSend(false);
         if (response.status === 200) {
           changePopup(false);
           onAuthorization(true);
@@ -32,11 +34,13 @@ export default function Popup({ changePopup, onAuthorization }) {
     onLoginError(false);
     onPasswordError(false);
     if (emailCheck(login)) {
+      onSend(false);
       onError(t('login-error'));
       onLoginError(true);
       return;
     }
     if (passwordCheck(password)) {
+      onSend(false);
       onError(t('password-error'));
       onPasswordError(true);
       return;
@@ -47,6 +51,11 @@ export default function Popup({ changePopup, onAuthorization }) {
     };
     sendRequest(body);
   }
+  useEffect(() => {
+    if (send) {
+      handleClick();
+    }
+  }, [send]);
   function handleLoginChange(value) {
     onLoginChange(value);
     onLoginError(false);
@@ -63,7 +72,7 @@ export default function Popup({ changePopup, onAuthorization }) {
         <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={(value) => handleLoginChange(value)} placeholder="mail@mail.com" />
         <Field error={passwordError} dataTestId="password-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} />
         <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
-        <Button data-testid="send-request" className="btn-full" name={t('login-buttom')} onButton={() => handleClick()} />
+        <Button data-testid="send-request" className="btn-full" name={send ? 'Обробка...' : t('login-buttom')} onButton={onSend} />
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
       </div>
     </div>

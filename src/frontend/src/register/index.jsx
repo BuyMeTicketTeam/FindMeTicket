@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { nicknameCheck, emailCheck, passwordCheck } from '../helper/regExCheck';
@@ -22,12 +22,13 @@ export default function Register() {
   const [error, onError] = useState('');
   const [policy, onPolicy] = useState(false);
   const [errorPolicy, onErrorPolicy] = useState(false);
+  const [send, onSend] = useState(false);
   const navigate = useNavigate();
   function sendRequest(body) {
     makeQuerry('register', body)
       .then((response) => {
-        console.log(response);
-        if (response.status === 201) {
+        onSend(false);
+        if (response.status === 200) {
           navigate('/confirm');
           sessionStorage.setItem('email', email);
         } else if (response.status === 409) {
@@ -45,26 +46,31 @@ export default function Register() {
     onPasswordError(false);
     onConfirmPasswordError(false);
     if (nicknameCheck(nickname)) {
+      onSend(false);
       onError(t('nickname-error'));
       onNicknameError(true);
       return;
     }
     if (emailCheck(email)) {
+      onSend(false);
       onError(t('email-error'));
       onEmailError(true);
       return;
     }
     if (passwordCheck(password)) {
+      onSend(false);
       onError(t('password-error'));
       onPasswordError(true);
       return;
     }
     if (password !== confirmPassword) {
+      onSend(false);
       onError(t('confirm-password-error'));
       onConfirmPasswordError(true);
       return;
     }
     if (!policy) {
+      onSend(false);
       onError(t('privacy-policy'));
       onErrorPolicy(true);
       return;
@@ -93,6 +99,11 @@ export default function Register() {
     onConfirmPasswordChange(value);
     onConfirmPasswordError(false);
   }
+  useEffect(() => {
+    if (send) {
+      handleClick();
+    }
+  }, [send]);
   return (
     <div data-testid="register" className="register">
       <h1 className="title">{t('registration')}</h1>
@@ -106,7 +117,7 @@ export default function Register() {
         {t('agree')}
         <a href="/">{t('privacy policy')}</a>
       </label>
-      <Button dataTestId="register-btn" name={t('register')} onButton={() => handleClick()} />
+      <Button dataTestId="register-btn" name={send ? 'Обробка...' : t('register')} onButton={onSend} />
     </div>
   );
 }
