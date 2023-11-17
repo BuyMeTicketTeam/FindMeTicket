@@ -31,23 +31,23 @@ export default function Popup({ changePopup, onAuthorization }) {
     }
   }
   function validation() {
-    if (emailCheck(login)) {
-      onSend(false);
-      onError(t('login-error'));
-      onLoginError(true);
-      return false;
+    switch (true) {
+      case emailCheck(login):
+        onError(t('login-error'));
+        onLoginError(true);
+        return false;
+      case passwordCheck(password):
+        onError(t('password-error'));
+        onPasswordError(true);
+        return false;
+      default:
+        return true;
     }
-    if (passwordCheck(password)) {
-      onSend(false);
-      onError(t('password-error'));
-      onPasswordError(true);
-      return false;
-    }
-    return true;
   }
   function handleClick() {
     resetErrors();
     if (!validation()) {
+      onSend(false);
       return;
     }
     const body = {

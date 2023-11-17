@@ -46,7 +46,6 @@ export default function Register() {
         return false;
 
       case !policy:
-        onSend(false);
         onError(t('privacy-policy'));
         onErrorPolicy(true);
         return false;
@@ -76,6 +75,7 @@ export default function Register() {
   function handleClick() {
     resetErrors();
     if (!validation()) {
+      onSend(false);
       return;
     }
     const body = {
@@ -119,7 +119,7 @@ export default function Register() {
       <Field error={emailError} dataTestId="email-input" name={t('email')} value={email} type="email" onInputChange={(value) => handleEmailChange(value)} tip={t('tip-email')} placeholder="mail@mail.com" />
       <Field error={passwordError} dataTestId="password-input" name={t('password')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} tip={t('tip-password')} />
       <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name={t('confirm-password')} value={confirmPassword} type="password" onInputChange={(value) => handleConfirmPasswordChange(value)} />
-      <input data-testid="checkbox" id="policy" type="checkbox" className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'} onClick={() => onPolicy(!policy)} />
+      <input data-testid="checkbox" id="policy" type="checkbox" className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'} onClick={() => { onPolicy(!policy); onErrorPolicy(false); }} />
       <label htmlFor="policy" className="checkbox">
         {t('agree')}
         <a href="/">{t('privacy policy')}</a>

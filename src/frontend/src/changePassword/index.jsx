@@ -58,23 +58,22 @@ export default function Index({ changePopup }) {
     }
   }
   function validation() {
-    if
-    (codeCheck(code)) {
-      onError(t('code-error'));
-      onCodeError(true);
-      return false;
+    switch (true) {
+      case codeCheck(code):
+        onError(t('code-error'));
+        onCodeError(true);
+        return false;
+      case passwordCheck(password):
+        onError(t('password-error'));
+        onPasswordError(true);
+        return false;
+      case password !== confirmPassword:
+        onError(t('confirm-password-error'));
+        onConfirmPasswordError(true);
+        return false;
+      default:
+        return true;
     }
-    if (passwordCheck(password)) {
-      onError(t('password-error'));
-      onPasswordError(true);
-      return false;
-    }
-    if (password !== confirmPassword) {
-      onError(t('confirm-password-error'));
-      onConfirmPasswordError(true);
-      return false;
-    }
-    return true;
   }
   function resetError() {
     onCodeError(false);
