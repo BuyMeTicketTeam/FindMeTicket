@@ -26,49 +26,57 @@ export default function Confirm({ changePopup }) {
       });
     }
   }, [seconds, minutes]);
-  function sendCode(body) {
-    makeQuerry('confirm-email', JSON.stringify(body))
-      .then((response) => {
-        onSend(false);
-        if (response.status === 200) {
-          onSucces(true);
-          onError('');
-        } else if (response.status === 400) {
-          onError('Код не правильний');
-        } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
-      });
+  function statusChecks(response) {
+    if (response.status === 200) {
+      onSucces(true);
+      onError('');
+    } else if (response.status === 400) {
+      onError('Код не правильний');
+    } else if (response.status === 404) {
+      onError("З'єднання з сервером відсутнє");
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
   }
-  function handleSendButton() {
-    onCodeError(false);
-    if
-    (codeCheck(code)) {
+  function validation() {
+    if (codeCheck(code)) {
       onSend(false);
       onError(t('confirm-error'));
       onCodeError(true);
+      return false;
+    }
+    return true;
+  }
+  function handleSendButton() {
+    onCodeError(false);
+    if (!validation) {
       return;
     }
     const body = {
       email: sessionStorage.getItem('email'),
       token: code,
     };
-    sendCode(body);
+    makeQuerry('confirm-email', JSON.stringify(body))
+      .then((response) => {
+        onSend(false);
+        statusChecks(response);
+      });
+  }
+  function statusChecksForResend(response) {
+    if (response.status === 200) {
+      setMinutes(2);
+    } else if (response.status === 404) {
+      onError('Немає акаунту зареєстрованого на цю електронну пошту');
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
   }
   function handleResendButton() {
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
         onResend(false);
-        if (response.status === 200) {
-          setMinutes(2);
-        } else if (response.status === 404) {
-          onError('Немає акаунту зареєстрованого на цю електронну пошту');
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
+        statusChecksForResend(response);
       });
   }
   function handleCodeChange(value) {

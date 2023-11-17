@@ -14,42 +14,51 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [passwordError, onPasswordError] = useState(false);
   const [error, onError] = useState('');
   const [send, onSend] = useState(false);
-  function sendRequest(body) {
-    makeQuerry('login', JSON.stringify(body))
-      .then((response) => {
-        onSend(false);
-        if (response.status === 200) {
-          changePopup(false);
-          onAuthorization(true);
-        } else if (response.status === 400) {
-          onError('Логін або пароль хибні');
-        } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
-      });
-  }
-  function handleClick() {
+  function resetErrors() {
     onLoginError(false);
     onPasswordError(false);
+  }
+  function statusChecks(response) {
+    if (response.status === 200) {
+      changePopup(false);
+      onAuthorization(true);
+    } else if (response.status === 400) {
+      onError('Логін або пароль хибні');
+    } else if (response.status === 404) {
+      onError("З'єднання з сервером відсутнє");
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
+  }
+  function validation() {
     if (emailCheck(login)) {
       onSend(false);
       onError(t('login-error'));
       onLoginError(true);
-      return;
+      return false;
     }
     if (passwordCheck(password)) {
       onSend(false);
       onError(t('password-error'));
       onPasswordError(true);
+      return false;
+    }
+    return true;
+  }
+  function handleClick() {
+    resetErrors();
+    if (!validation()) {
       return;
     }
     const body = {
       login,
       password,
     };
-    sendRequest(body);
+    makeQuerry('login', JSON.stringify(body))
+      .then((response) => {
+        onSend(false);
+        statusChecks(response);
+      });
   }
   useEffect(() => {
     if (send) {

@@ -14,29 +14,35 @@ export default function Index() {
   const [error, onError] = useState('');
   const [send, onSend] = useState(false);
   const navigate = useNavigate();
-  function sendRequest() {
-    makeQuerry('reset', JSON.stringify(email))
-      .then((response) => {
-        onSend(false);
-        if (response.status === 200) {
-          navigate('/change-password');
-          sessionStorage.setItem('email', email);
-        } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
-      });
+  function statusChecks(response) {
+    if (response.status === 200) {
+      navigate('/change-password');
+      sessionStorage.setItem('email', email);
+    } else if (response.status === 404) {
+      onError("З'єднання з сервером відсутнє");
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
   }
-  function handleButton() {
-    onEmailError(false);
+  function validation() {
     if (emailCheck(email)) {
       onSend(false);
       onError(t('reset-error'));
       onEmailError(true);
+      return false;
+    }
+    return true;
+  }
+  function handleButton() {
+    onEmailError(false);
+    if (!validation) {
       return;
     }
-    sendRequest();
+    makeQuerry('reset', JSON.stringify(email))
+      .then((response) => {
+        onSend(false);
+        statusChecks(response);
+      });
   }
   function handleEmailChange(value) {
     onEmailChange(value);

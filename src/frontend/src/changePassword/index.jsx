@@ -30,51 +30,60 @@ export default function Index({ changePopup }) {
       });
     }
   }, [seconds, minutes]);
+  function checkResponseForResend(response) {
+    if (response.status === 200) {
+      setMinutes(2);
+    } else if (response.status === 404) {
+      onError("З'єднання з сервером відсутнє");
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
+  }
   function handleResendButton() {
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
-        if (response.status === 200) {
-          setMinutes(2);
-        } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
+        checkResponseForResend(response);
       });
   }
-  function sendRequest(body) {
-    makeQuerry('new-password', JSON.stringify(body))
-      .then((response) => {
-        if (response.status === 200) {
-          onSucces(true);
-        } else if (response.status === 400) {
-          onError('Код не правильний');
-        } else if (response.status === 404) {
-          onError("З'єднання з сервером відсутнє");
-        } else {
-          onError('Помилка серверу. Спробуйте ще раз');
-        }
-      });
+  function checkResponse(response) {
+    if (response.status === 200) {
+      onSucces(true);
+    } else if (response.status === 400) {
+      onError('Код не правильний');
+    } else if (response.status === 404) {
+      onError("З'єднання з сервером відсутнє");
+    } else {
+      onError('Помилка серверу. Спробуйте ще раз');
+    }
   }
-  function handleSendButton() {
-    onCodeError(false);
-    onPasswordError(false);
-    onConfirmPasswordError(false);
+  function validation() {
     if
     (codeCheck(code)) {
       onError(t('code-error'));
       onCodeError(true);
-      return;
+      return false;
     }
     if (passwordCheck(password)) {
       onError(t('password-error'));
       onPasswordError(true);
-      return;
+      return false;
     }
     if (password !== confirmPassword) {
       onError(t('confirm-password-error'));
       onConfirmPasswordError(true);
+      return false;
+    }
+    return true;
+  }
+  function resetError() {
+    onCodeError(false);
+    onPasswordError(false);
+    onConfirmPasswordError(false);
+  }
+  function handleSendButton() {
+    resetError();
+    if (!validation()) {
       return;
     }
     const body = {
@@ -83,7 +92,10 @@ export default function Index({ changePopup }) {
       email: sessionStorage.getItem('email'),
       confirmPassword,
     };
-    sendRequest(body);
+    makeQuerry('new-password', JSON.stringify(body))
+      .then((response) => {
+        checkResponse(response);
+      });
   }
   useEffect(() => {
     if (send) {
