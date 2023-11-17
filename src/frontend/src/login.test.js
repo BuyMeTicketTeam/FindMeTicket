@@ -57,7 +57,8 @@ test('link to register', () => {
   fireEvent.click(toRegisterBtn);
   expect(screen.queryByTestId('register')).toBeInTheDocument();
 });
-
+// keep this test as a template to check requests and response to a server.
+// It haven`t finished so keep it commented out.
 // // describe('login check', () => {
 //   // let container = null;
 //   // beforeEach(() => {

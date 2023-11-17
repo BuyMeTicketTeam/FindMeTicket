@@ -126,7 +126,7 @@ export default function Register() {
         {t('agree')}
         <a href="/">{t('privacy policy')}</a>
       </label>
-      <Button dataTestId="register-btn" name={send ? 'Обробка...' : t('register')} onButton={onSend} />
+      <Button dataTestId="register-btn" disabled={send} name={send ? 'Обробка...' : t('register')} onButton={onSend} />
     </div>
   );
 }

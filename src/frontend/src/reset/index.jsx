@@ -59,7 +59,7 @@ export default function Index() {
       <p className="reset__text">{t('email')}</p>
       <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" />
       {error !== '' && <p className="reset__error">{error}</p>}
-      <Button name={send ? 'Обробка...' : t('send')} className="reset__btn" onButton={onSend} />
+      <Button name={send ? 'Обробка...' : t('send')} disabled={send} className="reset__btn" onButton={onSend} />
     </div>
   );
 }

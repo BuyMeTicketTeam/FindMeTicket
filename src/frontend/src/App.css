@@ -149,3 +149,8 @@ img {
 .link-success {
   font-size: 18px;
 }
+.button:disabled {
+  background: grey;
+  cursor: initial;
+  color: #fff;
+}
