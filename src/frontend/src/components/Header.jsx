@@ -13,7 +13,7 @@ export default function Header({
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   return (
     <header data-testid="header" className="header">
-      <div className="logo"><Link to="/"><img src="../img/logo2.png" alt="logo" /></Link></div>
+      <div className="logo"><Link to="/"><img src="../img/logo.svg" alt="logo" /></Link></div>
       <ul className="menu">
         <li className="menu__item"><a href="/">{t('news')}</a></li>
         <li className="menu__item"><a href="/">{t('reviews')}</a></li>

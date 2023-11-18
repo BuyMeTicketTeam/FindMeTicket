@@ -1,4 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
+@import url(./styles/variables.css);
 * {
   margin: 0;
   padding: 0;
@@ -9,6 +10,8 @@ a {
 }
 body {
    font-family: 'Roboto';
+   color: var(--font-color);
+   background: url('../public/img/mountains.jpg');
 }
 img {
   max-width: 100%;
@@ -25,27 +28,36 @@ img {
   margin-bottom: 15px;
 }
 .input {
-  min-width: 300px;
+  position: relative;
+  min-width: 350px;
+  width: 100%;
   border-radius: 0;
-  border: 2px solid #000;
-  padding: 3px;
+  border: 2px solid var(--main);
+  padding: 8px;
   font-size: 18px;
-  background: #fff;
+  background: var(--semi-dark);
+  color: inherit;
+  z-index: 1;
+}
+.input:focus {
+  outline: none;
+  box-shadow: 0px 0px 8px 1px var(--main);
 }
 .input.input-error {
-  border: 2px solid rgb(180, 8, 8);
-  outline-color: rgb(180, 8, 8);
-  box-shadow: 0px 0px 7px rgb(180, 8, 8);
+  border: 2px solid var(--error);
+  outline-color: var(--error);
+  box-shadow: 0px 0px 8px 1px var(--error);
 }
 .tip {
   position: relative;
   max-height: 0;
   opacity: 0;
-  max-width: 300px;
-  color: #13008d;
+  padding-top: 5px;
+  max-width: 350px;
+  color: var(--bright);
   font-weight: 500;
   transition: 0.8s;
-  z-index: -1;
+  z-index: 0;
 }
 .input:focus ~ .tip {
   max-height: 200px;
@@ -53,11 +65,13 @@ img {
   transition: 0.8s;
 }
 .button {
-  background: #000;
-  color: #fff;
+  background: var(--main);
+  color: var(--font-color);
+  font-weight: 700;
+  font-size: 18px;
   min-width: 226px;
   border-radius: 10px;
-  border: 2px solid #000;
+  border: 2px solid var(--main);
   padding: 8px 20px;
   transition: 0.3s;
 }
@@ -67,29 +81,22 @@ img {
 .button:hover {
   transition: 0.3s;
   cursor: pointer;
-  background: #fff;
-  color: #000;
+  box-shadow: 0px 0px 8px 1px var(--main);
+  transform: translateY(-3px);
 }
 
 .error {
   min-width: 300px;
-  background: rgb(180, 8, 8);
+  background: var(--error);
   padding: 10px;
-  color: #fff;
+  color: inherit;
   border-radius: 5px;
   margin: 8px 0;
 }
 
-.select {
-  border: none;
-  margin-right: 15px;
-}
-.select:focus-visible {
-  outline: none;
-}
-
 .title {
-  margin: 20px 0;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .checkbox {
@@ -97,7 +104,8 @@ img {
   font-size: 18px;
   font-weight: 500;
   display: flex;
-  padding-left: 20px;
+  align-items: center;
+  padding-left: 30px;
   margin-bottom: 10px;
 }
 .checkbox a {
@@ -110,14 +118,15 @@ img {
   display: block;
   width: 15px;
   height: 15px;
-  border: 1px solid#000;
+  border: 2px solid var(--main);
 }
 .checkbox__field {
+  position: absolute;
   visibility:hidden;
 }
 .checkbox__field:checked ~ .checkbox::before {
-  left: -1px;
-  top: -4px;
+  left: 0px;
+  top: -3px;
   position: absolute;
   content: '';
   display: block;
@@ -134,17 +143,16 @@ img {
 
 .confirm__success {
   min-width: 300px;
-  background: green;
+  background: var(--semi-bright);
   padding: 10px;
   color: #fff;
   border-radius: 5px;
   margin: 8px 0;
 }
-
-.main-block {
+/* For future usage
+ .main-block {
   height: calc(100vh - 60px);
-  background: url('../public/img/mountains.jpg');
-}
+} */
 
 .link-success {
   font-size: 18px;
@@ -153,4 +161,16 @@ img {
   background: grey;
   cursor: initial;
   color: #fff;
+}
+.form-body {
+  background: var(--background);
+  border-radius: 20px;
+  padding: 35px;
+  max-width: 30%;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
 }
