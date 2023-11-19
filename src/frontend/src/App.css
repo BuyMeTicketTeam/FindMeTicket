@@ -48,6 +48,29 @@ img {
   outline-color: var(--error);
   box-shadow: 0px 0px 8px 1px var(--error);
 }
+.input-wrapper {
+  position: relative;
+}
+.show-password {
+  z-index: 2;
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  background: transparent;
+  border: none;
+  padding: 3px 3px 0 3px;
+}
+.show-password.hide::before {
+  position: absolute;
+  top: 13px;
+  left: 5px;
+  display: inline-block;
+  content: '';
+  width: 21px;
+  height: 2px;
+  background: var(--font-color);
+  transform: rotate(45deg);
+}
 .tip {
   position: relative;
   max-height: 0;
