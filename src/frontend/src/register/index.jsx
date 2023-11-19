@@ -55,12 +55,14 @@ export default function Register() {
         return true;
     }
   }
+
   function resetErrors() {
     onNicknameError(false);
     onEmailError(false);
     onPasswordError(false);
     onConfirmPasswordError(false);
   }
+
   function responseStatus(response) {
     if (response.status === 200) {
       navigate('/confirm');
@@ -73,6 +75,7 @@ export default function Register() {
       onError('Помилка серверу. Спробуйте ще раз');
     }
   }
+
   function handleClick() {
     resetErrors();
     if (!validation()) {
@@ -91,18 +94,22 @@ export default function Register() {
         responseStatus(response);
       });
   }
+
   function handleNicknameChange(value) {
     onNicknameChange(value);
     onNicknameError(false);
   }
+
   function handleEmailChange(value) {
     onEmailChange(value);
     onEmailError(false);
   }
+
   function handlePasswordChange(value) {
     onPasswordChange(value);
     onPasswordError(false);
   }
+
   function handleConfirmPasswordChange(value) {
     onConfirmPasswordChange(value);
     onConfirmPasswordError(false);

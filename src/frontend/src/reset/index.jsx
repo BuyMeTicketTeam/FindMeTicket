@@ -24,6 +24,7 @@ export default function Index() {
       onError('Помилка серверу. Спробуйте ще раз');
     }
   }
+
   function validation() {
     if (emailCheck(email)) {
       onSend(false);
@@ -33,6 +34,7 @@ export default function Index() {
     }
     return true;
   }
+
   function handleButton() {
     onEmailError(false);
     if (!validation()) {
@@ -44,6 +46,7 @@ export default function Index() {
         statusChecks(response);
       });
   }
+
   function handleEmailChange(value) {
     onEmailChange(value);
     onEmailError(false);

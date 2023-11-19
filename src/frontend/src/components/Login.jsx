@@ -19,10 +19,12 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [send, onSend] = useState(false);
   const [remember, rememberMe] = useState(false);
   const [show, onShow] = useState(false);
+
   function resetErrors() {
     onLoginError(false);
     onPasswordError(false);
   }
+
   function statusChecks(response) {
     if (response.status === 200) {
       changePopup(false);
@@ -36,6 +38,7 @@ export default function Popup({ changePopup, onAuthorization }) {
       onError('Помилка серверу. Спробуйте ще раз');
     }
   }
+
   function validation() {
     switch (true) {
       case emailCheck(login):
@@ -50,6 +53,7 @@ export default function Popup({ changePopup, onAuthorization }) {
         return true;
     }
   }
+
   function handleClick() {
     resetErrors();
     if (!validation()) {
@@ -66,19 +70,23 @@ export default function Popup({ changePopup, onAuthorization }) {
         statusChecks(response);
       });
   }
+
   useEffect(() => {
     if (send) {
       handleClick();
     }
   }, [send]);
+
   function handleLoginChange(value) {
     onLoginChange(value);
     onLoginError(false);
   }
+
   function handlePasswordChange(value) {
     onPasswordChange(value);
     onPasswordError(false);
   }
+
   function handleRememberMeChange() {
     rememberMe(!remember);
   }

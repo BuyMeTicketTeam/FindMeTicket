@@ -41,6 +41,7 @@ export default function Index({ changePopup }) {
       onError('Помилка серверу. Спробуйте ще раз');
     }
   }
+
   function handleResendButton() {
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
@@ -48,6 +49,7 @@ export default function Index({ changePopup }) {
         checkResponseForResend(response);
       });
   }
+
   function checkResponse(response) {
     if (response.status === 200) {
       onSucces(true);
@@ -59,6 +61,7 @@ export default function Index({ changePopup }) {
       onError('Помилка серверу. Спробуйте ще раз');
     }
   }
+
   function validation() {
     switch (true) {
       case codeCheck(code):
@@ -77,11 +80,13 @@ export default function Index({ changePopup }) {
         return true;
     }
   }
+
   function resetError() {
     onCodeError(false);
     onPasswordError(false);
     onConfirmPasswordError(false);
   }
+
   function handleSendButton() {
     resetError();
     if (!validation()) {
