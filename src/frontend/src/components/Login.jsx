@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +7,7 @@ import Field from './utlis/Field';
 import Button from './utlis/Button';
 import makeQuerry from '../helper/querry';
 import Checkbox from './utlis/Checkbox';
+import writeToken from '../helper/writeToken';
 
 export default function Popup({ changePopup, onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
@@ -17,15 +19,9 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [send, onSend] = useState(false);
   const [remember, rememberMe] = useState(false);
   const [show, onShow] = useState(false);
-
   function resetErrors() {
     onLoginError(false);
     onPasswordError(false);
-  }
-  function writeToken(response) {
-    if (response.headers.get('Authorization')) {
-      localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
-    }
   }
   function statusChecks(response) {
     if (response.status === 200) {
@@ -63,9 +59,8 @@ export default function Popup({ changePopup, onAuthorization }) {
     const body = {
       login,
       password,
-      remember,
     };
-    makeQuerry('login', JSON.stringify(body))
+    makeQuerry('login', JSON.stringify(body), { rememberMe: remember })
       .then((response) => {
         onSend(false);
         statusChecks(response);
