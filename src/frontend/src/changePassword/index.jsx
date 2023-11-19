@@ -21,7 +21,9 @@ export default function Index({ changePopup }) {
   const [succes, onSucces] = useState(false);
   const [send, onSend] = useState(false);
   const [resend, onResend] = useState(false);
+  const [show, onShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
+  const MY_CONSTANT = 'Пароль змінено!!!';
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -108,24 +110,26 @@ export default function Index({ changePopup }) {
   }, [resend]);
   return (
     <div className="confirm">
-      <h1 className="title">{t('title')}</h1>
-      {succes && (
-      <p className="confirm__success">
-        Пароль змінено!!!
-        {' '}
-        <p>
-          <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
+      <div className="form-body">
+        <h1 className="title">{t('title')}</h1>
+        {succes && (
+        <p className="confirm__success">
+          {MY_CONSTANT}
+          {' '}
+          <p>
+            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
+          </p>
         </p>
-      </p>
-      )}
-      <p className="confirm__text">{t('confirm-text1')}</p>
-      <p className="confirm__text"><b>{t('confirm-text2')}</b></p>
-      {error !== '' && <p data-testid="error" className="error">{error}</p>}
-      <Field dataTestId="" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={onCodeChange} />
-      <Field dataTestId="" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} />
-      <Field dataTestId="" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
-      <Button name={send ? 'Обробка...' : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+        )}
+        <p className="confirm__text">{t('confirm-text1')}</p>
+        <p className="confirm__text"><b>{t('confirm-text2')}</b></p>
+        {error !== '' && <p data-testid="error" className="error">{error}</p>}
+        <Field dataTestId="" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={onCodeChange} />
+        <Field dataTestId="" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} show={show} onShow={onShow} />
+        <Field dataTestId="" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} show={show} onShow={onShow} />
+        <Button name={send ? 'Обробка...' : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} />
+        <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+      </div>
     </div>
   );
 }

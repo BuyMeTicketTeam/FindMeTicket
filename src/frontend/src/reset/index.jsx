@@ -35,7 +35,7 @@ export default function Index() {
   }
   function handleButton() {
     onEmailError(false);
-    if (!validation) {
+    if (!validation()) {
       return;
     }
     makeQuerry('reset', JSON.stringify(email))
@@ -55,11 +55,13 @@ export default function Index() {
   }, [send]);
   return (
     <div className="reset">
-      <h1 className="title">{t('password-reset')}</h1>
-      <p className="reset__text">{t('email')}</p>
-      <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" />
-      {error !== '' && <p className="reset__error">{error}</p>}
-      <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} />
+      <div className="form-body reset__body">
+        <h1 className="title">{t('password-reset')}</h1>
+        <p className="reset__text">{t('email')}</p>
+        <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" />
+        {error !== '' && <p className="reset__error">{error}</p>}
+        <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} />
+      </div>
     </div>
   );
 }

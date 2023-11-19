@@ -18,6 +18,7 @@ export default function Confirm({ changePopup }) {
   const [seconds, setSeconds] = useState(30);
   const [send, onSend] = useState(false);
   const [resend, onResend] = useState(false);
+  const MY_CONSTANT = 'Пароль змінено!!!';
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -49,7 +50,7 @@ export default function Confirm({ changePopup }) {
   }
   function handleSendButton() {
     onCodeError(false);
-    if (!validation) {
+    if (!validation()) {
       return;
     }
     const body = {
@@ -64,7 +65,8 @@ export default function Confirm({ changePopup }) {
   }
   function statusChecksForResend(response) {
     if (response.status === 200) {
-      setMinutes(2);
+      setMinutes(1);
+      setSeconds(30);
     } else if (response.status === 404) {
       onError('Немає акаунту зареєстрованого на цю електронну пошту');
     } else {
@@ -95,22 +97,26 @@ export default function Confirm({ changePopup }) {
   }, [resend]);
   return (
     <div data-testid="confirm" className="confirm">
-      <h1 className="title">{t('confirm-email')}</h1>
-      {succes && (
-      <div className="confirm__success">
-        Пошту підтвержено!!!
-        {' '}
-        <p>
-          <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
-        </p>
+      <div className="form-body">
+        <h1 className="title">{t('confirm-email')}</h1>
+        {succes && (
+        <div className="confirm__success">
+          {MY_CONSTANT}
+          {' '}
+          <p>
+            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
+          </p>
+        </div>
+        )}
+        <p>{t('confirm-code')}</p>
+        <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
+        <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
+        {error !== '' && <p className="confirm__error">{error}</p>}
+        <div className="row">
+          <Button name={send ? 'Обробка...' : t('send')} disabled={send} onButton={onSend} />
+          <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+        </div>
       </div>
-      )}
-      <p className="confirm__text">{t('confirm-code')}</p>
-      <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
-      <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
-      {error !== '' && <p className="confirm__error">{error}</p>}
-      <Button name={send ? 'Обробка...' : t('send')} disabled={send} className="confirm__btn" onButton={onSend} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
     </div>
   );
 }

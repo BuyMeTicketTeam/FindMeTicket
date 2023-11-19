@@ -22,6 +22,7 @@ export default function Register() {
   const [policy, onPolicy] = useState(false);
   const [policyError, onErrorPolicy] = useState(false);
   const [send, onSend] = useState(false);
+  const [show, onShow] = useState(false);
   const navigate = useNavigate();
   function validation() {
     switch (true) {
@@ -113,18 +114,20 @@ export default function Register() {
   }, [send]);
   return (
     <div data-testid="register" className="register">
-      <h1 className="title">{t('registration')}</h1>
-      {error !== '' && <p data-testid="error" className="error">{error}</p>}
-      <Field error={nicknameError} dataTestId="nickname-input" tipDataTestId="nickname-tip" name={t('nickname')} value={nickname} type="text" onInputChange={(value) => handleNicknameChange(value)} placeholder="Svillana2012" tip={<ListTip />} />
-      <Field error={emailError} dataTestId="email-input" name={t('email')} value={email} type="email" onInputChange={(value) => handleEmailChange(value)} tip={t('tip-email')} placeholder="mail@mail.com" />
-      <Field error={passwordError} dataTestId="password-input" name={t('password')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} tip={t('tip-password')} />
-      <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name={t('confirm-password')} value={confirmPassword} type="password" onInputChange={(value) => handleConfirmPasswordChange(value)} />
-      <input data-testid="checkbox" id="policy" type="checkbox" className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'} onClick={() => { onPolicy(!policy); onErrorPolicy(false); }} />
-      <label htmlFor="policy" className="checkbox">
-        {t('agree')}
-        <a href="/">{t('privacy policy')}</a>
-      </label>
-      <Button dataTestId="register-btn" disabled={send} name={send ? t('processing') : t('register')} onButton={onSend} />
+      <div className="form-body">
+        <h1 className="title">{t('registration')}</h1>
+        {error !== '' && <p data-testid="error" className="error">{error}</p>}
+        <Field error={nicknameError} dataTestId="nickname-input" tipDataTestId="nickname-tip" name={t('nickname')} value={nickname} type="text" onInputChange={(value) => handleNicknameChange(value)} placeholder="Svillana2012" tip={<ListTip />} />
+        <Field error={emailError} dataTestId="email-input" name={t('email')} value={email} type="email" onInputChange={(value) => handleEmailChange(value)} tip={t('tip-email')} placeholder="mail@mail.com" />
+        <Field error={passwordError} dataTestId="password-input" name={t('password')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} tip={t('tip-password')} show={show} onShow={onShow} />
+        <Field error={confirmPasswordError} dataTestId="confirm-pass-input" name={t('confirm-password')} value={confirmPassword} type="password" onInputChange={(value) => handleConfirmPasswordChange(value)} show={show} onShow={onShow} />
+        <input data-testid="checkbox" id="policy" type="checkbox" className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'} onClick={() => { onPolicy(!policy); onErrorPolicy(false); }} />
+        <label htmlFor="policy" className="checkbox">
+          {t('agree')}
+          <a href="/">{t('privacy policy')}</a>
+        </label>
+        <Button dataTestId="register-btn" className="btn-full" disabled={send} name={send ? 'Обробка...' : t('register')} onButton={onSend} />
+      </div>
     </div>
   );
 }

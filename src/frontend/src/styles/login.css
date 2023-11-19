@@ -12,7 +12,7 @@
   
   .popup__body {
     position: relative;
-    background: #fff;
+    background: var(--background);
     padding: 50px 25px 25px 25px;
     border-radius: 10px;
     z-index: 2;
@@ -20,7 +20,7 @@
 
   .link {
     margin: 15px 0;
-    color: #200BA5;
+    color: var(--bright);
   }
   
   .link:hover {
@@ -53,7 +53,7 @@
     width: 30px;
     height: 3px;
     transform: rotate(45deg);
-    background: #000;
+    background: var(--font-color);
   }
   .close::before {
     content: '';
@@ -64,5 +64,5 @@
     width: 30px;
     height: 3px;
     transform: rotate(-45deg);
-    background: #000;
+    background: var(--font-color);
   }
