@@ -31,11 +31,11 @@ export default function Confirm({ changePopup }) {
       onSucces(true);
       onError('');
     } else if (response.status === 400) {
-      onError('Код не правильний');
+      onError(t('error-code'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
   function validation() {
@@ -110,7 +110,7 @@ export default function Confirm({ changePopup }) {
       <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
       {error !== '' && <p className="confirm__error">{error}</p>}
       <Button name={send ? 'Обробка...' : t('send')} disabled={send} className="confirm__btn" onButton={onSend} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
     </div>
   );
 }

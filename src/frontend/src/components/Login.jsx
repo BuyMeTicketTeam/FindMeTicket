@@ -23,11 +23,11 @@ export default function Popup({ changePopup, onAuthorization }) {
       changePopup(false);
       onAuthorization(true);
     } else if (response.status === 400) {
-      onError('Логін або пароль хибні');
+      onError(t('error-lp'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
   function validation() {

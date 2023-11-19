@@ -65,11 +65,11 @@ export default function Register() {
       navigate('/confirm');
       sessionStorage.setItem('email', email);
     } else if (response.status === 409) {
-      onError('Користувач з ціїю електронною адресою вже зареєстрований');
+      onError(t('error-email'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-again'));
     }
   }
   function handleClick() {
@@ -124,7 +124,7 @@ export default function Register() {
         {t('agree')}
         <a href="/">{t('privacy policy')}</a>
       </label>
-      <Button dataTestId="register-btn" disabled={send} name={send ? 'Обробка...' : t('register')} onButton={onSend} />
+      <Button dataTestId="register-btn" disabled={send} name={send ? t('processing') : t('register')} onButton={onSend} />
     </div>
   );
 }

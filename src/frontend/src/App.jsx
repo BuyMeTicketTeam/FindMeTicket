@@ -8,6 +8,7 @@ import './App.css';
 import './styles/header.css';
 import './styles/login.css';
 import './locales/i18n';
+import Cookie from './components/cookie';
 
 function App() {
   const [authorization, onAuthorization] = useState(false);
@@ -16,7 +17,9 @@ function App() {
     <Router>
       <Header authorization={authorization} onAuthorization={onAuthorization} changePopup={changePopup} popupLogin={popupLogin} />
       <Routers changePopup={changePopup} />
+      <Cookie />
     </Router>
+
   );
 }
 

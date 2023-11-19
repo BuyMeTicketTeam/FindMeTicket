@@ -34,9 +34,9 @@ export default function Index({ changePopup }) {
     if (response.status === 200) {
       setMinutes(2);
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
   function handleResendButton() {
@@ -50,11 +50,11 @@ export default function Index({ changePopup }) {
     if (response.status === 200) {
       onSucces(true);
     } else if (response.status === 400) {
-      onError('Код не правильний');
+      onError(t('error-code'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
   function validation() {
@@ -125,7 +125,7 @@ export default function Index({ changePopup }) {
       <Field dataTestId="" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} />
       <Field dataTestId="" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} />
       <Button name={send ? 'Обробка...' : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} />
-      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+      <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
     </div>
   );
 }
