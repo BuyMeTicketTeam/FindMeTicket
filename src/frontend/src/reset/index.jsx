@@ -19,9 +19,9 @@ export default function Index() {
       navigate('/change-password');
       sessionStorage.setItem('email', email);
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
 
@@ -63,7 +63,7 @@ export default function Index() {
         <p className="reset__text">{t('email')}</p>
         <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" />
         {error !== '' && <p className="reset__error">{error}</p>}
-        <Button name={send ? 'Обробка...' : t('send')} disabled={send} className="reset__btn" onButton={onSend} />
+        <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} />
       </div>
     </div>
   );

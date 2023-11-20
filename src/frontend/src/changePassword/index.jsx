@@ -36,9 +36,9 @@ export default function Index({ changePopup }) {
     if (response.status === 200) {
       setMinutes(2);
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
 
@@ -54,11 +54,11 @@ export default function Index({ changePopup }) {
     if (response.status === 200) {
       onSucces(true);
     } else if (response.status === 400) {
-      onError('Код не правильний');
+      onError(t('error-code'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
 

@@ -68,11 +68,11 @@ export default function Register() {
       navigate('/confirm');
       sessionStorage.setItem('email', email);
     } else if (response.status === 409) {
-      onError('Користувач з ціїю електронною адресою вже зареєстрований');
+      onError(t('error-email'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-again'));
     }
   }
 

@@ -32,11 +32,11 @@ export default function Confirm({ changePopup }) {
       onSucces(true);
       onError('');
     } else if (response.status === 400) {
-      onError('Код не правильний');
+      onError(t('error-code'));
     } else if (response.status === 404) {
-      onError("З'єднання з сервером відсутнє");
+      onError(t('error-server'));
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
   function validation() {
