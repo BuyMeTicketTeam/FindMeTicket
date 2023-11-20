@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import '../styles/cookie.css';
 
 function CookieBanner() {
   const [acceptedCookies, setAcceptedCookies] = useState(
@@ -19,6 +20,9 @@ function CookieBanner() {
 
   return (
     <div className="cookie-banner">
+      <div className="cookie-img">
+        <img src="../img/cookie.png" alt="cookie" />
+      </div>
       <p>Этот веб-сайт использует куки для улучшения вашего опыта.</p>
       <button onClick={acceptCookies} type="button">
         Принять куки
