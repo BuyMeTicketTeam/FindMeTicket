@@ -39,6 +39,7 @@ export default function Confirm({ changePopup }) {
       onError(t('error-server2'));
     }
   }
+
   function validation() {
     if (codeCheck(code)) {
       onSend(false);
@@ -48,6 +49,7 @@ export default function Confirm({ changePopup }) {
     }
     return true;
   }
+
   function handleSendButton() {
     onCodeError(false);
     if (!validation()) {
@@ -63,6 +65,7 @@ export default function Confirm({ changePopup }) {
         statusChecks(response);
       });
   }
+
   function statusChecksForResend(response) {
     if (response.status === 200) {
       setMinutes(1);
@@ -73,6 +76,7 @@ export default function Confirm({ changePopup }) {
       onError('Помилка серверу. Спробуйте ще раз');
     }
   }
+
   function handleResendButton() {
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
@@ -81,6 +85,7 @@ export default function Confirm({ changePopup }) {
         statusChecksForResend(response);
       });
   }
+
   function handleCodeChange(value) {
     onCodeChange(value);
     onCodeError(false);
