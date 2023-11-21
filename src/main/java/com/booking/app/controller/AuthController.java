@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.swing.text.html.HTML;
 import java.util.Arrays;
 
+/**
+ * AuthController handles authentication-related operations.
+ * This controller provides endpoints for user authentication.
+ */
 @RestController
 @RequestMapping
 @AllArgsConstructor
@@ -24,19 +28,29 @@ public class AuthController implements AuthAPI {
     private final UserSecurityService service;
 
 
+    /**
+     * Handles user sign-in request.
+     *
+     * @param dto      The LoginDTO containing user credentials.
+     * @param request  The HttpServletRequest containing the request information.
+     * @param response The HttpServletResponse containing the response information.
+     * @return ResponseEntity indicating the success of the sign-in operation.
+     */
     @PostMapping("/login")
     @Override
     public ResponseEntity<?> signIn(@RequestBody LoginDTO dto , HttpServletRequest request, HttpServletResponse response) {
             return ResponseEntity.ok().build();
       }
-       // Arrays.stream(cookies).forEach(cookie -> cookie.getAttribute("Authorization"));
+
+
+    }
+
+// Arrays.stream(cookies).forEach(cookie -> cookie.getAttribute("Authorization"));
 //        Cookie cookie = new Cookie("refreshToken", refreshToken);
 //        cookie.setHttpOnly(true);
 //        cookie.setMaxAge((int) jwtUtil.getRefreshTokenExpiration() / 1000);
 //        cookie.setPath("/");
 //        response.addCookie(cookie);
-
-    }
 
 //    @PostMapping("/test")
 //    public ResponseEntity<?> test(HttpServletResponse response) {

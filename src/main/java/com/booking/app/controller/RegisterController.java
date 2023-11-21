@@ -12,6 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
+/**
+ * RegisterController handles user registration and email confirmation operations.
+ * This controller provides endpoints for user registration, email confirmation, and resending confirmation email.
+ */
 @RestController
 @RequestMapping
 @AllArgsConstructor
@@ -20,12 +24,27 @@ public class RegisterController implements RegisterAPI {
     private final UserSecurityService service;
     private final MailSenderService mailSenderService;
 
+    /**
+     * Handles user registration request.
+     *
+     * @param dto The RegistrationDTO containing user registration information.
+     * @return ResponseDTO containing information about the registration process.
+     * @throws UserAlreadyExistAuthenticationException Thrown if the user already exists.
+     * @throws MessagingException                      Thrown if an error occurs during email sending.
+     * @throws IOException                             Thrown if an I/O error occurs.
+     */
     @PostMapping("/register")
     @Override
     public ResponseDTO<EmailDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
         return new ResponseDTO<>(service.register(dto));
     }
 
+    /**
+     * Handles user email confirmation request.
+     *
+     * @param dto The TokenConfirmationDTO containing the confirmation token.
+     * @return ResponseEntity indicating the result of the email confirmation.
+     */
     //@ResponseStatus(code = HttpStatus.OK)
     @PostMapping("/confirm-email")
     @Override
@@ -38,6 +57,14 @@ public class RegisterController implements RegisterAPI {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not right");
     }
 
+    /**
+     * Handles the request to resend the confirmation email.
+     *
+     * @param dto The TokenConfirmationDTO containing the user's email.
+     * @return ResponseEntity indicating the result of the resend operation.
+     * @throws MessagingException Thrown if an error occurs during email sending.
+     * @throws IOException        Thrown if an I/O error occurs.
+     */
     @PostMapping("resend-confirm-email")
     @Override
     public ResponseEntity<?> resendConfirmEmailToken(@RequestBody TokenConfirmationDTO dto) throws MessagingException, IOException {

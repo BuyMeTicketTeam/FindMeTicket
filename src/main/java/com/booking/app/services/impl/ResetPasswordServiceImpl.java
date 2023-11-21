@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Service class for resetting passwords.
+ */
 @Service
 @RequiredArgsConstructor
 public class ResetPasswordServiceImpl implements ResetPasswordService {
@@ -28,9 +31,16 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Generates a new token for resetting the password and sends an email to the specified recipient.
+     *
+     * @param email The email address of the recipient.
+     * @return Returns true if the email with the reset password link was sent successfully; otherwise, returns false.
+     * @throws MessagingException If there is an issue with sending the email.
+     */
     @Override
     @Transactional
-    public boolean sendEmailResetPassword(String email) throws MessagingException, IOException {
+    public boolean sendEmailResetPassword(String email) throws MessagingException {
 
         Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(email);
 
@@ -52,6 +62,12 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     }
 
+    /**
+     * Resets the password to a new one using the information provided in the ResetPasswordDTO.
+     *
+     * @param dto The ResetPasswordDTO containing the email and the new password.
+     * @return Returns true if the password was successfully changed; otherwise, returns false.
+     */
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordDTO dto) {

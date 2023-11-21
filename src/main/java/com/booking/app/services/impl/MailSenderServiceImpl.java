@@ -19,6 +19,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import java.io.IOException;
 
+/**
+ * Service class for sending email.
+ */
 @Service
 @RequiredArgsConstructor
 public class MailSenderServiceImpl implements MailSenderService {
@@ -29,6 +32,15 @@ public class MailSenderServiceImpl implements MailSenderService {
     private final VerifyEmailRepository verifyEmailRepository;
     private final TokenService tokenService;
 
+    /**
+     * This method sending email with specified token.
+     *
+     * @param htmlPage String html representation of the letter
+     * @param subject String subject of the letter
+     * @param token String generated token that is needed to confirm email
+     * @param user UserSecurity recipient
+     * @throws MessagingException If there is an issue with sending the confirmation email.
+     */
     @Transactional
     @Override
     public void sendEmail(String htmlPage, String subject, String token, UserSecurity user) throws MessagingException {
@@ -48,9 +60,17 @@ public class MailSenderServiceImpl implements MailSenderService {
         mailSender.send(mimeMessage);
     }
 
+    /**
+     * This method generates new token end sends it
+     * on specified email
+     *
+     * @param email String recipient
+     * @throws UsernameNotFoundException If such user does not exist
+     * @throws MessagingException If there is an issue with sending the confirmation email.
+     */
     @Transactional
     @Override
-    public void resendEmail(String email) throws UsernameNotFoundException, MessagingException, IOException {
+    public void resendEmail(String email) throws UsernameNotFoundException, MessagingException {
         UserSecurity byEmail = userSecurityRepository.findByEmail(email).get();
         User user = byEmail.getUser();
         verifyEmailRepository.delete(user.getConfirmToken());

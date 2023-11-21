@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
+/**
+ * ResetPasswordController handles user password reset operations.
+ * This controller provides endpoints for sending a password reset token and confirming the reset.
+ */
 @RestController
 @RequestMapping
 @AllArgsConstructor
@@ -21,6 +25,14 @@ public class ResetPasswordController implements ResetPasswordAPI {
 
     private final ResetPasswordService service;
 
+    /**
+     * Handles the request to send a password reset token to the user's email.
+     *
+     * @param dto The EmailDTO containing the user's email.
+     * @return ResponseEntity indicating the result of the reset token sending operation.
+     * @throws MessagingException Thrown if an error occurs during email sending.
+     * @throws IOException        Thrown if an I/O error occurs.
+     */
     @PostMapping("/reset")
     @Override
     public ResponseEntity<?> sendResetToken(@RequestBody EmailDTO dto) throws MessagingException, IOException {
@@ -30,6 +42,12 @@ public class ResetPasswordController implements ResetPasswordAPI {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Such email doesn't exist in out service");
     }
 
+    /**
+     * Handles the request to confirm and reset the user's password.
+     *
+     * @param dto The ResetPasswordDTO containing the reset confirmation information.
+     * @return ResponseEntity indicating the result of the password reset operation.
+     */
     @PostMapping("/new-password")
     @Override
     public ResponseEntity<?> confirmResetPassword(@RequestBody ResetPasswordDTO dto) {
