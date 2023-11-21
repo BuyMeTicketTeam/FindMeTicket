@@ -4,6 +4,8 @@ import com.booking.app.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -18,5 +20,5 @@ public interface AuthAPI {
             @ApiResponse(responseCode = "200", description = "User has been authenticated"),
             @ApiResponse(responseCode = "400", description = "Invalid credentials or such user doesn't exist")
     })
-    ResponseEntity<?> signIn(@RequestBody @NotNull @Valid LoginDTO dto);
+    public ResponseEntity<?> signIn(@RequestBody LoginDTO dto , HttpServletRequest request, HttpServletResponse response);
 }

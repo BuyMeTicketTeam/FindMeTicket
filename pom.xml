@@ -128,7 +128,7 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/nl.geodienstencentrum.maven/sass-maven-plugin -->
+
 
 
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
@@ -169,8 +169,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>16</source>
+                    <target>16</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

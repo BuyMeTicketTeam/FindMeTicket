@@ -40,7 +40,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final UserMapper mapper;
     private final MailSenderService mailService;
     private final TokenService tokenService;
-    private final UserRepository repository;
+  //  private final UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -113,11 +113,11 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
 
         if (!userByEmail.get().isEnabled() && tokenService.verifyToken(dto.getEmail(), dto.getToken())) {
-
-            userSecurityRepository.enableUserById(userByEmail.get().getId());
+            userSecurityRepository.enableAllBooleansForUser(userByEmail.get().getId());
             return true;
 
         }
         return false;
     }
+
 }

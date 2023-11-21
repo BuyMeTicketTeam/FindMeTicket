@@ -14,9 +14,9 @@ public interface UserSecurityRepository extends JpaRepository<UserSecurity,UUID>
     Optional<UserSecurity> findByUsername(String name);
     Optional<UserSecurity> findByEmail(String email);
 
-    @Modifying
-    @Query(value = "UPDATE UserSecurity u SET u.enabled = true WHERE u.id = :userId")
-    void enableUserById(@Param("userId") UUID userId);
+//    @Modifying
+//    @Query(value = "UPDATE UserSecurity u SET u.enabled = true WHERE u.id = :userId")
+//    void enableUserById(@Param("userId") UUID userId);
 
     @Modifying
     @Query(value = "UPDATE UserSecurity u SET u.password = :password WHERE u.id = :userId")
@@ -25,5 +25,9 @@ public interface UserSecurityRepository extends JpaRepository<UserSecurity,UUID>
     @Modifying
     @Query("DELETE FROM UserSecurity u WHERE u.id = :pid")
     void deleteByPid(@Param("pid") UUID theId);
+
+    @Modifying
+    @Query(value = "UPDATE UserSecurity u SET u.enabled = true, u.accountNonExpired = true, u.accountNonLocked = true, u.credentialsNonExpired = true WHERE u.id = :userId")
+    void enableAllBooleansForUser(@Param("userId") UUID userId);
 
 }
