@@ -65,7 +65,6 @@ public class TokenServiceImpl implements TokenService {
                 .user(user)
                 .expiryTime(dateExpiryTime)
                 .token(generateRandomToken())
-                .user(user)
                 .build();
     }
 

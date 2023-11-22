@@ -14,6 +14,7 @@ import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
+import com.sun.mail.util.MailConnectException;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,16 +46,17 @@ class UserSecurityServiceImplTest {
     private VerifyEmailRepository verifyEmailRepository;
 
     @Mock
-    private PasswordEncoder passwordEncoder;
+    private UserMapper mapper;
 
     @Mock
-    private UserMapper mapper;
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private MailSenderService mailService;
 
     @Mock
     private TokenService tokenService;
+
 
     private UserSecurity userSecurity;
     private ConfirmToken confirmToken;
@@ -81,7 +84,6 @@ class UserSecurityServiceImplTest {
         EmailDTO newUser = temp.register(registrationDTO);
         assertEquals(registrationDTO.getEmail(), newUser.getEmail());
     }
-    //CПРАВЕДБЫДЛО
 
     @Test
     void testEmailExistsExceptionRegistration() throws MessagingException {
@@ -111,7 +113,19 @@ class UserSecurityServiceImplTest {
     }
 
     @Test
-    void performRegistration() {
+    void testDeleteUserIfNotConfirmed(){
+
+        UUID id = new UUID(9583894, 34757);
+        ConfirmToken token = ConfirmToken.builder().id(id).build();
+        User user = User.builder().confirmToken(token).build();
+        UserSecurity userSecurity = UserSecurity.builder().id(id).email("javier_milei@gmail.com").username("Javier Milei").user(user).build();
+
+        doNothing().when(verifyEmailRepository).deleteById(id);
+        assertDoesNotThrow(()-> userSecurityService.deleteUserIfNotConfirmed(userSecurity));
+    }
+
+    @Test
+    void performRegistration(){
     }
 
     @Test
