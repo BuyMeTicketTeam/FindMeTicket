@@ -12,12 +12,13 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import java.io.IOException;
+
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.Optional;
 
 /**
  * Service class for sending email.
@@ -65,20 +66,25 @@ public class MailSenderServiceImpl implements MailSenderService {
      * on specified email
      *
      * @param email String recipient
-     * @throws UsernameNotFoundException If such user does not exist
-     * @throws MessagingException If there is an issue with sending the confirmation email.
+     * @return Boolean returns true if the message was sent successfully either returns false
+     * @throws UserPrincipalNotFoundException If there is no such user
+     * @throws MessagingException             If there is an issue with sending the confirmation email.
      */
     @Transactional
     @Override
-    public void resendEmail(String email) throws UsernameNotFoundException, MessagingException {
-        UserSecurity byEmail = userSecurityRepository.findByEmail(email).get();
-        User user = byEmail.getUser();
+    public boolean resendEmail(String email) throws MessagingException, UserPrincipalNotFoundException {
+        Optional<UserSecurity> userByEmailFromDb = userSecurityRepository.findByEmail(email);
+
+        if(userByEmailFromDb.isEmpty()) return false;
+
+        User user = userByEmailFromDb.get().getUser();
         verifyEmailRepository.delete(user.getConfirmToken());
 
         ConfirmToken confirmToken = tokenService.createConfirmToken(user);
         user.setConfirmToken(confirmToken);
 
         verifyEmailRepository.save(confirmToken);
-        sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), byEmail);
+        sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), userByEmailFromDb.get());
+        return true;
     }
 }

@@ -23,7 +23,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class ResetPasswordController implements ResetPasswordAPI {
 
-    private final ResetPasswordService service;
+    private final ResetPasswordService resetPasswordService;
 
     /**
      * Handles the request to send a password reset token to the user's email.
@@ -36,10 +36,10 @@ public class ResetPasswordController implements ResetPasswordAPI {
     @PostMapping("/reset")
     @Override
     public ResponseEntity<?> sendResetToken(@RequestBody EmailDTO dto) throws MessagingException, IOException {
-        if( service.sendEmailResetPassword(dto.getEmail())){
+        if( resetPasswordService.sendEmailResetPassword(dto.getEmail())){
             return ResponseEntity.status(HttpStatus.OK).body("Reset token has been sent");
         }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Such email doesn't exist in out service");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Such email doesn't exist in our service");
     }
 
     /**
@@ -51,7 +51,7 @@ public class ResetPasswordController implements ResetPasswordAPI {
     @PostMapping("/new-password")
     @Override
     public ResponseEntity<?> confirmResetPassword(@RequestBody ResetPasswordDTO dto) {
-        if(service.resetPassword(dto)){
+        if(resetPasswordService.resetPassword(dto)){
             return ResponseEntity.status(HttpStatus.OK).body("Password has been successfully changed");
         }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Confirmation code is not right");

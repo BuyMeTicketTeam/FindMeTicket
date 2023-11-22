@@ -2,8 +2,8 @@ package com.booking.app.services;
 
 import com.booking.app.entity.UserSecurity;
 import jakarta.mail.MessagingException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import java.io.IOException;
+
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 /**
  * Service interface for sending email.
@@ -26,8 +26,9 @@ public interface MailSenderService {
       * on specified email
       *
       * @param email String recipient
-      * @throws UsernameNotFoundException If such user does not exist
-      * @throws MessagingException If there is an issue with sending the confirmation email.
+      * @return Boolean returns true if the message was sent successfully either returns false
+      * @throws UserPrincipalNotFoundException If such user does not exist
+      * @throws MessagingException             If there is an issue with sending the confirmation email.
       */
-     public void resendEmail(String email) throws UsernameNotFoundException, MessagingException;
+      boolean resendEmail(String email) throws MessagingException, UserPrincipalNotFoundException;
 }

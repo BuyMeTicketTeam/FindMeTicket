@@ -19,10 +19,11 @@ public interface RegisterAPI {
 
     @Operation(summary = "Register User")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "User registered successfully"),
-            @ApiResponse(responseCode = "409", description = "We’re sorry. This email already exists")
+            @ApiResponse(responseCode = "200", description = "User registered successfully"),
+            @ApiResponse(responseCode = "409", description = "We’re sorry. This email already exists"),
+            @ApiResponse(responseCode = "418", description = "We’re sorry. This username already exists")
     })
-    ResponseDTO<EmailDTO> signUp(@Valid @NotNull RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException;
+    ResponseEntity<?> signUp(@Valid @NotNull RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException;
 
     @Operation(summary = "Email confirmation")
     @ApiResponses(value = {

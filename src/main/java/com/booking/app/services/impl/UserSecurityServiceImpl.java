@@ -42,8 +42,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final UserMapper mapper;
     private final MailSenderService mailService;
     private final TokenService tokenService;
-    //  private final UserRepository repository;
-
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -52,36 +50,35 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
         return userSecurity;
     }
 
-
     /**
      * Registers a new user based on the provided registration information.
      *
-     * @param securityDTO The RegistrationDTO containing user registration details.
+     * @param registrationDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO Returns an EmailDTO containing information about the registration confirmation email.
      * @throws EmailExistsException If a user with the provided email already exists.
      * @throws UsernameExistsException If a user with the provided username already exists.
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
     @Override
-    public EmailDTO register(RegistrationDTO securityDTO) throws EmailExistsException, MessagingException, UsernameExistsException {
-        Optional<UserSecurity> userByEmailOrUsernameFromDB = userSecurityRepository.findByEmailOrUsername(securityDTO.getEmail(), securityDTO.getUsername());
+    public EmailDTO register(RegistrationDTO registrationDTO ) throws EmailExistsException, MessagingException, UsernameExistsException {
+        Optional<UserSecurity> userByEmailOrUsernameFromDB = userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername());
 
         if (userByEmailOrUsernameFromDB.isPresent()
-                && userByEmailOrUsernameFromDB.get().getEmail().equals(securityDTO.getEmail())
+                && userByEmailOrUsernameFromDB.get().getEmail().equals(registrationDTO.getEmail())
                 && userByEmailOrUsernameFromDB.get().isEnabled()) {
             throw new EmailExistsException("We’re sorry. This email already exists");
         }
 
         if (userByEmailOrUsernameFromDB.isPresent()
-                && userByEmailOrUsernameFromDB.get().getUsername().equals(securityDTO.getUsername())
+                && userByEmailOrUsernameFromDB.get().getUsername().equals(registrationDTO.getUsername())
                 && userByEmailOrUsernameFromDB.get().isEnabled()) {
             throw new UsernameExistsException("We’re sorry. This username already exists");
         }
-        if (userByEmailOrUsernameFromDB.isPresent()) {
+        if (userByEmailOrUsernameFromDB.isPresent() ) {
             deleteUserIfNotConfirmed(userByEmailOrUsernameFromDB.get());
         }
 
-        return performRegistration(securityDTO);
+        return performRegistration(registrationDTO);
     }
 
     /**
