@@ -17,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -122,5 +123,12 @@ class TokenServiceImplTest {
 
     @Test
     void generateRandomToken() {
+
+        ReflectionTestUtils.setField(tokenService, "TOKEN_SYMBOLS", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+
+        String token = tokenService.generateRandomToken();
+
+        assertNotNull(token);
+        assertEquals(5, token.length());
     }
 }
