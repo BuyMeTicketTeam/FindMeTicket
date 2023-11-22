@@ -1,9 +1,6 @@
 package com.booking.app.exception;
 
-import com.booking.app.exception.exception.UserNotConfirmedException;
-import com.booking.app.exception.exception.PasswordNotMatchesException;
-import com.booking.app.exception.exception.ResourceNotFoundException;
-import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -54,19 +51,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(UserAlreadyExistAuthenticationException.class)
-    public ResponseEntity<ErrorDetails> userAlreadyExist(UserAlreadyExistAuthenticationException exception, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                webRequest.getDescription(false),
-                HttpStatus.CONFLICT
-        );
-
-        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
-    }
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(PasswordNotMatchesException.class)
     public ResponseEntity<ErrorDetails> passwordMatches(PasswordNotMatchesException exception, WebRequest webRequest) {
@@ -91,5 +75,31 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.CONFLICT
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(EmailExistsException.class)
+    public ResponseEntity<ErrorDetails> emailExists(EmailExistsException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.CONFLICT
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+    }
+
+    @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
+    @ExceptionHandler(UsernameExistsException.class)
+    public ResponseEntity<ErrorDetails> usernameExists(UsernameExistsException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.I_AM_A_TEAPOT
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.I_AM_A_TEAPOT);
     }
 }

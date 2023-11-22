@@ -8,10 +8,10 @@ import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.enums.EnumRole;
-import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.EmailExistsException;
+import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
-import com.booking.app.repositories.UserRepository;
 import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
@@ -25,7 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -43,7 +42,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final UserMapper mapper;
     private final MailSenderService mailService;
     private final TokenService tokenService;
-  //  private final UserRepository repository;
+    //  private final UserRepository repository;
 
 
     @Override
@@ -59,18 +58,27 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
      *
      * @param securityDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO Returns an EmailDTO containing information about the registration confirmation email.
-     * @throws UserAlreadyExistAuthenticationException If a user with the provided email already exists.
+     * @throws EmailExistsException If a user with the provided email already exists.
+     * @throws UsernameExistsException If a user with the provided username already exists.
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
     @Override
-    public EmailDTO register(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException{
-        Optional<UserSecurity> byEmail = userSecurityRepository.findByEmail(securityDTO.getEmail());
+    public EmailDTO register(RegistrationDTO securityDTO) throws EmailExistsException, MessagingException, UsernameExistsException {
+        Optional<UserSecurity> userByEmailOrUsernameFromDB = userSecurityRepository.findByEmailOrUsername(securityDTO.getEmail(), securityDTO.getUsername());
 
-        if (byEmail.isPresent() && byEmail.get().isEnabled()) {
-            throw new UserAlreadyExistAuthenticationException("We’re sorry. This email already exists");
+        if (userByEmailOrUsernameFromDB.isPresent()
+                && userByEmailOrUsernameFromDB.get().getEmail().equals(securityDTO.getEmail())
+                && userByEmailOrUsernameFromDB.get().isEnabled()) {
+            throw new EmailExistsException("We’re sorry. This email already exists");
         }
-        if (byEmail.isPresent()) {
-            deleteUserIfNotConfirmed(byEmail.get());
+
+        if (userByEmailOrUsernameFromDB.isPresent()
+                && userByEmailOrUsernameFromDB.get().getUsername().equals(securityDTO.getUsername())
+                && userByEmailOrUsernameFromDB.get().isEnabled()) {
+            throw new UsernameExistsException("We’re sorry. This username already exists");
+        }
+        if (userByEmailOrUsernameFromDB.isPresent()) {
+            deleteUserIfNotConfirmed(userByEmailOrUsernameFromDB.get());
         }
 
         return performRegistration(securityDTO);
@@ -82,21 +90,21 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
      * @param byEmail UserSecurity that must be deleted
      */
     @Transactional
-    public void deleteUserIfNotConfirmed(UserSecurity byEmail){
+    public void deleteUserIfNotConfirmed(UserSecurity byEmail) {
         verifyEmailRepository.deleteById(byEmail.getUser().getConfirmToken().getId());
     }
 
     /**
      * Performs registration:
-     *  Creates user, token
-     *  Sends email
+     * Creates user, token
+     * Sends email
      *
      * @param securityDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO containing email
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
     //    @Transactional
-    public EmailDTO performRegistration(RegistrationDTO securityDTO) throws MessagingException{
+    public EmailDTO performRegistration(RegistrationDTO securityDTO) throws MessagingException {
         UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
         securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
 
@@ -156,7 +164,7 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     public boolean enableIfValid(TokenConfirmationDTO dto) {
         Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
 
-        if (!userByEmail.get().isEnabled() && tokenService.verifyToken(dto.getEmail(), dto.getToken())) {
+        if (userByEmail.isPresent() && !userByEmail.get().isEnabled() && tokenService.verifyToken(dto.getEmail(), dto.getToken())) {
             userSecurityRepository.enableAllBooleansForUser(userByEmail.get().getId());
             return true;
 

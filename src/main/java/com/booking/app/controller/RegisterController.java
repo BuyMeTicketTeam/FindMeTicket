@@ -2,7 +2,8 @@ package com.booking.app.controller;
 
 import com.booking.app.controller.api.RegisterAPI;
 import com.booking.app.dto.*;
-import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.EmailExistsException;
+import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.UserSecurityService;
 import jakarta.mail.MessagingException;
@@ -29,13 +30,13 @@ public class RegisterController implements RegisterAPI {
      *
      * @param dto The RegistrationDTO containing user registration information.
      * @return ResponseDTO containing information about the registration process.
-     * @throws UserAlreadyExistAuthenticationException Thrown if the user already exists.
+     * @throws EmailExistsException Thrown if the user already exists.
      * @throws MessagingException                      Thrown if an error occurs during email sending.
      * @throws IOException                             Thrown if an I/O error occurs.
      */
     @PostMapping("/register")
     @Override
-    public ResponseDTO<EmailDTO> signUp(@RequestBody RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException {
+    public ResponseDTO<EmailDTO> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException {
         return new ResponseDTO<>(service.register(dto));
     }
 
@@ -45,7 +46,6 @@ public class RegisterController implements RegisterAPI {
      * @param dto The TokenConfirmationDTO containing the confirmation token.
      * @return ResponseEntity indicating the result of the email confirmation.
      */
-    //@ResponseStatus(code = HttpStatus.OK)
     @PostMapping("/confirm-email")
     @Override
     public ResponseEntity<?> confirmEmailToken(@RequestBody TokenConfirmationDTO dto) {

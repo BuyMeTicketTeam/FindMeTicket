@@ -1,7 +1,8 @@
 package com.booking.app.controller.api;
 
 import com.booking.app.dto.*;
-import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.EmailExistsException;
+import com.booking.app.exception.exception.UsernameExistsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,7 +22,7 @@ public interface RegisterAPI {
             @ApiResponse(responseCode = "201", description = "User registered successfully"),
             @ApiResponse(responseCode = "409", description = "We’re sorry. This email already exists")
     })
-    ResponseDTO<EmailDTO> signUp(@Valid @NotNull RegistrationDTO dto) throws UserAlreadyExistAuthenticationException, MessagingException, IOException;
+    ResponseDTO<EmailDTO> signUp(@Valid @NotNull RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException;
 
     @Operation(summary = "Email confirmation")
     @ApiResponses(value = {

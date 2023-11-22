@@ -4,7 +4,8 @@ import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.entity.UserSecurity;
-import com.booking.app.exception.exception.UserAlreadyExistAuthenticationException;
+import com.booking.app.exception.exception.EmailExistsException;
+import com.booking.app.exception.exception.UsernameExistsException;
 import jakarta.mail.MessagingException;
 import org.springframework.validation.annotation.Validated;
 import java.io.IOException;
@@ -21,10 +22,10 @@ public interface UserSecurityService {
      *
      * @param securityDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO Returns an EmailDTO containing information about the registration confirmation email.
-     * @throws UserAlreadyExistAuthenticationException If a user with the provided email already exists.
+     * @throws EmailExistsException If a user with the provided email already exists.
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
-    EmailDTO register(RegistrationDTO securityDTO) throws UserAlreadyExistAuthenticationException, MessagingException, IOException;
+    EmailDTO register(RegistrationDTO securityDTO) throws EmailExistsException, MessagingException, IOException, UsernameExistsException;
 
     /**
      * Finds a user security entity by the provided email address.

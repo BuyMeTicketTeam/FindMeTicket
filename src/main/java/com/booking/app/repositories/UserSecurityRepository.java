@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Repository
 public interface UserSecurityRepository extends JpaRepository<UserSecurity,UUID>{
-    Optional<UserSecurity> findByUsername(String name);
+    Optional<UserSecurity> findByEmailOrUsername(String email, String username);
     Optional<UserSecurity> findByEmail(String email);
 
 //    @Modifying
