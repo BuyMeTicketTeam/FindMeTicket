@@ -15,7 +15,8 @@
     background: var(--background);
     padding: 50px 25px 25px 25px;
     border-radius: 10px;
-    z-index: 2;
+    z-index: 4;
+    min-width: 280px;
   }
 
   .link {

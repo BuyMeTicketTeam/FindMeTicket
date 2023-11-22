@@ -27,7 +27,6 @@ export default function Index() {
 
   function validation() {
     if (emailCheck(email)) {
-      onSend(false);
       onError(t('reset-error'));
       onEmailError(true);
       return false;
@@ -38,6 +37,7 @@ export default function Index() {
   function handleButton() {
     onEmailError(false);
     if (!validation()) {
+      onSend(false);
       return;
     }
     makeQuerry('reset', JSON.stringify(email))
