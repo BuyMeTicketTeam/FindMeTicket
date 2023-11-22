@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Header from './components/Header';
 import Routers from './routers';
-import './testServer';
+// import './testServer';
 import './App.css';
 import './styles/header.css';
 import './styles/login.css';

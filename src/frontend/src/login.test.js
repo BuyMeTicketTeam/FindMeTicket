@@ -1,7 +1,11 @@
 /* eslint-disable no-undef */
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  render, screen, fireEvent, act, waitFor,
+} from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
+import Login from './components/Login';
 
 test('render header', () => {
   render(<App />);
@@ -42,7 +46,7 @@ test('password input event', () => {
   render(<App />);
   const loginBtn = screen.getByTestId('login-btn');
   fireEvent.click(loginBtn);
-  const passwordInput = screen.getByTestId('password-input');
+  const passwordInput = screen.getByTestId('password-login-input');
   fireEvent.input(passwordInput, {
     target: { value: '123456' },
   });
@@ -57,44 +61,122 @@ test('link to register', () => {
   fireEvent.click(toRegisterBtn);
   expect(screen.queryByTestId('register')).toBeInTheDocument();
 });
-// keep this test as a template to check requests and response to a server.
-// It haven`t finished so keep it commented out.
-// // describe('login check', () => {
-//   // let container = null;
-//   // beforeEach(() => {
-//   // // подготавливаем DOM-элемент, куда будем рендерить
-//   //   container = document.createElement('div');
-//   //   document.body.appendChild(container);
-//   // });
 
-//   // afterEach(() => {
-//   // // подчищаем после завершения
-//   //   unmountComponentAtNode(container);
-//   //   container.remove();
-//   //   container = null;
-//   // });
+describe('validation', () => {
+  test('login error', () => {
+    render(
+      <Router>
+        <Login />
+      </Router>,
+    );
+    const buttonLogin = screen.getByTestId('send-request');
+    fireEvent.click(buttonLogin);
+    expect(screen.queryByTestId('error').innerHTML).toBe('Поле email заповнено не вірно');
+  });
+  test('password error', () => {
+    render(
+      <Router>
+        <Login />
+      </Router>,
+    );
+    const buttonLogin = screen.getByTestId('send-request');
+    const loginInput = screen.getByTestId('login-input');
+    fireEvent.input(loginInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.click(buttonLogin);
+    expect(screen.queryByTestId('error').innerHTML).toBe('Поле паролю заповнено не вірно');
+  });
+  test('success validation', () => {
+    render(
+      <Router>
+        <Login />
+      </Router>,
+    );
+    const buttonLogin = screen.getByTestId('send-request');
+    const loginInput = screen.getByTestId('login-input');
+    const passwordInput = screen.getByTestId('password-login-input');
+    fireEvent.input(loginInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'stepan123132123' },
+    });
+    fireEvent.click(buttonLogin);
+    expect(screen.queryByTestId('error')).toBeNull();
+  });
+});
 
-//   // it('renders user data', async () => {
-//     // const fakeUser = {
-//     //   name: 'Joni Baez',
-//     //   age: '32',
-//     //   address: '123, Charming Avenue',
-//     // };
-//    // const status = 400;
-//     jest.spyOn(global, 'fetch').mockImplementation(() => Promise.resolve({
-//       // json: () => Promise.resolve(fakeUser),
-//       status: () => Promise.resolve(status),
-//     }));
-
-//     // Используем act асинхронно, чтобы передать успешно завершённые промисы
-//     await act(async () => {
-//       render(<Login />);
-//     });
-//     const sendBtn = screen.getByTestId('send-request');
-//     fireEvent.click(sendBtn);
-//     expect(screen.queryByTestId('error')).toBeInTheDocument();
-
-//     // выключаем фиктивный fetch, чтобы убедиться, что тесты полностью изолированы
-//     global.fetch.mockRestore();
-//   });
-// });
+describe('server tests', () => {
+  test('login or password error', async () => {
+    function mockFetch() {
+      return {
+        status: 400,
+      };
+    }
+    const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
+    await act(async () => {
+      render(<App />);
+    });
+    const loginBtn = screen.getByTestId('login-btn');
+    fireEvent.click(loginBtn);
+    const buttonLogin = screen.getByTestId('send-request');
+    const loginInput = screen.getByTestId('login-input');
+    const passwordInput = screen.getByTestId('password-login-input');
+    fireEvent.input(loginInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'stepan123132123' },
+    });
+    fireEvent.click(buttonLogin);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/login', {
+      body: '{"login":"stepan@gmail.com","password":"stepan123132123"}',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('error').innerHTML).toBe('Логін або пароль хибні');
+    });
+  });
+  // Test is not ready
+  // test('success response', async () => {
+  //   function mockFetch() {
+  //     return {
+  //       ok: true,
+  //       status: 200,
+  //     };
+  //   }
+  //   const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
+  //   await act(async () => {
+  //     render(<App />);
+  //   });
+  //   const loginBtn = screen.getByTestId('login-btn');
+  //   fireEvent.click(loginBtn);
+  //   const buttonLogin = screen.getByTestId('send-request');
+  //   const loginInput = screen.getByTestId('login-input');
+  //   const passwordInput = screen.getByTestId('password-login-input');
+  //   fireEvent.input(loginInput, {
+  //     target: { value: 'stepan@gmail.com' },
+  //   });
+  //   fireEvent.input(passwordInput, {
+  //     target: { value: 'stepan123132123' },
+  //   });
+  //   fireEvent.click(buttonLogin);
+  //   expect(fetchMock).toHaveBeenCalledTimes(1);
+  //   expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/login', {
+  //     body: '{"login":"stepan@gmail.com","password":"stepan123132123"}',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     method: 'POST',
+  //   });
+  //   await waitFor(() => {
+  //     expect(screen.queryByTestId('error')).toBeNull();
+  //     expect(screen.queryByTestId('login')).toBeNull();
+  //   });
+  // });
+});
