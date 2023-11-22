@@ -117,9 +117,9 @@ export default function Confirm({ changePopup }) {
         <p>{t('confirm-code')}</p>
         <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
         <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
-        {error !== '' && <p className="confirm__error">{error}</p>}
+        {error !== '' && <p data-testid="error" className="confirm__error">{error}</p>}
         <div className="row">
-          <Button name={send ? 'Обробка...' : t('send')} disabled={send} onButton={onSend} />
+          <Button name={send ? 'Обробка...' : t('send')} disabled={send} onButton={onSend} dataTestId="confirm-btn" />
           <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
         </div>
       </div>
