@@ -12,6 +12,7 @@ body {
    font-family: 'Roboto';
    color: var(--font-color);
    background: url('../public/img/mountains.jpg');
+   min-width: 800px;
 }
 img {
   max-width: 100%;
@@ -29,7 +30,6 @@ img {
 }
 .input {
   position: relative;
-  min-width: 350px;
   width: 100%;
   border-radius: 0;
   border: 2px solid var(--main);
@@ -189,6 +189,7 @@ img {
   background: var(--background);
   border-radius: 20px;
   padding: 35px;
+  min-width: 450px;
   max-width: 30%;
 }
 .row {

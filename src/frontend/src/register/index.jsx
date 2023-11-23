@@ -69,6 +69,8 @@ export default function Register() {
       sessionStorage.setItem('email', email);
     } else if (response.status === 409) {
       onError(t('error-email'));
+    } else if (response.status === 418) {
+      onError('Цей псевдонім вже існує, придумайте щось інше');
     } else if (response.status === 404) {
       onError(t('error-server'));
     } else {

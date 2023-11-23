@@ -18,7 +18,7 @@ export default function Confirm({ changePopup }) {
   const [seconds, setSeconds] = useState(30);
   const [send, onSend] = useState(false);
   const [resend, onResend] = useState(false);
-  const MY_CONSTANT = 'Пароль змінено!!!';
+  const MY_CONSTANT = 'Пошту підтверджено!!!';
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -53,6 +53,7 @@ export default function Confirm({ changePopup }) {
   function handleSendButton() {
     onCodeError(false);
     if (!validation()) {
+      onSend(false);
       return;
     }
     const body = {

@@ -90,6 +90,7 @@ export default function Index({ changePopup }) {
   function handleSendButton() {
     resetError();
     if (!validation()) {
+      onSend(false);
       return;
     }
     const body = {
@@ -100,6 +101,7 @@ export default function Index({ changePopup }) {
     };
     makeQuerry('new-password', JSON.stringify(body))
       .then((response) => {
+        onSend(false);
         checkResponse(response);
       });
   }

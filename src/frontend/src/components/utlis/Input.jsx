@@ -2,7 +2,7 @@ import React from 'react';
 // eslint-disable-next-line object-curly-newline
 export default function Input(
   {
-    value, onInputChange, type, dataTestId, placeholder, error, show, onShow,
+    value, onInputChange, type, dataTestId, placeholder, error, show, onShow, tip, tipDataTestId,
   },
 ) {
   function ifPassword() {
@@ -15,6 +15,7 @@ export default function Input(
     <div className="input-wrapper">
       {ifPassword()}
       { type === 'password' && <button className={show ? 'show-password' : 'show-password hide'} type="button" onClick={() => { onShow(!show); }}><img src="../img/eye.svg" alt="showPassword" /></button> }
+      <div data-testid={tipDataTestId} className="tip">{tip}</div>
     </div>
   );
 }
