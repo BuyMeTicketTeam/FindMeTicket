@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Input from '../components/utlis/Input';
-import Button from '../components/utlis/Button';
+import Input from '../utils/Input';
+import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
 import './reset.css';
 import { emailCheck } from '../helper/regExCheck';

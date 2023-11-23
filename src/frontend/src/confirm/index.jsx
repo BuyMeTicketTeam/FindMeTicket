@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { codeCheck } from '../helper/regExCheck';
-import Input from '../components/utlis/Input';
-import Button from '../components/utlis/Button';
+import Input from '../utils/Input';
+import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
 import timeOut from '../helper/timer';
 import './confirm.css';
@@ -33,8 +33,6 @@ export default function Confirm({ changePopup }) {
       onError('');
     } else if (response.status === 400) {
       onError(t('error-code'));
-    } else if (response.status === 404) {
-      onError(t('error-server'));
     } else {
       onError(t('error-server2'));
     }

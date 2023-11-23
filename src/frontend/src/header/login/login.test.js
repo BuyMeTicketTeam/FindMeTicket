@@ -4,14 +4,8 @@ import {
   render, screen, fireEvent, act, waitFor,
 } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App';
-import Login from './components/Login';
-
-test('render header', () => {
-  render(<App />);
-  const headerElement = screen.getByTestId('header');
-  expect(headerElement).toBeInTheDocument();
-});
+import App from '../../App';
+import Login from './index';
 
 test('open login', () => {
   render(<App />);

@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { passwordCheck, emailCheck } from '../helper/regExCheck';
-import Field from './utlis/Field';
-import Button from './utlis/Button';
-import makeQuerry from '../helper/querry';
-import Checkbox from './utlis/Checkbox';
-import writeToken from '../helper/writeToken';
+import { passwordCheck, emailCheck } from '../../helper/regExCheck';
+import Field from '../../utils/Field';
+import Button from '../../utils/Button';
+import makeQuerry from '../../helper/querry';
+import Checkbox from '../../utils/Checkbox';
+import writeToken from '../../helper/writeToken';
+import './login.css';
 
 export default function Popup({ changePopup, onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });

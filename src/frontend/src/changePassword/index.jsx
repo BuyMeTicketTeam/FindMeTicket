@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Field from '../components/utlis/Field';
-import Button from '../components/utlis/Button';
+import Field from '../utils/Field';
+import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
 import { codeCheck, passwordCheck } from '../helper/regExCheck';
 import timeOut from '../helper/timer';
@@ -55,8 +55,6 @@ export default function Index({ changePopup }) {
       onSucces(true);
     } else if (response.status === 400) {
       onError(t('error-code'));
-    } else if (response.status === 404) {
-      onError(t('error-server'));
     } else {
       onError(t('error-server2'));
     }

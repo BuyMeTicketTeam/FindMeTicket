@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Field from '../components/utlis/Field';
-import Button from '../components/utlis/Button';
+import Field from '../utils/Field';
+import Button from '../utils/Button';
 import ListTip from './ListTip';
 import makeQuerry from '../helper/querry';
 import { nicknameCheck, emailCheck, passwordCheck } from '../helper/regExCheck';
@@ -71,8 +71,6 @@ export default function Register() {
       onError(t('error-email'));
     } else if (response.status === 418) {
       onError('Цей псевдонім вже існує, придумайте щось інше');
-    } else if (response.status === 404) {
-      onError(t('error-server'));
     } else {
       onError(t('error-again'));
     }

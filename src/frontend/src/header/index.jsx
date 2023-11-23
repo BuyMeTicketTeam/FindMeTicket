@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import LoginBtn from './LoginBtn';
 import LanguageSelect from './LanguageSelect';
-import Login from './Login';
+import Login from './login/index';
+import './header.css';
 
 export default function Header({
   authorization, onAuthorization, changePopup, popupLogin,

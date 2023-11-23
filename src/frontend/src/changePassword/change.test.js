@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  render, screen, fireEvent, act, waitFor,
+} from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Index from './index';
 
@@ -107,5 +109,47 @@ describe('validation', () => {
     });
     fireEvent.click(buttonReg);
     expect(screen.queryByTestId('error')).toBeNull();
+  });
+});
+describe('server tests', () => {
+  test('wrong data from user', async () => {
+    function mockFetch() {
+      return {
+        status: 400,
+      };
+    }
+    const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
+    await act(async () => {
+      render(
+        <Router>
+          <Index />
+        </Router>,
+      );
+    });
+    const buttonReg = screen.getByTestId('change-password-btn');
+    const codeInput = screen.getByTestId('code-input');
+    const passwordInput = screen.getByTestId('password-input');
+    const confirmPasswordInput = screen.getByTestId('confirm-password-input');
+    fireEvent.input(codeInput, {
+      target: { value: '12345' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'b12345678' },
+    });
+    fireEvent.input(confirmPasswordInput, {
+      target: { value: 'b12345678' },
+    });
+    fireEvent.click(buttonReg);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/new-password', {
+      body: '{"token":"12345","password":"b12345678","email":null,"confirmPassword":"b12345678"}',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('error').innerHTML).toBe('error-code');
+    });
   });
 });

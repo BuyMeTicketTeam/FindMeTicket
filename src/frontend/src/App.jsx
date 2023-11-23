@@ -3,14 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import Header from './components/Header';
+import Header from './header/index';
 import Routers from './routers';
 // import './testServer';
 import './App.css';
-import './styles/header.css';
-import './styles/login.css';
 import './locales/i18n';
-import Cookie from './components/cookie';
+import Cookie from './cookieBanner/cookie';
 
 function App() {
   const [cookies] = useCookies();
