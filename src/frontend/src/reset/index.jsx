@@ -61,9 +61,9 @@ export default function Index() {
       <div className="form-body reset__body">
         <h1 className="title">{t('password-reset')}</h1>
         <p className="reset__text">{t('email')}</p>
-        <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" />
-        {error !== '' && <p className="reset__error">{error}</p>}
-        <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} />
+        <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" dataTestId="reset-input" />
+        {error !== '' && <p data-testid="error" className="reset__error">{error}</p>}
+        <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} dataTestId="reset-btn" />
       </div>
     </div>
   );
