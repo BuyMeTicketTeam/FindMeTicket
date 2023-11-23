@@ -140,17 +140,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     }
 
     /**
-     * Finds a user security entity by the provided email address.
-     *
-     * @param email The email address of the user.
-     * @return Optional<UserSecurity> Returns an Optional containing the UserSecurity entity if found, otherwise empty.
-     */
-    @Override
-    public Optional<UserSecurity> findByEmail(String email) {
-        return userSecurityRepository.findByEmail(email);
-    }
-
-    /**
      * Enables a user if the provided token confirmation details are valid.
      *
      * @param dto The TokenConfirmationDTO containing token confirmation details.
