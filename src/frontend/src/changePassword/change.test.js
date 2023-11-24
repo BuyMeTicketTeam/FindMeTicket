@@ -153,3 +153,20 @@ describe('server tests', () => {
     });
   });
 });
+test('check before timeout', async () => {
+  jest.useFakeTimers();
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
+  expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
+  // Дождемся окончания таймера
+  await waitFor(() => {
+    expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
+  });
+  jest.runOnlyPendingTimers();
+  jest.useRealTimers();
+  // Проверим, что таймер отображается
+  // expect(screen.getByText('time', { exact: false })).toBeInTheDocument();
+});

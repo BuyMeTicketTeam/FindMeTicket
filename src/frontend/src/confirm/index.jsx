@@ -69,8 +69,8 @@ export default function Confirm({ changePopup }) {
     if (response.status === 200) {
       setMinutes(1);
       setSeconds(30);
-    } else if (response.status === 404) {
-      onError('Немає акаунту зареєстрованого на цю електронну пошту');
+    } if (response.status === 419) {
+      onError('Спробуйте ще раз');
     } else {
       onError('Помилка серверу. Спробуйте ще раз');
     }

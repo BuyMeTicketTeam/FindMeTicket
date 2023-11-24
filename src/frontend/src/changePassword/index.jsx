@@ -35,7 +35,7 @@ export default function Index({ changePopup }) {
   function checkResponseForResend(response) {
     if (response.status === 200) {
       setMinutes(2);
-    } else if (response.status === 404) {
+    } else if (response.status === 419) {
       onError(t('error-server'));
     } else {
       onError(t('error-server2'));
@@ -133,7 +133,7 @@ export default function Index({ changePopup }) {
         <Field dataTestId="password-input" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} show={show} onShow={onShow} />
         <Field dataTestId="confirm-password-input" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} show={show} onShow={onShow} />
         <Button name={send ? 'Обробка...' : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} dataTestId="change-password-btn" />
-        <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
       </div>
     </div>
   );

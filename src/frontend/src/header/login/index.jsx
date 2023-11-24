@@ -33,8 +33,6 @@ export default function Popup({ changePopup, onAuthorization }) {
       writeToken(response);
     } else if (response.status === 400) {
       onError(t('error-lp'));
-    } else if (response.status === 404) {
-      onError(t('error-server'));
     } else {
       onError(t('error-server2'));
     }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './cookie.css';
 
 function CookieBanner() {
@@ -9,6 +10,8 @@ function CookieBanner() {
   const acceptCookies = () => {
     setAcceptedCookies(true);
   };
+
+  const { t } = useTranslation('translation', { keyPrefix: 'cookie' });
 
   useEffect(() => {
     localStorage.setItem('acceptedCookies', String(acceptedCookies));
@@ -23,9 +26,9 @@ function CookieBanner() {
       <div className="cookie-img">
         <img src="../img/cookie.png" alt="cookie" />
       </div>
-      <p>Этот веб-сайт использует куки для улучшения вашего опыта.</p>
+      <p>{t('text')}</p>
       <button onClick={acceptCookies} type="button">
-        Принять куки
+        {t('accept-btn')}
       </button>
     </div>
   );

@@ -19,7 +19,7 @@ export default function Index() {
       navigate('/change-password');
       sessionStorage.setItem('email', email);
     } else if (response.status === 404) {
-      onError(t('error-server'));
+      onError('Немає акаунту зареєстрованого на цю електронну пошту');
     } else {
       onError(t('error-server2'));
     }
