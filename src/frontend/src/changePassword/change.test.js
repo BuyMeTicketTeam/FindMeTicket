@@ -161,12 +161,9 @@ test('check before timeout', async () => {
     </Router>,
   );
   expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
-  // Дождемся окончания таймера
-  await waitFor(() => {
-    expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
+  act(() => {
+    jest.runAllTimers();
   });
-  jest.runOnlyPendingTimers();
+  expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
   jest.useRealTimers();
-  // Проверим, что таймер отображается
-  // expect(screen.getByText('time', { exact: false })).toBeInTheDocument();
 });

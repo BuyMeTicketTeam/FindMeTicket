@@ -13,7 +13,7 @@ describe('CookieBanner component', () => {
     render(<CookieBanner />);
 
     // Проверяем, что баннер рендерится
-    const bannerElement = screen.getByText('Этот веб-сайт использует куки для улучшения вашего опыта.');
+    const bannerElement = screen.getByTestId('cookie-text');
     expect(bannerElement).toBeInTheDocument();
 
     // Проверяем, что изображение куки рендерится
@@ -21,7 +21,7 @@ describe('CookieBanner component', () => {
     expect(cookieImgElement).toBeInTheDocument();
 
     // Проверяем, что кнопка "Принять куки" рендерится
-    const acceptButton = screen.getByText('Принять куки');
+    const acceptButton = screen.getByTestId('cookie-accept-btn');
     expect(acceptButton).toBeInTheDocument();
 
     // Кликаем на кнопку "Принять куки"

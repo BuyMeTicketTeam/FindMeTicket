@@ -118,7 +118,7 @@ export default function Confirm({ changePopup }) {
         {error !== '' && <p data-testid="error" className="confirm__error">{error}</p>}
         <div className="row">
           <Button name={send ? 'Обробка...' : t('send')} disabled={send} onButton={onSend} dataTestId="confirm-btn" />
-          <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+          <button data-testid="send-again-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
         </div>
       </div>
     </div>

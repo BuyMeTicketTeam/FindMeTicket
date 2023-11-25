@@ -11,7 +11,7 @@ a {
 body {
    font-family: 'Roboto';
    color: var(--font-color);
-   background: url('../public/img/mountains.jpg');
+   background: url('../public/img/Frame 4.png');
    min-width: 800px;
 }
 img {
@@ -32,16 +32,19 @@ img {
   position: relative;
   width: 100%;
   border-radius: 0;
-  border: 2px solid var(--main);
+  border: 2px solid var(--bright);
   padding: 8px;
   font-size: 18px;
-  background: var(--semi-dark);
+  background: var(--dark);
   color: inherit;
   z-index: 1;
 }
 .input:focus {
   outline: none;
-  box-shadow: 0px 0px 8px 1px var(--main);
+  box-shadow: 0px 0px 8px 1px var(--bright);
+}
+.input::placeholder {
+  color: var(--grey);
 }
 .input.input-error {
   border: 2px solid var(--error);
@@ -49,6 +52,7 @@ img {
   box-shadow: 0px 0px 8px 1px var(--error);
 }
 .input-wrapper {
+  width: 100%;
   position: relative;
 }
 .show-password {
@@ -88,13 +92,13 @@ img {
   transition: 0.8s;
 }
 .button {
-  background: var(--main);
+  background: var(--bright);
   color: var(--font-color);
   font-weight: 700;
   font-size: 18px;
   min-width: 226px;
   border-radius: 10px;
-  border: 2px solid var(--main);
+  border: 2px solid var(--bright);
   padding: 8px 20px;
   transition: 0.3s;
 }
@@ -104,7 +108,7 @@ img {
 .button:hover {
   transition: 0.3s;
   cursor: pointer;
-  box-shadow: 0px 0px 8px 1px var(--main);
+  box-shadow: 0px 0px 8px 1px var(--bright);
   transform: translateY(-3px);
 }
 
@@ -141,7 +145,7 @@ img {
   display: block;
   width: 15px;
   height: 15px;
-  border: 2px solid var(--main);
+  border: 2px solid var(--bright);
 }
 .checkbox__field {
   position: absolute;
@@ -186,7 +190,7 @@ img {
   color: #fff;
 }
 .form-body {
-  background: var(--background);
+  background: var(--semi-dark);
   border-radius: 20px;
   padding: 35px;
   min-width: 450px;

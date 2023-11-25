@@ -74,7 +74,7 @@ describe('server tests', () => {
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('error-server');
+      expect(screen.getByTestId('error').innerHTML).toBe('Немає акаунту зареєстрованого на цю електронну пошту');
     });
   });
 });

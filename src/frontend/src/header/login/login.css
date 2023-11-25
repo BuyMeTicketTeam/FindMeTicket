@@ -12,7 +12,7 @@
   
   .popup__body {
     position: relative;
-    background: var(--background);
+    background: var(--semi-dark);
     padding: 50px 25px 25px 25px;
     border-radius: 10px;
     z-index: 4;
@@ -21,7 +21,7 @@
 
   .link {
     margin: 15px 0;
-    color: var(--bright);
+    color: var(--font-color);
   }
   
   .link:hover {

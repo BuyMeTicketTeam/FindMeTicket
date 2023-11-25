@@ -75,3 +75,17 @@ describe('server tests', () => {
     });
   });
 });
+test('check before timeout', async () => {
+  jest.useFakeTimers();
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
+  expect(screen.getByTestId('send-again-btn')).toBeDisabled();
+  act(() => {
+    jest.runAllTimers();
+  });
+  expect(screen.getByTestId('send-again-btn')).toBeDisabled();
+  jest.useRealTimers();
+});
