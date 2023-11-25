@@ -11,7 +11,7 @@ function CookieBanner() {
     setAcceptedCookies(true);
   };
 
-  const { t } = useTranslation('translation', { keyPrefix: 'cookie' });
+  const { t } = useTranslation('translation', { keyPrefix: 'cookie-banner' });
 
   useEffect(() => {
     localStorage.setItem('acceptedCookies', String(acceptedCookies));

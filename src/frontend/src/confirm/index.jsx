@@ -69,7 +69,7 @@ export default function Confirm({ changePopup }) {
     if (response.status === 200) {
       setMinutes(1);
       setSeconds(30);
-    } if (response.status === 419) {
+    } else if (response.status === 419) {
       onError('Спробуйте ще раз');
     } else {
       onError('Помилка серверу. Спробуйте ще раз');
@@ -77,6 +77,7 @@ export default function Confirm({ changePopup }) {
   }
 
   function handleResendButton() {
+    onCodeError(false);
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {

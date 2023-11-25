@@ -34,7 +34,8 @@ export default function Index({ changePopup }) {
   }, [seconds, minutes]);
   function checkResponseForResend(response) {
     if (response.status === 200) {
-      setMinutes(2);
+      setMinutes(1);
+      setSeconds(30);
     } else if (response.status === 419) {
       onError(t('error-server'));
     } else {
@@ -43,10 +44,12 @@ export default function Index({ changePopup }) {
   }
 
   function handleResendButton() {
+    onError('');
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
         checkResponseForResend(response);
+        onResend(false);
       });
   }
 

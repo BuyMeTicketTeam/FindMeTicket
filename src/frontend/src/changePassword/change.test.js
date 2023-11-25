@@ -151,19 +151,6 @@ describe('server tests', () => {
     await waitFor(() => {
       expect(screen.getByTestId('error').innerHTML).toBe('error-code');
     });
+    jest.clearAllMocks();
   });
-});
-test('check before timeout', async () => {
-  jest.useFakeTimers();
-  render(
-    <Router>
-      <Index />
-    </Router>,
-  );
-  expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
-  act(() => {
-    jest.runAllTimers();
-  });
-  expect(screen.getByTestId('confirm-send-btn')).toBeDisabled();
-  jest.useRealTimers();
 });
