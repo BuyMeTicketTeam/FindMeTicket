@@ -100,6 +100,15 @@ export default function Popup({ changePopup, onAuthorization }) {
         <Checkbox onClick={() => handleRememberMeChange()} />
         <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
         <Button dataTestId="send-request" className="btn-full" disabled={send} name={send ? 'Обробка...' : t('login-buttom')} onButton={onSend} />
+        <div className="login__another">
+          <span className="login-another__line" />
+          <span className="login-another__content">Або</span>
+          <span className="login-another__line" />
+        </div>
+        <a href="./" className="login__google">
+          <img src="../img/google-icon.png" alt="logo" />
+          Google
+        </a>
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
       </div>
     </div>

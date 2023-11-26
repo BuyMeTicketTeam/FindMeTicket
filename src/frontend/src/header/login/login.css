@@ -67,3 +67,32 @@
     transform: rotate(-45deg);
     background: var(--font-color);
   }
+.login__another {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+.login-another__line {
+  width: 100%;
+  background: var(--grey);
+  height: 1px;
+}
+.login-another__content {
+  margin: 0px 5px;
+  color: var(--grey);
+}
+.login__google {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: #fff;
+  color: var(--main);
+  border-radius: 10px;
+  padding: 10px;
+  text-decoration: none;
+}
+.login__google img {
+  max-width: 25px;
+  margin-right: 8px;
+}
