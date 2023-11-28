@@ -7,7 +7,6 @@ import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
-// import writeToken from '../../helper/writeToken';
 import './login.css';
 
 export default function Popup({ changePopup, onAuthorization }) {
@@ -30,7 +29,6 @@ export default function Popup({ changePopup, onAuthorization }) {
     if (response.status === 200) {
       changePopup(false);
       onAuthorization(true);
-      // writeToken(response);
     } else if (response.status === 401) {
       onError(t('error-lp'));
     } else {
@@ -60,8 +58,8 @@ export default function Popup({ changePopup, onAuthorization }) {
       return;
     }
     const body = {
-      login,
-      password,
+      login: login.trim(),
+      password: password.trim(),
     };
     makeQuerry('login', JSON.stringify(body), { rememberMe: remember })
       .then((response) => {
@@ -99,15 +97,15 @@ export default function Popup({ changePopup, onAuthorization }) {
         <Field error={passwordError} dataTestId="password-login-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} show={show} onShow={onShow} />
         <Checkbox onClick={() => handleRememberMeChange()} />
         <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
-        <Button dataTestId="send-request" className="btn-full" disabled={send} name={send ? 'Обробка...' : t('login-buttom')} onButton={onSend} />
+        <Button dataTestId="send-request" className="btn-full" disabled={send} name={send ? t('processing') : t('login-buttom')} onButton={onSend} />
         <div className="login__another">
           <span className="login-another__line" />
-          <span className="login-another__content">Або</span>
+          <span className="login-another__content">{t('or')}</span>
           <span className="login-another__line" />
         </div>
         <a href="./" className="login__google">
           <img src="../img/google-icon.png" alt="logo" />
-          Google
+          {t('google')}
         </a>
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
       </div>

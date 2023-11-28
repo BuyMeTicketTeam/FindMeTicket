@@ -23,7 +23,6 @@ export default function Index({ changePopup }) {
   const [resend, onResend] = useState(false);
   const [show, onShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
-  const MY_CONSTANT = 'Пароль змінено!!!';
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -95,10 +94,10 @@ export default function Index({ changePopup }) {
       return;
     }
     const body = {
-      token: code,
-      password,
+      token: code.trim(),
+      password: password.trim(),
       email: sessionStorage.getItem('email'),
-      confirmPassword,
+      confirmPassword: confirmPassword.trim(),
     };
     makeQuerry('new-password', JSON.stringify(body))
       .then((response) => {
@@ -122,10 +121,10 @@ export default function Index({ changePopup }) {
         <h1 className="title">{t('title')}</h1>
         {succes && (
         <p className="confirm__success">
-          {MY_CONSTANT}
+          {t('success-message')}
           {' '}
           <p>
-            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
+            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>{t('auth-link')}</Link>
           </p>
         </p>
         )}
@@ -135,8 +134,8 @@ export default function Index({ changePopup }) {
         <Field dataTestId="code-input" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={onCodeChange} />
         <Field dataTestId="password-input" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} show={show} onShow={onShow} />
         <Field dataTestId="confirm-password-input" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} show={show} onShow={onShow} />
-        <Button name={send ? 'Обробка...' : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} dataTestId="change-password-btn" />
-        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+        <Button name={send ? t('processing') : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} dataTestId="change-password-btn" />
+        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
       </div>
     </div>
   );

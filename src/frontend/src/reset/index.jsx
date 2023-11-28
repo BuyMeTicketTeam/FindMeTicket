@@ -17,9 +17,9 @@ export default function Index() {
   function statusChecks(response) {
     if (response.status === 200) {
       navigate('/change-password');
-      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('email', email.trim());
     } else if (response.status === 404) {
-      onError('Немає акаунту зареєстрованого на цю електронну пошту');
+      onError(t('error-user-not-found'));
     } else {
       onError(t('error-server2'));
     }
@@ -40,7 +40,7 @@ export default function Index() {
       onSend(false);
       return;
     }
-    makeQuerry('reset', JSON.stringify(email))
+    makeQuerry('reset', JSON.stringify({ email: email.trim() }))
       .then((response) => {
         onSend(false);
         statusChecks(response);

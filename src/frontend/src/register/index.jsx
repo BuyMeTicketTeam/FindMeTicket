@@ -66,11 +66,11 @@ export default function Register() {
   function responseStatus(response) {
     if (response.status === 200) {
       navigate('/confirm');
-      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('email', email.trim());
     } else if (response.status === 409) {
       onError(t('error-email'));
     } else if (response.status === 418) {
-      onError('Цей псевдонім вже існує, придумайте щось інше');
+      onError(t('error-nickname-exist'));
     } else {
       onError(t('error-again'));
     }
@@ -83,10 +83,10 @@ export default function Register() {
       return;
     }
     const body = {
-      email,
-      password,
-      username: nickname,
-      confirmPassword,
+      email: email.trim(),
+      password: password.trim(),
+      username: nickname.trim(),
+      confirmPassword: confirmPassword.trim(),
     };
     makeQuerry('register', JSON.stringify(body))
       .then((response) => {
@@ -133,7 +133,7 @@ export default function Register() {
           {t('agree')}
           <a href="/">{t('privacy policy')}</a>
         </label>
-        <Button dataTestId="register-btn" className="btn-full" disabled={send} name={send ? 'Обробка...' : t('register')} onButton={onSend} />
+        <Button dataTestId="register-btn" className="btn-full" disabled={send} name={send ? t('processing') : t('register')} onButton={onSend} />
       </div>
     </div>
   );
