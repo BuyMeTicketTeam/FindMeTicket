@@ -136,41 +136,4 @@ describe('server tests', () => {
       expect(screen.getByTestId('error').innerHTML).toBe('Логін або пароль хибні');
     });
   });
-  // Test is not ready
-  // test('success response', async () => {
-  //   function mockFetch() {
-  //     return {
-  //       ok: true,
-  //       status: 200,
-  //     };
-  //   }
-  //   const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
-  //   await act(async () => {
-  //     render(<App />);
-  //   });
-  //   const loginBtn = screen.getByTestId('login-btn');
-  //   fireEvent.click(loginBtn);
-  //   const buttonLogin = screen.getByTestId('send-request');
-  //   const loginInput = screen.getByTestId('login-input');
-  //   const passwordInput = screen.getByTestId('password-login-input');
-  //   fireEvent.input(loginInput, {
-  //     target: { value: 'stepan@gmail.com' },
-  //   });
-  //   fireEvent.input(passwordInput, {
-  //     target: { value: 'stepan123132123' },
-  //   });
-  //   fireEvent.click(buttonLogin);
-  //   expect(fetchMock).toHaveBeenCalledTimes(1);
-  //   expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/login', {
-  //     body: '{"login":"stepan@gmail.com","password":"stepan123132123"}',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     method: 'POST',
-  //   });
-  //   await waitFor(() => {
-  //     expect(screen.queryByTestId('error')).toBeNull();
-  //     expect(screen.queryByTestId('login')).toBeNull();
-  //   });
-  // });
 });

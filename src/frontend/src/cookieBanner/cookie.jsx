@@ -26,7 +26,7 @@ function CookieBanner() {
       <div className="cookie-img">
         <img src="../img/cookie.png" alt="cookie" />
       </div>
-      <p data-testid="cookie-text">{t('text')}</p>
+      <p data-testid="cookie-text">{t('aboutCookieText')}</p>
       <button data-testid="cookie-accept-btn" onClick={acceptCookies} type="button">
         {t('accept-btn')}
       </button>

@@ -7,7 +7,7 @@ import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
-import writeToken from '../../helper/writeToken';
+// import writeToken from '../../helper/writeToken';
 import './login.css';
 
 export default function Popup({ changePopup, onAuthorization }) {
@@ -30,8 +30,8 @@ export default function Popup({ changePopup, onAuthorization }) {
     if (response.status === 200) {
       changePopup(false);
       onAuthorization(true);
-      writeToken(response);
-    } else if (response.status === 400) {
+      // writeToken(response);
+    } else if (response.status === 401) {
       onError(t('error-lp'));
     } else {
       onError(t('error-server2'));
