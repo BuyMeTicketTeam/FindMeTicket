@@ -5,6 +5,7 @@
     padding: 0 20px;
     background: var(--semi-dark);
     align-items: center;
+    font-size: 18px;
 }
 
 .logo {
@@ -36,6 +37,7 @@
     transition: 0.3s;
 }
 .select {
+    font-size: inherit;
     border: none;
     margin-right: 15px;
     background: var(--background);
@@ -45,9 +47,9 @@
     outline: none;
   }
 .login {
+    font-size: inherit;
     background: transparent;
     border: none;
-    font-size: 16px;
     color: inherit;
   }
   .login:hover {

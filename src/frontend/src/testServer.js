@@ -10,5 +10,6 @@ createServer({
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
     this.post('/resend-confirm-token', () => new Response(200));
+    this.post('/logout', () => new Response(200));
   },
 });

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -22,7 +23,7 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
       <LanguageSelect language={language} changeLanguage={changeLanguage} />
-      <LoginBtn status={authorization} changePopup={changePopup} />
+      <LoginBtn status={authorization} onAuthorization={onAuthorization} changePopup={changePopup} />
       {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
     </header>
   );

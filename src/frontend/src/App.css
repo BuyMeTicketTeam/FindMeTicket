@@ -11,7 +11,7 @@ a {
 body {
    font-family: 'Roboto';
    color: var(--font-color);
-   background: #93abcf;
+   background: url('../public/img/Frame 4.jpg');
    min-width: 800px;
 }
 img {
