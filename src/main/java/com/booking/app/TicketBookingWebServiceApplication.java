@@ -15,10 +15,7 @@ public class TicketBookingWebServiceApplication {
 		SpringApplication.run(TicketBookingWebServiceApplication.class, args);
 	}
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+
 }
 
 

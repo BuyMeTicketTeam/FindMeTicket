@@ -5,7 +5,7 @@ import com.booking.app.dto.*;
 import com.booking.app.exception.exception.EmailExistsException;
 import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.UserSecurityService;
+import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,9 +21,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping
 @AllArgsConstructor
-public class RegisterController implements RegisterAPI {
+public class RegistrationController implements RegisterAPI {
 
-    private final UserSecurityService userSecurityService;
+    private final RegistrationService registrationService;
     private final MailSenderService mailSenderService;
 
     /**
@@ -36,10 +36,11 @@ public class RegisterController implements RegisterAPI {
      * @throws MessagingException   Thrown if an error occurs during email sending.
      * @throws IOException          Thrown if an I/O error occurs.
      */
+    @CrossOrigin(allowCredentials = "true", origins = "http://build")
     @PostMapping("/register")
     @Override
     public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException {
-        EmailDTO register = userSecurityService.register(dto);
+        EmailDTO register = registrationService.register(dto);
         return ResponseEntity.ok().body(register);
     }
 
@@ -49,10 +50,11 @@ public class RegisterController implements RegisterAPI {
      * @param dto The TokenConfirmationDTO containing the confirmation token.
      * @return ResponseEntity indicating the result of the email confirmation.
      */
+    @CrossOrigin(allowCredentials = "true", origins = "http://build")
     @PostMapping("/confirm-email")
     @Override
     public ResponseEntity<?> confirmEmailToken(@RequestBody TokenConfirmationDTO dto) {
-        if (userSecurityService.enableIfValid(dto)) {
+        if (registrationService.enableIfValid(dto)) {
             return ResponseEntity.status(HttpStatus.OK).body("User successfully confirmed its email");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not right");
@@ -66,10 +68,11 @@ public class RegisterController implements RegisterAPI {
      * @throws MessagingException Thrown if an error occurs during email sending.
      * @throws IOException        Thrown if an I/O error occurs.
      */
+    @CrossOrigin(allowCredentials = "true", origins = "http://build")
     @PostMapping("/resend-confirm-email")
     @Override
     public ResponseEntity<?> resendConfirmEmailToken(@RequestBody TokenConfirmationDTO dto) throws MessagingException, IOException {
-        if (mailSenderService.resendEmail(dto.getEmail())){
+        if (mailSenderService.resendEmail(dto.getEmail())) {
             return ResponseEntity.status(HttpStatus.OK).body("Confirm password token has been sent one more time");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad input");

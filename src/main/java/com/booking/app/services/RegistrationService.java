@@ -3,19 +3,17 @@ package com.booking.app.services;
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
-import com.booking.app.entity.UserSecurity;
 import com.booking.app.exception.exception.EmailExistsException;
 import com.booking.app.exception.exception.UsernameExistsException;
 import jakarta.mail.MessagingException;
 import org.springframework.validation.annotation.Validated;
 import java.io.IOException;
-import java.util.Optional;
 
 /**
  * Service interface for user security operations.
  */
 @Validated
-public interface UserSecurityService {
+public interface RegistrationService {
 
     /**
      * Registers a new user based on the provided registration information.

@@ -8,10 +8,8 @@ import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 
 /**
@@ -33,6 +31,7 @@ public class ResetPasswordController implements ResetPasswordAPI {
      * @throws MessagingException Thrown if an error occurs during email sending.
      * @throws IOException        Thrown if an I/O error occurs.
      */
+    @CrossOrigin(allowCredentials = "true", origins = "http://build")
     @PostMapping("/reset")
     @Override
     public ResponseEntity<?> sendResetToken(@RequestBody EmailDTO dto) throws MessagingException, IOException {
@@ -48,6 +47,7 @@ public class ResetPasswordController implements ResetPasswordAPI {
      * @param dto The ResetPasswordDTO containing the reset confirmation information.
      * @return ResponseEntity indicating the result of the password reset operation.
      */
+    @CrossOrigin(allowCredentials = "true", origins = "http://build")
     @PostMapping("/new-password")
     @Override
     public ResponseEntity<?> confirmResetPassword(@RequestBody ResetPasswordDTO dto) {

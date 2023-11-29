@@ -6,7 +6,7 @@ import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.exception.exception.EmailExistsException;
 import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.UserSecurityService;
+import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,13 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class RegisterControllerTest {
+class RegistrationControllerTest {
 
     @InjectMocks
-    private RegisterController registerController;
+    private RegistrationController registrationController;
 
     @Mock
-    private UserSecurityService userSecurityService;
+    private RegistrationService registrationService;
 
     @Mock
     private MailSenderService mailSenderService;
@@ -40,8 +40,8 @@ class RegisterControllerTest {
                 .confirmPassword("qwerty123").build();
         String email = registrationDTO.getEmail();
         EmailDTO emailDTO = EmailDTO.builder().email(email).build();
-        when(userSecurityService.register(registrationDTO)).thenReturn(emailDTO);
-        ResponseEntity<?> responseEntity = registerController.signUp(registrationDTO);
+        when(registrationService.register(registrationDTO)).thenReturn(emailDTO);
+        ResponseEntity<?> responseEntity = registrationController.signUp(registrationDTO);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
     }
@@ -53,8 +53,8 @@ class RegisterControllerTest {
                 .username("Michael123")
                 .password("qwerty123")
                 .confirmPassword("qwerty123").build();
-        when(userSecurityService.register(registrationDTO)).thenThrow(EmailExistsException.class);
-        Assertions.assertThrows(EmailExistsException.class, () -> registerController.signUp(registrationDTO));
+        when(registrationService.register(registrationDTO)).thenThrow(EmailExistsException.class);
+        Assertions.assertThrows(EmailExistsException.class, () -> registrationController.signUp(registrationDTO));
     }
 
     @Test
@@ -64,8 +64,8 @@ class RegisterControllerTest {
                 .username("Michael123")
                 .password("qwerty123")
                 .confirmPassword("qwerty123").build();
-        when(userSecurityService.register(registrationDTO)).thenThrow(UsernameExistsException.class);
-        Assertions.assertThrows(UsernameExistsException.class, () -> registerController.signUp(registrationDTO));
+        when(registrationService.register(registrationDTO)).thenThrow(UsernameExistsException.class);
+        Assertions.assertThrows(UsernameExistsException.class, () -> registrationController.signUp(registrationDTO));
     }
 
     @Test
@@ -73,8 +73,8 @@ class RegisterControllerTest {
         TokenConfirmationDTO tokenDTO = TokenConfirmationDTO.builder()
                 .email("mishaakamichael999@gmail.com")
                 .token("SDG23").build();
-        when(userSecurityService.enableIfValid(tokenDTO)).thenReturn(true);
-        ResponseEntity<?> responseEntity = registerController.confirmEmailToken(tokenDTO);
+        when(registrationService.enableIfValid(tokenDTO)).thenReturn(true);
+        ResponseEntity<?> responseEntity = registrationController.confirmEmailToken(tokenDTO);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
     }
@@ -84,8 +84,8 @@ class RegisterControllerTest {
         TokenConfirmationDTO tokenDTO = TokenConfirmationDTO.builder()
                 .email("mishaakamichael999@gmail.com")
                 .token("SDG23").build();
-        when(userSecurityService.enableIfValid(tokenDTO)).thenReturn(false);
-        ResponseEntity<?> responseEntity = registerController.confirmEmailToken(tokenDTO);
+        when(registrationService.enableIfValid(tokenDTO)).thenReturn(false);
+        ResponseEntity<?> responseEntity = registrationController.confirmEmailToken(tokenDTO);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
     }
@@ -97,7 +97,7 @@ class RegisterControllerTest {
                 .token("SDG23").build();
         String email = tokenDTO.getEmail();
         when(mailSenderService.resendEmail(email)).thenReturn(true);
-        ResponseEntity<?> responseEntity = registerController.resendConfirmEmailToken(tokenDTO);
+        ResponseEntity<?> responseEntity = registrationController.resendConfirmEmailToken(tokenDTO);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
     }
@@ -109,7 +109,7 @@ class RegisterControllerTest {
                 .token("SDG23").build();
         String email = tokenDTO.getEmail();
         when(mailSenderService.resendEmail(email)).thenReturn(false);
-        ResponseEntity<?> responseEntity = registerController.resendConfirmEmailToken(tokenDTO);
+        ResponseEntity<?> responseEntity = registrationController.resendConfirmEmailToken(tokenDTO);
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
     }

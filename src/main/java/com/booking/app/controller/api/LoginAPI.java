@@ -13,12 +13,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Validated
-public interface AuthAPI {
+public interface LoginAPI {
 
     @Operation(summary = "Authentication User")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been authenticated"),
-            @ApiResponse(responseCode = "400", description = "Invalid credentials or such user doesn't exist")
+            @ApiResponse(responseCode = "403", description = "Invalid credentials or such user doesn't exist")
     })
-    public ResponseEntity<?> signIn(@RequestBody LoginDTO dto , HttpServletRequest request, HttpServletResponse response);
+     ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDTO dto , HttpServletRequest request, HttpServletResponse response);
 }

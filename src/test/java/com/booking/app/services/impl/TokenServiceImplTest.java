@@ -117,7 +117,8 @@ class TokenServiceImplTest {
         assertNotNull(token);
         assertNotNull(token.getUser());
         assertNotNull(token.getExpiryTime());
-        assertTrue((token.getExpiryTime().getTime()-new Date(System.currentTimeMillis()).getTime())/(60*1000)== 9);
+        long minutes = (token.getExpiryTime().getTime() - new Date(System.currentTimeMillis()).getTime()) / (60 * 1000);
+        assertTrue(minutes >= 9 && minutes <= 10);
 
     }
 

@@ -20,21 +20,19 @@ class MailSenderServiceImplTest {
     private MailSenderServiceImpl mailSenderService;
 
     @Mock
-    private  JavaMailSender mailSender;
+    private JavaMailSender mailSender;
 
     @Mock
-    private  TemplateEngine templateEngine;
+    private TemplateEngine templateEngine;
 
     @Mock
-    private  UserSecurityRepository userSecurityRepository;
+    private UserSecurityRepository userSecurityRepository;
 
     @Mock
     private VerifyEmailRepository verifyEmailRepository;
 
     @Mock
-    private  TokenService tokenService;
-
-
+    private TokenService tokenService;
 
 
     @Test

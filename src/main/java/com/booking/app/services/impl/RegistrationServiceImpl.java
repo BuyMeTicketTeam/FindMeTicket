@@ -16,7 +16,7 @@ import com.booking.app.repositories.UserSecurityRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
-import com.booking.app.services.UserSecurityService;
+import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +33,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class UserSecurityServiceImpl implements UserDetailsService, UserSecurityService {
+public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserSecurityRepository userSecurityRepository;
     private final RoleRepository roleRepository;
@@ -42,13 +42,6 @@ public class UserSecurityServiceImpl implements UserDetailsService, UserSecurity
     private final UserMapper mapper;
     private final MailSenderService mailService;
     private final TokenService tokenService;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserSecurity userSecurity = userSecurityRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("User %s not found", email)));
-        return userSecurity;
-    }
 
     /**
      * Registers a new user based on the provided registration information.

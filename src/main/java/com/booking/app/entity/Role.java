@@ -19,7 +19,7 @@ public class Role{
     private int id;
 
     @Enumerated(EnumType.STRING)
-    private  EnumRole enumRole;
+    private EnumRole enumRole;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private Set<User> users;
