@@ -7,8 +7,7 @@ export default function Field({ name, value, onInputChange, type, tip, dataTestI
   return (
     <div className="field">
       <div className="field__name">{name}</div>
-      <Input dataTestId={dataTestId} value={value} onInputChange={onInputChange} type={type} placeholder={placeholder} error={error} show={show} onShow={onShow} />
-      <div data-testid={tipDataTestId} className="tip">{tip}</div>
+      <Input dataTestId={dataTestId} value={value} onInputChange={onInputChange} type={type} placeholder={placeholder} error={error} show={show} onShow={onShow} tip={tip} tipDataTestId={tipDataTestId} />
     </div>
   );
 }

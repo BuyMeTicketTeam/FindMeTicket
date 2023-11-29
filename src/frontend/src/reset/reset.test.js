@@ -6,24 +6,28 @@ import {
 import { BrowserRouter as Router } from 'react-router-dom';
 import Index from './index';
 
-test('confirm input event', () => {
-  render(<Index />);
-  const confirmInput = screen.getByTestId('confirm-input');
-  fireEvent.input(confirmInput, {
+test('resetinput event', () => {
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
+  const resetInput = screen.getByTestId('reset-input');
+  fireEvent.input(resetInput, {
     target: { value: '12312' },
   });
-  expect(confirmInput.value).toBe('12312');
+  expect(resetInput.value).toBe('12312');
 });
 describe('validation', () => {
-  test('confirm error', () => {
+  test('reset error', () => {
     render(
       <Router>
         <Index />
       </Router>,
     );
-    const buttonReg = screen.getByTestId('confirm-btn');
+    const buttonReg = screen.getByTestId('reset-btn');
     fireEvent.click(buttonReg);
-    expect(screen.queryByTestId('error').innerHTML).toBe('confirm-error');
+    expect(screen.queryByTestId('error').innerHTML).toBe('reset-error');
   });
   test('success validation', () => {
     render(
@@ -31,21 +35,20 @@ describe('validation', () => {
         <Index />
       </Router>,
     );
-    const buttonReg = screen.getByTestId('confirm-btn');
-    const confirmInput = screen.getByTestId('confirm-input');
-    fireEvent.input(confirmInput, {
-      target: { value: '12342' },
+    const buttonReg = screen.getByTestId('reset-btn');
+    const resetInput = screen.getByTestId('reset-input');
+    fireEvent.input(resetInput, {
+      target: { value: 'stepan@gmail.com' },
     });
     fireEvent.click(buttonReg);
     expect(screen.queryByTestId('error')).toBeNull();
   });
 });
 describe('server tests', () => {
-  test('wrong code from email', async () => {
+  test('wrong data from user', async () => {
     function mockFetch() {
       return {
-        ok: true,
-        status: 400,
+        status: 404,
       };
     }
     const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
@@ -56,22 +59,22 @@ describe('server tests', () => {
         </Router>,
       );
     });
-    const buttonReg = screen.getByTestId('confirm-btn');
-    const confirmInput = screen.getByTestId('confirm-input');
-    fireEvent.input(confirmInput, {
-      target: { value: '12342' },
+    const buttonReg = screen.getByTestId('reset-btn');
+    const resetInput = screen.getByTestId('reset-input');
+    fireEvent.input(resetInput, {
+      target: { value: 'stepan@gmail.com' },
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/confirm-email', {
-      body: '{"email":null,"token":"12342"}',
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/reset', {
+      body: '"stepan@gmail.com"',
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('error-code');
+      expect(screen.getByTestId('error').innerHTML).toBe('Немає акаунту зареєстрованого на цю електронну пошту');
     });
   });
 });

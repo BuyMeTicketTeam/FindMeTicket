@@ -9,8 +9,9 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "i18next": "^23.7.1",
+    "jest-fetch-mock": "^3.0.3",
     "react": "^18.2.0",
-    "react-cookie-banner": "^4.1.0",
+    "react-cookie": "^6.1.1",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.1",
     "react-router-dom": "^6.18.0",
@@ -21,6 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

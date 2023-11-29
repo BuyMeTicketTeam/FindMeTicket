@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Field from '../components/utlis/Field';
-import Button from '../components/utlis/Button';
+import Field from '../utils/Field';
+import Button from '../utils/Button';
 import ListTip from './ListTip';
 import makeQuerry from '../helper/querry';
 import { nicknameCheck, emailCheck, passwordCheck } from '../helper/regExCheck';
@@ -55,24 +55,27 @@ export default function Register() {
         return true;
     }
   }
+
   function resetErrors() {
     onNicknameError(false);
     onEmailError(false);
     onPasswordError(false);
     onConfirmPasswordError(false);
   }
+
   function responseStatus(response) {
     if (response.status === 200) {
       navigate('/confirm');
-      sessionStorage.setItem('email', email);
+      sessionStorage.setItem('email', email.trim());
     } else if (response.status === 409) {
       onError(t('error-email'));
-    } else if (response.status === 404) {
-      onError(t('error-server'));
+    } else if (response.status === 418) {
+      onError(t('error-nickname-exist'));
     } else {
       onError(t('error-again'));
     }
   }
+
   function handleClick() {
     resetErrors();
     if (!validation()) {
@@ -80,10 +83,10 @@ export default function Register() {
       return;
     }
     const body = {
-      email,
-      password,
-      username: nickname,
-      confirmPassword,
+      email: email.trim(),
+      password: password.trim(),
+      username: nickname.trim(),
+      confirmPassword: confirmPassword.trim(),
     };
     makeQuerry('register', JSON.stringify(body))
       .then((response) => {
@@ -91,18 +94,22 @@ export default function Register() {
         responseStatus(response);
       });
   }
+
   function handleNicknameChange(value) {
     onNicknameChange(value);
     onNicknameError(false);
   }
+
   function handleEmailChange(value) {
     onEmailChange(value);
     onEmailError(false);
   }
+
   function handlePasswordChange(value) {
     onPasswordChange(value);
     onPasswordError(false);
   }
+
   function handleConfirmPasswordChange(value) {
     onConfirmPasswordChange(value);
     onConfirmPasswordError(false);
@@ -126,7 +133,7 @@ export default function Register() {
           {t('agree')}
           <a href="/">{t('privacy policy')}</a>
         </label>
-        <Button dataTestId="register-btn" className="btn-full" disabled={send} name={send ? 'Обробка...' : t('register')} onButton={onSend} />
+        <Button dataTestId="register-btn" className="btn-full" disabled={send} name={send ? t('processing') : t('register')} onButton={onSend} />
       </div>
     </div>
   );

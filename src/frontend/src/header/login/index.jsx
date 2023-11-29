@@ -1,11 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { passwordCheck, emailCheck } from '../helper/regExCheck';
-import Field from './utlis/Field';
-import Button from './utlis/Button';
-import makeQuerry from '../helper/querry';
-import Checkbox from './utlis/Checkbox';
+import { passwordCheck, emailCheck } from '../../helper/regExCheck';
+import Field from '../../utils/Field';
+import Button from '../../utils/Button';
+import makeQuerry from '../../helper/querry';
+import Checkbox from '../../utils/Checkbox';
+import './login.css';
 
 export default function Popup({ changePopup, onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
@@ -22,24 +24,18 @@ export default function Popup({ changePopup, onAuthorization }) {
     onLoginError(false);
     onPasswordError(false);
   }
-  function writeToken(response) {
-    if (response.headers.get('Authorization')) {
-      localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
-    }
-  }
+
   function statusChecks(response) {
     if (response.status === 200) {
       changePopup(false);
       onAuthorization(true);
-      writeToken(response);
-    } else if (response.status === 400) {
+    } else if (response.status === 401) {
       onError(t('error-lp'));
-    } else if (response.status === 404) {
-      onError(t('error-server'));
     } else {
       onError(t('error-server2'));
     }
   }
+
   function validation() {
     switch (true) {
       case emailCheck(login):
@@ -54,6 +50,7 @@ export default function Popup({ changePopup, onAuthorization }) {
         return true;
     }
   }
+
   function handleClick() {
     resetErrors();
     if (!validation()) {
@@ -61,29 +58,32 @@ export default function Popup({ changePopup, onAuthorization }) {
       return;
     }
     const body = {
-      login,
-      password,
-      remember,
+      login: login.trim(),
+      password: password.trim(),
     };
-    makeQuerry('login', JSON.stringify(body))
+    makeQuerry('login', JSON.stringify(body), { rememberMe: remember })
       .then((response) => {
         onSend(false);
         statusChecks(response);
       });
   }
+
   useEffect(() => {
     if (send) {
       handleClick();
     }
   }, [send]);
+
   function handleLoginChange(value) {
     onLoginChange(value);
     onLoginError(false);
   }
+
   function handlePasswordChange(value) {
     onPasswordChange(value);
     onPasswordError(false);
   }
+
   function handleRememberMeChange() {
     rememberMe(!remember);
   }
@@ -94,10 +94,19 @@ export default function Popup({ changePopup, onAuthorization }) {
         <button data-testid="close" type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={(value) => handleLoginChange(value)} placeholder="mail@mail.com" />
-        <Field error={passwordError} dataTestId="password-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} show={show} onShow={onShow} />
+        <Field error={passwordError} dataTestId="password-login-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} show={show} onShow={onShow} />
         <Checkbox onClick={() => handleRememberMeChange()} />
         <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
-        <Button data-testid="send-request" className="btn-full" disabled={send} name={send ? 'Обробка...' : t('login-buttom')} onButton={onSend} />
+        <Button dataTestId="send-request" className="btn-full" disabled={send} name={send ? t('processing') : t('login-buttom')} onButton={onSend} />
+        <div className="login__another">
+          <span className="login-another__line" />
+          <span className="login-another__content">{t('or')}</span>
+          <span className="login-another__line" />
+        </div>
+        <a href="./" className="login__google">
+          <img src="../img/google-icon.png" alt="logo" />
+          {t('google')}
+        </a>
         <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
       </div>
     </div>

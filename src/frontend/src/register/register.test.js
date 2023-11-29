@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  render, screen, fireEvent, act, waitFor,
+} from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Index from './index';
 
@@ -56,27 +58,176 @@ test('confirm password input event', () => {
   expect(nicknameInput.value).toBe('1234');
 });
 
-describe('checkbox event', () => {
-  test('have check', () => {
+describe('validation', () => {
+  test('nickname error', () => {
     render(
       <Router>
         <Index />
       </Router>,
     );
-    const checkbox = screen.getByTestId('checkbox');
     const buttonReg = screen.getByTestId('register-btn');
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('nickname-error');
+  });
+
+  test('mail error', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('register-btn');
+    const nicknameInput = screen.getByTestId('nickname-input');
+    fireEvent.input(nicknameInput, {
+      target: { value: 'Stepan' },
+    });
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('email-error');
+  });
+
+  test('password error', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('register-btn');
+    const nicknameInput = screen.getByTestId('nickname-input');
+    const emailInput = screen.getByTestId('email-input');
+    fireEvent.input(nicknameInput, {
+      target: { value: 'Stepan' },
+    });
+    fireEvent.input(emailInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('password-error');
+  });
+
+  test('confirm password error', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('register-btn');
+    const nicknameInput = screen.getByTestId('nickname-input');
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+    fireEvent.input(nicknameInput, {
+      target: { value: 'Stepan' },
+    });
+    fireEvent.input(emailInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('confirm-password-error');
+  });
+
+  test('checkbox error', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('register-btn');
+    const nicknameInput = screen.getByTestId('nickname-input');
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+    const confirmPasswordInput = screen.getByTestId('confirm-pass-input');
+    fireEvent.input(nicknameInput, {
+      target: { value: 'Stepan' },
+    });
+    fireEvent.input(emailInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
+    fireEvent.input(confirmPasswordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('privacy-policy');
+  });
+
+  test('success validation', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('register-btn');
+    const nicknameInput = screen.getByTestId('nickname-input');
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+    const confirmPasswordInput = screen.getByTestId('confirm-pass-input');
+    const checkbox = screen.getByTestId('checkbox');
+    fireEvent.input(nicknameInput, {
+      target: { value: 'Stepan' },
+    });
+    fireEvent.input(emailInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
+    fireEvent.input(confirmPasswordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
     fireEvent.click(checkbox);
     fireEvent.click(buttonReg);
     expect(screen.queryByTestId('error')).toBeNull();
   });
-  test('do not have check', () => {
-    render(
-      <Router>
-        <Index />
-      </Router>,
-    );
+});
+describe('server tests', () => {
+  test('login or password error', async () => {
+    function mockFetch() {
+      return {
+        status: 409,
+      };
+    }
+    const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
+    await act(async () => {
+      render(
+        <Router>
+          <Index />
+        </Router>,
+      );
+    });
     const buttonReg = screen.getByTestId('register-btn');
+    const nicknameInput = screen.getByTestId('nickname-input');
+    const emailInput = screen.getByTestId('email-input');
+    const passwordInput = screen.getByTestId('password-input');
+    const confirmPasswordInput = screen.getByTestId('confirm-pass-input');
+    const checkbox = screen.getByTestId('checkbox');
+    fireEvent.input(nicknameInput, {
+      target: { value: 'Stepan' },
+    });
+    fireEvent.input(emailInput, {
+      target: { value: 'stepan@gmail.com' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
+    fireEvent.input(confirmPasswordInput, {
+      target: { value: 'asdadfdaf213123123' },
+    });
+    fireEvent.click(checkbox);
     fireEvent.click(buttonReg);
-    expect(screen.queryByTestId('error')).toBeTruthy();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/register', {
+      body: '{"email":"stepan@gmail.com","password":"asdadfdaf213123123","username":"Stepan","confirmPassword":"asdadfdaf213123123"}',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('error').innerHTML).toBe('error-email');
+    });
   });
 });

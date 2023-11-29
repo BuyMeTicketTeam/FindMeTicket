@@ -1,10 +1,12 @@
+/* eslint-disable max-len */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useTranslation } from 'react-i18next';
 import LoginBtn from './LoginBtn';
 import LanguageSelect from './LanguageSelect';
-import Login from './Login';
+import Login from './login/index';
+import './header.css';
 
 export default function Header({
   authorization, onAuthorization, changePopup, popupLogin,
@@ -21,7 +23,7 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
       <LanguageSelect language={language} changeLanguage={changeLanguage} />
-      <LoginBtn status={authorization} changePopup={changePopup} />
+      <LoginBtn status={authorization} onAuthorization={onAuthorization} changePopup={changePopup} />
       {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
     </header>
   );

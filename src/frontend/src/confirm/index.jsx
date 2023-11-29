@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { codeCheck } from '../helper/regExCheck';
-import Input from '../components/utlis/Input';
-import Button from '../components/utlis/Button';
+import Input from '../utils/Input';
+import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
 import timeOut from '../helper/timer';
 import './confirm.css';
@@ -18,7 +18,6 @@ export default function Confirm({ changePopup }) {
   const [seconds, setSeconds] = useState(30);
   const [send, onSend] = useState(false);
   const [resend, onResend] = useState(false);
-  const MY_CONSTANT = 'Пароль змінено!!!';
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -33,29 +32,30 @@ export default function Confirm({ changePopup }) {
       onError('');
     } else if (response.status === 400) {
       onError(t('error-code'));
-    } else if (response.status === 404) {
-      onError(t('error-server'));
     } else {
       onError(t('error-server2'));
     }
   }
+
   function validation() {
     if (codeCheck(code)) {
       onSend(false);
-      onError(t('confirm-error'));
+      onError(t('error-code'));
       onCodeError(true);
       return false;
     }
     return true;
   }
+
   function handleSendButton() {
     onCodeError(false);
     if (!validation()) {
+      onSend(false);
       return;
     }
     const body = {
       email: sessionStorage.getItem('email'),
-      token: code,
+      token: code.trim(),
     };
     makeQuerry('confirm-email', JSON.stringify(body))
       .then((response) => {
@@ -63,17 +63,20 @@ export default function Confirm({ changePopup }) {
         statusChecks(response);
       });
   }
+
   function statusChecksForResend(response) {
     if (response.status === 200) {
       setMinutes(1);
       setSeconds(30);
-    } else if (response.status === 404) {
-      onError('Немає акаунту зареєстрованого на цю електронну пошту');
+    } else if (response.status === 419) {
+      onError('error-server1');
     } else {
-      onError('Помилка серверу. Спробуйте ще раз');
+      onError(t('error-server2'));
     }
   }
+
   function handleResendButton() {
+    onCodeError(false);
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
@@ -81,6 +84,7 @@ export default function Confirm({ changePopup }) {
         statusChecksForResend(response);
       });
   }
+
   function handleCodeChange(value) {
     onCodeChange(value);
     onCodeError(false);
@@ -101,20 +105,20 @@ export default function Confirm({ changePopup }) {
         <h1 className="title">{t('confirm-email')}</h1>
         {succes && (
         <div className="confirm__success">
-          {MY_CONSTANT}
+          {t('success-message')}
           {' '}
           <p>
-            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>Натисніть для того щоб авторизуватися</Link>
+            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>{t('auth-link')}</Link>
           </p>
         </div>
         )}
         <p>{t('confirm-code')}</p>
         <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
         <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
-        {error !== '' && <p className="confirm__error">{error}</p>}
+        {error !== '' && <p data-testid="error" className="confirm__error">{error}</p>}
         <div className="row">
-          <Button name={send ? 'Обробка...' : t('send')} disabled={send} onButton={onSend} />
-          <button className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? 'Обробка...' : t('time', { minutes, seconds })}</button>
+          <Button name={send ? t('processing') : t('send')} disabled={send} onButton={onSend} dataTestId="confirm-btn" />
+          <button data-testid="send-again-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
         </div>
       </div>
     </div>
