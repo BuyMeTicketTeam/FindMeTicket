@@ -7,6 +7,7 @@ import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserSecurity;
+import com.booking.app.entity.enums.EnumRole;
 import com.booking.app.exception.exception.EmailExistsException;
 import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.mapper.UserMapper;
@@ -25,6 +26,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -126,51 +130,78 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void performRegistration() {
+    void testPerformRegistration() throws MessagingException {
+        RegistrationServiceImpl temp = Mockito.spy(registrationService);
 
+        UserSecurity userSecurity = UserSecurity.builder().username(registrationDTO.getUsername()).email(registrationDTO.getEmail())
+                .password(registrationDTO.getPassword()).build();
+
+        when(mapper.toEntityRegistration(registrationDTO)).thenReturn(userSecurity);
+
+        Instant now = Instant.now();
+        Instant later = now.minusSeconds(600);
+        Date dateAfter10Minutes = Date.from(later);
+
+        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+
+        User user = User.builder().confirmToken(token).build();
+
+        doReturn(user).when(temp).createNewRegisteredUser(userSecurity);
+
+        when(mapper.toEmail(userSecurity)).thenReturn(new EmailDTO(userSecurity.getEmail()));
+
+        EmailDTO emailDTO = temp.performRegistration(registrationDTO);
+
+        assertEquals(userSecurity.getEmail(), emailDTO.getEmail());
     }
 
     @Test
-    void createNewRegisteredUser() {
+    void testSuccessEnableUserIfValid() {
+
+        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+
+        UserSecurity userSecurity = UserSecurity.builder().enabled(false).build();
+
+        when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(true);
+
+        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userSecurity));
+
+        assertTrue(registrationService.enableIfValid(dto));
     }
-
-
-//    @Test
-//    void testSuccessEnableUserIfValid() {
-//        TokenConfirmationDTO confirmationDTO = TokenConfirmationDTO.builder().
-//                token("ESAAA").email("mishaakamichael999@gmail.com").build();
-//        UUID id = new UUID(9583894, 34757);
-//        UserSecurity userSecurity = UserSecurity.builder().id(id).email(confirmationDTO.getEmail()).enabled(false).build();
-//
-//        RegistrationServiceImpl temp = Mockito.spy(registrationService);
-//
-//        when(userSecurityRepository.findByEmail(confirmationDTO.getEmail())).thenReturn(Optional.of(userSecurity));
-//        when(tokenService.verifyToken(userSecurity.getEmail(), confirmationDTO.getToken())).thenReturn(true);
-//        doNothing().when(userSecurityRepository).enableAllBooleansForUser(userSecurity.getId());
-//
-//        doReturn(true).when(temp).enableIfValid(tokenConfirmationDTO);
-//        boolean actual = temp.enableIfValid(tokenConfirmationDTO);
-//        assertTrue(actual);
-//    }
 
     @Test
-    void testFailEnableUserIfValid() {
+    void testEnableUserIfValidWrongToken() {
+
+        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+
+        UserSecurity userSecurity = UserSecurity.builder().enabled(false).build();
+
+        when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(false);
+
+        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userSecurity));
+
+        assertFalse(registrationService.enableIfValid(dto));
     }
 
-//    @Test
-//    void testSuccessFindByEmail() {
-//        UserSecurity user = UserSecurity.builder().email(registrationDTO.getEmail()).build();
-//        UserSecurityServiceImpl temp = Mockito.spy(userSecurityService);
-//        when(userSecurityRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
-//    //    doReturn(Optional.of(user)).when(temp).findByEmail(user.getEmail());
-//
-//
-//    }
-//
-//    @Test
-//    void testFailFindByEmail() {
-//
-//    }
+    @Test
+    void testEnableUserIfValidNoUserFound() {
 
+        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
 
+        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
+
+        assertFalse(registrationService.enableIfValid(dto));
+    }
+
+    @Test
+    void testEnableUserIfValidUserAlreadyEnabled() {
+
+        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+
+        UserSecurity userSecurity = UserSecurity.builder().enabled(true).build();
+
+        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userSecurity));
+
+        assertFalse(registrationService.enableIfValid(dto));
+    }
 }

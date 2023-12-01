@@ -88,7 +88,7 @@ class TokenServiceImplTest {
         String givenToken = "HAPPY";
 
         Instant now = Instant.now();
-        Instant later = now.minusSeconds(600);
+        Instant later = now.plusSeconds(600);
         Date dateAfter10Minutes = Date.from(later);
 
         ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
@@ -103,7 +103,7 @@ class TokenServiceImplTest {
     }
 
     @Test
-    void createConfirmToken() {
+    void testCreateConfirmToken() {
 
         User user = new User();
 
@@ -123,7 +123,7 @@ class TokenServiceImplTest {
     }
 
     @Test
-    void generateRandomToken() {
+    void testGenerateRandomToken() {
 
         ReflectionTestUtils.setField(tokenService, "TOKEN_SYMBOLS", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
 
