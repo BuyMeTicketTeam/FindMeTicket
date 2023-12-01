@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
+/**
+ * Service class for CRUD operations over user
+ */
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {

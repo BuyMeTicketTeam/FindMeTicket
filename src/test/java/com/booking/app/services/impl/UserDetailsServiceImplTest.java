@@ -1,10 +1,9 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.EmailDTO;
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.repositories.UserRepository;
 import com.booking.app.repositories.UserSecurityRepository;
-import jakarta.validation.constraints.AssertTrue;
+import com.booking.app.security.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

@@ -9,6 +9,7 @@ import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping
 @AllArgsConstructor
+@Log4j2
 public class RegistrationController implements RegisterAPI {
 
     private final RegistrationService registrationService;
@@ -42,6 +44,7 @@ public class RegistrationController implements RegisterAPI {
     @Override
     public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException {
         EmailDTO register = registrationService.register(dto);
+        log.info(String.format("User %s has successfully registered!",dto.getEmail()));
         return ResponseEntity.ok().body(register);
     }
 
@@ -56,6 +59,7 @@ public class RegistrationController implements RegisterAPI {
     @Override
     public ResponseEntity<?> confirmEmailToken(@RequestBody TokenConfirmationDTO dto) {
         if (registrationService.enableIfValid(dto)) {
+            log.info(String.format("User %s has successfully confirmed email!",dto.getEmail()));
             return ResponseEntity.status(HttpStatus.OK).body("User successfully confirmed its email");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not right");

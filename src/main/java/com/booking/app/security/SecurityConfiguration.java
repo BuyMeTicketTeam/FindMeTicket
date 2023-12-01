@@ -2,7 +2,6 @@ package com.booking.app.security;
 
 import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.security.jwt.JwtAuthFilter;
-import com.booking.app.services.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -77,9 +76,9 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(CorsConfigConstants.allowedOrigin));
         configuration.setAllowedMethods(Arrays.asList(CorsConfigConstants.allowedMethods));
-        configuration.setAllowedHeaders(Arrays.asList(CorsConfigConstants.AllowedHeaders));
+        configuration.setAllowedHeaders(Arrays.asList(CorsConfigConstants.allowedHeaders));
         configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Authorization");
+        configuration.setExposedHeaders(Arrays.asList(CorsConfigConstants.exposedHeaderAuthorization,CorsConfigConstants.exposedHeaderRefreshToken));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

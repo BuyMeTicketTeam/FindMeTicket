@@ -1,4 +1,4 @@
-package com.booking.app.services.impl;
+package com.booking.app.security;
 
 import com.booking.app.entity.UserSecurity;
 import com.booking.app.repositories.UserRepository;
@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             log.error("Email not found: " + email);
             throw new UsernameNotFoundException(String.format("User %s not found", email));
         }
-        log.info("User Authenticated Successfully..!!!");
+        log.info(String.format("User has been loaded by %s",email));
         return userSecurity.get();
     }
 }

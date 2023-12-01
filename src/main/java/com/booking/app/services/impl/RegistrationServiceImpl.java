@@ -29,7 +29,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 /**
- * Service class for user security operations.
+ * Service class for user registration operations.
  */
 @Service
 @RequiredArgsConstructor

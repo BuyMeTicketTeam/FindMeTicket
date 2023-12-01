@@ -7,6 +7,8 @@ import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.services.ResetPasswordService;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping
 @AllArgsConstructor
+@Log4j2
 public class ResetPasswordController implements ResetPasswordAPI {
 
     private final ResetPasswordService resetPasswordService;
@@ -52,6 +55,7 @@ public class ResetPasswordController implements ResetPasswordAPI {
     @Override
     public ResponseEntity<?> confirmResetPassword(@RequestBody ResetPasswordDTO dto) {
         if (resetPasswordService.resetPassword(dto)) {
+            log.info(String.format("User %s has successfully changed its password!",dto.getEmail()));
             return ResponseEntity.status(HttpStatus.OK).body("Password has been successfully changed");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Confirmation code is not right");

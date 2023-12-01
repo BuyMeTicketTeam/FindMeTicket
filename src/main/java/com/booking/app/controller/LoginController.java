@@ -7,26 +7,25 @@ import com.booking.app.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * AuthController handles authentication-related operations.
+ * LoginController handles authentication-related operations.
  * This controller provides endpoints for user authentication.
  */
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
+@Log4j2
 @CrossOrigin(origins = CorsConfigConstants.allowedOrigin, maxAge = 3600,
         exposedHeaders = {CorsConfigConstants.exposedHeaderRefreshToken, CorsConfigConstants.exposedHeaderAuthorization})
 public class LoginController implements LoginAPI {
-
-    private final UserDetailsService loginService;
 
     private final AuthenticationManager authenticationManager;
 
@@ -42,22 +41,20 @@ public class LoginController implements LoginAPI {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
-            Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
-            if (authentication.isAuthenticated()) {
-                String refreshToken = jwtUtil.generateRefreshToken(loginDTO.getEmail());
-                String accessToken = jwtUtil.generateAccessToken(loginDTO.getEmail());
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-                response.addHeader("Authorization", accessToken);
-                response.addHeader("Refresh-Token", refreshToken);
+        if (authentication.isAuthenticated()) {
+            String refreshToken = jwtUtil.generateRefreshToken(loginDTO.getEmail());
+            String accessToken = jwtUtil.generateAccessToken(loginDTO.getEmail());
 
-                return ResponseEntity.ok().build();
-            }
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(403).build();
+            response.addHeader("Authorization", accessToken);
+            response.addHeader("Refresh-Token", refreshToken);
+
+            log.info(String.format("User %s has been successfully logged in!",loginDTO.getEmail()));
+            return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.status(403).build();

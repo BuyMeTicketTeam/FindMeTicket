@@ -78,10 +78,6 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void loadUserByUsername() {
-    }
-
-    @Test
     void testSuccessfullyRegistration() throws MessagingException {
         RegistrationServiceImpl temp = Mockito.spy(registrationService);
         when(userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.empty());
