@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
+import java.util.Enumeration;
 
 @Component
 @Log4j2
@@ -102,10 +103,11 @@ public class JwtUtil {
     }
 
     public String extractAccessTokenFromRequest(HttpServletRequest request) {
+        Enumeration<String> headerNames = request.getHeaderNames();
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer")) {
-            return authorizationHeader.substring(7);
+        if (authorizationHeader != null ) {
+            return authorizationHeader;
         }
 
         return null;
@@ -116,7 +118,7 @@ public class JwtUtil {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("refreshToken")) {
-                    return cookie.getValue().substring(13);
+                    return cookie.getValue();
                 }
             }
         }

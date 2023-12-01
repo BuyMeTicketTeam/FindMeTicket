@@ -1,5 +1,6 @@
 package com.booking.app.controller;
 
+import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.ResetPasswordAPI;
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.ResetPasswordDTO;
@@ -9,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 
 /**
@@ -31,14 +31,14 @@ public class ResetPasswordController implements ResetPasswordAPI {
      * @throws MessagingException Thrown if an error occurs during email sending.
      * @throws IOException        Thrown if an I/O error occurs.
      */
-    @CrossOrigin(allowCredentials = "true", origins = "http://build")
+    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/reset")
     @Override
     public ResponseEntity<?> sendResetToken(@RequestBody EmailDTO dto) throws MessagingException, IOException {
-        if( resetPasswordService.sendEmailResetPassword(dto.getEmail())){
+        if (resetPasswordService.sendEmailResetPassword(dto.getEmail())) {
             return ResponseEntity.status(HttpStatus.OK).body("Reset token has been sent");
         }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Such email doesn't exist in our service");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Such email doesn't exist in our service");
     }
 
     /**
@@ -47,13 +47,13 @@ public class ResetPasswordController implements ResetPasswordAPI {
      * @param dto The ResetPasswordDTO containing the reset confirmation information.
      * @return ResponseEntity indicating the result of the password reset operation.
      */
-    @CrossOrigin(allowCredentials = "true", origins = "http://build")
+    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/new-password")
     @Override
     public ResponseEntity<?> confirmResetPassword(@RequestBody ResetPasswordDTO dto) {
-        if(resetPasswordService.resetPassword(dto)){
+        if (resetPasswordService.resetPassword(dto)) {
             return ResponseEntity.status(HttpStatus.OK).body("Password has been successfully changed");
         }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Confirmation code is not right");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Confirmation code is not right");
     }
 }

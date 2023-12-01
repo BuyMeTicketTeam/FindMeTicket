@@ -34,7 +34,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessTokenFromRequest = jwtUtil.extractAccessTokenFromRequest(request);
         String refreshTokenFromRequest = jwtUtil.extractRefreshTokenFromRequest(request);
 
-        if (accessTokenFromRequest == null && refreshTokenFromRequest == null) {
+        if (
+                (accessTokenFromRequest == null && refreshTokenFromRequest == null)
+                || (accessTokenFromRequest != null && accessTokenFromRequest.equals("null") && refreshTokenFromRequest == null)
+        ) {
             chain.doFilter(request, response);
             return;
         }
@@ -45,8 +48,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (jwtUtil.validateAccessToken(accessTokenFromRequest, (UserSecurity) userDetails)) {
 
-            response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenFromRequest.toString());
-            response.addHeader("Authorization", accessTokenFromRequest);
+            response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenFromRequest.toString());
+            response.setHeader("Authorization", accessTokenFromRequest);
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -65,8 +68,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .path("/")
                     .build();
 
-            response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
-            response.addHeader("Authorization", newAccessToken);
+            response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+            response.setHeader("Authorization", newAccessToken);
 
             UserDetails refreshedUserDetails = userDetailsService.loadUserByUsername(email);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(refreshedUserDetails, refreshedUserDetails.getPassword(), refreshedUserDetails.getAuthorities());

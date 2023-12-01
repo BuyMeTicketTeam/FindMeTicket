@@ -1,5 +1,6 @@
 package com.booking.app.controller;
 
+import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.RegisterAPI;
 import com.booking.app.dto.*;
 import com.booking.app.exception.exception.EmailExistsException;
@@ -11,7 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 
 /**
@@ -24,6 +24,7 @@ import java.io.IOException;
 public class RegistrationController implements RegisterAPI {
 
     private final RegistrationService registrationService;
+
     private final MailSenderService mailSenderService;
 
     /**
@@ -36,7 +37,7 @@ public class RegistrationController implements RegisterAPI {
      * @throws MessagingException   Thrown if an error occurs during email sending.
      * @throws IOException          Thrown if an I/O error occurs.
      */
-    @CrossOrigin(allowCredentials = "true", origins = "http://build")
+    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/register")
     @Override
     public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException {
@@ -50,7 +51,7 @@ public class RegistrationController implements RegisterAPI {
      * @param dto The TokenConfirmationDTO containing the confirmation token.
      * @return ResponseEntity indicating the result of the email confirmation.
      */
-    @CrossOrigin(allowCredentials = "true", origins = "http://build")
+    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/confirm-email")
     @Override
     public ResponseEntity<?> confirmEmailToken(@RequestBody TokenConfirmationDTO dto) {
@@ -68,7 +69,7 @@ public class RegistrationController implements RegisterAPI {
      * @throws MessagingException Thrown if an error occurs during email sending.
      * @throws IOException        Thrown if an I/O error occurs.
      */
-    @CrossOrigin(allowCredentials = "true", origins = "http://build")
+    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/resend-confirm-email")
     @Override
     public ResponseEntity<?> resendConfirmEmailToken(@RequestBody TokenConfirmationDTO dto) throws MessagingException, IOException {

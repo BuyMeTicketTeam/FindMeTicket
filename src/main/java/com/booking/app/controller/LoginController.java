@@ -1,12 +1,14 @@
 package com.booking.app.controller;
 
+import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.LoginAPI;
 import com.booking.app.dto.*;
 import com.booking.app.security.jwt.JwtUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginController implements LoginAPI {
+
+//    @Value("${rememberMeTokenExpirationMs}")
+//    private int rememberMeTokenExpirationMs;
 
     private final UserDetailsService loginService;
 
@@ -40,7 +45,8 @@ public class LoginController implements LoginAPI {
      * @param response The HttpServletResponse containing the response information.
      * @return ResponseEntity indicating the success of the sign-in operation.
      */
-    @CrossOrigin(allowCredentials = "true", origins = "http://build")
+    @CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin, maxAge = 3600,
+            exposedHeaders = {CorsConfigConstants.exposedHeaderSetCookie, CorsConfigConstants.exposedHeaderAuthorization, CorsConfigConstants.exposedHeaderMaxAge})
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -49,19 +55,10 @@ public class LoginController implements LoginAPI {
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
             if (authentication.isAuthenticated()) {
+
                 String refreshToken = jwtUtil.generateRefreshToken(loginDTO.getEmail());
                 String accessToken = jwtUtil.generateAccessToken(loginDTO.getEmail());
-//
-//                Cookie refreshTokenCookie = new Cookie("refreshToken",refreshToken);
-//                refreshTokenCookie.setMaxAge(jwtUtil.getRefreshTokenExpirationMs());
-//                refreshTokenCookie.setHttpOnly(true);
-//                refreshTokenCookie.setSecure(true);
-//                refreshTokenCookie.setPath("/login");
 
-//                        httpOnly.(true)
-//                        .secure(true)
-//                        .path("/")
-//                        .build();
                 ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                         .maxAge(jwtUtil.getRefreshTokenExpirationMs())
                         .httpOnly(true)
@@ -69,7 +66,6 @@ public class LoginController implements LoginAPI {
                         .path("/login")
                         .sameSite("none")
                         .build();
-              // response.addCookie(refreshTokenCookie);
 
                 response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
                 response.addHeader("Authorization", accessToken);
@@ -77,17 +73,17 @@ public class LoginController implements LoginAPI {
                 return ResponseEntity.ok().build();
             }
         } catch (AuthenticationException e) {
-            // Handle authentication failure
-          //  return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(403).build();
         }
 
         return ResponseEntity.status(403).build();
     }
 
+    @CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin, maxAge = 3600,
+            exposedHeaders = {CorsConfigConstants.exposedHeaderSetCookie, CorsConfigConstants.exposedHeaderAuthorization,CorsConfigConstants.exposedHeaderMaxAge})
     @PostMapping("/get1")
-    public ResponseEntity<?> get(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> get(HttpServletRequest request, HttpServletResponse response) {
         return ResponseEntity.ok().build();
-
     }
 }
 
