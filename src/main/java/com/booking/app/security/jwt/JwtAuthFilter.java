@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,10 +32,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessTokenFromRequest = jwtUtil.extractAccessTokenFromRequest(request);
         String refreshTokenFromRequest = jwtUtil.extractRefreshTokenFromRequest(request);
 
-        if (
-                (accessTokenFromRequest == null && refreshTokenFromRequest == null)
-                || (accessTokenFromRequest != null && accessTokenFromRequest.equals("null") && refreshTokenFromRequest == null)
-        ) {
+        if (accessTokenFromRequest == null && refreshTokenFromRequest == null) {
             chain.doFilter(request, response);
             return;
         }
@@ -48,7 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (jwtUtil.validateAccessToken(accessTokenFromRequest, (UserSecurity) userDetails)) {
 
-            response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenFromRequest.toString());
+            response.setHeader("Refresh-Token", refreshTokenFromRequest);
             response.setHeader("Authorization", accessTokenFromRequest);
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
@@ -61,14 +56,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String newAccessToken = jwtUtil.generateAccessToken(email);
             String newRefreshToken = jwtUtil.generateAccessToken(email);
 
-            ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", newRefreshToken)
-                    .maxAge(jwtUtil.getRefreshTokenExpirationMs())
-                    .httpOnly(true)
-                    .secure(true)
-                    .path("/")
-                    .build();
-
-            response.setHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+            response.setHeader("Refresh-Token", newRefreshToken);
             response.setHeader("Authorization", newAccessToken);
 
             UserDetails refreshedUserDetails = userDetailsService.loadUserByUsername(email);

@@ -35,6 +35,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http.authorizeHttpRequests()
                 .requestMatchers("/register",
                         "/confirm-email",
@@ -48,11 +49,19 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests().requestMatchers("/get1").authenticated();
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        //  http.addFilterBefore()
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.csrf().disable();
-        return http.build();
 
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.cors();
+        http.logout().disable();
+        http.csrf().disable();
+
+        return http.build();
+    }
+
+    @Bean
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return new ProviderManager(List.of(daoAuthenticationProvider()));
     }
 
     @Bean
@@ -74,11 +83,6 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager(List.of(daoAuthenticationProvider()));
     }
 
     @Bean

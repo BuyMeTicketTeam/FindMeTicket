@@ -4,7 +4,6 @@ import com.booking.app.entity.UserSecurity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
-import java.util.Enumeration;
 
 @Component
 @Log4j2
@@ -103,10 +101,10 @@ public class JwtUtil {
     }
 
     public String extractAccessTokenFromRequest(HttpServletRequest request) {
-        Enumeration<String> headerNames = request.getHeaderNames();
+
         String authorizationHeader = request.getHeader("Authorization");
 
-        if (authorizationHeader != null ) {
+        if (authorizationHeader != null && !authorizationHeader.equals("null")) {
             return authorizationHeader;
         }
 
@@ -114,14 +112,13 @@ public class JwtUtil {
     }
 
     public String extractRefreshTokenFromRequest(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
-                    return cookie.getValue();
-                }
-            }
+
+        String refreshToken = request.getHeader("Refresh-Token");
+
+        if (refreshToken != null && !refreshToken.equals("null")) {
+            return refreshToken;
         }
+
         return null;
     }
 }
