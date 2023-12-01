@@ -15,7 +15,6 @@ function App() {
   const [authorization, onAuthorization] = useState(false);
   const [popupLogin, changePopup] = useState(false);
   useEffect(() => {
-    console.log(cookies);
     if (cookies?.['Remember-me']) {
       onAuthorization(true);
     }

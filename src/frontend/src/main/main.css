@@ -16,8 +16,42 @@
 .search-field .tip {
     padding-top: 0;
 }
-.search-field .input {
+.search-field .input, .search-field .react-select__control {
     background: var(--main);
+}
+.search-field .react-select__control {
+    min-width: 280px;
+}
+.search-field .react-select__control {
+    border-radius: 10px;
+    border: 2px solid var(--bright);
+}
+.search-field .react-select__control:hover {
+    border: 2px solid var(--bright);
+}
+.search-field .react-select__control--is-focused {
+    box-shadow: 0px 0px 8px 1px var(--bright);
+}
+.search-field .react-select__input-container {
+    color: var(--font-color);
+}
+.search-field .react-select__indicator, .search-field .react-select__indicator-separator {
+    display: none;
+}
+.search-field .react-select__menu {
+    background: var(--main);
+}
+.search-field .react-select__option {
+    color: var(--font-color);
+}
+.search-field .react-select__option--is-selected {
+    background: inherit;
+}
+.search-field .react-select__single-value {
+    color: var(--font-color);
+}
+.search-field .react-select__option--is-focused {
+    background: var(--dark);
 }
 .search-field .field__name {
     margin-bottom: 5px;
@@ -90,6 +124,12 @@
 .search-field__tip-long .tip {
     width: max-content;
 }
+.passangers__list.close {
+    display: none;
+}
+.passangers__list.open {
+    display: block;
+}
 .passangers__item {
     display: flex;
     justify-content: space-between;
@@ -158,31 +198,40 @@
 .ticket {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     background: var(--semi-dark);
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 20px;
 }
 .information {
-    flex: auto;
-    margin-right: 15px;
-}
-.information__row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex: auto;
+    margin-right: 15px;
 }
-.information__row:not(:last-child) {
-    margin-bottom: 15px;
+.information__column.middle-end {
+    min-width: max-content;
+}
+.information__column.middle-column {
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+    align-self:flex-start;
+    margin: 0 15px;
 }
 .ticket__date {
     font-weight: 600;
     font-size: 20px;
+    margin-bottom: 15px;
 }
 .ticket__travel-time {
     display: flex;
     align-items: center;
     font-size: 18px;
+    align-self: center;
+    margin-bottom: 30px;
 }
 .ticket__travel-time img {
     margin-right: 3px;
@@ -192,16 +241,16 @@
     font-size: 24px;
     font-weight: 700;
     min-width: max-content;
-}
-.ticket-last-element {
-    flex: 0 0 300px;
+    margin-bottom: 20px;
 }
 .ticket__line {
     display: block;
     width: 100%;
     height: 2px;
     background: var(--bright);
-    margin: 0px 15px;
+}
+.ticket__station {
+    font-size: 18px;
 }
 .price-options {
     display: flex;
@@ -212,6 +261,7 @@
 }
 .price-options__row {
     display: flex;
+    align-items: center;
 }
 .price-options .button {
     min-width: 150px;

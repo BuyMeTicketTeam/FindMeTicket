@@ -29,7 +29,6 @@ export default function Popup({ changePopup, onAuthorization }) {
     if (response.status === 200) {
       changePopup(false);
       onAuthorization(true);
-      response.headers.forEach((key, value) => console.log(`${value} : ${key}`));
     } else if (response.status === 403) {
       onError(t('error-lp'));
     } else {
@@ -62,10 +61,11 @@ export default function Popup({ changePopup, onAuthorization }) {
       email: login.trim(),
       password: password.trim(),
     };
-    makeQuerry('login', JSON.stringify(body), { 'Remember-me': remember })
+    makeQuerry('login', JSON.stringify(body))
       .then((response) => {
         onSend(false);
         statusChecks(response);
+        response.headers.forEach((value, key) => { console.log(`${key} : ${value}`); });
       });
   }
 

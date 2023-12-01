@@ -4,6 +4,9 @@ export default function writeToken(response) {
       if (key === 'authorization') {
         localStorage.setItem('JWTtoken', value);
       }
+      if (key === 'refresh-token') {
+        localStorage.setItem('refreshToken', value);
+      }
     });
   }
 }
