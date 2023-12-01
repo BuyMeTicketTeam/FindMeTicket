@@ -1,0 +1,240 @@
+.search-field {
+    display: flex;
+    align-items: end;
+    gap: 10px;
+    background: var(--dark);
+    margin-top: 80px;
+    border-radius: 20px;
+    padding: 25px;
+}
+.search-field .field {
+    margin-bottom: 0;
+}
+.search-field__input-long {
+    min-width: 300px;
+}
+.search-field .tip {
+    padding-top: 0;
+}
+.search-field .input {
+    background: var(--main);
+}
+.search-field .field__name {
+    margin-bottom: 5px;
+    padding-left: 3px;
+}
+.search-field .tip {
+    position: absolute;
+    width: 100%;
+    max-height: max-content;
+    opacity: 1;
+    top: 43px;
+    left: 0;
+    background: var(--main);
+    border-radius: 10px;
+    z-index: 1;
+}
+.search-field .button {
+    min-width: 0;
+}
+.dropdown__list, .passangers__list {
+    color: var(--font-color);
+    list-style: none;
+    /*develop*/
+    display: none;
+}
+.dropDown__item:not(:last-child), .passangers__item:not(:last-child) {
+    border-bottom: 1px solid var(--dark);
+}
+.dropDown__item {
+    padding: 8px 15px;
+}
+.dropDown__city {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.dropDown__country {
+    font-size: 14px;
+    color: var(--grey);
+    font-weight: 400;
+}
+/*calendar*/
+
+.calendar, .calendar .react-datepicker__header {
+    background: var(--main);
+}
+.calendar .react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+    color: var(--font-color);
+}
+.calendar .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
+    color: var(--font-color);
+}
+.calendar .react-datepicker__day--outside-month {
+    color: var(--grey);
+}
+.react-datepicker__day:hover, .react-datepicker__month-text:hover, .react-datepicker__quarter-text:hover, .react-datepicker__year-text:hover {
+    background: var(--bright);
+}
+.react-datepicker__day--keyboard-selected, .react-datepicker__month-text--keyboard-selected, .react-datepicker__quarter-text--keyboard-selected, .react-datepicker__year-text--keyboard-selected {
+    background: var(--dark);
+}
+.react-datepicker__day--today {
+    color: var(--bright);
+}
+.react-datepicker__day--today:hover {
+    color: var(--font-color);
+}
+
+/*passangers*/
+.search-field__tip-long .tip {
+    width: max-content;
+}
+.passangers__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+}
+.passangers__category {
+    font-size: 18px;
+    margin-right: 10px;
+}
+.passangers__form {
+    display: flex;
+}
+.passangers__btn {
+    background: var(--bright);
+    border-radius: 50%;
+    border: none;
+    color: var(--font-color);
+    width: 25px;
+    height: 25px;
+}
+.passangers__input {
+    max-width: 25px;
+    font-size: 18px;
+    background: transparent;
+    border: none;
+    margin: 0 1px;
+    text-align: center;
+    color: var(--font-color);
+}
+.passangers__input:focus-visible {
+    outline: none;
+}
+/*main-filters*/
+.main-filters {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+.main-filters__btn {
+    position: relative;
+    font-size: 20px;
+    font-weight: 500;
+    background: var(--main);
+    color: inherit;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 38px 8px 28px;
+}
+.main-filters__btn::before {
+    display: inline-block;
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 19px;
+    width: 20px;
+    height: 20px;
+    background: url('../../public/img/arrow-more.svg');
+}
+
+.main-filters__btn:first-child {
+    margin-right: 15px;
+}
+/*tickets*/
+.ticket {
+    display: flex;
+    justify-content: space-between;
+    background: var(--semi-dark);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+.information {
+    flex: auto;
+    margin-right: 15px;
+}
+.information__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.information__row:not(:last-child) {
+    margin-bottom: 15px;
+}
+.ticket__date {
+    font-weight: 600;
+    font-size: 20px;
+}
+.ticket__travel-time {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
+.ticket__travel-time img {
+    margin-right: 3px;
+    width: 23px;
+}
+.ticket__city {
+    font-size: 24px;
+    font-weight: 700;
+    min-width: max-content;
+}
+.ticket-last-element {
+    flex: 0 0 300px;
+}
+.ticket__line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--bright);
+    margin: 0px 15px;
+}
+.price-options {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 15px;
+    border-left: 2px solid var(--dark);
+}
+.price-options__row {
+    display: flex;
+}
+.price-options .button {
+    min-width: 150px;
+} 
+.ticket__price {
+    margin-right: 20px;
+}
+.price__ordinry {
+    font-size: 24px;
+    font-weight: 800;
+    color: #F77F00;
+}
+.price__discond {
+    font-size: 18px;
+    text-decoration: line-through;
+}
+.ticket__more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: transparent;
+    border: none;
+    color: var(--font-color);
+    margin-top: 15px;
+}

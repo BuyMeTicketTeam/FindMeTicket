@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Header from './header/index';
 import Routers from './routers';
-import './testServer';
+// import './testServer';
 import './App.css';
 import './locales/i18n';
 import Cookie from './cookieBanner/cookie';
@@ -15,7 +15,8 @@ function App() {
   const [authorization, onAuthorization] = useState(false);
   const [popupLogin, changePopup] = useState(false);
   useEffect(() => {
-    if (cookies?.remember_me) {
+    console.log(cookies);
+    if (cookies?.['Remember-me']) {
       onAuthorization(true);
     }
   }, []);

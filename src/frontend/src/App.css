@@ -19,13 +19,24 @@ img {
   max-height: 100%;
   object-fit: contain;
 }
-
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
 .field__name {
   margin-bottom: 7px;
   font-size: 20px;
   font-weight: 500;
 }
-
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
 .field {
   margin-bottom: 15px;
 }

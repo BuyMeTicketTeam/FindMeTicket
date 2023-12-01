@@ -6,8 +6,6 @@ export default async function makeQuerry(address, body, headers) {
   const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/${address}`, {
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": `http://localhost:${process.env.REACT_APP_PORT}`,
-      "Access-Control-Allow-Credentials": true,
       Authorization: token || null,
       ...headers,
     },

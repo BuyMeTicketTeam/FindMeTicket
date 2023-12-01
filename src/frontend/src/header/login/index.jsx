@@ -29,7 +29,8 @@ export default function Popup({ changePopup, onAuthorization }) {
     if (response.status === 200) {
       changePopup(false);
       onAuthorization(true);
-    } else if (response.status === 401) {
+      response.headers.forEach((key, value) => console.log(`${value} : ${key}`));
+    } else if (response.status === 403) {
       onError(t('error-lp'));
     } else {
       onError(t('error-server2'));
@@ -38,11 +39,11 @@ export default function Popup({ changePopup, onAuthorization }) {
 
   function validation() {
     switch (true) {
-      case emailCheck(login):
+      case emailCheck(login.trim()):
         onError(t('login-error'));
         onLoginError(true);
         return false;
-      case passwordCheck(password):
+      case passwordCheck(password.trim()):
         onError(t('password-error'));
         onPasswordError(true);
         return false;
@@ -58,10 +59,10 @@ export default function Popup({ changePopup, onAuthorization }) {
       return;
     }
     const body = {
-      login: login.trim(),
+      email: login.trim(),
       password: password.trim(),
     };
-    makeQuerry('login', JSON.stringify(body), { rememberMe: remember })
+    makeQuerry('login', JSON.stringify(body), { 'Remember-me': remember })
       .then((response) => {
         onSend(false);
         statusChecks(response);

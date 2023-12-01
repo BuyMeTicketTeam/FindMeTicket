@@ -12,6 +12,7 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
       .then((response) => {
         if (response.status === 200) {
           onAuthorization(!status);
+          localStorage.removeItem('JWTtoken');
         }
       });
   }
