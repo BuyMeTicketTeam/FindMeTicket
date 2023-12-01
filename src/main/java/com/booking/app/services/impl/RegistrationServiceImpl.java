@@ -104,7 +104,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         mailService.sendEmail("confirmMail", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
 
-
         return mapper.toEmail(securityEntity);
     }
 
@@ -127,7 +126,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         verifyEmailRepository.save(confirmToken);
         user.setConfirmToken(confirmToken);
-
 
         return user;
     }
