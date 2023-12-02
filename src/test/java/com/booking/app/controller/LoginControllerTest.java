@@ -61,31 +61,18 @@ class LoginControllerTest {
         httpServletRequest.addHeader("Authorization","mockedAccessToken");
         httpServletRequest.addHeader("Refresh-Token","mockedRefreshToken");
 
-        // Assertions for a successful login
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(mockResponse).addHeader(eq("Authorization"), eq("mockedAccessToken"));
         verify(mockResponse).addHeader(eq("Refresh-Token"), eq("mockedRefreshToken"));
-//        assertEquals("mockedAccessToken", httpServletResponse.getHeader("Authorization"));
-//        assertEquals("mockedRefreshToken", httpServletResponse.getHeader("Refresh-Token"));
-        // Add more assertions if needed
     }
 
     @Test
     void testFailLogin() {
-        // Mocking authentication manager behavior for failed login
         when(authenticationManager.authenticate(any())).thenThrow(BadCredentialsException.class);
 
-        // Create a LoginDTO with invalid credentials
         LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
 
         assertThrows(BadCredentialsException.class, ()->loginController.login(loginDTO, httpServletRequest, httpServletResponse));
 
-        // Perform the login action
-//        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, httpServletResponse);
-
-        // Assertions for a failed login
-//        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
-//        assertNull(httpServletResponse.getHeader("Authorization"));
-//        assertNull(httpServletResponse.getHeader("Refresh-Token"));
     }
 }
