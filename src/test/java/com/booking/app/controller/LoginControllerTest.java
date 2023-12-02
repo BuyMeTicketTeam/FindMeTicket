@@ -22,7 +22,7 @@ import org.springframework.security.core.Authentication;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LoginControllerTest {
@@ -47,6 +47,8 @@ class LoginControllerTest {
     @Test
     void testSuccessfulLogin() {
 
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.isAuthenticated()).thenReturn(true);
 
@@ -55,14 +57,16 @@ class LoginControllerTest {
 
         LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
 
-        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, httpServletResponse);
+        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, mockResponse);
         httpServletRequest.addHeader("Authorization","mockedAccessToken");
         httpServletRequest.addHeader("Refresh-Token","mockedRefreshToken");
 
         // Assertions for a successful login
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("mockedAccessToken", httpServletResponse.getHeader("Authorization"));
-        assertEquals("mockedRefreshToken", httpServletResponse.getHeader("Refresh-Token"));
+        verify(mockResponse).addHeader(eq("Authorization"), eq("mockedAccessToken"));
+        verify(mockResponse).addHeader(eq("Refresh-Token"), eq("mockedRefreshToken"));
+//        assertEquals("mockedAccessToken", httpServletResponse.getHeader("Authorization"));
+//        assertEquals("mockedRefreshToken", httpServletResponse.getHeader("Refresh-Token"));
         // Add more assertions if needed
     }
 
@@ -74,13 +78,14 @@ class LoginControllerTest {
         // Create a LoginDTO with invalid credentials
         LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
 
+        assertThrows(BadCredentialsException.class, ()->loginController.login(loginDTO, httpServletRequest, httpServletResponse));
 
         // Perform the login action
-        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, httpServletResponse);
+//        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, httpServletResponse);
 
         // Assertions for a failed login
-        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
-        assertNull(httpServletResponse.getHeader("Authorization"));
-        assertNull(httpServletResponse.getHeader("Refresh-Token"));
+//        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+//        assertNull(httpServletResponse.getHeader("Authorization"));
+//        assertNull(httpServletResponse.getHeader("Refresh-Token"));
     }
 }

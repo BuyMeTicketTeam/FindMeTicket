@@ -59,7 +59,7 @@ public class JwtUtil {
 
 
     public String generateAccessToken(String email) {
-        return generateToken(email, accessTokenExpirationMs);
+            return generateToken(email, accessTokenExpirationMs);
     }
 
     public String generateRefreshToken(String email) {

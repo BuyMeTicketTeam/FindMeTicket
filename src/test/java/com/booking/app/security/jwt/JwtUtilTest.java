@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
 
@@ -22,6 +23,10 @@ class JwtUtilTest {
 
     @Test
     void testAccessTokenGenerationAndValidation() {
+
+        ReflectionTestUtils.setField(jwtUtil, "accessTokenExpirationMs", 360);
+        ReflectionTestUtils.setField(jwtUtil, "jwtSecret", "urwehriaulwy38f32ydsfsrFSDF3RT423F43FWEDF342F324F34F3FG3GF");
+
         String email = "misha1234@gmail.com";
         String accessToken = jwtUtil.generateAccessToken(email);
 
@@ -37,6 +42,10 @@ class JwtUtilTest {
 
     @Test
     void testRefreshTokenGenerationAndValidation() {
+
+        ReflectionTestUtils.setField(jwtUtil, "refreshTokenExpirationMs", 720);
+        ReflectionTestUtils.setField(jwtUtil, "jwtSecret", "urwehriaulwy38f32ydsfsrFSDF3RT423F43FWEDF342F324F34F3FG3GF");
+
         String email = "test@example.com";
         String refreshToken = jwtUtil.generateRefreshToken(email);
 
