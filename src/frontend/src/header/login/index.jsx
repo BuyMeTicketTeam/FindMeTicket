@@ -38,11 +38,11 @@ export default function Popup({ changePopup, onAuthorization }) {
 
   function validation() {
     switch (true) {
-      case emailCheck(login.trim()):
+      case emailCheck(login):
         onError(t('login-error'));
         onLoginError(true);
         return false;
-      case passwordCheck(password.trim()):
+      case passwordCheck(password):
         onError(t('password-error'));
         onPasswordError(true);
         return false;
@@ -58,8 +58,8 @@ export default function Popup({ changePopup, onAuthorization }) {
       return;
     }
     const body = {
-      email: login.trim(),
-      password: password.trim(),
+      email: login,
+      password,
     };
     makeQuerry('login', JSON.stringify(body))
       .then((response) => {

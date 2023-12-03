@@ -5,21 +5,21 @@ export default function Ticket({ data }) {
   return (
     <div className="ticket">
       <div className="information">
-        <div className="information__column middle-end">
+        <div className="information__row">
           <p className="ticket__date">{data.dateFrom}</p>
-          <p className="ticket__city">{data.placeFrom}</p>
-          <div className="ticket__station">{data.placeFromDetails}</div>
-        </div>
-        <div className="information__column middle-column">
           <p className="ticket__travel-time">
             <img src="../img/schedule.svg" alt="clock" />
             {data.travelTime}
           </p>
-          <div className="ticket__line" />
-        </div>
-        <div className="information__column middle-end">
           <p className="ticket__date ticket-last-element">{data.dateArrival}</p>
+        </div>
+        <div className="information__row">
+          <p className="ticket__city">{data.placeFrom}</p>
+          <div className="ticket__line" />
           <p className="ticket__city ticket-last-element">{data.placeTo}</p>
+        </div>
+        <div className="information__row">
+          <div className="ticket__station">{data.placeFromDetails}</div>
           <div className="ticket__station ticket-last-element">{data.placeToDetails}</div>
         </div>
       </div>

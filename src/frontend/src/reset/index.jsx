@@ -17,7 +17,7 @@ export default function Index() {
   function statusChecks(response) {
     if (response.status === 200) {
       navigate('/change-password');
-      sessionStorage.setItem('email', email.trim());
+      sessionStorage.setItem('email', email);
     } else if (response.status === 404) {
       onError(t('error-user-not-found'));
     } else {
@@ -40,7 +40,7 @@ export default function Index() {
       onSend(false);
       return;
     }
-    makeQuerry('reset', JSON.stringify({ email: email.trim() }))
+    makeQuerry('reset', JSON.stringify({ email }))
       .then((response) => {
         onSend(false);
         statusChecks(response);

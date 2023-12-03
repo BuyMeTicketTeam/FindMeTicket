@@ -10,6 +10,7 @@ export default function Index() {
   const [ticketsData, onTicketsdata] = useState(
     [
       {
+        id: 1,
         dateFrom: '8:40 | 29.11, вт',
         travelTime: '8 год 5 хв',
         dateArrival: '16:30 | 29.11, вт',
@@ -21,6 +22,7 @@ export default function Index() {
         priceOld: '800',
       },
       {
+        id: 2,
         dateFrom: '7:40 | 29.11, вт',
         travelTime: '8 год 45 хв',
         dateArrival: '10:30 | 29.11, вт',
@@ -32,6 +34,7 @@ export default function Index() {
         priceOld: '',
       },
       {
+        id: 3,
         dateFrom: '8:40 | 29.11, вт',
         travelTime: '8 год 5 хв',
         dateArrival: '16:30 | 29.11, вт',
@@ -52,15 +55,15 @@ export default function Index() {
     return arr.sort((a, b) => b.priceOrdinary - a.priceOrdinary);
   }
   useEffect(() => {
-    onTicketsdata(sortFunc(ticketsData, sort));
+    onTicketsdata((prevTicketsData) => sortFunc([...prevTicketsData], sort));
   }, [sort]);
   return (
     <div className="main-block">
       <div className="container">
         <SearchField />
-        <Filters onSort={onSort} />
+        <Filters onSort={onSort} prevSort={sort} />
         <div className="ticktets">
-          {ticketsData.map((item, elementIndex) => <Ticket data={ticketsData[elementIndex]} />)}
+          {ticketsData.map((item, elementIndex) => <Ticket key={ticketsData[elementIndex].id} data={ticketsData[elementIndex]} />)}
         </div>
       </div>
     </div>

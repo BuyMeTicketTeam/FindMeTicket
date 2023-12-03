@@ -3,14 +3,14 @@ import React from 'react';
 export default function Input(
   {
     value, onInputChange, type, dataTestId, placeholder, error, show, onShow, tip, tipDataTestId,
-    onClick,
+    onClick, space,
   },
 ) {
   function ifPassword() {
     if (type === 'password') {
-      return <input placeholder={placeholder} data-testid={dataTestId} type={show ? 'text' : 'password'} className={error ? 'input input-error' : 'input'} value={value} onChange={(e) => { if (typeof onInputChange === 'function') onInputChange(e.target.value); }} />;
+      return <input placeholder={placeholder} data-testid={dataTestId} type={show ? 'text' : 'password'} className={error ? 'input input-error' : 'input'} value={value} onChange={(e) => { if (typeof onInputChange === 'function') onInputChange(space ? e.target.value : e.target.value.trim()); }} />;
     }
-    return <input placeholder={placeholder} data-testid={dataTestId} type={type} className={error ? 'input input-error' : 'input'} value={value} onChange={(e) => { if (typeof onInputChange === 'function') onInputChange(e.target.value); }} onClick={() => onClick()} />;
+    return <input placeholder={placeholder} data-testid={dataTestId} type={type} className={error ? 'input input-error' : 'input'} value={value} onChange={(e) => { if (typeof onInputChange === 'function') onInputChange(space ? e.target.value : e.target.value.trim()); }} onClick={() => (onClick ? onClick() : null)} />;
   }
   return (
     <div className="input-wrapper">

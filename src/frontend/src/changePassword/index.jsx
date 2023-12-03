@@ -85,6 +85,7 @@ export default function Index({ changePopup }) {
     onCodeError(false);
     onPasswordError(false);
     onConfirmPasswordError(false);
+    onError('');
   }
 
   function handleSendButton() {
@@ -94,10 +95,10 @@ export default function Index({ changePopup }) {
       return;
     }
     const body = {
-      token: code.trim(),
-      password: password.trim(),
+      token: code,
+      password,
       email: sessionStorage.getItem('email'),
-      confirmPassword: confirmPassword.trim(),
+      confirmPassword,
     };
     makeQuerry('new-password', JSON.stringify(body))
       .then((response) => {
@@ -134,8 +135,8 @@ export default function Index({ changePopup }) {
         <Field dataTestId="code-input" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={onCodeChange} />
         <Field dataTestId="password-input" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} show={show} onShow={onShow} />
         <Field dataTestId="confirm-password-input" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} show={show} onShow={onShow} />
-        <Button name={send ? t('processing') : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send} dataTestId="change-password-btn" />
-        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+        <Button name={send ? t('processing') : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send || succes} dataTestId="change-password-btn" />
+        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || succes} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
       </div>
     </div>
   );

@@ -200,6 +200,11 @@ input[type='number'] {
   background: grey;
   cursor: initial;
   color: #fff;
+  border: 1px solid grey;
+}
+.button:disabled:hover {
+  box-shadow: none;
+  transform: none;
 }
 .form-body {
   background: var(--semi-dark);

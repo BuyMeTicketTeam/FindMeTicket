@@ -190,6 +190,14 @@
     height: 20px;
     background: url('../../public/img/arrow-more.svg');
 }
+.main-filters__btn.active {
+    background: var(--bright);
+}
+.main-filters__btn.active.up::before {
+    transform: rotate(180deg);
+    right: 15px;
+    top: 11px;
+}
 
 .main-filters__btn:first-child {
     margin-right: 15px;
@@ -205,33 +213,29 @@
     margin-bottom: 20px;
 }
 .information {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     flex: auto;
     margin-right: 15px;
 }
-.information__column.middle-end {
-    min-width: max-content;
-}
-.information__column.middle-column {
-    flex: auto;
+.information__row {
     display: flex;
-    flex-direction: column;
-    align-self:flex-start;
-    margin: 0 15px;
+    justify-content: space-between;
+    align-items: center;
+}
+.information__row:not(:last-child) {
+    margin-bottom: 20px;
+}
+.ticket-last-element {
+    flex: 0 0 300px;
 }
 .ticket__date {
     font-weight: 600;
     font-size: 20px;
-    margin-bottom: 15px;
 }
 .ticket__travel-time {
     display: flex;
     align-items: center;
     font-size: 18px;
     align-self: center;
-    margin-bottom: 30px;
 }
 .ticket__travel-time img {
     margin-right: 3px;
@@ -240,19 +244,19 @@
 .ticket__city {
     font-size: 24px;
     font-weight: 700;
-    min-width: max-content;
-    margin-bottom: 20px;
 }
 .ticket__line {
     display: block;
     width: 100%;
     height: 2px;
     background: var(--bright);
+    margin: 0 10px;
 }
 .ticket__station {
     font-size: 18px;
 }
 .price-options {
+    flex: 0 0 286px;
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -55,7 +55,7 @@ export default function Confirm({ changePopup }) {
     }
     const body = {
       email: sessionStorage.getItem('email'),
-      token: code.trim(),
+      token: code,
     };
     makeQuerry('confirm-email', JSON.stringify(body))
       .then((response) => {
@@ -117,8 +117,8 @@ export default function Confirm({ changePopup }) {
         <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
         {error !== '' && <p data-testid="error" className="confirm__error">{error}</p>}
         <div className="row">
-          <Button name={send ? t('processing') : t('send')} disabled={send} onButton={onSend} dataTestId="confirm-btn" />
-          <button data-testid="send-again-btn" className="confirm__send-again" disabled={minutes > 0 || seconds > 0} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+          <Button name={send ? t('processing') : t('send')} disabled={send || succes} onButton={onSend} dataTestId="confirm-btn" />
+          <button data-testid="send-again-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || succes} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
         </div>
       </div>
     </div>

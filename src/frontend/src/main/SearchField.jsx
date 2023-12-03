@@ -14,6 +14,7 @@ export default function SearchField() {
   const [passanger, onPassangers] = useState('1 Дорослий, 0 Дитина');
   const [send, onSend] = useState(false);
   const [showPassangers, onShowPassangers] = useState(false);
+  const fieldRef = React.createRef();
   const from = [
     { value: 'Дніпро', label: 'Дніпро' },
     { value: 'Київ', label: 'Київ' },
@@ -24,12 +25,41 @@ export default function SearchField() {
     { value: 'Київ', label: 'Київ' },
     { value: 'Одеса', label: 'Одеса' },
   ];
+
   function showPassangersDrop() {
     onShowPassangers(!showPassangers);
   }
+
   useEffect(() => {
-    onPassangers(`${adultsValue} Дорослий, ${childrenValue} Дитина`);
+    const checkIfClickedOutside = (e) => {
+      // If the menu is open and the clicked target is not within the menu,
+      // then close the menu
+      if (showPassangers && fieldRef.current && !fieldRef.current.contains(e.target)) {
+        onShowPassangers(false);
+      }
+    };
+    document.addEventListener('mousedown', checkIfClickedOutside);
+
+    return () => {
+      // Cleanup the event listener
+      document.removeEventListener('mousedown', checkIfClickedOutside);
+    };
+  }, [showPassangers, fieldRef]);
+
+  useEffect(() => {
+    let adults = 'Дорослий';
+    let kids = 'Дитина';
+    if (adultsValue > 1) {
+      adults = 'Дорослих';
+    }
+    if (childrenValue > 1 && childrenValue <= 4) {
+      kids = 'Дитини';
+    } else if (childrenValue > 4) {
+      kids = 'Дітей';
+    }
+    onPassangers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
   }, [childrenValue, adultsValue]);
+
   function handleClick() {
     onSend(false);
     makeQuerry('get1', undefined, undefined, 'GET')
@@ -45,11 +75,13 @@ export default function SearchField() {
         }
       });
   }
+
   useEffect(() => {
     if (send) {
       handleClick();
     }
   }, [send]);
+
   return (
     <div className="search-field">
       <div className="field ">
@@ -57,12 +89,12 @@ export default function SearchField() {
         <Select classNamePrefix="react-select" options={from} placeholder={null} />
       </div>
       <div className="search-field__img"><img src="../img/arrows.svg" alt="arrows" /></div>
-      <div className="field ">
+      <div className="field">
         <div className="field__name">Куди</div>
         <Select classNamePrefix="react-select" options={destination} placeholder={null} />
       </div>
       <Calendar />
-      <Field className="search-field__tip-long" name="Пасажири" value={passanger} type="text" tip={<Passangers status={showPassangers} adultsValue={adultsValue} onAdultsValue={onAdultsValue} childrenValue={childrenValue} onChildrenValue={onChildrenValue} />} onClick={() => showPassangersDrop()} />
+      <Field ref={fieldRef} className="search-field__tip-long" name="Пасажири" value={passanger} type="text" tip={<Passangers status={showPassangers} adultsValue={adultsValue} onAdultsValue={onAdultsValue} childrenValue={childrenValue} onChildrenValue={onChildrenValue} />} onClick={() => showPassangersDrop()} />
       <Button name="Знайти" onButton={onSend} />
     </div>
   );
