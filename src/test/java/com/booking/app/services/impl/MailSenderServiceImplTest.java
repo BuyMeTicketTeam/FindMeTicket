@@ -72,11 +72,10 @@ class MailSenderServiceImplTest {
         UserSecurity userSecurity = UserSecurity.builder().email("ewyrwey_sdds@gmail.com").username("ewyrweysdds").user(user).build();
 
         when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
-        //doNothing().when(verifyEmailRepository).delete(userSecurity.getUser().getConfirmToken());
         when(tokenService.createConfirmToken(user)).thenReturn(token);
-
         doNothing().when(temp).sendEmail("confirmMail", "Email confirmation", token.getToken(), userSecurity);
-        //assertNotNull(userSecurity.getUser().getConfirmToken());
+
         assertTrue(temp.resendEmail(email));
     }
+
 }

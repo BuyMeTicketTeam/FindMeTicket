@@ -13,4 +13,5 @@ public class AuthResponseDTO {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
+
 }

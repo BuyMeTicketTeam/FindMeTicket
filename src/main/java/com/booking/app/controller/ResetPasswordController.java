@@ -60,4 +60,5 @@ public class ResetPasswordController implements ResetPasswordAPI {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Confirmation code is not right");
     }
+
 }

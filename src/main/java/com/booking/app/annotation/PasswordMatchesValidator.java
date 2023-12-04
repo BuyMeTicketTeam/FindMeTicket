@@ -22,4 +22,5 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         }
         throw new PasswordNotMatchesException(defaultValidationMessage);
     }
+
 }

@@ -15,4 +15,5 @@ public class RoleDTO {
     @NotNull
 
     private final EnumRole enumRole;
+
 }

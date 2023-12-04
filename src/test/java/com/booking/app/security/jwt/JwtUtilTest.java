@@ -36,8 +36,6 @@ class JwtUtilTest {
         userSecurity.setEmail(email);
 
         assertTrue(jwtUtil.validateAccessToken(accessToken, userSecurity));
-
-
     }
 
     @Test
@@ -55,8 +53,6 @@ class JwtUtilTest {
         userSecurity.setEmail(email);
 
         assertTrue(jwtUtil.validateRefreshToken(refreshToken, userSecurity));
-
-
     }
 
     @Test
@@ -71,4 +67,5 @@ class JwtUtilTest {
         assertEquals(accessToken, jwtUtil.extractAccessTokenFromRequest(request));
         assertEquals(refreshToken, jwtUtil.extractRefreshTokenFromRequest(request));
     }
+    
 }

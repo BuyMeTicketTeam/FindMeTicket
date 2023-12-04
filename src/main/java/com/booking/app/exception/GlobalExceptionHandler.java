@@ -104,17 +104,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.I_AM_A_TEAPOT);
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(BadCredentialsException.class)
-//    public ResponseEntity<ErrorDetails> usernameExists(BadCredentialsException exception, WebRequest webRequest) {
-//        ErrorDetails errorDetails = new ErrorDetails(
-//                LocalDateTime.now(),
-//                exception.getMessage(),
-//                webRequest.getDescription(false),
-//                HttpStatus.BAD_REQUEST
-//        );
-//
-//        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-//    }
-
 }

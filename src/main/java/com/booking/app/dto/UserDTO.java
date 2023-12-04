@@ -16,4 +16,5 @@ public class UserDTO {
 
     @Valid
     private final RoleDTO role;
+
 }

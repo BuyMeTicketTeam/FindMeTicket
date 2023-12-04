@@ -32,6 +32,7 @@ public class RegistrationDTO implements ConfirmPasswordUtil {
     private  String password;
 
     private  String confirmPassword;
+
 }
 
 

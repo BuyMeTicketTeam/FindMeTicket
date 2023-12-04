@@ -5,4 +5,5 @@ public interface ConfirmPasswordUtil {
     String getPassword();
 
     String getConfirmPassword();
+
 }

@@ -30,4 +30,5 @@ class LogoutControllerTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
+
 }

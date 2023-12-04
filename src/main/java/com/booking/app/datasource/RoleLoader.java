@@ -24,4 +24,5 @@ public class RoleLoader implements CommandLineRunner {
         roleRepository.save(roleAdmin);
         roleRepository.save(roleUser);
     }
+
 }

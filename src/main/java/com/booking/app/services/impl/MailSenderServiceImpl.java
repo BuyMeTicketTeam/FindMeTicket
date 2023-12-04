@@ -51,7 +51,6 @@ public class MailSenderServiceImpl implements MailSenderService {
 
         String process = templateEngine.process(htmlPage, context);
 
-
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         helper.setSubject(subject);
@@ -87,4 +86,5 @@ public class MailSenderServiceImpl implements MailSenderService {
         sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), userByEmailFromDb.get());
         return true;
     }
+
 }

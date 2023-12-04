@@ -7,4 +7,5 @@ public class CorsConfigConstants {
     public static final String allowCredentials = "true";
     public static final String exposedHeaderAuthorization = "Authorization";
     public static final String exposedHeaderRefreshToken = "Refresh-Token";
+
 }

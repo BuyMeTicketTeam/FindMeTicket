@@ -17,4 +17,5 @@ public enum EnumRole {
     public Set<SimpleGrantedAuthority> getSimpleGrantedAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority(role.toUpperCase()));
     }
+
 }

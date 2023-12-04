@@ -44,4 +44,5 @@ public interface UserAPI {
             @ApiResponse(responseCode = "200", description = "User has been created")
     })
     ResponseDTO<UserDTO> create(@NotNull UserDTO userDTO);
+
 }

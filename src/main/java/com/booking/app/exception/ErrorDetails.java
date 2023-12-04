@@ -14,4 +14,5 @@ public class ErrorDetails {
     private String message;
     private String path;
     private HttpStatus status;
+
 }

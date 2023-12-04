@@ -27,4 +27,5 @@ public interface ResetPasswordAPI {
             @ApiResponse(responseCode = "400", description = "Token from email is not right")
     })
     ResponseEntity<?> confirmResetPassword( @NotNull @Valid ResetPasswordDTO dto);
+
 }

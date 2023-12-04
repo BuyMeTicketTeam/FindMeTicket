@@ -33,4 +33,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.info(String.format("User has been loaded by %s",email));
         return userSecurity.get();
     }
+
 }
