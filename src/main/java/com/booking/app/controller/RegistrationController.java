@@ -82,4 +82,5 @@ public class RegistrationController implements RegisterAPI {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad input");
     }
+
 }

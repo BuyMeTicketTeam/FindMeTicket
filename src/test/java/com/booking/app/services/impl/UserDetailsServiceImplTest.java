@@ -50,4 +50,5 @@ class UserDetailsServiceImplTest {
 
         Assertions.assertThrows(UsernameNotFoundException.class, ()->userDetailsService.loadUserByUsername(email));
     }
+
 }

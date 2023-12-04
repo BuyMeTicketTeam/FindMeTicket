@@ -28,5 +28,6 @@ public class ConfirmToken {
     @NotNull
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date expiryTime;
+
 }
 

@@ -61,7 +61,6 @@ class ResetPasswordServiceImplTest {
         UserSecurity userSecurity = UserSecurity.builder().enabled(true).user(user).build();
 
         when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
-
         when(tokenService.createConfirmToken(user)).thenReturn(token);
 
         assertTrue(resetPasswordService.sendEmailResetPassword(email));
@@ -111,7 +110,6 @@ class ResetPasswordServiceImplTest {
         UserSecurity userSecurity = UserSecurity.builder().enabled(true).user(user).build();
 
         when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userSecurity));
-
         when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getToken())).thenReturn(true);
 
         assertTrue(resetPasswordService.resetPassword(resetPasswordDTO));
@@ -133,7 +131,6 @@ class ResetPasswordServiceImplTest {
         UserSecurity userSecurity = UserSecurity.builder().enabled(true).user(user).build();
 
         when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userSecurity));
-
         when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getToken())).thenReturn(false);
 
         assertFalse(resetPasswordService.resetPassword(resetPasswordDTO));
@@ -144,9 +141,7 @@ class ResetPasswordServiceImplTest {
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder().email("dkfshkf@gmail.com")
                 .token("SAD88").password("12345").confirmPassword("12345").build();
 
-
         when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.empty());
-
 
         assertFalse(resetPasswordService.resetPassword(resetPasswordDTO));
     }

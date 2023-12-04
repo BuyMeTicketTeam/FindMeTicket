@@ -73,6 +73,6 @@ class LoginControllerTest {
         LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
 
         assertThrows(BadCredentialsException.class, ()->loginController.login(loginDTO, httpServletRequest, httpServletResponse));
-
     }
+
 }

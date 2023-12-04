@@ -21,4 +21,5 @@ public interface LoginAPI {
             @ApiResponse(responseCode = "403", description = "Invalid credentials or such user doesn't exist")
     })
      ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDTO dto , HttpServletRequest request, HttpServletResponse response);
+
 }

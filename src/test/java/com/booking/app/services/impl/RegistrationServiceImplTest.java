@@ -143,7 +143,6 @@ class RegistrationServiceImplTest {
         User user = User.builder().confirmToken(token).build();
 
         doReturn(user).when(temp).createNewRegisteredUser(userSecurity);
-
         when(mapper.toEmail(userSecurity)).thenReturn(new EmailDTO(userSecurity.getEmail()));
 
         EmailDTO emailDTO = temp.performRegistration(registrationDTO);
@@ -200,4 +199,5 @@ class RegistrationServiceImplTest {
 
         assertFalse(registrationService.enableIfValid(dto));
     }
+
 }

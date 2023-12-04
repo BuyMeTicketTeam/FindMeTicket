@@ -85,5 +85,4 @@ public class TokenServiceImpl implements TokenService {
         return stringBuilder.toString();
     }
 
-
 }

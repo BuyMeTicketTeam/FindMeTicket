@@ -17,4 +17,5 @@ public class DataSourceConfig {
         dataSourceBuilder.password("postgres");
         return dataSourceBuilder.build();
     }
+
 }

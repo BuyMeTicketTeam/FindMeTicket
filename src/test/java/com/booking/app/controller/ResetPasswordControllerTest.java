@@ -71,4 +71,5 @@ class ResetPasswordControllerTest {
         Assertions.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
     }
+
 }

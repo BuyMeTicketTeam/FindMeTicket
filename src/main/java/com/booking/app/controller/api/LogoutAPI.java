@@ -9,4 +9,5 @@ public interface LogoutAPI {
     @Operation(summary = "Logout a user")
     @ApiResponse(responseCode = "200", description = "User has been logged out ")
     ResponseEntity<?> logout();
+
 }

@@ -50,4 +50,5 @@ public class UserController implements UserAPI {
     public void delete(@PathVariable UUID id) {
         service.delete(id);
     }
+
 }

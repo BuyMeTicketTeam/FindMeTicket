@@ -15,4 +15,5 @@ public class TokenConfirmationDTO {
     @NotNull
     private String email;
     private String token;
+
 }

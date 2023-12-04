@@ -16,4 +16,5 @@ public class EmailDTO {
     @Email
     @NotNull
     private String email;
+
 }

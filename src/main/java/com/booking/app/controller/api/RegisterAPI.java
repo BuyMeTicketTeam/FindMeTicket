@@ -37,4 +37,5 @@ public interface RegisterAPI {
             @ApiResponse(responseCode = "200", description = "Email is confirmed"),
     })
     ResponseEntity<?> resendConfirmEmailToken(@NotNull @Valid TokenConfirmationDTO dto) throws MessagingException, IOException;
+
 }
