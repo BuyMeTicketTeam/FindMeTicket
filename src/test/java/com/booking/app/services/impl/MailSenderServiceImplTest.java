@@ -73,7 +73,7 @@ class MailSenderServiceImplTest {
 
         when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
         when(tokenService.createConfirmToken(user)).thenReturn(token);
-        doNothing().when(temp).sendEmail("confirmMail", "Email confirmation", token.getToken(), userSecurity);
+        doNothing().when(temp).sendEmail("confirmMailUa", "Email confirmation", token.getToken(), userSecurity);
 
         assertTrue(temp.resendEmail(email));
     }
