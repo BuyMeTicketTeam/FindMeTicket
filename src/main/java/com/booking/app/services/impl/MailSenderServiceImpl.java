@@ -37,9 +37,9 @@ public class MailSenderServiceImpl implements MailSenderService {
      * This method sending email with specified token.
      *
      * @param htmlPage String html representation of the letter
-     * @param subject String subject of the letter
-     * @param token String generated token that is needed to confirm email
-     * @param user UserSecurity recipient
+     * @param subject  String subject of the letter
+     * @param token    String generated token that is needed to confirm email
+     * @param user     UserSecurity recipient
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
     @Transactional
@@ -48,6 +48,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
         Context context = new Context();
         context.setVariable("token", token);
+        context.setVariable("nickname", user.getUsername());
 
         String process = templateEngine.process(htmlPage, context);
 
@@ -74,7 +75,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     public boolean resendEmail(String email) throws MessagingException, UserPrincipalNotFoundException {
         Optional<UserSecurity> userByEmailFromDb = userSecurityRepository.findByEmail(email);
 
-        if(userByEmailFromDb.isEmpty()) return false;
+        if (userByEmailFromDb.isEmpty()) return false;
 
         User user = userByEmailFromDb.get().getUser();
         verifyEmailRepository.delete(user.getConfirmToken());
@@ -83,7 +84,7 @@ public class MailSenderServiceImpl implements MailSenderService {
         user.setConfirmToken(confirmToken);
 
         verifyEmailRepository.save(confirmToken);
-        sendEmail("confirmMail", "Email confirmation", confirmToken.getToken(), userByEmailFromDb.get());
+        sendEmail("confirmMailUa", "Email confirmation", confirmToken.getToken(), userByEmailFromDb.get());
         return true;
     }
 
