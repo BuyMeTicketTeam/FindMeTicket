@@ -14,10 +14,6 @@ public interface UserSecurityRepository extends JpaRepository<UserSecurity,UUID>
     Optional<UserSecurity> findByEmailOrUsername(String email, String username);
     Optional<UserSecurity> findByEmail(String email);
 
-//    @Modifying
-//    @Query(value = "UPDATE UserSecurity u SET u.enabled = true WHERE u.id = :userId")
-//    void enableUserById(@Param("userId") UUID userId);
-
     @Modifying
     @Query(value = "UPDATE UserSecurity u SET u.password = :password WHERE u.id = :userId")
     void changePasswordById(@Param("userId") UUID userId, @Param("password") String password);
