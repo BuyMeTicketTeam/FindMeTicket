@@ -1,19 +1,19 @@
 package com.booking.app.controller.api;
 
-import com.booking.app.controller.dto.ResponseDTO;
-import com.booking.app.controller.dto.UserDTO;
+import com.booking.app.dto.ResponseDTO;
+import com.booking.app.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
-
 import java.util.List;
 import java.util.UUID;
 
 @Validated
 public interface UserAPI {
+
     @Operation(summary = "Get user by Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User is found")
@@ -44,7 +44,5 @@ public interface UserAPI {
             @ApiResponse(responseCode = "200", description = "User has been created")
     })
     ResponseDTO<UserDTO> create(@NotNull UserDTO userDTO);
-
-
 
 }

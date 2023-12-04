@@ -5,17 +5,17 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.UUID;
-
 
 @Entity
 @Table(name = "user_security")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Data
+@Setter
+@Getter
+@ToString
 public class UserSecurity implements UserDetails {
 
     @Id
@@ -48,24 +48,26 @@ public class UserSecurity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getRole().getEnumRole().getSimpleGrantedAuthorities();
     }
+
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return credentialsNonExpired;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
+    
 }
 

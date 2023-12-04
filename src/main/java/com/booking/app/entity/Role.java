@@ -1,19 +1,16 @@
 package com.booking.app.entity;
 
-import com.booking.app.enums.EnumRole;
+import com.booking.app.entity.enums.EnumRole;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import java.util.Set;
-
 
 @Entity
 @Table(name = "role")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 public class Role{
 
@@ -22,7 +19,7 @@ public class Role{
     private int id;
 
     @Enumerated(EnumType.STRING)
-    private  EnumRole enumRole;
+    private EnumRole enumRole;
 
     @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
     private Set<User> users;

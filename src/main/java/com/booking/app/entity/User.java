@@ -1,26 +1,20 @@
 package com.booking.app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "users")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 
@@ -28,9 +22,6 @@ public class User {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-//    @Column(name = "username")
-//    private String username;
 
     @Column(name = "registration_date")
     @CreatedDate
@@ -43,8 +34,11 @@ public class User {
     @JoinColumn(referencedColumnName = "id",name = "role_id")
     private Role role;
 
+    @JoinColumn(referencedColumnName = "id", name = "confirm_id")
+    @OneToOne
+    private ConfirmToken confirmToken;
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private UserSecurity security;
-
 
 }

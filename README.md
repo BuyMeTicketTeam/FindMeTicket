@@ -1,2 +1,2 @@
-# BuyMeTicket
-BuyMeTicket is an all-in-one platform designed to simplify and streamline the process of purchasing tickets for various modes of transportation. With a focus on user-friendly design and efficient ticket booking, this project aims to provide travelers with a seamless and convenient experience when planning their journey.....
+# FindMeTicket
+Our project is focused on creating a web application that simplifies the process of finding the best bus tickets available across various websites in Ukraine. It aims to provide users with an efficient and user-friendly solution for discovering and booking train tickets. This project is designed to cater to the diverse needs of travelers and enhance their booking experience.
