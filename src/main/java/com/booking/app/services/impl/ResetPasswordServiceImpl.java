@@ -56,7 +56,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             user.setConfirmToken(confirmToken);
 
             verifyEmailRepository.save(confirmToken);
-            mailSenderService.sendEmail("resetPassword", "Reset password", confirmToken.getToken(), userFromDb.get());
+            mailSenderService.sendEmail("resetPasswordUa", "Reset password", confirmToken.getToken(), userFromDb.get());
             return true;
         }
 

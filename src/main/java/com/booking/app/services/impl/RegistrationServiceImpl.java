@@ -102,7 +102,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setSecurity(securityEntity);
         user.getSecurity().setUser(user);
 
-        mailService.sendEmail("confirmMail", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
+        mailService.sendEmail("confirmMailUa", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
 
         return mapper.toEmail(securityEntity);
     }
