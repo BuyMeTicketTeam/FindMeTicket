@@ -14,6 +14,7 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
     method,
     body,
   });
+  const bodyResponse = await response.json();
   writeToken(response);
-  return { status: response.status, headers: response.headers };
+  return { status: response.status, headers: response.headers, body: bodyResponse };
 }

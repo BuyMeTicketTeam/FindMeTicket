@@ -48,7 +48,6 @@ export default function Confirm({ changePopup }) {
   }
 
   function handleSendButton() {
-    onCodeError(false);
     if (!validation()) {
       onSend(false);
       return;
@@ -76,7 +75,6 @@ export default function Confirm({ changePopup }) {
   }
 
   function handleResendButton() {
-    onCodeError(false);
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {

@@ -35,7 +35,6 @@ export default function Index() {
   }
 
   function handleButton() {
-    onEmailError(false);
     if (!validation()) {
       onSend(false);
       return;

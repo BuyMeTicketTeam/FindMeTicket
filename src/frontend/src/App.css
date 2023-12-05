@@ -61,7 +61,7 @@ input[type='number'] {
 .input.input-error {
   border: 2px solid var(--error);
   outline-color: var(--error);
-  box-shadow: 0px 0px 8px 1px var(--error);
+  box-shadow: 0px 0px 9px 2px var(--error);
 }
 .input-wrapper {
   width: 100%;

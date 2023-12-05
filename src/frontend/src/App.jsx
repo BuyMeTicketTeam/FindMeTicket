@@ -1,29 +1,32 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import Header from './header/index';
 import Routers from './routers';
 import './testServer';
 import './App.css';
 import './locales/i18n';
-import Cookie from './cookieBanner/cookie';
 
 function App() {
-  const [cookies] = useCookies();
   const [authorization, onAuthorization] = useState(false);
   const [popupLogin, changePopup] = useState(false);
-  useEffect(() => {
-    if (cookies?.['Remember-me']) {
-      onAuthorization(true);
+  function checkAuth(value) {
+    const authValue = sessionStorage.getItem('auth');
+    if (authValue === 'true' && value === undefined) {
+      onAuthorization(authValue);
+      return;
     }
+    onAuthorization(value);
+    sessionStorage.setItem('auth', value);
+  }
+  useEffect(() => {
+    checkAuth();
   }, []);
   return (
     <Router>
-      <Header authorization={authorization} onAuthorization={onAuthorization} changePopup={changePopup} popupLogin={popupLogin} />
+      <Header authorization={authorization} onAuthorization={(value) => checkAuth(value)} changePopup={changePopup} popupLogin={popupLogin} />
       <Routers changePopup={changePopup} />
-      <Cookie />
     </Router>
 
   );

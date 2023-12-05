@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 import Field from '../utils/Field';
 import Button from '../utils/Button';
 // import DropDown from './DropDown';
@@ -15,11 +16,11 @@ export default function SearchField() {
   const [send, onSend] = useState(false);
   const [showPassangers, onShowPassangers] = useState(false);
   const fieldRef = React.createRef();
-  const from = [
-    { value: 'Дніпро', label: 'Дніпро' },
-    { value: 'Київ', label: 'Київ' },
-    { value: 'Одеса', label: 'Одеса' },
-  ];
+  // const from = [
+  //   { value: 'Дніпро', label: 'Дніпро' },
+  //   { value: 'Київ', label: 'Київ' },
+  //   { value: 'Одеса', label: 'Одеса' },
+  // ];
   const destination = [
     { value: 'Дніпро', label: 'Дніпро' },
     { value: 'Київ', label: 'Київ' },
@@ -82,16 +83,30 @@ export default function SearchField() {
     }
   }, [send]);
 
+  async function getCities(inputValue) {
+    if (inputValue.length > 1) {
+      const result = await new Promise((resolve) => {
+        setTimeout(async () => {
+          const response = await makeQuerry('cities', JSON.stringify({ value: inputValue }));
+          resolve(response.body);
+        }, 500);
+      });
+
+      return result;
+    }
+    return [];
+  }
+
   return (
     <div className="search-field">
       <div className="field ">
         <div className="field__name">Звідки</div>
-        <Select classNamePrefix="react-select" options={from} placeholder={null} />
+        <AsyncSelect cacheOptions classNamePrefix="react-select" loadOptions={getCities} placeholder={null} />
       </div>
       <div className="search-field__img"><img src="../img/arrows.svg" alt="arrows" /></div>
       <div className="field">
         <div className="field__name">Куди</div>
-        <Select classNamePrefix="react-select" options={destination} placeholder={null} />
+        <AsyncSelect classNamePrefix="react-select" defaultOptions={destination} placeholder={null} />
       </div>
       <Calendar />
       <Field ref={fieldRef} className="search-field__tip-long" name="Пасажири" value={passanger} type="text" tip={<Passangers status={showPassangers} adultsValue={adultsValue} onAdultsValue={onAdultsValue} childrenValue={childrenValue} onChildrenValue={onChildrenValue} />} onClick={() => showPassangersDrop()} />
