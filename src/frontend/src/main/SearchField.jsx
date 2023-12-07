@@ -21,11 +21,11 @@ export default function SearchField() {
   //   { value: 'Київ', label: 'Київ' },
   //   { value: 'Одеса', label: 'Одеса' },
   // ];
-  const destination = [
-    { value: 'Дніпро', label: 'Дніпро' },
-    { value: 'Київ', label: 'Київ' },
-    { value: 'Одеса', label: 'Одеса' },
-  ];
+  // const destination = [
+  //   { value: 'Дніпро', label: 'Дніпро' },
+  //   { value: 'Київ', label: 'Київ' },
+  //   { value: 'Одеса', label: 'Одеса' },
+  // ];
 
   function showPassangersDrop() {
     onShowPassangers(!showPassangers);
@@ -82,8 +82,22 @@ export default function SearchField() {
       handleClick();
     }
   }, [send]);
+  let timerId;
+  async function getFromCities(inputValue) {
+    if (inputValue.length > 1) {
+      clearInterval(timerId);
+      const result = await new Promise((resolve) => {
+        timerId = setTimeout(async () => {
+          const response = await makeQuerry('cities', JSON.stringify({ value: inputValue }));
+          resolve(response.body);
+        }, 500);
+      });
+      return result;
+    }
+    return [];
+  }
 
-  async function getCities(inputValue) {
+  async function getToCities(inputValue) {
     if (inputValue.length > 1) {
       const result = await new Promise((resolve) => {
         setTimeout(async () => {
@@ -101,12 +115,12 @@ export default function SearchField() {
     <div className="search-field">
       <div className="field ">
         <div className="field__name">Звідки</div>
-        <AsyncSelect cacheOptions classNamePrefix="react-select" loadOptions={getCities} placeholder={null} />
+        <AsyncSelect noOptionsMessage={() => null} loadingMessage={() => 'Завантаження...'} cacheOptions classNamePrefix="react-select" loadOptions={getFromCities} placeholder={null} />
       </div>
       <div className="search-field__img"><img src="../img/arrows.svg" alt="arrows" /></div>
       <div className="field">
         <div className="field__name">Куди</div>
-        <AsyncSelect classNamePrefix="react-select" defaultOptions={destination} placeholder={null} />
+        <AsyncSelect noOptionsMessage={() => null} loadingMessage={() => 'Завантаження...'} cacheOptions classNamePrefix="react-select" loadOptions={getToCities} placeholder={null} />
       </div>
       <Calendar />
       <Field ref={fieldRef} className="search-field__tip-long" name="Пасажири" value={passanger} type="text" tip={<Passangers status={showPassangers} adultsValue={adultsValue} onAdultsValue={onAdultsValue} childrenValue={childrenValue} onChildrenValue={onChildrenValue} />} onClick={() => showPassangersDrop()} />
