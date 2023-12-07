@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin(origins = CorsConfigConstants.allowedOrigin, maxAge = 3600,
-        exposedHeaders = {CorsConfigConstants.exposedHeaderRefreshToken, CorsConfigConstants.exposedHeaderAuthorization})
+@CrossOrigin(origins = {CorsConfigConstants.ALLOWED_ORIGIN_80,CorsConfigConstants.ALLOWED_ORIGIN_81}, maxAge = 3600,
+        exposedHeaders = {CorsConfigConstants.EXPOSED_HEADER_REFRESH_TOKEN, CorsConfigConstants.EXPOSED_HEADER_AUTHORIZATION})
 public class LogoutController implements LogoutAPI {
 
     /**
