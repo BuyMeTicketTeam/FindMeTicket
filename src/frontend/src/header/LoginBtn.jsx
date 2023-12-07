@@ -8,14 +8,18 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
 
   function handleLogoutButton() {
     onLogout(false);
-    makeQuerry('logout')
-      .then((response) => {
-        if (response.status === 200) {
+
+    makeQuerry('logout').then((response) => {
+      switch (response.status) {
+        case 200:
           onAuthorization(!status);
           localStorage.removeItem('JWTtoken');
           localStorage.removeItem('refreshToken');
-        }
-      });
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   useEffect(() => {

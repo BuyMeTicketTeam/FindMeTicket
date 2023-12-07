@@ -39,8 +39,21 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('tourist-places')}</a></li>
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
-      <Select options={languages} classNamePrefix="react-select" placeholder={null} value={language} isSearchable={false} onChange={(lang) => languageFunc(lang)} />
-      <LoginBtn status={authorization} onAuthorization={onAuthorization} changePopup={changePopup} />
+      <Select
+        options={languages}
+        classNamePrefix="react-select"
+        placeholder={null}
+        value={language}
+        isSearchable={false}
+        onChange={(lang) => languageFunc(lang)}
+      />
+
+      <LoginBtn
+        status={authorization}
+        onAuthorization={onAuthorization}
+        changePopup={changePopup}
+      />
+
       {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
     </header>
   );

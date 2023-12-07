@@ -63,18 +63,23 @@ export default function SearchField() {
 
   function handleClick() {
     onSend(false);
-    makeQuerry('get1', undefined, undefined, 'GET')
-      .then((response) => {
-        if (response.status === 200) {
+
+    makeQuerry('get1', undefined, undefined, 'GET').then((response) => {
+      switch (response.status) {
+        case 200:
           console.log(`status: ${200}`);
-        } else if (response.status === 401) {
+          break;
+        case 401:
           console.log(`status: ${401}`);
-        } else if (response.status === 403) {
+          break;
+        case 403:
           console.log(`status: ${403}`);
-        } else {
+          break;
+        default:
           console.log('status: other');
-        }
-      });
+          break;
+      }
+    });
   }
 
   useEffect(() => {
@@ -115,15 +120,47 @@ export default function SearchField() {
     <div className="search-field">
       <div className="field ">
         <div className="field__name">Звідки</div>
-        <AsyncSelect noOptionsMessage={() => null} loadingMessage={() => 'Завантаження...'} cacheOptions classNamePrefix="react-select" loadOptions={getFromCities} placeholder={null} />
+        <AsyncSelect
+          noOptionsMessage={() => null}
+          loadingMessage={() => 'Завантаження...'}
+          cacheOptions
+          classNamePrefix="react-select"
+          loadOptions={getFromCities}
+          placeholder={null}
+        />
+
       </div>
       <div className="search-field__img"><img src="../img/arrows.svg" alt="arrows" /></div>
       <div className="field">
         <div className="field__name">Куди</div>
-        <AsyncSelect noOptionsMessage={() => null} loadingMessage={() => 'Завантаження...'} cacheOptions classNamePrefix="react-select" loadOptions={getToCities} placeholder={null} />
+        <AsyncSelect
+          noOptionsMessage={() => null}
+          loadingMessage={() => 'Завантаження...'}
+          cacheOptions
+          classNamePrefix="react-select"
+          loadOptions={getToCities}
+          placeholder={null}
+        />
+
       </div>
       <Calendar />
-      <Field ref={fieldRef} className="search-field__tip-long" name="Пасажири" value={passanger} type="text" tip={<Passangers status={showPassangers} adultsValue={adultsValue} onAdultsValue={onAdultsValue} childrenValue={childrenValue} onChildrenValue={onChildrenValue} />} onClick={() => showPassangersDrop()} />
+      <Field
+        ref={fieldRef}
+        className="search-field__tip-long"
+        name="Пасажири"
+        value={passanger}
+        type="text"
+        tip={(
+          <Passangers
+            status={showPassangers}
+            adultsValue={adultsValue}
+            onAdultsValue={onAdultsValue}
+            childrenValue={childrenValue}
+            onChildrenValue={onChildrenValue}
+          />
+)}
+        onClick={() => showPassangersDrop()}
+      />
       <Button name="Знайти" onButton={onSend} />
     </div>
   );

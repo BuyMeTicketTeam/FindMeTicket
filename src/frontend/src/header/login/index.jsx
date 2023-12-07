@@ -21,13 +21,17 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [show, onShow] = useState(false);
 
   function statusChecks(response) {
-    if (response.status === 200) {
-      changePopup(false);
-      onAuthorization(true);
-    } else if (response.status === 403) {
-      onError(t('error-lp'));
-    } else {
-      onError(t('error-server2'));
+    switch (response.status) {
+      case 200:
+        changePopup(false);
+        onAuthorization(true);
+        break;
+      case 403:
+        onError(t('error-lp'));
+        break;
+      default:
+        onError(t('error-server2'));
+        break;
     }
   }
 
@@ -90,11 +94,48 @@ export default function Popup({ changePopup, onAuthorization }) {
       <div className="popup__body">
         <button data-testid="close" type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
-        <Field error={loginError} dataTestId="login-input" name={t('email-name')} tip={t('login-tip')} value={login} type="text" onInputChange={(value) => handleLoginChange(value)} placeholder="mail@mail.com" />
-        <Field error={passwordError} dataTestId="password-login-input" name={t('password-name')} tip={t('password-tip')} value={password} type="password" onInputChange={(value) => handlePasswordChange(value)} show={show} onShow={onShow} />
+        <Field
+          error={loginError}
+          dataTestId="login-input"
+          name={t('email-name')}
+          tip={t('login-tip')}
+          value={login}
+          type="text"
+          onInputChange={(value) => handleLoginChange(value)}
+          placeholder="mail@mail.com"
+        />
+
+        <Field
+          error={passwordError}
+          dataTestId="password-login-input"
+          name={t('password-name')}
+          tip={t('password-tip')}
+          value={password}
+          type="password"
+          onInputChange={(value) => handlePasswordChange(value)}
+          show={show}
+          onShow={onShow}
+        />
+
         <Checkbox onClick={() => handleRememberMeChange()} />
-        <div className="link"><Link data-testid="" to="/reset" onClick={() => changePopup(false)}>{t('forgot-password')}</Link></div>
-        <Button dataTestId="send-request" className="btn-full" disabled={send} name={send ? t('processing') : t('login-buttom')} onButton={onSend} />
+        <div className="link">
+          <Link
+            data-testid=""
+            to="/reset"
+            onClick={() => changePopup(false)}
+          >
+            {t('forgot-password')}
+          </Link>
+        </div>
+
+        <Button
+          dataTestId="send-request"
+          className="btn-full"
+          disabled={send}
+          name={send ? t('processing') : t('login-buttom')}
+          onButton={onSend}
+        />
+
         <div className="login__another">
           <span className="login-another__line" />
           <span className="login-another__content">{t('or')}</span>
@@ -104,7 +145,16 @@ export default function Popup({ changePopup, onAuthorization }) {
           <img src="../img/google-icon.png" alt="logo" />
           {t('google')}
         </a>
-        <div className="link link-register"><Link data-testid="to-register-btn" to="/register" onClick={() => changePopup(false)}>{t('register')}</Link></div>
+        <div className="link link-register">
+          <Link
+            data-testid="to-register-btn"
+            to="/register"
+            onClick={() => changePopup(false)}
+          >
+            {t('register')}
+          </Link>
+        </div>
+
       </div>
     </div>
   );

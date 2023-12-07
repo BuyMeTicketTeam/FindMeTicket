@@ -6,6 +6,20 @@ import Input from './Input';
 export default forwardRef(({ name, value, onInputChange, type, tip, dataTestId, tipDataTestId, placeholder, error, show, onShow, className, onClick, space }, ref) => (
   <div ref={ref} className={`field ${className}`}>
     <div className="field__name">{name}</div>
-    <Input dataTestId={dataTestId} value={value} onInputChange={onInputChange} type={type} placeholder={placeholder} error={error} show={show} onShow={onShow} tip={tip} tipDataTestId={tipDataTestId} onClick={onClick} space={space} />
+    <Input
+      dataTestId={dataTestId}
+      value={value}
+      onInputChange={onInputChange}
+      type={type}
+      placeholder={placeholder}
+      error={error}
+      show={show}
+      onShow={onShow}
+      tip={tip}
+      tipDataTestId={tipDataTestId}
+      onClick={onClick}
+      space={space}
+    />
+
   </div>
 ));

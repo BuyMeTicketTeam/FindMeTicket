@@ -15,13 +15,17 @@ export default function Index() {
   const [send, onSend] = useState(false);
   const navigate = useNavigate();
   function statusChecks(response) {
-    if (response.status === 200) {
-      navigate('/change-password');
-      sessionStorage.setItem('email', email);
-    } else if (response.status === 404) {
-      onError(t('error-user-not-found'));
-    } else {
-      onError(t('error-server2'));
+    switch (response.status) {
+      case 200:
+        navigate('/change-password');
+        sessionStorage.setItem('email', email);
+        break;
+      case 404:
+        onError(t('error-user-not-found'));
+        break;
+      default:
+        onError(t('error-server2'));
+        break;
     }
   }
 
@@ -60,9 +64,24 @@ export default function Index() {
       <div className="form-body reset__body">
         <h1 className="title">{t('password-reset')}</h1>
         <p className="reset__text">{t('email')}</p>
-        <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" dataTestId="reset-input" />
+        <Input
+          error={emailError}
+          value={email}
+          onInputChange={(value) => handleEmailChange(value)}
+          type="text"
+          placeholder="mail@mail.com"
+          dataTestId="reset-input"
+        />
+
         {error !== '' && <p data-testid="error" className="reset__error">{error}</p>}
-        <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} dataTestId="reset-btn" />
+        <Button
+          name={send ? t('processing') : t('send')}
+          disabled={send}
+          className="reset__btn"
+          onButton={onSend}
+          dataTestId="reset-btn"
+        />
+
       </div>
     </div>
   );

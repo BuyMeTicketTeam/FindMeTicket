@@ -20,7 +20,17 @@ export default function Calendar() {
   return (
     <div className="field">
       <div className="field__name">Дата відправки</div>
-      <DatePicker minDate={new Date()} locale={locale} dateFormat="dd/MM/yyyy" closeOnScroll calendarClassName="calendar" className="input" selected={startDate} onChange={(date) => setStartDate(date)} />
+      <DatePicker
+        minDate={new Date()}
+        locale={locale}
+        dateFormat="dd/MM/yyyy"
+        closeOnScroll
+        calendarClassName="calendar"
+        className="input"
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+      />
+
     </div>
   );
 }

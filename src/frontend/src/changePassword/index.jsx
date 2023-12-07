@@ -18,7 +18,7 @@ export default function Index({ changePopup }) {
   const [error, onError] = useState('');
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(30);
-  const [succes, onSucces] = useState(false);
+  const [success, onSucces] = useState(false);
   const [send, onSend] = useState(false);
   const [resend, onResend] = useState(false);
   const [show, onShow] = useState(false);
@@ -48,13 +48,17 @@ export default function Index({ changePopup }) {
   }, [seconds, minutes]);
 
   function checkResponseForResend(response) {
-    if (response.status === 200) {
-      setMinutes(1);
-      setSeconds(30);
-    } else if (response.status === 419) {
-      onError(t('error-server'));
-    } else {
-      onError(t('error-server2'));
+    switch (response.status) {
+      case 200:
+        setMinutes(1);
+        setSeconds(30);
+        break;
+      case 419:
+        onError(t('error-server'));
+        break;
+      default:
+        onError(t('error-server2'));
+        break;
     }
   }
 
@@ -132,23 +136,66 @@ export default function Index({ changePopup }) {
     <div className="confirm">
       <div className="form-body">
         <h1 className="title">{t('title')}</h1>
-        {succes && (
+        {success && (
         <p className="confirm__success">
           {t('success-message')}
           {' '}
           <p>
-            <Link className="link-success" data-testid="" to="/" onClick={() => changePopup(true)}>{t('auth-link')}</Link>
+            <Link
+              className="link-success"
+              data-testid=""
+              to="/"
+              onClick={() => changePopup(true)}
+            >
+              {t('auth-link')}
+            </Link>
+
           </p>
         </p>
         )}
         <p className="confirm__text">{t('confirm-text1')}</p>
         <p className="confirm__text"><b>{t('confirm-text2')}</b></p>
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
-        <Field dataTestId="code-input" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={(value) => handleCodeInput(value)} />
-        <Field dataTestId="password-input" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={(value) => handlePasswordInput(value)} tip={t('password-tip')} show={show} onShow={onShow} />
-        <Field dataTestId="confirm-password-input" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={(value) => handleConfirmPasswordInput(value)} show={show} onShow={onShow} />
-        <Button name={send ? t('processing') : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send || succes} dataTestId="change-password-btn" />
-        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || succes} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+        <Field
+          dataTestId="code-input"
+          error={codeError}
+          name={t('code-input-title')}
+          value={code}
+          type="text"
+          onInputChange={(value) => handleCodeInput(value)}
+        />
+
+        <Field
+          dataTestId="password-input"
+          error={passwordError}
+          name={t('password-input-title')}
+          value={password}
+          type="password"
+          onInputChange={(value) => handlePasswordInput(value)}
+          tip={t('password-tip')}
+          show={show}
+          onShow={onShow}
+        />
+
+        <Field
+          dataTestId="confirm-password-input"
+          error={confirmPasswordError}
+          name={t('confirm-password-title')}
+          value={confirmPassword}
+          type="password"
+          onInputChange={(value) => handleConfirmPasswordInput(value)}
+          show={show}
+          onShow={onShow}
+        />
+        <Button
+          name={send ? t('processing') : t('button-title')}
+          className="confirm__btn"
+          onButton={onSend}
+          disabled={send || success}
+          dataTestId="change-password-btn"
+        />
+
+        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || success} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
       </div>
     </div>
   );
