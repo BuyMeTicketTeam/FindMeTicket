@@ -20,11 +20,6 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [remember, rememberMe] = useState(false);
   const [show, onShow] = useState(false);
 
-  function resetErrors() {
-    onLoginError(false);
-    onPasswordError(false);
-  }
-
   function statusChecks(response) {
     if (response.status === 200) {
       changePopup(false);
@@ -52,7 +47,6 @@ export default function Popup({ changePopup, onAuthorization }) {
   }
 
   function handleClick() {
-    resetErrors();
     if (!validation()) {
       onSend(false);
       return;
@@ -78,11 +72,13 @@ export default function Popup({ changePopup, onAuthorization }) {
   function handleLoginChange(value) {
     onLoginChange(value);
     onLoginError(false);
+    onError('');
   }
 
   function handlePasswordChange(value) {
     onPasswordChange(value);
     onPasswordError(false);
+    onError('');
   }
 
   function handleRememberMeChange() {

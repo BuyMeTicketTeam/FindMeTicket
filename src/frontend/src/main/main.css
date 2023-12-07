@@ -18,11 +18,10 @@
 }
 .search-field .input, .search-field .react-select__control {
     background: var(--main);
+    font-size: 18px;
 }
 .search-field .react-select__control {
     min-width: 280px;
-}
-.search-field .react-select__control {
     border-radius: 10px;
     border: 2px solid var(--bright);
 }
@@ -70,6 +69,7 @@
 }
 .search-field .button {
     min-width: 0;
+    width: 120px;
 }
 .dropdown__list, .passangers__list {
     color: var(--font-color);
@@ -104,7 +104,7 @@
 .calendar .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
     color: var(--font-color);
 }
-.calendar .react-datepicker__day--outside-month {
+.calendar .react-datepicker__day--outside-month, .react-datepicker__day--disabled {
     color: var(--grey);
 }
 .react-datepicker__day:hover, .react-datepicker__month-text:hover, .react-datepicker__quarter-text:hover, .react-datepicker__year-text:hover {
@@ -174,7 +174,7 @@
     position: relative;
     font-size: 20px;
     font-weight: 500;
-    background: var(--main);
+    background: var(--semi-dark);
     color: inherit;
     border: none;
     border-radius: 10px;
@@ -214,7 +214,8 @@
 }
 .information {
     flex: auto;
-    margin-right: 15px;
+    padding-right: 15px;
+    border-right: 2px solid var(--dark);
 }
 .information__row {
     display: flex;
@@ -223,9 +224,6 @@
 }
 .information__row:not(:last-child) {
     margin-bottom: 20px;
-}
-.ticket-last-element {
-    flex: 0 0 300px;
 }
 .ticket__date {
     font-weight: 600;
@@ -244,6 +242,11 @@
 .ticket__city {
     font-size: 24px;
     font-weight: 700;
+    min-width: max-content;
+}
+.ticket-last-element {
+    flex: 0 0 260px;
+    min-width: 0;
 }
 .ticket__line {
     display: block;
@@ -260,8 +263,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 15px;
-    border-left: 2px solid var(--dark);
+    margin-left: 15px;
 }
 .price-options__row {
     display: flex;

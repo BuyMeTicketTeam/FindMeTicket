@@ -56,3 +56,45 @@
     cursor: pointer;
     text-decoration: underline;
   }
+
+/*select*/
+.header .input, .header .react-select__control {
+  background: transparent;
+  margin-right: 10px;
+}
+.header .react-select__control {
+  min-width: 60px;
+}
+.header .react-select__control {
+  border: none;
+}
+.header .react-select__control--is-focused {
+  box-shadow: none;
+}
+.header .react-select__input-container {
+  color: var(--font-color);
+}
+.header .react-select__indicator-separator {
+  display: none;
+}
+.header .react-select__indicator {
+  padding: 0;
+}
+.header .react-select__menu {
+  background: var(--main);
+}
+.header .react-select__option {
+  color: var(--font-color);
+}
+.header .react-select__option--is-selected {
+  background: inherit;
+}
+.header .react-select__single-value {
+  color: var(--font-color);
+}
+.header .react-select__option--is-focused {
+  background: inherit;
+}
+.header .react-select__option:hover {
+  background: var(--dark);
+}

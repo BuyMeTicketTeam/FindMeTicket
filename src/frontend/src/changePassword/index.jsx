@@ -23,6 +23,21 @@ export default function Index({ changePopup }) {
   const [resend, onResend] = useState(false);
   const [show, onShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
+  function handleCodeInput(value) {
+    onCodeChange(value);
+    onCodeError(false);
+  }
+
+  function handlePasswordInput(value) {
+    onPasswordChange(value);
+    onPasswordError(false);
+  }
+
+  function handleConfirmPasswordInput(value) {
+    onConfirmPasswordChange(value);
+    onConfirmPasswordError(false);
+  }
+
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -31,6 +46,7 @@ export default function Index({ changePopup }) {
       });
     }
   }, [seconds, minutes]);
+
   function checkResponseForResend(response) {
     if (response.status === 200) {
       setMinutes(1);
@@ -81,15 +97,8 @@ export default function Index({ changePopup }) {
     }
   }
 
-  function resetError() {
-    onCodeError(false);
-    onPasswordError(false);
-    onConfirmPasswordError(false);
-    onError('');
-  }
-
   function handleSendButton() {
-    resetError();
+    onError('');
     if (!validation()) {
       onSend(false);
       return;
@@ -106,16 +115,19 @@ export default function Index({ changePopup }) {
         checkResponse(response);
       });
   }
+
   useEffect(() => {
     if (send) {
       handleSendButton();
     }
   }, [send]);
+
   useEffect(() => {
     if (resend) {
       handleResendButton();
     }
   }, [resend]);
+
   return (
     <div className="confirm">
       <div className="form-body">
@@ -132,9 +144,9 @@ export default function Index({ changePopup }) {
         <p className="confirm__text">{t('confirm-text1')}</p>
         <p className="confirm__text"><b>{t('confirm-text2')}</b></p>
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
-        <Field dataTestId="code-input" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={onCodeChange} />
-        <Field dataTestId="password-input" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={onPasswordChange} tip={t('password-tip')} show={show} onShow={onShow} />
-        <Field dataTestId="confirm-password-input" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={onConfirmPasswordChange} show={show} onShow={onShow} />
+        <Field dataTestId="code-input" error={codeError} name={t('code-input-title')} value={code} type="text" onInputChange={(value) => handleCodeInput(value)} />
+        <Field dataTestId="password-input" error={passwordError} name={t('password-input-title')} value={password} type="password" onInputChange={(value) => handlePasswordInput(value)} tip={t('password-tip')} show={show} onShow={onShow} />
+        <Field dataTestId="confirm-password-input" error={confirmPasswordError} name={t('confirm-password-title')} value={confirmPassword} type="password" onInputChange={(value) => handleConfirmPasswordInput(value)} show={show} onShow={onShow} />
         <Button name={send ? t('processing') : t('button-title')} className="confirm__btn" onButton={onSend} disabled={send || succes} dataTestId="change-password-btn" />
         <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || succes} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
       </div>

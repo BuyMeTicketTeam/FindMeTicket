@@ -24,6 +24,7 @@ export default function Register() {
   const [send, onSend] = useState(false);
   const [show, onShow] = useState(false);
   const navigate = useNavigate();
+
   function validation() {
     switch (true) {
       case nicknameCheck(nickname):
@@ -56,13 +57,6 @@ export default function Register() {
     }
   }
 
-  function resetErrors() {
-    onNicknameError(false);
-    onEmailError(false);
-    onPasswordError(false);
-    onConfirmPasswordError(false);
-  }
-
   function responseStatus(response) {
     if (response.status === 200) {
       navigate('/confirm');
@@ -77,7 +71,7 @@ export default function Register() {
   }
 
   function handleClick() {
-    resetErrors();
+    onError('');
     if (!validation()) {
       onSend(false);
       return;
