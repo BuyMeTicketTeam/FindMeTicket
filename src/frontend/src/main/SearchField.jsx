@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
@@ -88,21 +89,24 @@ export default function SearchField() {
       clearInterval(timerId);
       const result = await new Promise((resolve) => {
         timerId = setTimeout(async () => {
-          const response = await makeQuerry('cities', JSON.stringify({ value: inputValue }));
-          resolve(response.body);
+          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
+          const responseBody = response.body.map((item) => ({ value: item.cityUkr, label: item.cityUkr }));
+          resolve(responseBody);
         }, 500);
       });
       return result;
     }
     return [];
   }
-
+  let timerId2;
   async function getToCities(inputValue) {
     if (inputValue.length > 1) {
+      clearInterval(timerId2);
       const result = await new Promise((resolve) => {
-        setTimeout(async () => {
-          const response = await makeQuerry('cities', JSON.stringify({ value: inputValue }));
-          resolve(response.body);
+        timerId2 = setTimeout(async () => {
+          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
+          const responseBody = response.body.map((item) => ({ value: item.cityUkr, label: item.cityUkr }));
+          resolve(responseBody);
         }, 500);
       });
 

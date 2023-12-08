@@ -18,6 +18,9 @@ export default function Confirm({ changePopup }) {
   const [seconds, setSeconds] = useState(30);
   const [send, onSend] = useState(false);
   const [resend, onResend] = useState(false);
+  const sendButtonIsDisabled = send || succes;
+  const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || succes;
+
   useEffect(() => {
     if (minutes > 0 || seconds > 0) {
       timeOut(seconds, minutes).then((time) => {
@@ -115,8 +118,8 @@ export default function Confirm({ changePopup }) {
         <Input error={codeError} dataTestId="confirm-input" value={code} onInputChange={(value) => handleCodeChange(value)} type="text" />
         {error !== '' && <p data-testid="error" className="confirm__error">{error}</p>}
         <div className="row">
-          <Button name={send ? t('processing') : t('send')} disabled={send || succes} onButton={onSend} dataTestId="confirm-btn" />
-          <button data-testid="send-again-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || succes} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+          <Button name={send ? t('processing') : t('send')} disabled={sendButtonIsDisabled} onButton={onSend} dataTestId="confirm-btn" />
+          <button data-testid="send-again-btn" className="confirm__send-again" disabled={resendButtonIsDisabled} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
         </div>
       </div>
     </div>

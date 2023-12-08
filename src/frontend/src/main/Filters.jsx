@@ -7,9 +7,12 @@ export default function Filters({ onSort, prevSort }) {
     }
     return 'price-low';
   }
+
+  const priceSort = () => (prevSort === 'price-low' ? 'down' : 'up');
+
   return (
     <div className="main-filters">
-      <button className={`main-filters__btn active ${prevSort === 'price-low' ? 'down' : 'up'}`} type="button" onClick={() => onSort(sortChange())}>Ціна</button>
+      <button className={`main-filters__btn active ${priceSort}`} type="button" onClick={() => onSort(sortChange())}>Ціна</button>
       <button className="main-filters__btn" type="button">Час поїздки</button>
     </div>
   );
