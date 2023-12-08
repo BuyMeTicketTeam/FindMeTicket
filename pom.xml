@@ -163,12 +163,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-chrome-driver</artifactId>
-            <version>4.16.0</version>
-        </dependency>
-
 
     </dependencies>
 

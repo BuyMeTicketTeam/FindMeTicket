@@ -1,6 +1,9 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.dto.RequestTicketDTO;
 import com.booking.app.dto.TicketDTO;
+
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,20 +16,17 @@ import java.util.Locale;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
 
 @Service
+@AllArgsConstructor
 public class ScrapingServiceImpl {
 
     private static final String busforLink = "https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true";
+    private ChromeDriver driver;
 
-    public List<TicketDTO> scrapFromBusfor(String placeFrom, String placeAt, String date) {
-
-        ChromeOptions options = new ChromeOptions();
-
-        WebDriver driver = new ChromeDriver(options);
-
-        driver.get(String.format(busforLink, placeFrom, placeAt, date));
+    public List<TicketDTO> scrapFromBusfor(RequestTicketDTO requestTicketDTO) {
+        driver.get(String.format(busforLink, requestTicketDTO.getPlaceFrom(), requestTicketDTO.getPlaceAt(), requestTicketDTO.getDepartureDate()));
 
         try {
             synchronized (driver) {
