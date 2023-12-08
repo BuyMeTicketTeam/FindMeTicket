@@ -19,9 +19,6 @@ import com.booking.app.services.TokenService;
 import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,11 +112,11 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     @Transactional
     public User createNewRegisteredUser(UserSecurity userSecurity) {
-        Role role = roleRepository.findByEnumRole(EnumRole.USER);
+        Role roleByEnumRole = roleRepository.findRoleByEnumRole(EnumRole.USER);
         User user = User.builder()
                 .registrationDate(LocalDate.now())
                 .security(userSecurity)
-                .role(role)
+                .role(roleByEnumRole)
                 .build();
 
         ConfirmToken confirmToken = tokenService.createConfirmToken(user);

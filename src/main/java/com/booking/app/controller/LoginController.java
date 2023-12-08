@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -23,8 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 @RequiredArgsConstructor
 @Log4j2
-@CrossOrigin(origins = CorsConfigConstants.allowedOrigin, maxAge = 3600,
-        exposedHeaders = {CorsConfigConstants.exposedHeaderRefreshToken, CorsConfigConstants.exposedHeaderAuthorization})
+@CrossOrigin(origins = {CorsConfigConstants.ALLOWED_ORIGIN_80,CorsConfigConstants.ALLOWED_ORIGIN_81}, maxAge = 3600,
+        exposedHeaders = {CorsConfigConstants.EXPOSED_HEADER_REFRESH_TOKEN, CorsConfigConstants.EXPOSED_HEADER_AUTHORIZATION})
 public class LoginController implements LoginAPI {
 
     private final AuthenticationManager authenticationManager;
