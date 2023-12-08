@@ -104,8 +104,6 @@
         </dependency>
 
 
-
-
         <dependency>
             <groupId>nl.geodienstencentrum.maven</groupId>
             <artifactId>sass-maven-plugin</artifactId>
@@ -123,7 +121,6 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
-
 
 
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
@@ -164,6 +161,14 @@
 
 
 
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.16.0</version>
+        </dependency>
+
+
+
     </dependencies>
 
     <build>
@@ -191,5 +196,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

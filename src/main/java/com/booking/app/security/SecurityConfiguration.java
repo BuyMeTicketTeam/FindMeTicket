@@ -58,6 +58,8 @@ public class SecurityConfiguration {
         http.logout().disable();
         http.csrf().disable();
 
+        http.authorizeHttpRequests().requestMatchers("/getzxc").permitAll();
+
         return http.build();
     }
 
