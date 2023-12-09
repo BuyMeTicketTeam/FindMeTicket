@@ -58,15 +58,20 @@ export default function Register() {
   }
 
   function responseStatus(response) {
-    if (response.status === 200) {
-      navigate('/confirm');
-      sessionStorage.setItem('email', email);
-    } else if (response.status === 409) {
-      onError(t('error-email'));
-    } else if (response.status === 418) {
-      onError(t('error-nickname-exist'));
-    } else {
-      onError(t('error-again'));
+    switch (response.status) {
+      case 200:
+        navigate('/confirm');
+        sessionStorage.setItem('email', email);
+        break;
+      case 409:
+        onError(t('error-email'));
+        break;
+      case 418:
+        onError(t('error-nickname-exist'));
+        break;
+      default:
+        onError(t('error-again'));
+        break;
     }
   }
 
