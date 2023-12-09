@@ -24,7 +24,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/.eslintrc.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

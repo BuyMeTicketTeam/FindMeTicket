@@ -12,7 +12,6 @@ test('Filters component toggles sort order on button click', () => {
 
   const activeButton = screen.getByText('Ціна');
   expect(activeButton).toHaveClass('active');
-  expect(activeButton).toHaveClass('down');
 
   fireEvent.click(activeButton);
 

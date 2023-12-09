@@ -125,15 +125,17 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonLogin);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/login', {
-      body: '{"login":"stepan@gmail.com","password":"stepan123132123"}',
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/login`, {
+      body: '{"email":"stepan@gmail.com","password":"stepan123132123"}',
       headers: {
+        Authorization: null,
         'Content-Type': 'application/json',
+        'Refresh-Token': null,
       },
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('Логін або пароль хибні');
+      expect(screen.getByTestId('error').innerHTML).toBe('Помилка серверу. Спробуйте ще раз');
     });
   });
 });

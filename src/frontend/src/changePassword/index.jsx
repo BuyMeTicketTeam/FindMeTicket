@@ -23,6 +23,9 @@ export default function Index({ changePopup }) {
   const [resend, onResend] = useState(false);
   const [show, onShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
+  const sendButtonIsDisabled = send || success;
+  const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || success;
+
   function handleCodeInput(value) {
     onCodeChange(value);
     onCodeError(false);
@@ -191,11 +194,11 @@ export default function Index({ changePopup }) {
           name={send ? t('processing') : t('button-title')}
           className="confirm__btn"
           onButton={onSend}
-          disabled={send || success}
+          disabled={sendButtonIsDisabled}
           dataTestId="change-password-btn"
         />
 
-        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={(minutes > 0 || seconds > 0) || success} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={resendButtonIsDisabled} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
       </div>
     </div>
   );

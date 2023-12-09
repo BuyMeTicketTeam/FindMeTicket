@@ -31,10 +31,11 @@ export default function Ticket({ data }) {
           </div>
           <Button name="Купити" />
         </div>
-        <button className="ticket__more" type="button">
+        {/* <button className="ticket__more" type="button">
           Детальніше
           <img src="../img/arrow-more.svg" alt="arrow" />
-        </button>
+        </button> */}
+        <div className="ticket__service">{`Перевізник: ${data.tickerCarrier}`}</div>
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ export default function Index() {
         placeToDetails: 'Южный автовокзал',
         priceOrdinary: '4000',
         priceOld: '800',
+        tickerCarrier: 'nikkaBus',
       },
       {
         id: 2,
@@ -32,6 +33,7 @@ export default function Index() {
         placeToDetails: 'Южный автовокзал',
         priceOrdinary: '500',
         priceOld: '',
+        tickerCarrier: 'nikkaBus',
       },
       {
         id: 3,
@@ -44,6 +46,7 @@ export default function Index() {
         placeToDetails: 'Южный автовокзал',
         priceOrdinary: '1000',
         priceOld: '8000',
+        tickerCarrier: 'nikkaBus',
       },
     ],
   );

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Header from './header/index';
 import Routers from './routers';
-import './testServer';
+// import './testServer';
 import './App.css';
 import './locales/i18n';
 
