@@ -30,5 +30,6 @@ createServer({
       }
       return new Response(200, undefined, JSON.stringify(destination));
     });
+    this.post('/request', () => new Response(200));
   },
 });

@@ -373,3 +373,8 @@
     color: var(--font-color);
     margin-top: 15px;
 }
+
+.ticket__service {
+    margin-top: 15px;
+    font-size: 18px;
+}
