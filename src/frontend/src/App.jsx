@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Header from './header/index';
 import Routers from './routers';
-// import './testServer';
+import './testServer';
 import './App.css';
 import './locales/i18n';
 
@@ -25,7 +25,12 @@ function App() {
   }, []);
   return (
     <Router>
-      <Header authorization={authorization} onAuthorization={(value) => checkAuth(value)} changePopup={changePopup} popupLogin={popupLogin} />
+      <Header
+        authorization={authorization}
+        onAuthorization={(value) => checkAuth(value)}
+        changePopup={changePopup}
+        popupLogin={popupLogin}
+      />
       <Routers changePopup={changePopup} />
     </Router>
 
