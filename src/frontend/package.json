@@ -12,17 +12,19 @@
     "jest-fetch-mock": "^3.0.3",
     "react": "^18.2.0",
     "react-cookie": "^6.1.1",
+    "react-datepicker": "^4.23.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^13.3.1",
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/.eslintrc.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -44,11 +46,15 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^8.52.0",
+    "@types/jest": "^29.5.11",
+    "chai": "^4.3.10",
+    "eslint": "^8.55.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "miragejs": "^0.1.48"
+    "miragejs": "^0.1.48",
+    "mocha": "^10.2.0"
   }
 }

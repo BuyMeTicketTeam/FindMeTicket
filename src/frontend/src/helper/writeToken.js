@@ -1,5 +1,12 @@
 export default function writeToken(response) {
-  if (response.status === 200 && response.headers.get('Authorization')) {
-    localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
+  if (response.status === 200) {
+    response.headers.forEach((value, key) => {
+      if (key === 'authorization') {
+        localStorage.setItem('JWTtoken', value);
+      }
+      if (key === 'refresh-token') {
+        localStorage.setItem('refreshToken', value);
+      }
+    });
   }
 }
