@@ -59,7 +59,6 @@ export default function Popup({ changePopup, onAuthorization }) {
       .then((response) => {
         onSend(false);
         statusChecks(response);
-        response.headers.forEach((value, key) => { console.log(`${key} : ${value}`); });
       });
   }
 

@@ -13,6 +13,7 @@ const mockData = {
   placeToDetails: 'Station B',
   priceOrdinary: 100,
   priceOld: 120,
+  tickerCarrier: 'nikkaBus',
 };
 
 test('Ticket component renders with correct data', () => {
@@ -28,5 +29,5 @@ test('Ticket component renders with correct data', () => {
   expect(screen.getByText(`${mockData.priceOrdinary} грн`)).toBeInTheDocument();
   expect(screen.getByText(`${mockData.priceOld} грн`)).toBeInTheDocument();
   expect(screen.getByText('Купити')).toBeInTheDocument();
-  expect(screen.getByText('Детальніше')).toBeInTheDocument();
+  expect(screen.getByText(`Перевізник: ${mockData.tickerCarrier}`)).toBeInTheDocument();
 });

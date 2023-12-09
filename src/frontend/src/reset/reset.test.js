@@ -66,15 +66,17 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/reset', {
-      body: '"stepan@gmail.com"',
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/reset`, {
+      body: '{"email":"stepan@gmail.com"}',
       headers: {
+        Authorization: null,
         'Content-Type': 'application/json',
+        'Refresh-Token': null,
       },
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('Немає акаунту зареєстрованого на цю електронну пошту');
+      expect(screen.getByTestId('error').innerHTML).toBe('error-user-not-found');
     });
   });
 });
