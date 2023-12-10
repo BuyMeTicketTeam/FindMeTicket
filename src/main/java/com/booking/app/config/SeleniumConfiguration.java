@@ -5,13 +5,16 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+
+import java.io.IOException;
 
 @Configuration
 public class SeleniumConfiguration {
 
     @PostConstruct
     void postConstruct(){
-        System.setProperty("webdriver.chrome.driver", "D:\\chromedriver-win32");
+        System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver/chromedriver.exe");
     }
 
     @Bean
@@ -21,4 +24,5 @@ public class SeleniumConfiguration {
         options.addArguments("--headless");
         return new ChromeDriver(options);
     }
+
 }

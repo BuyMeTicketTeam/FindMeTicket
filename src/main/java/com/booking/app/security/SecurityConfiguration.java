@@ -58,7 +58,7 @@ public class SecurityConfiguration {
         http.logout().disable();
         http.csrf().disable();
 
-        http.authorizeHttpRequests().requestMatchers("/getzxc").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/frombusfor").permitAll();
 
         return http.build();
     }

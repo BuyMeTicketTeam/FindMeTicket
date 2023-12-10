@@ -19,8 +19,9 @@ import java.util.List;
 public class ScraperController {
 
     private ScrapingServiceImpl scrapingService;
-    @PostMapping
+    @PostMapping("/frombusfor")
     ResponseEntity<?> findTickets(@RequestBody @NotNull RequestTicketDTO requestTicketDTO){
         return ResponseEntity.ok().body(scrapingService.scrapFromBusfor(requestTicketDTO));
     }
+
 }

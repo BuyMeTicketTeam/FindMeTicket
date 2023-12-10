@@ -4,6 +4,7 @@ import com.booking.app.dto.RequestTicketDTO;
 import com.booking.app.dto.TicketDTO;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,18 +20,19 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ScrapingServiceImpl {
 
     private static final String busforLink = "https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true";
-    private ChromeDriver driver;
+    private final ChromeDriver driver;
 
     public List<TicketDTO> scrapFromBusfor(RequestTicketDTO requestTicketDTO) {
+
         driver.get(String.format(busforLink, requestTicketDTO.getPlaceFrom(), requestTicketDTO.getPlaceAt(), requestTicketDTO.getDepartureDate()));
 
         try {
             synchronized (driver) {
-                driver.wait(1000);
+                driver.wait(2000);
             }
         } catch (InterruptedException e) {
         }
@@ -68,7 +70,7 @@ public class ScrapingServiceImpl {
             tickets.add(temp);
         }
 
-        driver.quit();
+        //driver.quit();
 
         return tickets;
     }
@@ -79,6 +81,5 @@ public class ScrapingServiceImpl {
         formatter = DateTimeFormatter.ofPattern("dd.MM, EEE", new Locale("uk"));
         return date.format(formatter);
     }
-
 
 }
