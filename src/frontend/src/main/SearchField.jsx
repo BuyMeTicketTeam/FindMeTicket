@@ -15,6 +15,8 @@ export default function SearchField() {
   const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
   const [cityTo, onCityTo] = useState('');
+  const [errorCityFrom, onErrorCityFrom] = useState('');
+  const [errorCityTo, onErrorCityTo] = useState('');
   const [date, onDate] = useState(new Date());
   const [passanger, onPassangers] = useState('1 Дорослий, 0 Дитина');
   const [send, onSend] = useState(false);
@@ -52,6 +54,23 @@ export default function SearchField() {
     onPassangers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
   }, [childrenValue, adultsValue]);
 
+  function validation() {
+    if (!cityFrom && !cityTo) {
+      onErrorCityFrom('Поле не повинно бути порожнім');
+      onErrorCityTo('Поле не повинно бути порожнім');
+      return false;
+    }
+    if (!cityFrom) {
+      onErrorCityFrom('Поле не повинно бути порожнім');
+      return false;
+    }
+    if (!cityTo) {
+      onErrorCityTo('Поле не повинно бути порожнім');
+      return false;
+    }
+    return true;
+  }
+
   function handleClick() {
     onSend(false);
     // for testing
@@ -67,6 +86,9 @@ export default function SearchField() {
     //       console.log('status: other');
     //     }
     //   });
+    if (!validation()) {
+      return;
+    }
     const body = {
       cityFrom: cityFrom.value,
       cityTo: cityTo.value,
@@ -100,7 +122,7 @@ export default function SearchField() {
 
   return (
     <div className="search-field">
-      <div className="field ">
+      <div className={`field ${errorCityFrom ? 'error-select' : ''}`}>
         <div className="field__name">Звідки</div>
         <AsyncSelect
           noOptionsMessage={() => null}
@@ -108,13 +130,14 @@ export default function SearchField() {
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
-          placeholder={null}
+          placeholder="Київ"
           onChange={onCityFrom}
+          onInputChange={() => onErrorCityFrom('')}
         />
-
+        {errorCityFrom !== '' && <p data-testid="error" className="search-field__error">{errorCityFrom}</p>}
       </div>
       <div className="search-field__img"><img src="../img/arrows.svg" alt="arrows" /></div>
-      <div className="field">
+      <div className={`field ${errorCityTo ? 'error-select' : ''}`}>
         <div className="field__name">Куди</div>
         <AsyncSelect
           noOptionsMessage={() => null}
@@ -122,10 +145,11 @@ export default function SearchField() {
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
-          placeholder={null}
+          placeholder="Одеса"
           onChange={onCityTo}
+          onInputChange={() => onErrorCityTo('')}
         />
-
+        {errorCityTo !== '' && <p data-testid="error" className="search-field__error">{errorCityTo}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
       <Field
