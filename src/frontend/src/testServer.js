@@ -3,14 +3,55 @@
 import { createServer, Response } from 'miragejs';
 
 const from = [
-  { cityUkr: 'Дніпро', cityEng: 'Дніпро' },
-  { cityUkr: 'Київ', cityEng: 'Київ' },
-  { cityUkr: 'Одеса', cityEng: 'Одеса' },
+  { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
+  { cityUkr: 'Київ', cityEng: 'Київ', country: 'UA' },
+  { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
 ];
 const destination = [
-  { cityUkr: 'Дніпро', cityEng: 'Дніпро' },
-  { cityUkr: 'Дністер', cityEng: 'Київ' },
-  { cityUkr: 'Одеса', cityEng: 'Одеса' },
+  { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
+  { cityUkr: 'Дністер', cityEng: 'Київ', country: 'UA' },
+  { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
+];
+const tickets = [
+  {
+    id: 1,
+    dateFrom: '8:40 | 29.11, вт',
+    travelTime: '8 год 5 хв',
+    dateArrival: '16:30 | 29.11, вт',
+    placeFrom: 'Кам’янець-Подільський',
+    placeTo: 'Київ',
+    placeFromDetails: 'Автовокзал "Центральний"',
+    placeToDetails: 'Южный автовокзал',
+    priceOrdinary: '4000',
+    priceOld: '800',
+    tickerCarrier: 'nikkaBus',
+  },
+  {
+    id: 2,
+    dateFrom: '7:40 | 29.11, вт',
+    travelTime: '8 год 45 хв',
+    dateArrival: '10:30 | 29.11, вт',
+    placeFrom: 'Дніпро',
+    placeTo: 'Івано-Франківськ',
+    placeFromDetails: 'Автовокзал "Центральний"',
+    placeToDetails: 'Южный автовокзал',
+    priceOrdinary: '500',
+    priceOld: '',
+    tickerCarrier: 'nikkaBus',
+  },
+  {
+    id: 3,
+    dateFrom: '8:40 | 29.11, вт',
+    travelTime: '8 год 5 хв',
+    dateArrival: '16:30 | 29.11, вт',
+    placeFrom: 'Одеса',
+    placeTo: 'Київ',
+    placeFromDetails: 'Автовокзал "Центральний"',
+    placeToDetails: 'Южный автовокзал',
+    priceOrdinary: '1000',
+    priceOld: '8000',
+    tickerCarrier: 'nikkaBus',
+  },
 ];
 createServer({
   routes() {
@@ -24,12 +65,11 @@ createServer({
     this.post('/logout', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/typeAhead', (schema, request) => {
-      console.log(JSON.parse(request.requestBody).value);
       if (JSON.parse(request.requestBody).startLetters === 'Дн') {
         return new Response(200, undefined, JSON.stringify(from));
       }
       return new Response(200, undefined, JSON.stringify(destination));
     });
-    this.post('/request', () => new Response(200));
+    this.post('/request', () => new Response(200, undefined, JSON.stringify(tickets)), { timing: 3000 });
   },
 });

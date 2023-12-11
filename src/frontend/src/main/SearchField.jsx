@@ -10,7 +10,7 @@ import Passangers from './Passangers';
 import makeQuerry from '../helper/querry';
 import './main.css';
 
-export default function SearchField() {
+export default function SearchField({ onLoading, onTicketsData }) {
   const [adultsValue, onAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
@@ -71,21 +71,8 @@ export default function SearchField() {
     return true;
   }
 
-  function handleClick() {
+  async function handleClick() {
     onSend(false);
-    // for testing
-    // makeQuerry('get1', undefined, undefined, 'GET')
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       console.log(`status: ${200}`);
-    //     } else if (response.status === 401) {
-    //       console.log(`status: ${401}`);
-    //     } else if (response.status === 403) {
-    //       console.log(`status: ${403}`);
-    //     } else {
-    //       console.log('status: other');
-    //     }
-    //   });
     if (!validation()) {
       return;
     }
@@ -96,7 +83,11 @@ export default function SearchField() {
       adultsValue,
       childrenValue,
     };
-    makeQuerry('request', body);
+    onLoading(true);
+    const response = await makeQuerry('request', body);
+    onLoading(false);
+    const responseBody = response.status === 200 ? response.body : [];
+    onTicketsData(responseBody);
   }
 
   useEffect(() => {
@@ -104,6 +95,7 @@ export default function SearchField() {
       handleClick();
     }
   }, [send]);
+
   let timerId;
   async function getCities(inputValue) {
     if (inputValue.length > 1) {
@@ -111,7 +103,7 @@ export default function SearchField() {
       const result = await new Promise((resolve) => {
         timerId = setTimeout(async () => {
           const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
-          const responseBody = response.status === 200 ? response.body.map((item) => ({ value: item.cityUkr, label: item.cityUkr })) : [];
+          const responseBody = response.status === 200 ? response.body.map((item) => ({ value: item.cityUkr, label: `${item.cityUkr}, ${item.country}` })) : [];
           resolve(responseBody);
         }, 500);
       });
