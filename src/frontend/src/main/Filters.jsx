@@ -20,6 +20,8 @@ export default function Filters({ onSort, prevSort }) {
         Ціна
       </button>
       <button className="main-filters__btn" type="button">Час поїздки</button>
+      <button className="main-filters__btn" type="button">Час відправлення</button>
+      <button className="main-filters__btn" type="button">Час прибуття</button>
     </div>
   );
 }

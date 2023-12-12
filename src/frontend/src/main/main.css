@@ -69,8 +69,12 @@
     background: inherit;
 }
 
+/* .search-field .react-select__control--is-focused .react-select__single-value {
+    color: var(--grey);
+} */
+
 .search-field .react-select__single-value {
-    color: var(--font-color);
+  color: var(--font-color);
 }
 
 .search-field .react-select__option--is-focused {
@@ -104,6 +108,14 @@
     left: 3px;
     color: var(--error-bright);
     padding-top: 1px;
+}
+
+.search-field__img {
+  background: transparent;
+  border: none;
+}
+.search-field__imgL:hover {
+  cursor: pointer;
 }
 
 .dropdown__list,
@@ -355,6 +367,7 @@
 .price-options__row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .price-options .button {

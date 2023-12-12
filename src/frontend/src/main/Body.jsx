@@ -10,7 +10,16 @@ export default function Body({ ticketsData, onTicketsData }) {
     if (sortType === 'price-low') {
       return arr.sort((a, b) => a.priceOrdinary - b.priceOrdinary);
     }
-    return arr.sort((a, b) => b.priceOrdinary - a.priceOrdinary);
+    if (sortType === 'price-up') {
+      return arr.sort((a, b) => b.priceOrdinary - a.priceOrdinary);
+    }
+    if (sortType === 'time-low') {
+      return arr.sort((a, b) => b.priceOrdinary - a.priceOrdinary);
+    }
+    if (sortType === 'time-up') {
+      return arr.sort((a, b) => b.priceOrdinary - a.priceOrdinary);
+    }
+    return arr.sort((a, b) => a.priceOrdinary - b.priceOrdinary);
   }
 
   useEffect(() => {

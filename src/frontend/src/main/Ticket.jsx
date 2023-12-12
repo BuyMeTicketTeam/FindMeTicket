@@ -6,12 +6,12 @@ export default function Ticket({ data }) {
     <div className="ticket">
       <div className="information">
         <div className="information__row">
-          <p className="ticket__date">{data.dateFrom}</p>
+          <p className="ticket__date">{`${data.departureTime} | ${data.departureDate}`}</p>
           <p className="ticket__travel-time">
             <img src="../img/schedule.svg" alt="clock" />
             {data.travelTime}
           </p>
-          <p className="ticket__date ticket-last-element">{data.dateArrival}</p>
+          <p className="ticket__date ticket-last-element">{`${data.arrivalTime} | ${data.arrivalDate}`}</p>
         </div>
         <div className="information__row">
           <p className="ticket__city">{data.placeFrom}</p>

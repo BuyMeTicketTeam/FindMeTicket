@@ -22,6 +22,7 @@ export default function SearchField({ onLoading, onTicketsData }) {
   const [send, onSend] = useState(false);
   const [showPassangers, onShowPassangers] = useState(false);
   const fieldRef = React.createRef();
+  const noOptionsMessage = (target) => (target.inputValue.length > 1 ? 'За вашим запитом нічого не знайдено' : null);
 
   function showPassangersDrop() {
     onShowPassangers(!showPassangers);
@@ -90,6 +91,12 @@ export default function SearchField({ onLoading, onTicketsData }) {
     onTicketsData(responseBody);
   }
 
+  function changeCities() {
+    const cityToTemp = cityTo;
+    onCityTo(cityFrom);
+    onCityFrom(cityToTemp);
+  }
+
   useEffect(() => {
     if (send) {
       handleClick();
@@ -117,7 +124,9 @@ export default function SearchField({ onLoading, onTicketsData }) {
       <div className={`field ${errorCityFrom ? 'error-select' : ''}`}>
         <div className="field__name">Звідки</div>
         <AsyncSelect
-          noOptionsMessage={() => null}
+          isClearable
+          value={cityFrom}
+          noOptionsMessage={noOptionsMessage}
           loadingMessage={() => 'Завантаження...'}
           cacheOptions
           classNamePrefix="react-select"
@@ -128,11 +137,19 @@ export default function SearchField({ onLoading, onTicketsData }) {
         />
         {errorCityFrom !== '' && <p data-testid="error" className="search-field__error">{errorCityFrom}</p>}
       </div>
-      <div className="search-field__img"><img src="../img/arrows.svg" alt="arrows" /></div>
+      <button
+        className="search-field__img"
+        type="button"
+        onClick={changeCities}
+      >
+        <img src="../img/arrows.svg" alt="arrows" />
+      </button>
       <div className={`field ${errorCityTo ? 'error-select' : ''}`}>
         <div className="field__name">Куди</div>
         <AsyncSelect
-          noOptionsMessage={() => null}
+          isClearable
+          value={cityTo}
+          noOptionsMessage={noOptionsMessage}
           loadingMessage={() => 'Завантаження...'}
           cacheOptions
           classNamePrefix="react-select"
