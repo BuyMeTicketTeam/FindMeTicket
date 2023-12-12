@@ -87,7 +87,7 @@ export default function SearchField({ onLoading, onTicketsData }) {
     onLoading(true);
     const response = await makeQuerry('request', body);
     onLoading(false);
-    const responseBody = response.status === 200 ? response.body : [];
+    const responseBody = response.status === 200 ? response.body : null;
     onTicketsData(responseBody);
   }
 
