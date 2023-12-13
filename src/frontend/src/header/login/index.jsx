@@ -91,7 +91,13 @@ export default function Popup({ changePopup, onAuthorization }) {
   return (
     <div data-testid="login" className="background">
       <div className="popup__body">
-        <button data-testid="close" type="button" className="close" onClick={() => changePopup(false)} aria-label="Close" />
+        <button
+          data-testid="close"
+          type="button"
+          className="close"
+          onClick={() => changePopup(false)}
+          aria-label="Close"
+        />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           error={loginError}

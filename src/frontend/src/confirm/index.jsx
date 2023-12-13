@@ -143,7 +143,15 @@ export default function Confirm({ changePopup }) {
             dataTestId="confirm-btn"
           />
 
-          <button data-testid="send-again-btn" className="confirm__send-again" disabled={resendButtonIsDisabled} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+          <button
+            data-testid="send-again-btn"
+            className="confirm__send-again"
+            disabled={resendButtonIsDisabled}
+            onClick={onResend}
+            type="button"
+          >
+            {resend ? t('processing') : t('time', { minutes, seconds })}
+          </button>
         </div>
       </div>
     </div>

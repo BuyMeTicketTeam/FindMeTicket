@@ -169,12 +169,24 @@ export default function Register() {
           onShow={onShow}
         />
 
-        <input data-testid="checkbox" id="policy" type="checkbox" className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'} onClick={() => { onPolicy(!policy); onErrorPolicy(false); }} />
+        <input
+          data-testid="checkbox"
+          id="policy"
+          type="checkbox"
+          className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'}
+          onClick={() => { onPolicy(!policy); onErrorPolicy(false); }}
+        />
         <label htmlFor="policy" className="checkbox">
           {t('agree')}
           <a href="/">{t('privacy policy')}</a>
         </label>
-        <Button dataTestId="register-btn" className="btn-full" disabled={send} name={send ? t('processing') : t('register')} onButton={onSend} />
+        <Button
+          dataTestId="register-btn"
+          className="btn-full"
+          disabled={send}
+          name={send ? t('processing') : t('register')}
+          onButton={onSend}
+        />
       </div>
     </div>
   );

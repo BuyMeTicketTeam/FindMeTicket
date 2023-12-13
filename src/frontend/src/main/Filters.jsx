@@ -12,7 +12,13 @@ export default function Filters({ onSort, prevSort }) {
 
   return (
     <div className="main-filters">
-      <button className={`main-filters__btn active ${priceSort}`} type="button" onClick={() => onSort(sortChange())}>Ціна</button>
+      <button
+        className={`main-filters__btn active ${priceSort}`}
+        type="button"
+        onClick={() => onSort(sortChange())}
+      >
+        Ціна
+      </button>
       <button className="main-filters__btn" type="button">Час поїздки</button>
     </div>
   );

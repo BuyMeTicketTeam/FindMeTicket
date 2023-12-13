@@ -54,6 +54,7 @@ export default function SearchField() {
 
   function handleClick() {
     onSend(false);
+    // for testing
     // makeQuerry('get1', undefined, undefined, 'GET')
     //   .then((response) => {
     //     if (response.status === 200) {

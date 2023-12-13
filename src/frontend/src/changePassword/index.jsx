@@ -198,7 +198,15 @@ export default function Index({ changePopup }) {
           dataTestId="change-password-btn"
         />
 
-        <button data-testid="confirm-send-btn" className="confirm__send-again" disabled={resendButtonIsDisabled} onClick={onResend} type="button">{resend ? t('processing') : t('time', { minutes, seconds })}</button>
+        <button
+          data-testid="confirm-send-btn"
+          className="confirm__send-again"
+          disabled={resendButtonIsDisabled}
+          onClick={onResend}
+          type="button"
+        >
+          {resend ? t('processing') : t('time', { minutes, seconds })}
+        </button>
       </div>
     </div>
   );
