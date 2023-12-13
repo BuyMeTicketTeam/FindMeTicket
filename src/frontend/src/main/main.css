@@ -378,3 +378,28 @@
     margin-top: 15px;
     font-size: 18px;
 }
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s; 
+  }
+  
+  .button:hover {
+    background-color: #ffa500; 
+  }
+  
+  .button.active {
+    background-color: #ffa500; 
+  }
+  
+  span {
+    margin-left: 5px;
+  }
+  
