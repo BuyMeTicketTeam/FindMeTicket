@@ -291,13 +291,16 @@
 
 /*tickets*/
 .ticket {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: var(--semi-dark);
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 20px;
+}
+
+.ticket__body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .information {
@@ -399,10 +402,30 @@
     color: var(--font-color);
     margin-top: 15px;
 }
+.ticket__more:hover {
+  cursor: pointer;
+  color: var(--bright);
+}
 
-.ticket__service {
-    margin-top: 15px;
-    font-size: 18px;
+.ticket-add-info {
+  display: flex;
+  max-height: 0;
+  overflow-y: hidden;
+  border-top: 2px solid transparent;
+  transition: 0.3s;
+}
+.ticket-add-info.show {
+  max-height: max-content;
+  margin-top: 15px;
+  padding-top: 10px;
+  transition: 0.3s;
+  border-top: 2px solid var(--dark);
+}
+.ticket-add-info__text {
+  font-size: 18px;
+}
+.ticket-add-info__text:not(:last-child) {
+  margin-right: 10px;
 }
 
 body{
