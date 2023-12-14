@@ -11,7 +11,7 @@ export default function Header({
   authorization, onAuthorization, changePopup, popupLogin,
 }) {
   const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
-  const { t } = useTranslation('translation', { keyPrefix: 'header' });
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
     { value: 'UA', label: 'UA' },
     { value: 'ENG', label: 'ENG' },
@@ -21,10 +21,13 @@ export default function Header({
     if (languageParam) {
       sessionStorage.setItem('lang', JSON.stringify(languageParam));
       changeLanguage(languageParam);
+      i18n.changeLanguage(languageParam.value);
       return;
     }
     if (sessionStorage.getItem('lang')) {
-      changeLanguage(JSON.parse(sessionStorage.getItem('lang')));
+      const parseLang = JSON.parse(sessionStorage.getItem('lang'));
+      changeLanguage(parseLang);
+      i18n.changeLanguage(parseLang.value);
     }
   }
   useEffect(() => {
