@@ -1,27 +1,45 @@
 import React from 'react';
+import FiltersBtn from './FiltersBtn';
 
 export default function Filters({ onSort, prevSort }) {
-  function sortChange() {
-    if (prevSort === 'price-low') {
-      return 'price-up';
-    }
-    return 'price-low';
-  }
-
-  const priceSort = () => (prevSort === 'price-low' ? 'down' : 'up');
-
   return (
     <div className="main-filters">
-      <button
-        className={`main-filters__btn active ${priceSort}`}
-        type="button"
-        onClick={() => onSort(sortChange())}
+      <FiltersBtn
+        onClick={onSort}
+        sortType="price-low"
+        reverse="price-up"
+        isDown={prevSort === 'price-low'}
+        isUp={prevSort === 'price-up'}
       >
         Ціна
-      </button>
-      <button className="main-filters__btn" type="button">Час поїздки</button>
-      <button className="main-filters__btn" type="button">Час відправлення</button>
-      <button className="main-filters__btn" type="button">Час прибуття</button>
+      </FiltersBtn>
+      <FiltersBtn
+        onClick={onSort}
+        sortType="time-travel-low"
+        reverse="time-travel-up"
+        isDown={prevSort === 'time-travel-low'}
+        isUp={prevSort === 'time-travel-up'}
+      >
+        Час поїздки
+      </FiltersBtn>
+      <FiltersBtn
+        onClick={onSort}
+        sortType="time-departure-low"
+        reverse="time-departure-up"
+        isDown={prevSort === 'time-departure-low'}
+        isUp={prevSort === 'time-departure-up'}
+      >
+        Час відправлення
+      </FiltersBtn>
+      <FiltersBtn
+        onClick={onSort}
+        sortType="time-arrival-low"
+        reverse="time-arrival-up"
+        isDown={prevSort === 'time-arrival-low'}
+        isUp={prevSort === 'time-arrival-up'}
+      >
+        Час прибуття
+      </FiltersBtn>
     </div>
   );
 }

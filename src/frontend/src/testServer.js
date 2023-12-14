@@ -45,10 +45,10 @@ const tickets = [
   },
   {
     id: 3,
-    departureTime: '8:40',
-    departureDate: '29.11, вт',
+    departureTime: '6:40',
+    departureDate: '30.11, вт',
     travelTime: '8 год 5 хв',
-    arrivalTime: '16:30',
+    arrivalTime: '15:30',
     arrivalDate: '29.11, вт',
     placeFrom: 'Одеса',
     placeTo: 'Київ',
@@ -76,6 +76,10 @@ createServer({
       }
       return new Response(200, undefined, JSON.stringify(destination));
     });
-    this.post('/request', () => new Response(200, undefined, JSON.stringify(tickets)), { timing: 3000 });
+    this.post('/request', () => new Response(200, undefined, JSON.stringify(tickets)) /* { timing: 3000 } */);
+    this.post('/get', () => {
+      document.cookie = 'remember_me=true; path=/; max-age=600';
+      return new Response(200, { Authorization: 'alkshfksadfjs2143234' });
+    });
   },
 });

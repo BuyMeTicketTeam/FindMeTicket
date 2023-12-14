@@ -285,7 +285,7 @@
     top: 11px;
 }
 
-.main-filters__btn:first-child {
+.main-filters__btn:not(:last-child) {
     margin-right: 15px;
 }
 
