@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import './main.css';
+import './style.css';
 
-function Button({
+function TransportButton({
   label, isActive, onClick, img,
 }) {
   return (
     <button
       type="button"
-      className={`Button ${isActive ? 'active' : ''}`}
+      className={`transport-btn ${isActive ? 'active' : ''}`}
       onClick={onClick}
     >
       <img
@@ -20,7 +20,7 @@ function Button({
   );
 }
 
-function App() {
+function Transport() {
   const [activeButton, setActiveButton] = useState('автобус');
 
   const handleButtonClick = (button) => {
@@ -29,31 +29,31 @@ function App() {
 
   return (
     <div>
-      <Button
+      <TransportButton
         label="Усі"
         isActive={activeButton === 'усі'}
         onClick={() => handleButtonClick('усі')}
         img="../img/boat.svg"
       />
-      <Button
+      <TransportButton
         label="Автобус"
         isActive={activeButton === 'автобус'}
         onClick={() => handleButtonClick('автобус')}
         img="../img/bus.svg"
       />
-      <Button
+      <TransportButton
         label="Літак"
         isActive={activeButton === 'літак'}
         onClick={() => handleButtonClick('літак')}
         img="../img/plane.svg"
       />
-      <Button
+      <TransportButton
         label="Потяг"
         isActive={activeButton === 'потяг'}
         onClick={() => handleButtonClick('потяг')}
         img="../img/train.svg"
       />
-      <Button
+      <TransportButton
         label="Пором"
         isActive={activeButton === 'пором'}
         onClick={() => handleButtonClick('пором')}
@@ -63,4 +63,4 @@ function App() {
   );
 }
 
-export default App;
+export default Transport;

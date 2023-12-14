@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
-import Filters from './Filters';
-import Ticket from './Ticket';
+import Filters from '../Filters';
+import Ticket from '../Ticket';
 
 export default function Body({ ticketsData, onTicketsData }) {
   const [sort, onSort] = useState('price-low');

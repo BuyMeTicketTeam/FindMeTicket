@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 import React from 'react';
+import './passangers.css';
 
 export default function Passangers({
   status, adultsValue, onAdultsValue, childrenValue, onChildrenValue,

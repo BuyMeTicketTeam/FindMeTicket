@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Filters from './Filters';
+import Filters from '.';
 
 test('Filters component toggles sort order on button click', () => {
   const initialSort = 'price-low';

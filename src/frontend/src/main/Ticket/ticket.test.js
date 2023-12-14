@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Ticket from './Ticket';
+import Ticket from '.';
 
 const mockData = {
   dateFrom: '2023-01-01',

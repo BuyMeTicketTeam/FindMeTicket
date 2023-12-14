@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import Button from '../utils/Button';
+import Button from '../../utils/Button';
+import './ticket.css';
 
 export default function Ticket({ data }) {
   const [moreInfo, showMoreInfo] = useState(false);

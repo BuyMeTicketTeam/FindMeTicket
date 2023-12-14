@@ -1,5 +1,6 @@
 import React from 'react';
 import FiltersBtn from './FiltersBtn';
+import './filters.css';
 
 export default function Filters({ onSort, prevSort }) {
   return (

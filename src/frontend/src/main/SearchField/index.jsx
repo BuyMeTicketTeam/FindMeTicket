@@ -2,13 +2,13 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
-import Field from '../utils/Field';
-import Button from '../utils/Button';
+import Field from '../../utils/Field';
+import Button from '../../utils/Button';
 // import DropDown from './DropDown';
-import Calendar from './Calendar';
-import Passangers from './Passangers';
-import makeQuerry from '../helper/querry';
-import './main.css';
+import Calendar from '../Calendar';
+import Passangers from '../Passangers';
+import makeQuerry from '../../helper/querry';
+import './searchField.css';
 
 export default function SearchField({ onLoading, onTicketsData }) {
   const [adultsValue, onAdultsValue] = useState(1);

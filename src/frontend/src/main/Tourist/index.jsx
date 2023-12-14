@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './tourist.css';
 
 function Banner() {
   const [isBannerVisible, setIsBannerVisible] = useState(true);
@@ -21,13 +22,13 @@ function Banner() {
             <p className="banner-text">
               У нас є кілька цікавих місць, які можете відвідати у цьому місті
             </p>
-            <div className="details-button">
+            <div className="banner-details-button">
               <button type="button">Детальніше тут</button>
             </div>
           </div>
-          <div className="close-button-container">
+          <div className="banner-close-button-container">
             <div
-              className="close-button"
+              className="banner-close-button"
               role="button"
               tabIndex="0"
               onClick={closeBanner}
