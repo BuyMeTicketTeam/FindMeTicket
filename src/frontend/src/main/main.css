@@ -3,11 +3,12 @@
     align-items: end;
     gap: 10px;
     background: var(--dark);
-    margin-top: 80px;
     border-radius: 20px;
     padding: 25px;
 }
-
+.search_index{
+    margin-top: 80px;  
+}
 .search-field .field {
     margin-bottom: 0;
     position: relative;
@@ -738,3 +739,99 @@ body{
   .main-error__text {
     margin-top: 10px;
   }
+
+  .Button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--semi-dark);
+    color: var(--font-color);
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 10px; 
+  }
+  
+  .Button:last-child {
+    margin-right: 0; 
+  }
+  
+  .Button:hover {
+    background-color: var(--bright);
+    color: #000;
+  }
+  
+  .Button.active {
+    background-color: var(--bright);
+    color: #000;
+  }
+  
+  span {
+    margin-left: 5px;
+  }
+  .transportion{
+    padding-right: 5px;
+  }
+
+  body {
+    margin: 0;
+  }
+  
+  .banner-container {
+    background-color: var(--semi-dark);
+    height: 150px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 10px;
+  }
+  
+  .centered-content {
+    text-align: center;
+  }
+  
+  .banner-text {
+    color: #fff;
+  }
+  
+  .close-button-container {
+    position: absolute;
+    display: flex;
+    right: 10px;
+    align-items: flex-end;
+    top: 6px;
+  }
+  
+  .close-button {
+    cursor: pointer;
+    font-size: 24px;
+    color: #000;
+  }
+  
+  .details-button {
+    margin-top: 10px;
+  }
+  
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--bright);
+    color: var(--font-color);
+    transition: background-color 0.3s, color 0.3s;
+    margin-right: 10px; 
+  }
+  

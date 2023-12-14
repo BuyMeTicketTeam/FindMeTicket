@@ -21,7 +21,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --max-old-space-size=8192 start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/.eslintrc.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
