@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.joda.time.DateTime;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,6 +14,7 @@ import org.joda.time.DateTime;
 @Setter
 @Getter
 public class TicketDTO {
+   private UUID id;
    private String placeFrom;
    private String placeAt;
    private String departureCity;

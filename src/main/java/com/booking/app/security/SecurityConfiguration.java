@@ -59,6 +59,7 @@ public class SecurityConfiguration {
         http.csrf().disable();
 
         http.authorizeHttpRequests().requestMatchers("/frombusfor").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/frombusfor/nextfive").permitAll();
 
         return http.build();
     }

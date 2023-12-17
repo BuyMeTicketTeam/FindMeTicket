@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tickets-table
+      author: your_name
+      changes:
+      - createTable:
+          tableName: ticket
+          columns:
+            - column:
+                name: id
+                type: UUID
+                constraints:
+                  primaryKey: true
+                  nullable: false
+            - column:
+                name: place_from
+                type: VARCHAR(255)
+            - column:
+                name: place_at
+                type: VARCHAR(255)
+            - column:
+                name: departure_city
+                type: VARCHAR(255)
+            - column:
+                name: arrival_city
+                type: VARCHAR(255)
+            - column:
+                name: departure_time
+                type: VARCHAR(255)
+            - column:
+                name: departure_date
+                type: VARCHAR(255)
+            - column:
+                name: arrival_time
+                type: VARCHAR(255)
+            - column:
+                name: arrival_date
+                type: VARCHAR(255)
+            - column:
+                name: travel_time
+                type: VARCHAR(255)
+            - column:
+                name: price
+                type: VARCHAR(255)
+            - column:
+                name: url
+                type: VARCHAR(255)
+            - column:
+                name: adding_time
+                type: TIMESTAMP
