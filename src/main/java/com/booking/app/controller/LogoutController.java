@@ -2,6 +2,9 @@ package com.booking.app.controller;
 
 import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.LogoutAPI;
+import com.booking.app.util.CookieUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
@@ -30,10 +33,12 @@ public class LogoutController implements LogoutAPI {
      */
     @Override
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        CookieUtils.deleteCookie(request,response,"refresh-token");
         SecurityContext context = SecurityContextHolder.getContext();
         SecurityContextHolder.clearContext();
         context.setAuthentication(null);
+
         return ResponseEntity.ok().build();
     }
 

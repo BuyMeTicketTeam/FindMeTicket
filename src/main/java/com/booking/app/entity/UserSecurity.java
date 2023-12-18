@@ -26,7 +26,7 @@ public class UserSecurity implements UserDetails {
     @Column(unique = true,name = "email")
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(unique = true)

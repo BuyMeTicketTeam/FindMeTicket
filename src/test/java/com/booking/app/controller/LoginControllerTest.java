@@ -1,16 +1,13 @@
 package com.booking.app.controller;
 
 import com.booking.app.dto.LoginDTO;
-import com.booking.app.security.jwt.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
+import com.booking.app.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -18,6 +15,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +32,7 @@ class LoginControllerTest {
     private AuthenticationManager authenticationManager;
 
     @Mock
-    private JwtUtil jwtUtil;
+    private JwtProvider jwtProvider;
 
     @Mock
     private Authentication authentication;
@@ -45,15 +44,15 @@ class LoginControllerTest {
     private MockHttpServletResponse httpServletResponse;
 
     @Test
-    void testSuccessfulLogin() {
+    void testSuccessfulLogin() throws IOException {
 
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
 
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.isAuthenticated()).thenReturn(true);
 
-        when(jwtUtil.generateAccessToken(anyString())).thenReturn("mockedAccessToken");
-        when(jwtUtil.generateRefreshToken(anyString())).thenReturn("mockedRefreshToken");
+        when(jwtProvider.generateAccessToken(anyString())).thenReturn("mockedAccessToken");
+        when(jwtProvider.generateRefreshToken(anyString())).thenReturn("mockedRefreshToken");
 
         LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
 

@@ -1,6 +1,7 @@
 package com.booking.app.security.jwt;
 
 import com.booking.app.entity.UserSecurity;
+import com.booking.app.util.CookieUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
+    private final JwtProvider jwtProvider;
 
     private final UserDetailsService userDetailsService;
 
@@ -29,43 +30,40 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String email = null;
 
-        String accessTokenFromRequest = jwtUtil.extractAccessTokenFromRequest(request);
-        String refreshTokenFromRequest = jwtUtil.extractRefreshTokenFromRequest(request);
+        String accessTokenFromRequest = jwtProvider.extractAccessTokenFromRequest(request);
+        String refreshTokenFromRequest = jwtProvider.extractRefreshTokenFromRequest(request);
 
         if (accessTokenFromRequest == null && refreshTokenFromRequest == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        email = jwtUtil.extractEmail(refreshTokenFromRequest);
+        email = jwtProvider.extractEmail(refreshTokenFromRequest);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        if (jwtUtil.validateAccessToken(accessTokenFromRequest, (UserSecurity) userDetails)) {
+        if (jwtProvider.validateAccessToken(accessTokenFromRequest, (UserSecurity) userDetails)) {
 
-            response.setHeader("Refresh-Token", refreshTokenFromRequest);
-            response.setHeader("Authorization", accessTokenFromRequest);
+            CookieUtils.addCookie(response, "refresh-token", refreshTokenFromRequest, 7200, true, true);
+
+            response.setHeader("Authorization", "Bearer " +accessTokenFromRequest);
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
+        } else if (jwtProvider.validateRefreshToken(refreshTokenFromRequest, (UserSecurity) userDetails)) {
 
-        else if (jwtUtil.validateRefreshToken(refreshTokenFromRequest, (UserSecurity) userDetails)) {
+            String newAccessToken = jwtProvider.generateAccessToken(email);
+            String newRefreshToken = jwtProvider.generateAccessToken(email);
 
-            String newAccessToken = jwtUtil.generateAccessToken(email);
-            String newRefreshToken = jwtUtil.generateAccessToken(email);
-
-            response.setHeader("Refresh-Token", newRefreshToken);
-            response.setHeader("Authorization", newAccessToken);
+            CookieUtils.addCookie(response, "refresh-token", newRefreshToken, 7200, true, true);
+            response.setHeader("Authorization", "Bearer " +newAccessToken);
 
             UserDetails refreshedUserDetails = userDetailsService.loadUserByUsername(email);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(refreshedUserDetails, refreshedUserDetails.getPassword(), refreshedUserDetails.getAuthorities());
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        }
-
-        else {
+        } else {
             SecurityContextHolder.clearContext();
         }
 

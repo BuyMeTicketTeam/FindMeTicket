@@ -1,6 +1,6 @@
 package com.booking.app.constant;
 
-public class CorsConfigConstants {
+public final class CorsConfigConstants {
     public static final String ALLOWED_ORIGIN_80 = "http://build";
     public static final String ALLOWED_ORIGIN_81 = "http://build:81";
     public static final String[] ALLOWED_METHODS = {"GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"};
