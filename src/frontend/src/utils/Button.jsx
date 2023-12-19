@@ -7,7 +7,7 @@ export default function Button({
     <button
       data-testid={dataTestId}
       className={`button ${className}`}
-      onClick={() => onButton(true)}
+      onClick={(arg = true) => onButton(arg)}
       type="button"
       disabled={disabled}
     >

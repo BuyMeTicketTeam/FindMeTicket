@@ -21,7 +21,7 @@ export default function Filters({ onSort, prevSort }) {
         isDown={prevSort === 'time-travel-low'}
         isUp={prevSort === 'time-travel-up'}
       >
-        Час поїздки
+        Тривалість поїздки
       </FiltersBtn>
       <FiltersBtn
         onClick={onSort}

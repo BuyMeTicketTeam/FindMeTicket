@@ -6,16 +6,18 @@ import Body from './Body';
 import Error from './Error';
 import Transport from './Transport';
 import Tourist from './Tourist';
+import './main.css';
 
 export default function Index() {
   const [ticketsData, onTicketsData] = useState([]);
   const [loading, onLoading] = useState(false);
+  const [requestBody, setRequestBody] = useState({});
 
   function showTickets() {
     if (ticketsData !== null) {
       return (
         <>
-          <Body ticketsData={ticketsData} onTicketsData={onTicketsData} />
+          <Body ticketsData={ticketsData} onTicketsData={onTicketsData} onLoading={onLoading} setRequestBody={setRequestBody} requestBody={requestBody} />
           {ticketsData.length > 0 ? <Tourist ticketsData={ticketsData} onTicketsData={onTicketsData} /> : null}
         </>
       );
@@ -28,7 +30,7 @@ export default function Index() {
       <div className="container">
         <div className="search_index">
           <Transport />
-          <SearchField onLoading={onLoading} onTicketsData={onTicketsData} />
+          <SearchField onLoading={onLoading} onTicketsData={onTicketsData} setRequestBody={setRequestBody} />
         </div>
         {loading
           ? (

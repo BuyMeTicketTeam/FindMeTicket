@@ -4,6 +4,7 @@
     border-radius: 20px;
     padding: 25px;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .ticket__body {
@@ -99,6 +100,11 @@
 .price__discond {
     font-size: 18px;
     text-decoration: line-through;
+}
+
+.ticket__buy {
+    text-decoration: none;
+    text-align: center;
 }
 
 .ticket__more {
