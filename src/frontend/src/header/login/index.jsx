@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
@@ -19,12 +19,14 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [send, onSend] = useState(false);
   const [remember, rememberMe] = useState(false);
   const [show, onShow] = useState(false);
+  const navigate = useNavigate();
 
   function statusChecks(response) {
     switch (response.status) {
       case 200:
         changePopup(false);
         onAuthorization(true);
+        navigate('/');
         break;
       case 403:
         onError(t('error-lp'));
