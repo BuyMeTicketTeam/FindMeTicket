@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ticket.css';
 
 export default function Ticket({ data }) {
-  const [moreInfo, showMoreInfo] = useState(false);
   const placeFrom = data.placeFrom.length > 27 ? `${data.placeFrom.slice(0, 27)}...` : data.placeFrom;
   const placeAt = data.placeAt.length > 27 ? `${data.placeAt.slice(0, 27)}...` : data.placeAt;
   return (
@@ -33,17 +32,9 @@ export default function Ticket({ data }) {
               <p className="price__ordinry">{`${data.price} грн`}</p>
               <p className="price__discond">{data.priceOld ? `${data.priceOld} грн` : null}</p>
             </div>
-            <a className="ticket__buy button" href={data.url} name="Купити" target="blank">Купити</a>
+            <a className="ticket__buy button" href={data.url} name="Купити" target="blank">Обрати</a>
           </div>
-          <button className="ticket__more" type="button" onClick={() => showMoreInfo((prevState) => !prevState)}>
-            Детальніше
-            <img src="../img/arrow-more.svg" alt="arrow" />
-          </button>
         </div>
-      </div>
-      <div className={`ticket-add-info ${moreInfo ? 'show' : ''}`}>
-        <p className="ticket-add-info__text">{`Перевізник: ${data.tickerCarrier}`}</p>
-        <p className="ticket-add-info__text">{`Сайт: ${data.tickerCarrier}`}</p>
       </div>
     </div>
   );

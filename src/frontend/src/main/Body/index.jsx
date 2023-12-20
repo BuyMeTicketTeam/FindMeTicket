@@ -23,38 +23,41 @@ export default function Body({
     return +(hours * 60) + +minutes;
   }
 
+  function compareTimeDate(time1, date1, time2, date2) {
+    const timestamp1 = convertTimeDate(time1, date1);
+    const timestamp2 = convertTimeDate(time2, date2);
+    return timestamp1 - timestamp2;
+  }
+
+  function compareTravelTime(time1, time2) {
+    const convertedTime1 = convertTravelTime(time1);
+    const convertedTime2 = convertTravelTime(time2);
+    return convertedTime1 - convertedTime2;
+  }
+
   function sortFunc(arr, sortType) {
-    if (sortType === 'price-up') {
-      return arr.sort((a, b) => b.price - a.price);
-    }
-    if (sortType === 'time-departure-low') {
-      return arr.sort((a, b) => convertTimeDate(a.departureTime, a.departureDate) - convertTimeDate(b.departureTime, b.departureDate));
-    }
-    if (sortType === 'time-departure-up') {
-      return arr.sort((a, b) => convertTimeDate(b.departureTime, b.departureDate) - convertTimeDate(a.departureTime, a.departureDate));
-    }
-    if (sortType === 'time-arrival-low') {
-      return arr.sort((a, b) => convertTimeDate(a.arrivalTime, a.arrivalDate) - convertTimeDate(b.arrivalTime, b.arrivalDate));
-    }
-    if (sortType === 'time-arrival-up') {
-      return arr.sort((a, b) => convertTimeDate(b.arrivalTime, b.arrivalDate) - convertTimeDate(a.arrivalTime, a.arrivalDate));
-    }
-    if (sortType === 'time-travel-low') {
-      return arr.sort((a, b) => convertTravelTime(a.travelTime) - convertTravelTime(b.travelTime));
-    }
-    if (sortType === 'time-travel-up') {
-      return arr.sort((a, b) => convertTravelTime(b.travelTime) - convertTravelTime(a.travelTime));
-    }
-    return arr.sort((a, b) => a.price - b.price);
+    const compareFunctions = {
+      'price-up': (a, b) => b.price - a.price,
+      'time-departure-low': (a, b) => compareTimeDate(a.departureTime, a.departureDate, b.departureTime, b.departureDate),
+      'time-departure-up': (a, b) => compareTimeDate(b.departureTime, b.departureDate, a.departureTime, a.departureDate),
+      'time-arrival-low': (a, b) => compareTimeDate(a.arrivalTime, a.arrivalDate, b.arrivalTime, b.arrivalDate),
+      'time-arrival-up': (a, b) => compareTimeDate(b.arrivalTime, b.arrivalDate, a.arrivalTime, a.arrivalDate),
+      'time-travel-low': (a, b) => compareTravelTime(a.travelTime, b.travelTime),
+      'time-travel-up': (a, b) => compareTravelTime(b.travelTime, a.travelTime),
+    };
+
+    const compareFunction = compareFunctions[sortType] || ((a, b) => a.price - b.price);
+
+    return arr.sort(compareFunction);
   }
 
   async function handleClick() {
     handleSend(false);
     onLoading(true);
     const response = await makeQuerry('getnexttickets', JSON.stringify(requestBody));
-    const responseBody = response.status === 200 ? response.body : null;
+    const responseBody = response.status === 200 ? response.body : [];
     onLoading(false);
-    onTicketsData((prevValue) => [...prevValue, ...responseBody]);
+    onTicketsData((prevValue) => sortFunc([...prevValue, ...responseBody], sort));
   }
 
   useEffect(() => {
