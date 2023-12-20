@@ -11,6 +11,7 @@ export default function Body({
   const [sort, onSort] = useState('price-low');
   const [send, handleSend] = useState(false);
   const [loading, onLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   function convertTimeDate(time, date) {
     const [day, month] = date.split(',')[0].split('.');
@@ -56,8 +57,15 @@ export default function Body({
     onLoading(true);
     const response = await makeQuerry('getnexttickets', JSON.stringify(requestBody));
     const responseBody = response.status === 200 ? response.body : [];
+    if (response.status !== 200) {
+      setError(true);
+    }
     onLoading(false);
     onTicketsData((prevValue) => sortFunc([...prevValue, ...responseBody], sort));
+  }
+
+  function checkResponse() {
+    return error ? 'Виникла помилка. Спробуйте ще раз' : 'Знайти більше';
   }
 
   useEffect(() => {
@@ -79,7 +87,7 @@ export default function Body({
       {ticketsData.length !== 0 ? <Filters onSort={onSort} prevSort={sort} /> : null}
       <div className="tickets">
         {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
-        {ticketsData.length !== 0 ? <Button className="tickets__more" name={loading ? <img className="tickets__loading-img" src="../img/loading.svg" alt="Підвантажуємо..." /> : 'Знайти більше'} onButton={handleSend} /> : null}
+        {ticketsData.length !== 0 ? <Button className="tickets__more" name={loading ? <img className="tickets__loading-img" src="../img/loading.svg" alt="Підвантажуємо..." /> : checkResponse()} onButton={handleSend} /> : null}
       </div>
     </>
   );

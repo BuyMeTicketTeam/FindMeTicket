@@ -25,7 +25,7 @@ function TransportButton({
 function Transport() {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'transport' });
-  const [activeButton, setActiveButton] = useState((t('bus')));
+  const [activeButton, setActiveButton] = useState(t('bus'));
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
