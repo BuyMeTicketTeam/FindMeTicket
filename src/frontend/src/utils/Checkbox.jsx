@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function Checkbox({ onClick }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'login' });
   return (
     <>
       <input
@@ -9,7 +11,7 @@ export default function Checkbox({ onClick }) {
         className="checkbox__field"
         onChange={onClick}
       />
-      <label htmlFor="remember" className="checkbox">Запам&apos;ятати мене</label>
+      <label htmlFor="remember" className="checkbox">{t('remember-me')}</label>
     </>
   );
 }

@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import FiltersBtn from './FiltersBtn';
 import './filters.css';
 
 export default function Filters({ onSort, prevSort }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'filters' });
   return (
     <div className="main-filters">
       <FiltersBtn
@@ -12,7 +14,7 @@ export default function Filters({ onSort, prevSort }) {
         isDown={prevSort === 'price-low'}
         isUp={prevSort === 'price-up'}
       >
-        Ціна
+        {t('price')}
       </FiltersBtn>
       <FiltersBtn
         onClick={onSort}
@@ -21,7 +23,7 @@ export default function Filters({ onSort, prevSort }) {
         isDown={prevSort === 'time-travel-low'}
         isUp={prevSort === 'time-travel-up'}
       >
-        Час поїздки
+        {t('travel-time')}
       </FiltersBtn>
       <FiltersBtn
         onClick={onSort}
@@ -30,7 +32,7 @@ export default function Filters({ onSort, prevSort }) {
         isDown={prevSort === 'time-departure-low'}
         isUp={prevSort === 'time-departure-up'}
       >
-        Час відправлення
+        {t('departure-time')}
       </FiltersBtn>
       <FiltersBtn
         onClick={onSort}
@@ -39,7 +41,7 @@ export default function Filters({ onSort, prevSort }) {
         isDown={prevSort === 'time-arrival-low'}
         isUp={prevSort === 'time-arrival-up'}
       >
-        Час прибуття
+        {t('arrival-time')}
       </FiltersBtn>
     </div>
   );

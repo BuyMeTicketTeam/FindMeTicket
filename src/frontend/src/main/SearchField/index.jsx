@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
+import { useTranslation } from 'react-i18next';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 // import DropDown from './DropDown';
@@ -11,6 +12,7 @@ import makeQuerry from '../../helper/querry';
 import './searchField.css';
 
 export default function SearchField({ onLoading, onTicketsData }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, onAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
@@ -18,11 +20,11 @@ export default function SearchField({ onLoading, onTicketsData }) {
   const [errorCityFrom, onErrorCityFrom] = useState('');
   const [errorCityTo, onErrorCityTo] = useState('');
   const [date, onDate] = useState(new Date());
-  const [passanger, onPassangers] = useState('1 Дорослий, 0 Дитина');
+  const [passanger, onPassangers] = useState(`1 ${t('adults')}, 0 ${t('child')}`);
   const [send, onSend] = useState(false);
   const [showPassangers, onShowPassangers] = useState(false);
   const fieldRef = React.createRef();
-  const noOptionsMessage = (target) => (target.inputValue.length > 1 ? 'За вашим запитом нічого не знайдено' : null);
+  const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
   function showPassangersDrop() {
     onShowPassangers(!showPassangers);
@@ -42,31 +44,31 @@ export default function SearchField({ onLoading, onTicketsData }) {
   }, [showPassangers, fieldRef]);
 
   useEffect(() => {
-    let adults = 'Дорослий';
-    let kids = 'Дитина';
+    let adults = (t('adult'));
+    let kids = (t('child'));
     if (adultsValue > 1) {
-      adults = 'Дорослих';
+      adults = (t('adults'));
     }
     if (childrenValue > 1 && childrenValue <= 4) {
-      kids = 'Дитини';
+      kids = (t('children'));
     } else if (childrenValue > 4) {
-      kids = 'Дітей';
+      kids = (t('childrens'));
     }
     onPassangers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
-  }, [childrenValue, adultsValue]);
+  }, [childrenValue, adultsValue, t]);
 
   function validation() {
     if (!cityFrom && !cityTo) {
-      onErrorCityFrom('Поле не повинно бути порожнім');
-      onErrorCityTo('Поле не повинно бути порожнім');
+      onErrorCityFrom((t('error2')));
+      onErrorCityTo((t('error2')));
       return false;
     }
     if (!cityFrom) {
-      onErrorCityFrom('Поле не повинно бути порожнім');
+      onErrorCityFrom((t('error2')));
       return false;
     }
     if (!cityTo) {
-      onErrorCityTo('Поле не повинно бути порожнім');
+      onErrorCityTo((t('error2')));
       return false;
     }
     return true;
@@ -122,12 +124,12 @@ export default function SearchField({ onLoading, onTicketsData }) {
   return (
     <div className="search-field">
       <div className={`field ${errorCityFrom ? 'error-select' : ''}`}>
-        <div className="field__name">Звідки</div>
+        <div className="field__name">{t('where')}</div>
         <AsyncSelect
           isClearable
           value={cityFrom}
           noOptionsMessage={noOptionsMessage}
-          loadingMessage={() => 'Завантаження...'}
+          loadingMessage={() => { t('loading'); }}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
@@ -145,12 +147,12 @@ export default function SearchField({ onLoading, onTicketsData }) {
         <img src="../img/arrows.svg" alt="arrows" />
       </button>
       <div className={`field ${errorCityTo ? 'error-select' : ''}`}>
-        <div className="field__name">Куди</div>
+        <div className="field__name">{t('where-t')}</div>
         <AsyncSelect
           isClearable
           value={cityTo}
           noOptionsMessage={noOptionsMessage}
-          loadingMessage={() => 'Завантаження...'}
+          loadingMessage={() => { t('loading'); }}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
@@ -164,7 +166,7 @@ export default function SearchField({ onLoading, onTicketsData }) {
       <Field
         ref={fieldRef}
         className="search-field__tip-long"
-        name="Пасажири"
+        name={t('passengers')}
         value={passanger}
         type="text"
         tip={(
@@ -178,7 +180,7 @@ export default function SearchField({ onLoading, onTicketsData }) {
 )}
         onClick={() => showPassangersDrop()}
       />
-      <Button name="Знайти" onButton={onSend} />
+      <Button name={t('find')} onButton={onSend} />
     </div>
   );
 }

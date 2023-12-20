@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './style.css';
 
 function TransportButton({
@@ -21,7 +22,8 @@ function TransportButton({
 }
 
 function Transport() {
-  const [activeButton, setActiveButton] = useState('автобус');
+  const { t } = useTranslation('translation', { keyPrefix: 'transport' });
+  const [activeButton, setActiveButton] = useState((t('bus')));
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
@@ -30,33 +32,33 @@ function Transport() {
   return (
     <div>
       <TransportButton
-        label="Усі"
-        isActive={activeButton === 'усі'}
-        onClick={() => handleButtonClick('усі')}
-        img="../img/boat.svg"
+        label={t('everything')}
+        isActive={activeButton === (t('everything'))}
+        onClick={() => handleButtonClick(t('everything'))}
+        img="../img/everyting.svg"
       />
       <TransportButton
-        label="Автобус"
-        isActive={activeButton === 'автобус'}
-        onClick={() => handleButtonClick('автобус')}
+        label={t('bus')}
+        isActive={activeButton === (t('bus'))}
+        onClick={() => handleButtonClick(t('bus'))}
         img="../img/bus.svg"
       />
       <TransportButton
-        label="Літак"
-        isActive={activeButton === 'літак'}
-        onClick={() => handleButtonClick('літак')}
+        label={t('plane')}
+        isActive={activeButton === (t('plane'))}
+        onClick={() => handleButtonClick(t('plane'))}
         img="../img/plane.svg"
       />
       <TransportButton
-        label="Потяг"
-        isActive={activeButton === 'потяг'}
-        onClick={() => handleButtonClick('потяг')}
+        label={t('train')}
+        isActive={activeButton === (t('train'))}
+        onClick={() => handleButtonClick(t('train'))}
         img="../img/train.svg"
       />
       <TransportButton
-        label="Пором"
-        isActive={activeButton === 'пором'}
-        onClick={() => handleButtonClick('пором')}
+        label={t('ferry')}
+        isActive={activeButton === (t('ferry'))}
+        onClick={() => handleButtonClick(t('ferry'))}
         img="../img/boat.svg"
       />
     </div>
