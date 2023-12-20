@@ -75,7 +75,7 @@ export default function Confirm({ changePopup }) {
       setMinutes(1);
       setSeconds(30);
     } else if (response.status === 419) {
-      onError('error-server1');
+      onError(t('error-server1'));
     } else {
       onError(t('error-server2'));
     }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import InProgress from '../../InProgress/index';
 import './style.css';
 
@@ -22,8 +23,9 @@ function TransportButton({
 }
 
 function Transport() {
-  const [activeButton, setActiveButton] = useState('автобус');
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation('translation', { keyPrefix: 'transport' });
+  const [activeButton, setActiveButton] = useState((t('bus')));
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
@@ -32,32 +34,32 @@ function Transport() {
   return (
     <div>
       <TransportButton
-        label="Усі"
-        isActive={activeButton === 'усі'}
+        label={t('everything')}
+        isActive={activeButton === (t('everything'))}
         onClick={() => setIsOpen(true)}
-        img="../img/boat.svg"
+        img="../img/everyting.svg"
       />
       <TransportButton
-        label="Автобус"
-        isActive={activeButton === 'автобус'}
-        onClick={() => handleButtonClick('автобус')}
+        label={t('bus')}
+        isActive={activeButton === (t('bus'))}
+        onClick={() => handleButtonClick(t('bus'))}
         img="../img/bus.svg"
       />
       <TransportButton
-        label="Літак"
-        isActive={activeButton === 'літак'}
+        label={t('plane')}
+        isActive={activeButton === (t('plane'))}
         onClick={() => setIsOpen(true)}
         img="../img/plane.svg"
       />
       <TransportButton
-        label="Потяг"
-        isActive={activeButton === 'потяг'}
+        label={t('train')}
+        isActive={activeButton === (t('train'))}
         onClick={() => setIsOpen(true)}
         img="../img/train.svg"
       />
       <TransportButton
-        label="Пором"
-        isActive={activeButton === 'пором'}
+        label={t('ferry')}
+        isActive={activeButton === (t('ferry'))}
         onClick={() => setIsOpen(true)}
         img="../img/boat.svg"
       />
