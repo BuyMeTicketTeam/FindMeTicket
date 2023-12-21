@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Filters from '../Filters';
 import Ticket from '../Ticket';
 import Button from '../../utils/Button';
@@ -12,6 +13,7 @@ export default function Body({
   const [send, handleSend] = useState(false);
   const [loading, onLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { t } = useTranslation('translation', { keyPrefix: 'find-more-btn' });
 
   function convertTimeDate(time, date) {
     const [day, month] = date.split(',')[0].split('.');
@@ -65,7 +67,7 @@ export default function Body({
   }
 
   function checkResponse() {
-    return error ? 'Виникла помилка. Спробуйте ще раз' : 'Знайти більше';
+    return error ? t('error') : t('find-more');
   }
 
   useEffect(() => {

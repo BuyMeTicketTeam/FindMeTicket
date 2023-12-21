@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Button from '../utils/Button';
 import './inProgress.css';
 
-export default function index({ title, text, setIsOpen }) {
+export default function Index({ title, text, setIsOpen }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'in-progress' });
   return (
     <div className="message background">
       <div className="message__content">
@@ -16,7 +18,7 @@ export default function index({ title, text, setIsOpen }) {
           />
         </div>
         <p className="message__text">{text}</p>
-        <Button className="message__button" name="Зрозуміло" onButton={() => setIsOpen(false)} />
+        <Button className="message__button" name={t('ok')} onButton={() => setIsOpen(false)} />
       </div>
     </div>
   );
