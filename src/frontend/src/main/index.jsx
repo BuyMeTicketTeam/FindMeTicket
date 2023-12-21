@@ -17,8 +17,8 @@ export default function Index() {
     if (ticketsData !== null) {
       return (
         <>
+          {ticketsData.length > 0 ? <Tourist ticketsData={ticketsData} onTicketsData={onTicketsData} city={requestBody.arrivalCity} /> : null}
           <Body ticketsData={ticketsData} onTicketsData={onTicketsData} onLoading={onLoading} setRequestBody={setRequestBody} requestBody={requestBody} />
-          {ticketsData.length > 0 ? <Tourist ticketsData={ticketsData} onTicketsData={onTicketsData} /> : null}
         </>
       );
     }

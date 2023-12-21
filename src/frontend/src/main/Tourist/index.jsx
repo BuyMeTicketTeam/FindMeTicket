@@ -1,44 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import Button from '../../utils/Button';
 import './tourist.css';
 
-function Banner() {
-  const [isBannerVisible, setIsBannerVisible] = useState(true);
-
-  const closeBanner = () => {
-    setIsBannerVisible(false);
-  };
-
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      closeBanner();
-    }
-  };
-
+function Banner({ city }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'banner' });
   return (
-    <div>
-      {isBannerVisible && (
-        <div className="banner-container">
-          <div className="centered-content">
-            <p className="banner-text">
-              У нас є кілька цікавих місць, які можете відвідати у цьому місті
-            </p>
-            <div className="banner-details-button">
-              <button type="button">Детальніше тут</button>
-            </div>
-          </div>
-          <div className="banner-close-button-container">
-            <div
-              className="banner-close-button"
-              role="button"
-              tabIndex="0"
-              onClick={closeBanner}
-              onKeyPress={handleKeyPress}
-            >
-              ✖
-            </div>
-          </div>
-        </div>
-      )}
+    <div className="banner-container">
+      <div className="centered-content">
+        <p className="banner-text">
+          {t('banner-text')}
+          {' '}
+          {city}
+        </p>
+        <Button className="banner__btn" name={t('banner-btn')} />
+      </div>
     </div>
   );
 }
