@@ -1,38 +1,38 @@
-/*passangers*/
+/*passengers*/
 .search-field__tip-long .tip {
     width: max-content;
 }
 
-.passangers__list.close {
+.passengers__list.close {
     display: none;
 }
 
-.passangers__list.open {
+.passengers__list.open {
     display: block;
 }
 
-.passangers__item {
+.passengers__item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
 }
 
-.passangers__item:not(:last-child) {
+.passengers__item:not(:last-child) {
     border-bottom: 1px solid var(--dark);
 }
 
-.passangers__category {
+.passengers__category {
     font-size: 18px;
     margin-right: 10px;
     color: var(--font-color);
 }
 
-.passangers__form {
+.passengers__form {
     display: flex;
 }
 
-.passangers__btn {
+.passengers__btn {
     background: var(--bright);
     border-radius: 50%;
     border: none;
@@ -41,7 +41,7 @@
     height: 25px;
 }
 
-.passangers__input {
+.passengers__input {
     max-width: 25px;
     font-size: 18px;
     background: transparent;
@@ -51,6 +51,6 @@
     color: var(--font-color);
 }
 
-.passangers__input:focus-visible {
+.passengers__input:focus-visible {
     outline: none;
 }

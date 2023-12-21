@@ -25,7 +25,7 @@ function TransportButton({
 function Transport() {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'transport' });
-  const [activeButton, setActiveButton] = useState(t('bus'));
+  const [activeButton, setActiveButton] = useState('bus');
 
   const handleButtonClick = (button) => {
     setActiveButton(button);
@@ -41,29 +41,29 @@ function Transport() {
       />
       <TransportButton
         label={t('bus')}
-        isActive={activeButton === (t('bus'))}
-        onClick={() => handleButtonClick(t('bus'))}
+        isActive={activeButton === 'bus'}
+        onClick={() => handleButtonClick('bus')}
         img="../img/bus.svg"
       />
       <TransportButton
         label={t('plane')}
-        isActive={activeButton === (t('plane'))}
+        isActive={activeButton === 'plane'}
         onClick={() => setIsOpen(true)}
         img="../img/plane.svg"
       />
       <TransportButton
         label={t('train')}
-        isActive={activeButton === (t('train'))}
+        isActive={activeButton === 'train'}
         onClick={() => setIsOpen(true)}
         img="../img/train.svg"
       />
       <TransportButton
         label={t('ferry')}
-        isActive={activeButton === (t('ferry'))}
+        isActive={activeButton === 'ferry'}
         onClick={() => setIsOpen(true)}
         img="../img/boat.svg"
       />
-      {isOpen && <InProgress title="Ця функція знаходиться в розробці ):" text="Ми постійно працюємо над покращенням продукту. Як тільки ця функція буде доступна, ми вам повідомимо." setIsOpen={setIsOpen} />}
+      {isOpen && <InProgress title={t('message-title')} text={t('message-text')} setIsOpen={setIsOpen} />}
     </div>
   );
 }
