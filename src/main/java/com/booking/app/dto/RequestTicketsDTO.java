@@ -13,5 +13,4 @@ public class RequestTicketsDTO {
     private String departureCity;
     private String arrivalCity;
     private String departureDate;
-    private int indexFrom;
 }

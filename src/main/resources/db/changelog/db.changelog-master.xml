@@ -12,6 +12,7 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
     <include file="scripts/role-create.yaml"/>
     <include file="scripts/user-create.yaml"/>
     <include file="scripts/ticket-create.yaml"/>
+    <include file="scripts/route-create.yaml"/>
     <include file="scripts/user-security-create.yaml"/>
     <include file="scripts/ukr-places-create.yaml"/>
     <include file="scripts/role-insert.yaml"/>

@@ -58,10 +58,11 @@ public class SecurityConfiguration {
         http.logout().disable();
         http.csrf().disable();
 
-        http.authorizeHttpRequests().requestMatchers("/frombusfor").permitAll();
-        http.authorizeHttpRequests().requestMatchers("/frombusfor/nextfive").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/searchtickets").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/get/ticket/*").anonymous();
 
         return http.build();
+
     }
 
     @Bean

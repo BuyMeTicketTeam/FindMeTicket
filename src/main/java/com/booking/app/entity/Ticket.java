@@ -8,16 +8,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@Table(name = "ticket")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
+
 public class Ticket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "place_from")
@@ -26,17 +26,8 @@ public class Ticket {
     @Column(name = "place_at")
     private String placeAt;
 
-    @Column(name = "departure_city")
-    private String departureCity;
-
-    @Column(name = "arrival_city")
-    private String arrivalCity;
-
     @Column(name = "departure_time")
     private String departureTime;
-
-    @Column(name = "departure_date")
-    private String departureDate;
 
     @Column(name = "arrival_time")
     private String arrivalTime;
@@ -53,6 +44,8 @@ public class Ticket {
     @Column(name = "url")
     private String url;
 
-    @Column(name = "adding_time")
-    private LocalDateTime addingTime;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "route_id")
+    private Route route;
+
 }

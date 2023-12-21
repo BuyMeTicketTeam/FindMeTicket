@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigInteger;
 
 @Entity
+@Table(name = "ukrainian_places")
 @Getter
 @Builder
 @NoArgsConstructor
