@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 import Button from '../utils/Button';
 import './inProgress.css';
 
-export default function Index({ title, text, setIsOpen }) {
+export default function Index({
+  title, text, setIsOpen,
+}) {
   const { t } = useTranslation('translation', { keyPrefix: 'in-progress' });
+  const inProgressRef = useRef(null);
+  useEffect(() => {
+    disableBodyScroll(inProgressRef.current);
+    return () => {
+      clearAllBodyScrollLocks();
+    };
+  }, []);
   return (
     <div className="message background">
-      <div className="message__content">
+      <div ref={inProgressRef} className="message__content">
         <div className="message__header">
           <h2 className="message__title">{title}</h2>
           <button

@@ -6,6 +6,7 @@ import Body from './Body';
 import Error from './Error';
 import Transport from './Transport';
 import Tourist from './Tourist';
+import Ad from '../Ad/index';
 import './main.css';
 
 export default function Index() {
@@ -14,31 +15,32 @@ export default function Index() {
   const [requestBody, setRequestBody] = useState({});
 
   function showTickets() {
-    if (ticketsData !== null) {
+    if (loading) {
+      return <Loader />;
+    }
+    if (ticketsData == null) {
+      return <Error />;
+    }
+    if (ticketsData.length > 0) {
       return (
         <>
-          {ticketsData.length > 0 ? <Tourist ticketsData={ticketsData} onTicketsData={onTicketsData} city={requestBody.arrivalCity} /> : null}
+          <Tourist ticketsData={ticketsData} onTicketsData={onTicketsData} city={requestBody.arrivalCity} />
           <Body ticketsData={ticketsData} onTicketsData={onTicketsData} onLoading={onLoading} setRequestBody={setRequestBody} requestBody={requestBody} />
         </>
       );
     }
-    return <Error />;
+    return <Ad isBig />;
   }
 
   return (
     <div className="main-block">
       <div className="container">
         <div className="search_index">
+          <Ad />
           <Transport />
           <SearchField onLoading={onLoading} onTicketsData={onTicketsData} setRequestBody={setRequestBody} />
         </div>
-        {loading
-          ? (
-            <Loader />
-          )
-          : (
-            showTickets()
-          )}
+        {showTickets()}
       </div>
     </div>
   );

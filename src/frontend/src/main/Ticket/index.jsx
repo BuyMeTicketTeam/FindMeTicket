@@ -26,8 +26,8 @@ export default function Ticket({ data }) {
             <p className="ticket__city ticket-last-element">{data.arrivalCity}</p>
           </div>
           <div className="information__row">
-            <div className="ticket__station" title={placeFromTitle}>{placeFrom}</div>
-            <div className="ticket__station ticket-last-element" title={placeAtTitle}>{placeAt}</div>
+            <div className="ticket__station" data-title={placeFromTitle}>{placeFrom}</div>
+            <div className="ticket__station ticket-last-element" data-title={placeAtTitle}>{placeAt}</div>
           </div>
         </div>
         <div className="price-options">

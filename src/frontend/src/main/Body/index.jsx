@@ -86,7 +86,7 @@ export default function Body({
 
   return (
     <>
-      {ticketsData.length !== 0 ? <Filters onSort={onSort} prevSort={sort} /> : null}
+      <Filters onSort={onSort} prevSort={sort} />
       <div className="tickets">
         {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
         {ticketsData.length !== 0 ? <Button className="tickets__more" name={loading ? <img className="tickets__loading-img" src="../img/loading.svg" alt="Підвантажуємо..." /> : checkResponse()} onButton={handleSend} /> : null}

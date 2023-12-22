@@ -69,8 +69,8 @@
     font-size: 18px;
     position: relative;
 }
-.ticket__station[title]:hover::after {
-    content: attr(title);
+.ticket__station[data-title]:hover::after {
+    content: attr(data-title);
     position: absolute;
     display: inline-block;
     top: 105%;

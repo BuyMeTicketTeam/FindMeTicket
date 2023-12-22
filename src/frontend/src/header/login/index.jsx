@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
@@ -20,6 +21,14 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [remember, rememberMe] = useState(false);
   const [show, onShow] = useState(false);
   const navigate = useNavigate();
+  const loginRef = useRef(null);
+
+  useEffect(() => {
+    disableBodyScroll(loginRef.current);
+    return () => {
+      clearAllBodyScrollLocks();
+    };
+  }, []);
 
   function statusChecks(response) {
     switch (response.status) {
@@ -92,7 +101,7 @@ export default function Popup({ changePopup, onAuthorization }) {
 
   return (
     <div data-testid="login" className="background">
-      <div className="popup__body">
+      <div ref={loginRef} className="popup__body">
         <button
           data-testid="close"
           type="button"
