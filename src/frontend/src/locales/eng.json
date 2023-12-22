@@ -130,7 +130,7 @@
             },
             "transport": {
                   "bus": "Bus",
-                  "everything": "Everything",
+                  "everything": "All",
                   "plane": "Plane",
                   "train": "Train",
                   "ferry": "Ferry",
@@ -175,6 +175,13 @@
             },
             "in-progress": {
                   "ok": "Okay"
+            },
+            "main-error": {
+                  "title": "An error occurred",
+                  "text": "We apologize for the inconvenience, please try again"
+            },
+            "ad": {
+                  "title": "Your ad can be here!"
             }
       }
 }
