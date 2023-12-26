@@ -3,8 +3,8 @@ import './loader.css';
 
 export default function Loader() {
   return (
-    <div className="loader-wrapper">
-      <div className="truck-wrapper">
+    <div data-testid="loader" className="loader-wrapper">
+      <div className="truck-wrapper" data-content="Наш сервіс вже шукає квитки для вас">
         <div className="truck">
           <div className="truck-container" />
           <div className="glases" />
