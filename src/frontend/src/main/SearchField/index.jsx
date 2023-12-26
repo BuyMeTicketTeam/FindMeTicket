@@ -125,10 +125,11 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       <div className={`field ${errorCityFrom ? 'error-select' : ''}`}>
         <div className="field__name">{t('where')}</div>
         <AsyncSelect
+          aria-label="cityFromSelect"
           isClearable
           value={cityFrom}
           noOptionsMessage={noOptionsMessage}
-          loadingMessage={() => { t('loading'); }}
+          loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
@@ -136,7 +137,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
           onChange={onCityFrom}
           onInputChange={() => onErrorCityFrom('')}
         />
-        {errorCityFrom !== '' && <p data-testid="error" className="search-field__error">{errorCityFrom}</p>}
+        {errorCityFrom !== '' && <p data-testid="errorCityFrom" className="search-field__error">{errorCityFrom}</p>}
       </div>
       <button
         className="search-field__img"
@@ -149,9 +150,10 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
         <div className="field__name">{t('where-t')}</div>
         <AsyncSelect
           isClearable
+          aria-label="cityToSelect"
           value={cityTo}
           noOptionsMessage={noOptionsMessage}
-          loadingMessage={() => { t('loading'); }}
+          loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
@@ -159,10 +161,11 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
           onChange={onCityTo}
           onInputChange={() => onErrorCityTo('')}
         />
-        {errorCityTo !== '' && <p data-testid="error" className="search-field__error">{errorCityTo}</p>}
+        {errorCityTo !== '' && <p data-testid="errorCityTo" className="search-field__error">{errorCityTo}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
       <Field
+        dataTestId="passengers"
         ref={fieldRef}
         className="search-field__tip-long"
         name={t('passengers')}

@@ -145,7 +145,7 @@
                   "childrens": "Children",
                   "find": "Find",
                   "passengers": "Passengers",
-                  "loading": "Loading",
+                  "loading": "Loading...",
                   "where": "From",
                   "where-t": "To",
                   "error": "Nothing was found for your request",
