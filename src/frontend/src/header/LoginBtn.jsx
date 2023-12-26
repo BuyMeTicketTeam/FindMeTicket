@@ -14,7 +14,6 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
         case 200:
           onAuthorization(!status);
           localStorage.removeItem('JWTtoken');
-          localStorage.removeItem('refreshToken');
           break;
         default:
           break;

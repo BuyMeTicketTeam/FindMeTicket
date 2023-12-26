@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import './ticket.css';
 
 export default function Ticket({ data }) {
-  const placeFrom = data.placeFrom.length > 27 ? `${data.placeFrom.slice(0, 25)}...` : data.placeFrom;
-  const placeAt = data.placeAt.length > 27 ? `${data.placeAt.slice(0, 25)}...` : data.placeAt;
-  const placeFromTitle = data.placeFrom.length > 27 ? data.placeFrom : null;
-  const placeAtTitle = data.placeAt.length > 27 ? data.placeAt : null;
+  const placeFrom = data.placeFrom.length > 25 ? `${data.placeFrom.slice(0, 25)}...` : data.placeFrom;
+  const placeAt = data.placeAt.length > 25 ? `${data.placeAt.slice(0, 25)}...` : data.placeAt;
+  const placeFromTitle = data.placeFrom.length > 25 ? data.placeFrom : null;
+  const placeAtTitle = data.placeAt.length > 25 ? data.placeAt : null;
   const { t } = useTranslation('translation', { keyPrefix: 'ticket' });
   return (
     <div className="ticket">
