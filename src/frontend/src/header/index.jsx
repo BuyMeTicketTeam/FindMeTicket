@@ -43,6 +43,7 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
       <Select
+        data-testid="language-select"
         options={languages}
         classNamePrefix="react-select"
         placeholder={null}

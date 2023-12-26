@@ -1,12 +1,20 @@
 /* eslint-disable no-undef */
 import React from 'react';
-import {
-  render, screen,
-} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import App from '../App';
 
-test('render header', () => {
-  render(<App />);
-  const headerElement = screen.getByTestId('header');
-  expect(headerElement).toBeInTheDocument();
+describe('Header component', () => {
+  it('renders correctly', () => {
+    render(<App />);
+    expect(screen.getByTestId('header')).toBeInTheDocument();
+  });
+
+  it('restores language from sessionStorage', () => {
+    // Записываем 'ENG' в sessionStorage
+    sessionStorage.setItem('lang', JSON.stringify({ value: 'ENG', label: 'ENG' }));
+    render(<App />);
+
+    // Проверяем, что язык восстановлен из sessionStorage и равен 'ENG'
+    expect(screen.getByText('ENG')).toBeInTheDocument();
+  });
 });

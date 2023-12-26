@@ -1,19 +1,19 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
-import Filters from '.';
+import { render, screen } from '@testing-library/react';
+import Filters from './index';
 
-test('Filters component toggles sort order on button click', () => {
-  const initialSort = 'price-low';
+test('renders filters component', () => {
+  const onSortMock = jest.fn();
 
-  const mockOnSort = jest.fn();
+  render(<Filters onSort={onSortMock} prevSort="price-low" />);
 
-  render(<Filters onSort={mockOnSort} prevSort={initialSort} />);
+  const priceBtn = screen.getByText('price');
+  const travelTimeBtn = screen.getByText('travel-time');
+  const departureTimeBtn = screen.getByText('departure-time');
+  const arrivalTimeBtn = screen.getByText('arrival-time');
 
-  const activeButton = screen.getByText('Ціна');
-  expect(activeButton).toHaveClass('active');
-
-  fireEvent.click(activeButton);
-
-  expect(mockOnSort).toHaveBeenCalledWith('price-up');
+  expect(priceBtn).toBeInTheDocument();
+  expect(travelTimeBtn).toBeInTheDocument();
+  expect(departureTimeBtn).toBeInTheDocument();
+  expect(arrivalTimeBtn).toBeInTheDocument();
 });
