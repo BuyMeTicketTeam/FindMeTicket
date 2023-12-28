@@ -30,6 +30,7 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
   if (status) {
     return (
       <button
+        data-testid="logout-btn"
         className="login"
         type="button"
         onClick={() => { onLogout(true); }}

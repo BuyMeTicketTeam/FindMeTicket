@@ -20,7 +20,6 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
   const [errorCityTo, onErrorCityTo] = useState('');
   const [date, onDate] = useState(new Date());
   const [passanger, onPassangers] = useState(`1 ${t('adults')}, 0 ${t('child')}`);
-  const [send, onSend] = useState(false);
   const [showPassangers, onShowPassangers] = useState(false);
   const fieldRef = React.createRef();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
@@ -73,14 +72,13 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     return true;
   }
 
-  async function handleClick() {
-    onSend(false);
+  async function sendRequest() {
     if (!validation()) {
       return;
     }
     const body = {
-      departureCity: cityFrom.value,
-      arrivalCity: cityTo.value,
+      departureCity: cityFrom.valueOf,
+      arrivalCity: cityTo.valueOf,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
       indexFrom: 0,
     };
@@ -97,12 +95,6 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     onCityTo(cityFrom);
     onCityFrom(cityToTemp);
   }
-
-  useEffect(() => {
-    if (send) {
-      handleClick();
-    }
-  }, [send]);
 
   let timerId;
   async function getCities(inputValue) {
@@ -182,7 +174,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
 )}
         onClick={() => showPassangersDrop()}
       />
-      <Button name={t('find')} onButton={onSend} />
+      <Button name={t('find')} onButton={sendRequest} />
     </div>
   );
 }

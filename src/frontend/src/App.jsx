@@ -25,10 +25,6 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, []);
-  useEffect(() => {
-    // console.log(cookies.getAll());
-    // cookies.set('test2', 'some value');
-  });
   return (
     <Router>
       <Header

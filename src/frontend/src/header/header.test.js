@@ -10,11 +10,8 @@ describe('Header component', () => {
   });
 
   it('restores language from sessionStorage', () => {
-    // Записываем 'ENG' в sessionStorage
     sessionStorage.setItem('lang', JSON.stringify({ value: 'ENG', label: 'ENG' }));
     render(<App />);
-
-    // Проверяем, что язык восстановлен из sessionStorage и равен 'ENG'
     expect(screen.getByText('ENG')).toBeInTheDocument();
   });
 });
