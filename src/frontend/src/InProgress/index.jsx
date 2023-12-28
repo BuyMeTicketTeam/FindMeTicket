@@ -9,12 +9,14 @@ export default function Index({
 }) {
   const { t } = useTranslation('translation', { keyPrefix: 'in-progress' });
   const inProgressRef = useRef(null);
+
   useEffect(() => {
     disableBodyScroll(inProgressRef.current);
     return () => {
       clearAllBodyScrollLocks();
     };
   }, []);
+
   return (
     <div className="message background">
       <div ref={inProgressRef} className="message__content">
@@ -28,7 +30,11 @@ export default function Index({
           />
         </div>
         <p className="message__text">{text}</p>
-        <Button className="message__button" name={t('ok')} onButton={() => setIsOpen(false)} />
+        <Button
+          className="message__button"
+          name={t('ok')}
+          onButton={() => setIsOpen(false)}
+        />
       </div>
     </div>
   );

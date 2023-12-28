@@ -19,6 +19,7 @@ export default function Calendar({ date, onDate }) {
       date: () => 'mm/dd/yyyy',
     },
   };
+
   return (
     <div className="field">
       <div className="field__name">{t('title')}</div>

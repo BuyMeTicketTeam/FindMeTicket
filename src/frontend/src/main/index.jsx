@@ -24,8 +24,18 @@ export default function Index() {
     if (ticketsData.length > 0) {
       return (
         <>
-          <Tourist ticketsData={ticketsData} onTicketsData={onTicketsData} city={requestBody.arrivalCity} />
-          <Body ticketsData={ticketsData} onTicketsData={onTicketsData} onLoading={onLoading} setRequestBody={setRequestBody} requestBody={requestBody} />
+          <Tourist
+            ticketsData={ticketsData}
+            onTicketsData={onTicketsData}
+            city={requestBody.arrivalCity}
+          />
+          <Body
+            ticketsData={ticketsData}
+            onTicketsData={onTicketsData}
+            onLoading={onLoading}
+            setRequestBody={setRequestBody}
+            requestBody={requestBody}
+          />
         </>
       );
     }
@@ -38,7 +48,11 @@ export default function Index() {
         <div className="search_index">
           <Ad />
           <Transport />
-          <SearchField onLoading={onLoading} onTicketsData={onTicketsData} setRequestBody={setRequestBody} />
+          <SearchField
+            onLoading={onLoading}
+            onTicketsData={onTicketsData}
+            setRequestBody={setRequestBody}
+          />
         </div>
         {showTickets()}
       </div>

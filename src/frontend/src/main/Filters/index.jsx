@@ -5,6 +5,7 @@ import './filters.css';
 
 export default function Filters({ onSort, prevSort }) {
   const { t } = useTranslation('translation', { keyPrefix: 'filters' });
+
   return (
     <div className="main-filters">
       <FiltersBtn

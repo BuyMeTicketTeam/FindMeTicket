@@ -8,6 +8,7 @@ export default function Ticket({ data }) {
   const placeFromTitle = data.placeFrom.length > 25 ? data.placeFrom : null;
   const placeAtTitle = data.placeAt.length > 25 ? data.placeAt : null;
   const { t } = useTranslation('translation', { keyPrefix: 'ticket' });
+
   return (
     <div className="ticket">
       <div className="ticket__body">

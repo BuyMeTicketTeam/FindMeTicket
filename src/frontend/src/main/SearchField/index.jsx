@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
@@ -96,6 +95,10 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     onCityFrom(cityToTemp);
   }
 
+  function transformData(item) {
+    return { value: item.cityUkr, label: `${item.cityUkr}, ${item.country}` };
+  }
+
   let timerId;
   async function getCities(inputValue) {
     if (inputValue.length > 1) {
@@ -103,7 +106,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       const result = await new Promise((resolve) => {
         timerId = setTimeout(async () => {
           const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
-          const responseBody = response.status === 200 ? response.body.map((item) => ({ value: item.cityUkr, label: `${item.cityUkr}, ${item.country}` })) : [];
+          const responseBody = response.status === 200 ? response.body.map(transformData) : [];
           resolve(responseBody);
         }, 500);
       });

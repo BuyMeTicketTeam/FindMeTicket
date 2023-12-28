@@ -5,6 +5,7 @@ import './tourist.css';
 
 function Banner({ city }) {
   const { t } = useTranslation('translation', { keyPrefix: 'banner' });
+
   return (
     <div className="banner-container">
       <div className="centered-content">

@@ -8,6 +8,7 @@ export default function Passengers({
   status, adultsValue, onAdultsValue, childrenValue, onChildrenValue,
 }) {
   const { t } = useTranslation('translation', { keyPrefix: 'passengers' });
+
   return (
     <ul className={status ? 'passengers__list open' : 'passengers__list close'}>
       <li className="passengers__item">
