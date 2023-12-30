@@ -1,0 +1,89 @@
+footer {
+  background-color: var(--semi-dark);
+  text-align: left;
+  font-size: 14px;
+}
+footer.open {
+  max-height: 500px; 
+}
+footer .footer-container{
+  display: flex;
+  justify-content: space-between;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.footer-column {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 40px;
+  padding-top: 20px;
+}
+
+.footer-column:last-child {
+  margin-right: 0;
+}
+
+.footer-column h4 {
+  margin-bottom: 10px;
+  font-size: 12px; 
+}
+
+.footer-column p {
+  margin: 8px 0;
+  font-size: 12px; 
+}
+
+
+.footer-contact {
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.contact-line {
+  margin-top: 10px;
+}
+
+/* .contact-line span {
+  margin: 0 10px;
+} */
+
+.footer-column {
+  margin-bottom: 20px;
+}
+.year {
+  text-align: center;
+  border-top: 1px solid black;
+  padding: 20px 0;
+  font-size: 12px;
+}
+.footer-container {
+  position: relative;
+}
+
+.arrow-icon {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.arrow-icon.open {
+  transform: rotate(180deg); 
+}
+
+.circle-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; 
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--bright); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrow-icon.open .circle-background {
+  opacity: 1; 
+}
+

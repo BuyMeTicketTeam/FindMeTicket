@@ -6,6 +6,7 @@ import { useCookies } from 'react-cookie';
 import Header from './header/index';
 import Routers from './routers';
 import './testServer';
+import Footer from './footer';
 import './App.css';
 import './locales/i18n';
 import Cookie from './cookieBanner/cookie';
@@ -23,6 +24,7 @@ function App() {
     <Router>
       <Header authorization={authorization} onAuthorization={onAuthorization} changePopup={changePopup} popupLogin={popupLogin} />
       <Routers changePopup={changePopup} />
+      <Footer />
       <Cookie />
     </Router>
 
