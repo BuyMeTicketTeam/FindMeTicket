@@ -110,7 +110,11 @@
 .search-field__img {
   background: transparent;
   border: none;
+  transition: 0.3s
 }
-.search-field__imgL:hover {
+
+.search-field__img:hover {
   cursor: pointer;
+  transform: scale(0.9);
+  transition: 0.3s
 }
