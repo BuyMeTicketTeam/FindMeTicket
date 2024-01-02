@@ -22,10 +22,17 @@ function App() {
   }, []);
   return (
     <Router>
-      <Header authorization={authorization} onAuthorization={onAuthorization} changePopup={changePopup} popupLogin={popupLogin} />
-      <Routers changePopup={changePopup} />
-      <Footer />
-      <Cookie />
+      <div className="body">
+        <Header
+          authorization={authorization}
+          onAuthorization={onAuthorization}
+          changePopup={changePopup}
+          popupLogin={popupLogin}
+        />
+        <Routers changePopup={changePopup} />
+        <Footer />
+        <Cookie />
+      </div>
     </Router>
 
   );

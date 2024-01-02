@@ -2,6 +2,6 @@ import React from 'react';
 
 export default function index() {
   return (
-    <div className="main-block" />
+    <div className="main-block main" />
   );
 }

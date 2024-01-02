@@ -19,6 +19,15 @@ img {
   max-height: 100%;
   object-fit: contain;
 }
+.body{
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main{
+  flex:100%;
+}
 
 .field__name {
   margin-bottom: 7px;

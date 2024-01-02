@@ -26,13 +26,14 @@ function Footer() {
     <div className="footer-container">
       <div
         className={`arrow-icon ${isFooterVisible ? 'open' : ''}`}
+        data-testid = "Toggle Footer"
         onClick={toggleFooter}
         role="button"
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
         <div className="circle-background">
-          <span>&#10835;</span>
+          <span>&#5169;</span>
         </div>
       </div>
 
