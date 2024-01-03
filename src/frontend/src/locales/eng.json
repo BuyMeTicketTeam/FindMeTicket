@@ -169,6 +169,13 @@
                   "select": "Select",
                   "uan": "UAH"
             },
+            "loading": {
+                  "text-our-service": "Our service is already looking for tickets...",
+                  "text-thanks": "Thank you for choosing our service.",
+                  "text-wait": "There's still a little left...",
+                  "text-almost": "Almost ready...",
+                  "text-tourist-places": "Don't forget about the tourist spots..."
+            },
             "find-more-btn": {
                   "find-more": "Find more",
                   "error": "An error occurred. Try again"

@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './loader.css';
 
 export default function Loader() {
   const [animation, setAnimation] = useState('first');
+  const { t } = useTranslation('translation', { keyPrefix: 'loading' });
+
   function changeText() {
     switch (animation) {
       case 'first':
@@ -22,20 +25,22 @@ export default function Loader() {
         break;
     }
   }
+
   useEffect(() => {
     const interval = setTimeout(changeText, 3000);
     return () => clearTimeout(interval);
   }, [animation]);
+
   return (
     <div data-testid="loader" className="loader-wrapper">
       <div className="truck-wrapper">
         <div className="loader__text-wrapper">
           <ul className={`loader__inner-text ${animation}`}>
-            <li>Наш сервіс вже шукає квитки для вас.</li>
-            <li>Дякуємо що обрали наш сервіс.</li>
-            <li>Залишилось ще трошки.</li>
-            <li>Майже готово.</li>
-            <li>Не забудьте про туристичні місця.</li>
+            <li>{t('text-our-service')}</li>
+            <li>{t('text-thanks')}</li>
+            <li>{t('text-wait')}</li>
+            <li>{t('text-almost')}</li>
+            <li>{t('text-tourist-places')}</li>
           </ul>
         </div>
         <div className="truck">
