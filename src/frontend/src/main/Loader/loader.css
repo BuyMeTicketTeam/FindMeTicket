@@ -5,17 +5,15 @@
     position: relative;
     left: 50%;
     transform: translateX(-50%) translateY(-50%) scale(0.8);
-    animation: bg 0.5s linear infinite;
+    /*animation: bg 5s linear infinite;*/
     overflow: hidden;
     z-index: 2;
 }
 
 .truck-wrapper:after {
-    content: attr(data-content);
-    font-size: 30px;
+    content: '';
     position: absolute;
     bottom: 0px;
-    text-align: center;
     width: 100%;
     border-top: 1px solid #4CAF50;
     background: rgb(30, 252, 200);
@@ -23,11 +21,43 @@
     background: -webkit-linear-gradient(left, rgba(30, 252, 200, 1) 0%, rgba(29, 211, 214, 1) 100%);
     background: linear-gradient(to right, var(--dark) 0%, var(--main) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1efcc8', endColorstr='#1dd3d6', GradientType=1);
-    color: white;
     padding-top: 15px;
     padding-bottom: 15px;
-    animation: bg 3s linear infinite;
+    animation: bg 4.5s linear infinite;
     border-radius: 10px;
+    height: 35px;
+}
+
+.loader__text-wrapper {
+    position: absolute;
+    bottom: 13px;
+    left: 20px;
+    z-index: 1;
+    height: 36px;
+    overflow: hidden;
+}
+
+.loader__inner-text {  
+    font-size: 30px;
+    transition: 0.5s;
+}
+.loader__inner-text.first {  
+    transform: translate(0, 0);
+}
+.loader__inner-text.second {  
+    transform: translate(0, -21%);
+}
+.loader__inner-text.third {  
+    transform: translate(0, -42%);
+}
+.loader__inner-text.fourth {  
+    transform: translate(0, -63%);
+}
+.loader__inner-text.fifth {  
+    transform: translate(0, -84%);
+}
+.loader__inner-text li {
+    margin-bottom: 10px;
 }
 
 .truck {
@@ -290,7 +320,7 @@
     }
 
     to {
-        background-position-x: -700px;
+        background-position-x: -1206px;
     }
 }
 

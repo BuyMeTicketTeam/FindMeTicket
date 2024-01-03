@@ -40,7 +40,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     };
   }, [showPassangers, fieldRef]);
 
-  useEffect(() => {
+  function updatePassangerText() {
     let adults = (t('adult'));
     let kids = (t('child'));
     if (adultsValue > 1) {
@@ -52,6 +52,10 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       kids = (t('childrens'));
     }
     onPassangers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
+  }
+
+  useEffect(() => {
+    updatePassangerText();
   }, [childrenValue, adultsValue, t]);
 
   function validation() {

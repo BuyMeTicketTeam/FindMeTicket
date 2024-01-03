@@ -29,6 +29,7 @@ export default function Confirm({ changePopup }) {
       });
     }
   }, [seconds, minutes]);
+
   function statusChecks(response) {
     switch (response.status) {
       case 200:

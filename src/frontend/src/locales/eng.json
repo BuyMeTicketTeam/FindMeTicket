@@ -67,11 +67,11 @@
                   "error-nickname-exist": "This nickname already exists, come up with something else"
             },
             "tip": {
-                  "nickname-tip": "Your nickname must meet the following requirements:",
-                  "nickname-tip2": "5-20 alphanumeric characters",
-                  "nickname-tip3": "Lowercase and uppercase letters",
-                  "nickname-tip4": "Only Latin characters",
-                  "nickname-tip5": "Spaces are allowed"
+                  "nickname-tip-title": "Your nickname must meet the following requirements:",
+                  "nickname-tip-chars-numbers": "5-20 alphanumeric characters",
+                  "nickname-tip-letters": "Lowercase and uppercase letters",
+                  "nickname-tip-sumbols": "Only Latin characters",
+                  "nickname-tip-spaces": "Spaces are allowed"
             },
             "confirm": {
                   "error-server2": "Server error. Try again",
