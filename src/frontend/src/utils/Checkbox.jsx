@@ -1,15 +1,15 @@
 import React from 'react';
 
-export default function Checkbox({ onClick }) {
+export default function Checkbox({ onChange, children, policyError }) {
   return (
     <>
       <input
         id="remember"
         type="checkbox"
-        className="checkbox__field"
-        onChange={onClick}
+        className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'}
+        onChange={onChange}
       />
-      <label htmlFor="remember" className="checkbox">Запам&apos;ятати мене</label>
+      <label htmlFor="remember" className="checkbox">{children}</label>
     </>
   );
 }
