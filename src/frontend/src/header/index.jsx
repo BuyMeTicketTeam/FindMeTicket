@@ -6,6 +6,7 @@ import Select from 'react-select';
 import LoginBtn from './LoginBtn';
 import Login from './login/index';
 import './header.css';
+import logo from './logo.svg';
 
 export default function Header({
   authorization, onAuthorization, changePopup, popupLogin,
@@ -32,7 +33,7 @@ export default function Header({
   }, []);
   return (
     <header data-testid="header" className="header">
-      <div className="logo"><Link to="/"><img src="../img/logo.svg" alt="logo" /></Link></div>
+      <div className="logo"><Link to="/"><img src={logo} alt="logo" /></Link></div>
       <ul className="menu">
         <li className="menu__item"><a href="/">{t('news')}</a></li>
         <li className="menu__item"><a href="/">{t('reviews')}</a></li>
