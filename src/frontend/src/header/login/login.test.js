@@ -127,10 +127,10 @@ describe('server tests', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/login`, {
       body: '{"email":"stepan@gmail.com","password":"stepan123132123"}',
+      credentials: 'include',
       headers: {
         Authorization: null,
         'Content-Type': 'application/json',
-        'Refresh-Token': null,
       },
       method: 'POST',
     });

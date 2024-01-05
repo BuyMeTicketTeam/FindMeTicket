@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default function Checkbox({ onChange, children, policyError }) {
+
   return (
     <>
       <input

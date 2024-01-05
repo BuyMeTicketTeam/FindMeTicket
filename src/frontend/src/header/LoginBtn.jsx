@@ -14,7 +14,6 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
         case 200:
           onAuthorization(!status);
           localStorage.removeItem('JWTtoken');
-          localStorage.removeItem('refreshToken');
           break;
         default:
           break;
@@ -31,6 +30,7 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
   if (status) {
     return (
       <button
+        data-testid="logout-btn"
         className="login"
         type="button"
         onClick={() => { onLogout(true); }}

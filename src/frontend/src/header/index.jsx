@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* eslint-disable no-shadow */
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -12,24 +12,48 @@ export default function Header({
   authorization, onAuthorization, changePopup, popupLogin,
 }) {
   const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
-  const { t } = useTranslation('translation', { keyPrefix: 'header' });
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
     { value: 'UA', label: 'UA' },
     { value: 'ENG', label: 'ENG' },
   ];
 
-  function languageFunc(languageParam) {
-    if (languageParam) {
-      sessionStorage.setItem('lang', JSON.stringify(languageParam));
-      changeLanguage(languageParam);
-      return;
+  function getSystemLanguage() {
+    const systemLanguage = navigator.language.split('-')[0];
+    if (systemLanguage !== 'uk') {
+      return ({ value: 'ENG', label: 'ENG' });
     }
-    if (sessionStorage.getItem('lang')) {
-      changeLanguage(JSON.parse(sessionStorage.getItem('lang')));
-    }
+    return null;
   }
+
+  function setLanguageToStorage(language) {
+    localStorage.setItem('lang', JSON.stringify(language));
+  }
+
+  function getLanguageFromStorage() {
+    localStorage.getItem('lang');
+  }
+
+  function getLanguage(languageParam) {
+    if (languageParam) {
+      setLanguageToStorage(languageParam);
+      return languageParam;
+    }
+    const savedLanguage = getLanguageFromStorage();
+    if (savedLanguage) {
+      return savedLanguage;
+    }
+    return getSystemLanguage();
+  }
+
+  function displayLanguage(languageParam) {
+    const language = getLanguage(languageParam);
+    changeLanguage(language);
+    i18n.changeLanguage(language.value);
+  }
+
   useEffect(() => {
-    languageFunc();
+    displayLanguage();
   }, []);
   return (
     <header data-testid="header" className="header">
@@ -41,12 +65,13 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
       <Select
+        data-testid="language-select"
         options={languages}
         classNamePrefix="react-select"
         placeholder={null}
         value={language}
         isSearchable={false}
-        onChange={(lang) => languageFunc(lang)}
+        onChange={(lang) => displayLanguage(lang)}
       />
 
       <LoginBtn

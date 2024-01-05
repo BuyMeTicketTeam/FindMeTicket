@@ -1,0 +1,22 @@
+.banner-container {
+    margin-top: 15px;
+    background-color: var(--semi-bright);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 2px solid var(--dark);
+}
+
+.centered-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner-text {
+    font-size: 18px;
+    color: var(--dark);
+}
+
+button.banner__btn {
+    min-width: 0;
+}

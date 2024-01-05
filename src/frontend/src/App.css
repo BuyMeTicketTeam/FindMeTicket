@@ -146,6 +146,23 @@ input[type='number'] {
   transform: translateY(-3px);
 }
 
+.button:active {
+  transform: scale(0.9);
+  transition: 0.3s;
+}
+
+.button:disabled {
+  background: grey;
+  cursor: initial;
+  color: #fff;
+  border: 1px solid grey;
+}
+
+.button:disabled:hover {
+  box-shadow: none;
+  transform: none;
+}
+
 .error {
   min-width: 300px;
   background: var(--error);
@@ -224,18 +241,6 @@ input[type='number'] {
 
 .link-success {
   font-size: 18px;
-}
-
-.button:disabled {
-  background: grey;
-  cursor: initial;
-  color: #fff;
-  border: 1px solid grey;
-}
-
-.button:disabled:hover {
-  box-shadow: none;
-  transform: none;
 }
 
 .form-body {

@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+// import Cookies from 'universal-cookie';
 import Header from './header/index';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
@@ -12,6 +13,7 @@ import './locales/i18n';
 function App() {
   const [authorization, onAuthorization] = useState(false);
   const [popupLogin, changePopup] = useState(false);
+  // const cookies = new Cookies();
   function checkAuth(value) {
     const authValue = sessionStorage.getItem('auth');
     if (authValue === 'true' && value === undefined) {
