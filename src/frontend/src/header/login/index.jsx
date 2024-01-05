@@ -8,6 +8,7 @@ import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
+import googleIcon from './google-icon.png';
 import './login.css';
 
 export default function Popup({ changePopup, onAuthorization }) {
@@ -133,7 +134,7 @@ export default function Popup({ changePopup, onAuthorization }) {
           onShow={onShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()} />
+        <Checkbox onClick={() => handleRememberMeChange()}>Запам&apos;ятати мене</Checkbox>
         <div className="link">
           <Link
             data-testid=""
@@ -157,8 +158,8 @@ export default function Popup({ changePopup, onAuthorization }) {
           <span className="login-another__content">{t('or')}</span>
           <span className="login-another__line" />
         </div>
-        <a href="./" className="login__google">
-          <img src="../img/google-icon.png" alt="logo" />
+        <a href="http://localhost:8080/oauth2/authorize" className="login__google">
+          <img src={googleIcon} alt="logo" />
           {t('google')}
         </a>
         <div className="link link-register">

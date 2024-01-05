@@ -5,6 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 // import Cookies from 'universal-cookie';
 import Header from './header/index';
 import Routers from './routers';
+import CookieBanner from './cookieBanner/cookie';
 import './testServer';
 import './App.css';
 import './locales/i18n';
@@ -34,6 +35,7 @@ function App() {
         popupLogin={popupLogin}
       />
       <Routers changePopup={changePopup} />
+      <CookieBanner />
     </Router>
 
   );

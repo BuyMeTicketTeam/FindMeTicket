@@ -1,17 +1,16 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
-export default function Checkbox({ onClick }) {
-  const { t } = useTranslation('translation', { keyPrefix: 'login' });
+export default function Checkbox({ onChange, children, policyError }) {
+
   return (
     <>
       <input
         id="remember"
         type="checkbox"
-        className="checkbox__field"
-        onChange={onClick}
+        className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'}
+        onChange={onChange}
       />
-      <label htmlFor="remember" className="checkbox">{t('remember-me')}</label>
+      <label htmlFor="remember" className="checkbox">{children}</label>
     </>
   );
 }
