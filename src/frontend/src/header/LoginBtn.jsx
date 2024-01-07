@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import makeQuerry from '../helper/querry';
 
-export default function LoginBtn({ status, onAuthorization }) {
+export default function LoginBtn({ status, updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   const [logout, onLogout] = useState(false);
 
@@ -13,7 +13,7 @@ export default function LoginBtn({ status, onAuthorization }) {
     makeQuerry('logout').then((response) => {
       switch (response.status) {
         case 200:
-          onAuthorization(false);
+          updateAuthValue(false);
           localStorage.removeItem('JWTtoken');
           localStorage.removeItem('refreshToken');
           break;

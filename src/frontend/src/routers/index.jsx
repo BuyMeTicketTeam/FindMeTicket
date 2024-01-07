@@ -8,16 +8,16 @@ import Login from '../header/login/index';
 import ChangePassword from '../changePassword';
 import OAuth2RedirectHandler from '../oauth2/OAuth2RedirectHandler';
 
-export default function index({ changePopup, updateAuthValue }) {
+export default function index({ updateAuthValue }) {
   return (
     <Routes>
       <Route path="/*" element={<Index />}>
-        <Route path="login" element={<Login changePopup={changePopup} isMain />} />
+        <Route path="login" element={<Login updateAuthValue={updateAuthValue} />} />
       </Route>
       <Route path="/register/*" element={<Register />} />
-      <Route path="/confirm/*" element={<Confirm changePopup={changePopup} />} />
+      <Route path="/confirm/*" element={<Confirm />} />
       <Route path="/reset/*" element={<Reset />} />
-      <Route path="/change-password/*" element={<ChangePassword changePopup={changePopup} />} />
+      <Route path="/change-password/*" element={<ChangePassword />} />
       <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler updateAuthValue={updateAuthValue} />} />
     </Routes>
   );

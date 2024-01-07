@@ -9,7 +9,7 @@ import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
 import './login.css';
 
-export default function Popup({ onAuthorization }) {
+export default function Popup({ updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
   const navigate = useNavigate();
   const [login, onLoginChange] = useState('');
@@ -25,7 +25,7 @@ export default function Popup({ onAuthorization }) {
     switch (response.status) {
       case 200:
         navigate('/');
-        onAuthorization(true);
+        updateAuthValue(true);
         break;
       case 403:
         onError(t('error-lp'));
