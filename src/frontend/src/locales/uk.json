@@ -42,8 +42,8 @@
                   "processing" : "Обробка...",
                   "register": "Зареєструватися",
                   "or": "Або",
-                  "google": "Google"
-
+                  "google": "Google",
+                  "facebook": "Facebook"
             },
             "register":{
                   "error-email": "Користувач з ціїю електронною адресою вже зареєстрований",

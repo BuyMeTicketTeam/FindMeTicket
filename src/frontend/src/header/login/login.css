@@ -100,6 +100,10 @@
   text-decoration: none;
 }
 
+.login__google:not(:last-child) {
+  margin-bottom: 15px;
+}
+
 .login__google img {
   max-width: 25px;
   margin-right: 8px;

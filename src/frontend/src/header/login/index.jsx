@@ -7,6 +7,7 @@ import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
+import facebookIcon from './facebook.png';
 import './login.css';
 
 export default function Popup({ updateAuthValue }) {
@@ -142,6 +143,10 @@ export default function Popup({ updateAuthValue }) {
         <a href="http://localhost:8080/oauth2/authorize/google?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
           <img src="../img/google-icon.png" alt="logo" />
           {t('google')}
+        </a>
+        <a href="http://localhost:8080/oauth2/authorize/facebook?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
+          <img src={facebookIcon} alt="logo" />
+          {t('facebook')}
         </a>
         <div className="link link-register">
           <Link

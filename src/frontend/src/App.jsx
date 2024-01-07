@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Header from './header/index';
 import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
-import './testServer';
+// import './testServer';
 import './App.css';
 import './locales/i18n';
 
