@@ -7,7 +7,7 @@ import Error from './Error';
 import Transport from './Transport';
 import Tourist from './Tourist';
 import Ad from '../Ad/index';
-import './main.css';
+import './main.scss';
 
 export default function Index() {
   const [ticketsData, onTicketsData] = useState([]);

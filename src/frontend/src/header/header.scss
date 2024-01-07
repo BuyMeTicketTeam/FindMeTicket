@@ -69,11 +69,11 @@
   min-width: 60px;
   border: none;
 
-  & .react-select__control--is-focused {
+  &.react-select__control--is-focused {
     box-shadow: none;
   }
 
-  & .react-select__input-container {
+  .react-select__single-value {
     color: $font-color;
   }
 
@@ -84,12 +84,12 @@
   .react-select__indicator {
     padding: 0;
   }
+}
 
-  .react-select__menu {
-    background: $main;
-  }
-
-  & .react-select__option {
+.header .react-select__menu {
+  background: $main;
+  
+  .react-select__option {
     color: $font-color;
   }
 
