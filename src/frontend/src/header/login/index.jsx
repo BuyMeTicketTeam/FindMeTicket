@@ -28,7 +28,7 @@ export default function Popup({ updateAuthValue }) {
         navigate('/');
         updateAuthValue(true);
         break;
-      case 403:
+      case 401:
         onError(t('error-lp'));
         break;
       default:
