@@ -2,6 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
 import Filters from './Filters';
 import Ticket from './Ticket';
@@ -69,6 +70,7 @@ export default function Index() {
           {ticketsData.map((item, elementIndex) => <Ticket key={ticketsData[elementIndex].id} data={ticketsData[elementIndex]} />)}
         </div>
       </div>
+      <Outlet />
     </div>
   );
 }

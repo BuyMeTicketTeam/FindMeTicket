@@ -27,6 +27,7 @@ export default function Header({
       changeLanguage(JSON.parse(sessionStorage.getItem('lang')));
     }
   }
+
   useEffect(() => {
     languageFunc();
   }, []);
@@ -54,7 +55,7 @@ export default function Header({
         changePopup={changePopup}
       />
 
-      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
+      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} isMain={false} />}
     </header>
   );
 }

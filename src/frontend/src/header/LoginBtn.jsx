@@ -12,7 +12,7 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
     makeQuerry('logout').then((response) => {
       switch (response.status) {
         case 200:
-          onAuthorization(!status);
+          onAuthorization(false);
           localStorage.removeItem('JWTtoken');
           localStorage.removeItem('refreshToken');
           break;

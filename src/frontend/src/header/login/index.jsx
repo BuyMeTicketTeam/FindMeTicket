@@ -9,7 +9,7 @@ import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
 import './login.css';
 
-export default function Popup({ changePopup, onAuthorization }) {
+export default function Popup({ changePopup, onAuthorization, isMain }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
   const [login, onLoginChange] = useState('');
   const [loginError, onLoginError] = useState(false);
@@ -91,13 +91,7 @@ export default function Popup({ changePopup, onAuthorization }) {
   return (
     <div data-testid="login" className="background">
       <div className="popup__body">
-        <button
-          data-testid="close"
-          type="button"
-          className="close"
-          onClick={() => changePopup(false)}
-          aria-label="Close"
-        />
+        <Link to={isMain ? '/' : {}} className="close" onClick={() => changePopup(false)} aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           error={loginError}
@@ -146,7 +140,7 @@ export default function Popup({ changePopup, onAuthorization }) {
           <span className="login-another__content">{t('or')}</span>
           <span className="login-another__line" />
         </div>
-        <a href="./" className="login__google">
+        <a href="http://localhost:8080/oauth2/authorize/google?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
           <img src="../img/google-icon.png" alt="logo" />
           {t('google')}
         </a>
