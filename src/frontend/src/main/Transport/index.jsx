@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InProgress from '../../InProgress/index';
 import './style.css';
+import {
+  busIcon, trainIcon, planeIcon, boatIcon, everythingIcon,
+} from './transport-img/img';
 
 function TransportButton({
   label, isActive, onClick, img,
@@ -37,31 +40,31 @@ function Transport() {
         label={t('everything')}
         isActive={activeButton === (t('everything'))}
         onClick={() => setIsOpen(true)}
-        img="../img/everyting.svg"
+        img={everythingIcon}
       />
       <TransportButton
         label={t('bus')}
         isActive={activeButton === 'bus'}
         onClick={() => handleButtonClick('bus')}
-        img="../img/bus.svg"
+        img={busIcon}
       />
       <TransportButton
         label={t('plane')}
         isActive={activeButton === 'plane'}
         onClick={() => setIsOpen(true)}
-        img="../img/plane.svg"
+        img={planeIcon}
       />
       <TransportButton
         label={t('train')}
         isActive={activeButton === 'train'}
         onClick={() => setIsOpen(true)}
-        img="../img/train.svg"
+        img={trainIcon}
       />
       <TransportButton
         label={t('ferry')}
         isActive={activeButton === 'ferry'}
         onClick={() => setIsOpen(true)}
-        img="../img/boat.svg"
+        img={boatIcon}
       />
       {isOpen && <InProgress title={t('message-title')} text={t('message-text')} setIsOpen={setIsOpen} />}
     </div>
