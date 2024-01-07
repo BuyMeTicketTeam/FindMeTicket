@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import makeQuerry from '../helper/querry';
 
-export default function LoginBtn({ status, changePopup, onAuthorization }) {
+export default function LoginBtn({ status, onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   const [logout, onLogout] = useState(false);
 
@@ -40,13 +41,11 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
     );
   }
   return (
-    <button
-      data-testid="login-btn"
-      className="login"
-      onClick={() => { changePopup(true); }}
-      type="button"
+    <Link
+      className="login-link"
+      to="/login"
     >
       {t('login')}
-    </button>
+    </Link>
   );
 }

@@ -8,7 +8,7 @@ import Login from './login/index';
 import './header.css';
 
 export default function Header({
-  authorization, onAuthorization, changePopup, popupLogin,
+  authorization, onAuthorization, popupLogin,
 }) {
   const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
@@ -52,10 +52,9 @@ export default function Header({
       <LoginBtn
         status={authorization}
         onAuthorization={onAuthorization}
-        changePopup={changePopup}
       />
 
-      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} isMain={false} />}
+      {popupLogin && <Login onAuthorization={onAuthorization} />}
     </header>
   );
 }

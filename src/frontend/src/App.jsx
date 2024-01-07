@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Header from './header/index';
 import useAuthCheck from './hook/useAuthCheck';
@@ -10,7 +10,6 @@ import './App.css';
 import './locales/i18n';
 
 function App() {
-  const [popupLogin, changePopup] = useState(false);
   const { auth, updateAuthValue } = useAuthCheck();
 
   return (
@@ -18,10 +17,8 @@ function App() {
       <Header
         authorization={auth}
         onAuthorization={(value) => updateAuthValue(value)}
-        changePopup={changePopup}
-        popupLogin={popupLogin}
       />
-      <Routers changePopup={changePopup} updateAuthValue={updateAuthValue} />
+      <Routers updateAuthValue={updateAuthValue} />
     </Router>
 
   );

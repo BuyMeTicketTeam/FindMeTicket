@@ -115,3 +115,7 @@
 .header .react-select__option:hover {
   background: var(--dark);
 }
+
+.login-link {
+  text-decoration: none;
+}

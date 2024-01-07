@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
@@ -9,8 +9,9 @@ import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
 import './login.css';
 
-export default function Popup({ changePopup, onAuthorization, isMain }) {
+export default function Popup({ onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
+  const navigate = useNavigate();
   const [login, onLoginChange] = useState('');
   const [loginError, onLoginError] = useState(false);
   const [password, onPasswordChange] = useState('');
@@ -23,7 +24,7 @@ export default function Popup({ changePopup, onAuthorization, isMain }) {
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        changePopup(false);
+        navigate('/');
         onAuthorization(true);
         break;
       case 403:
@@ -91,7 +92,7 @@ export default function Popup({ changePopup, onAuthorization, isMain }) {
   return (
     <div data-testid="login" className="background">
       <div className="popup__body">
-        <Link to={isMain ? '/' : {}} className="close" onClick={() => changePopup(false)} aria-label="Close" />
+        <Link to="/" className="close" aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           error={loginError}
@@ -119,9 +120,7 @@ export default function Popup({ changePopup, onAuthorization, isMain }) {
         <Checkbox onClick={() => handleRememberMeChange()} />
         <div className="link">
           <Link
-            data-testid=""
             to="/reset"
-            onClick={() => changePopup(false)}
           >
             {t('forgot-password')}
           </Link>
@@ -148,7 +147,6 @@ export default function Popup({ changePopup, onAuthorization, isMain }) {
           <Link
             data-testid="to-register-btn"
             to="/register"
-            onClick={() => changePopup(false)}
           >
             {t('register')}
           </Link>
