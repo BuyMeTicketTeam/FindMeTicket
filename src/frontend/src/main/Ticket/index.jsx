@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import './ticket.css';
+import scheduleIcon from './schedule.svg';
 
 export default function Ticket({ data }) {
   const placeFrom = data.placeFrom.length > 25 ? `${data.placeFrom.slice(0, 25)}...` : data.placeFrom;
@@ -16,7 +17,7 @@ export default function Ticket({ data }) {
           <div className="information__row">
             <p className="ticket__date">{`${data.departureTime} | ${data.departureDate}`}</p>
             <p className="ticket__travel-time">
-              <img src="../img/schedule.svg" alt="clock" />
+              <img src={scheduleIcon} alt="clock" />
               {data.travelTime}
             </p>
             <p className="ticket__date ticket-last-element">{`${data.arrivalTime} | ${data.arrivalDate}`}</p>

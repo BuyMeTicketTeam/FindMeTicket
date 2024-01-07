@@ -7,6 +7,7 @@ import Button from '../../utils/Button';
 import Calendar from '../Calendar';
 import Passangers from '../Passangers';
 import makeQuerry from '../../helper/querry';
+import arrowsImg from './arrows.svg';
 import './searchField.css';
 
 export default function SearchField({ onLoading, onTicketsData, setRequestBody }) {
@@ -143,7 +144,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
         type="button"
         onClick={changeCities}
       >
-        <img src="../img/arrows.svg" alt="arrows" />
+        <img src={arrowsImg} alt="arrows" />
       </button>
       <div className={`field ${errorCityTo ? 'error-select' : ''}`}>
         <div className="field__name">{t('where-t')}</div>

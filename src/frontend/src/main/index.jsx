@@ -11,7 +11,7 @@ import './main.css';
 
 export default function Index() {
   const [ticketsData, onTicketsData] = useState([]);
-  const [loading, onLoading] = useState(true);
+  const [loading, onLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
 
   function showTickets() {
