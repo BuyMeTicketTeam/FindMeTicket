@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import cookieIcon from './cookie.png';
-import './cookie.css';
+import './cookie.scss';
 
 function CookieBanner() {
   const [acceptedCookies, setAcceptedCookies] = useState(

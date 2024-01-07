@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import LoginBtn from './LoginBtn';
 import Login from './login/index';
-import './header.css';
+import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({
@@ -65,6 +65,7 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
       <Select
+        defaultMenuIsOpen
         data-testid="language-select"
         options={languages}
         classNamePrefix="react-select"
