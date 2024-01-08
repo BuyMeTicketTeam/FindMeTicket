@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
@@ -67,6 +67,26 @@ export default function Popup({ updateAuthValue }) {
         statusChecks(response);
       });
   }
+
+  async function auth2Request(provider) {
+    const response = await makeQuerry(`oauth2/authorize/${provider}?redirect_uri=http://build:81/oauth2/redirect`, undefined, undefined, 'GET');
+    switch (response.status) {
+      case 200:
+        navigate('/');
+        updateAuthValue(true);
+        break;
+      case 401:
+        onError('Помилка. Спробуйте ще раз');
+        break;
+      default:
+        console.log(response.error);
+        onError(t('error-server2'));
+        break;
+    }
+  }
+
+  const hanadleGoogleAuth = useCallback(() => auth2Request('google'), []);
+  // const hanadleFacebookAuth = useCallback(auth2Request('facebook'), []);
 
   useEffect(() => {
     if (send) {
@@ -140,10 +160,21 @@ export default function Popup({ updateAuthValue }) {
           <span className="login-another__content">{t('or')}</span>
           <span className="login-another__line" />
         </div>
-        <a href="http://localhost:8080/oauth2/authorize/google?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
+        {/* <a href="http://localhost:8080/oauth2/authorize/google?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
           <img src="../img/google-icon.png" alt="logo" />
           {t('google')}
-        </a>
+        </a> */}
+        {/* <Button
+          dataTestId="send-request"
+          className="btn-full"
+          // disabled={send}
+          name={t('google')}
+          onButton={hanadleGoogleAuth}
+        /> */}
+        <button className="login__google" onClick={hanadleGoogleAuth} type="button">
+          <img src="../img/google-icon.png" alt="logo" />
+          {t('google')}
+        </button>
         <a href="http://localhost:8080/oauth2/authorize/facebook?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
           <img src={facebookIcon} alt="logo" />
           {t('facebook')}

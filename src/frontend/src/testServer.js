@@ -17,6 +17,7 @@ createServer({
     // Responding to a POST request
     this.post('/login', () => new Response(200, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }));
     this.post('/register', () => new Response(200));
+    this.get('/oauth2/authorize/google', () => new Response(401));
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));

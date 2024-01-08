@@ -92,12 +92,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: inherit;
+  font-weight: 600;
   width: 100%;
   background: #fff;
   color: var(--main);
   border-radius: 10px;
   padding: 10px;
   text-decoration: none;
+  border: none;
+}
+
+.login__google:hover {
+  cursor: pointer;
 }
 
 .login__google:not(:last-child) {
