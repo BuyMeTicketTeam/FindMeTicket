@@ -81,14 +81,13 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       return;
     }
     const body = {
-      departureCity: cityFrom.valueOf,
-      arrivalCity: cityTo.valueOf,
+      departureCity: cityFrom.value,
+      arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      indexFrom: 0,
     };
     setRequestBody(body);
     onLoading(true);
-    const response = await makeQuerry('getfirsttickets', JSON.stringify(body));
+    const response = await makeQuerry('searchtickets', JSON.stringify(body));
     onLoading(false);
     const responseBody = response.status === 200 ? response.body : null;
     onTicketsData(responseBody);
