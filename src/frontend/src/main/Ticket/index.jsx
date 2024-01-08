@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './ticket.css';
+import './ticket.scss';
 import scheduleIcon from './schedule.svg';
 
 export default function Ticket({ data }) {

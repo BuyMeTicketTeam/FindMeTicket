@@ -5,6 +5,7 @@ import Filters from '../Filters';
 import Ticket from '../Ticket';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
+import loaderIcon from './loading.svg';
 
 export default function Body({
   ticketsData, onTicketsData, setRequestBody, requestBody,
@@ -89,7 +90,7 @@ export default function Body({
       <Filters onSort={onSort} prevSort={sort} />
       <div className="tickets">
         {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
-        {ticketsData.length !== 0 ? <Button className="tickets__more" name={loading ? <img className="tickets__loading-img" src="../img/loading.svg" alt="Loading..." /> : checkResponse()} onButton={handleSend} /> : null}
+        {ticketsData.length !== 0 ? <Button className="tickets__more" name={loading ? <img className="tickets__loading-img" src={loaderIcon} alt="Loading..." /> : checkResponse()} onButton={handleSend} /> : null}
       </div>
     </>
   );

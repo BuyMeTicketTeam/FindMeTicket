@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './error.css';
+import './error.scss';
 import errorIcon from './error.svg';
 
 export default function Error() {

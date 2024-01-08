@@ -8,7 +8,7 @@ import Calendar from '../Calendar';
 import Passangers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
-import './searchField.css';
+import './searchField.scss';
 
 export default function SearchField({ onLoading, onTicketsData, setRequestBody }) {
   const { t } = useTranslation('translation', { keyPrefix: 'search' });

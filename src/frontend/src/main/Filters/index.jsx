@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import FiltersBtn from './FiltersBtn';
-import './filters.css';
+import './filters.scss';
 
 export default function Filters({ onSort, prevSort }) {
   const { t } = useTranslation('translation', { keyPrefix: 'filters' });

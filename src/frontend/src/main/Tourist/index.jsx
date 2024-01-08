@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '../../utils/Button';
-import './tourist.css';
+import './tourist.scss';
 
 function Banner({ city }) {
   const { t } = useTranslation('translation', { keyPrefix: 'banner' });

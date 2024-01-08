@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './passengers.css';
+import './passangers.scss';
 
 export default function Passengers({
   status, adultsValue, onAdultsValue, childrenValue, onChildrenValue,
