@@ -1,5 +1,5 @@
 import React from 'react';
-import './filters.css';
+import './filters.scss';
 
 export default function FiltersBtn({
   isDown, isUp, onClick, sortType, children, reverse,

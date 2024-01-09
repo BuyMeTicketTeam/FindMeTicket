@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import LoginBtn from './LoginBtn';
 import Login from './login/index';
-import './header.css';
+import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({

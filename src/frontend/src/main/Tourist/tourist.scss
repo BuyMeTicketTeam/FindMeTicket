@@ -1,9 +1,10 @@
+@import '../../styles/variables.scss';
 .banner-container {
     margin-top: 15px;
-    background-color: var(--semi-bright);
+    background-color: $semi-bright;
     padding: 15px 20px;
     border-radius: 10px;
-    border: 2px solid var(--dark);
+    border: 2px solid $dark;
 }
 
 .centered-content {
@@ -14,9 +15,9 @@
 
 .banner-text {
     font-size: 18px;
-    color: var(--dark);
+    color: $dark;
 }
 
-button.banner__btn {
+.banner__btn {
     min-width: 0;
 }

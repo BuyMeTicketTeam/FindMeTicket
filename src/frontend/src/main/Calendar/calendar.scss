@@ -1,0 +1,53 @@
+//calendar
+@import '../../styles/variables.scss';
+
+.calendar {
+
+    .react-datepicker__header,
+    .react-datepicker__month-container {
+        background: $main;
+    }
+
+    .react-datepicker__month-container {
+        border-radius: 5px;
+    }
+
+    .react-datepicker__day-name,
+    .react-datepicker__day,
+    .react-datepicker__time-name {
+        color: $font-color;
+    }
+
+    .react-datepicker__current-month,
+    .react-datepicker-time__header,
+    .react-datepicker-year-header {
+        color: $font-color;
+    }
+
+    .react-datepicker__day--outside-month,
+    .react-datepicker__day--disabled {
+        color: $grey;
+    }
+
+    .react-datepicker__day:hover,
+    .react-datepicker__month-text:hover,
+    .react-datepicker__quarter-text:hover,
+    .react-datepicker__year-text:hover {
+        background: $bright;
+    }
+
+    .react-datepicker__day--keyboard-selected,
+    .react-datepicker__month-text--keyboard-selected,
+    .react-datepicker__quarter-text--keyboard-selected,
+    .react-datepicker__year-text--keyboard-selected {
+        background: $dark;
+    }
+
+    .react-datepicker__day--today {
+        color: $bright;
+    }
+
+    .react-datepicker__day--today:hover {
+        color: $font-color;
+    }
+}

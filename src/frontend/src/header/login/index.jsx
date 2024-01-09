@@ -9,7 +9,7 @@ import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
 import googleIcon from './google-icon.png';
-import './login.css';
+import './login.scss';
 
 export default function Popup({ changePopup, onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
@@ -134,7 +134,7 @@ export default function Popup({ changePopup, onAuthorization }) {
           onShow={onShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()}>Запам&apos;ятати мене</Checkbox>
+        <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
             data-testid=""

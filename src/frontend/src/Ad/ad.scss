@@ -1,16 +1,18 @@
+@import '../styles/variables.scss';
+
 .ad-container {
     display: flex;
     align-items: center;
-    background: var(--semi-bright);
-    border: 2px solid var(--dark);
+    background: $semi-bright;
+    border: 2px solid $dark;
     border-radius: 10px;
     padding: 15px 20px;
     min-height: 100px;
     margin: 25px 0;
-}
 
-.ad-container.ad_big {
-    min-height: 200px;
+    .ad_big {
+        min-height: 200px;
+    }
 }
 
 .ad-text {

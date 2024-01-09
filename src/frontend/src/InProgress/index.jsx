@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 import Button from '../utils/Button';
-import './inProgress.css';
+import './inProgress.scss';
 
 export default function Index({
   title, text, setIsOpen,

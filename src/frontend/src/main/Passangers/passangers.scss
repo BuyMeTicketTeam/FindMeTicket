@@ -1,14 +1,16 @@
-/*passengers*/
+@import '../../styles/variables.scss';
 .search-field__tip-long .tip {
     width: max-content;
 }
 
-.passengers__list.close {
-    display: none;
-}
+.passengers__list {
+    &.close {
+        display: none;
+    }
 
-.passengers__list.open {
-    display: block;
+    &.open {
+        display: block;
+    }
 }
 
 .passengers__item {
@@ -16,16 +18,16 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 15px;
-}
 
-.passengers__item:not(:last-child) {
-    border-bottom: 1px solid var(--dark);
+    &:not(:last-child) {
+        border-bottom: 1px solid $dark;
+    }
 }
 
 .passengers__category {
     font-size: 18px;
     margin-right: 10px;
-    color: var(--font-color);
+    color: $font-color;
 }
 
 .passengers__form {
@@ -33,10 +35,10 @@
 }
 
 .passengers__btn {
-    background: var(--bright);
+    background: $bright;
     border-radius: 50%;
     border: none;
-    color: var(--font-color);
+    color: $font-color;
     width: 25px;
     height: 25px;
 }
@@ -48,9 +50,9 @@
     border: none;
     margin: 0 1px;
     text-align: center;
-    color: var(--font-color);
-}
+    color: $font-color;
 
-.passengers__input:focus-visible {
-    outline: none;
+    &:focus-visible {
+        outline: none;
+    }
 }

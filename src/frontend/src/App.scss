@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
-@import url(./styles/variables.css);
+@import './styles/variables.scss';
 
 * {
   margin: 0;
@@ -13,7 +13,7 @@ a {
 
 body {
   font-family: 'Roboto';
-  color: var(--font-color);
+  color: $font-color;
   background: url('./Frame 4.1.jpg');
   min-width: 800px;
 }
@@ -55,27 +55,27 @@ input[type='number'] {
   position: relative;
   width: 100%;
   border-radius: 10px;
-  border: 2px solid var(--bright);
+  border: 2px solid $bright;
   padding: 8px;
   font-size: 18px;
-  background: var(--dark);
+  background: $dark;
   color: inherit;
   z-index: 1;
-}
 
-.input:focus {
-  outline: none;
-  box-shadow: 0px 0px 8px 1px var(--bright);
-}
+  &:focus {
+    outline: none;
+    box-shadow: 0px 0px 8px 1px $bright;
+  }
 
-.input::placeholder {
-  color: var(--grey);
-}
+  &::placeholder {
+    color: $grey;
+  }
 
-.input.input-error {
-  border: 2px solid var(--error);
-  outline-color: var(--error);
-  box-shadow: 0px 0px 9px 2px var(--error);
+  &.input-error {
+    border: 2px solid $error;
+    outline-color: $error;
+    box-shadow: 0px 0px 9px 2px $error;
+  }
 }
 
 .input-wrapper {
@@ -91,18 +91,18 @@ input[type='number'] {
   background: transparent;
   border: none;
   padding: 3px 3px 0 3px;
-}
 
-.show-password.hide::before {
-  position: absolute;
-  top: 13px;
-  left: 5px;
-  display: inline-block;
-  content: '';
-  width: 21px;
-  height: 2px;
-  background: var(--font-color);
-  transform: rotate(45deg);
+  &.hide::before {
+    position: absolute;
+    top: 13px;
+    left: 5px;
+    display: inline-block;
+    content: '';
+    width: 21px;
+    height: 2px;
+    background: $font-color;
+    transform: rotate(45deg);
+  }
 }
 
 .tip {
@@ -111,7 +111,7 @@ input[type='number'] {
   opacity: 0;
   padding-top: 5px;
   max-width: 350px;
-  color: var(--bright);
+  color: $bright;
   font-weight: 500;
   transition: 0.8s;
   z-index: 0;
@@ -124,48 +124,48 @@ input[type='number'] {
 }
 
 .button {
-  background: var(--bright);
-  color: var(--font-color);
+  background: $bright;
+  color: $font-color;
   font-weight: 700;
   font-size: 18px;
   min-width: 226px;
   border-radius: 10px;
-  border: 2px solid var(--bright);
+  border: 2px solid $bright;
   padding: 8px 20px;
   transition: 0.3s;
-}
 
-.btn-full {
-  width: 100%;
-}
+  &.btn-full {
+    width: 100%;
+  }
 
-.button:hover {
-  transition: 0.3s;
-  cursor: pointer;
-  box-shadow: 0px 0px 8px 1px var(--bright);
-  transform: translateY(-3px);
-}
+  &:hover {
+    transition: 0.3s;
+    cursor: pointer;
+    box-shadow: 0px 0px 8px 1px $bright;
+    transform: translateY(-3px);
+  }
 
-.button:active {
-  transform: scale(0.9);
-  transition: 0.3s;
-}
+  &:active {
+    transform: scale(0.9);
+    transition: 0.3s;
+  }
 
-.button:disabled {
-  background: grey;
-  cursor: initial;
-  color: #fff;
-  border: 1px solid grey;
-}
+  &:disabled {
+    background: $grey;
+    cursor: initial;
+    color: $font-color;
+    border: 1px solid $grey;
+  }
 
-.button:disabled:hover {
-  box-shadow: none;
-  transform: none;
+  &:disabled:hover {
+    box-shadow: none;
+    transform: none;
+  }
 }
 
 .error {
   min-width: 300px;
-  background: var(--error);
+  background: $error;
   padding: 10px;
   color: inherit;
   border-radius: 5px;
@@ -185,51 +185,51 @@ input[type='number'] {
   align-items: center;
   padding-left: 30px;
   margin-bottom: 10px;
-}
 
-.checkbox a {
-  margin-left: 5px;
-}
+  a {
+    margin-left: 5px;
+  }
 
-.checkbox::after {
-  position: absolute;
-  left: 0;
-  content: '';
-  display: block;
-  width: 15px;
-  height: 15px;
-  border: 2px solid var(--bright);
+  &::after {
+    position: absolute;
+    left: 0;
+    content: '';
+    display: block;
+    width: 15px;
+    height: 15px;
+    border: 2px solid $bright;
+  }
 }
 
 .checkbox__field {
   position: absolute;
   visibility: hidden;
-}
 
-.checkbox__field:checked~.checkbox::before {
-  left: 0px;
-  top: -3px;
-  position: absolute;
-  content: '';
-  display: block;
-  width: 15px;
-  height: 20px;
-  background: url('./utils/img/tick.svg');
-}
+  &:checked~.checkbox::before {
+    left: 0px;
+    top: -3px;
+    position: absolute;
+    content: '';
+    display: block;
+    width: 15px;
+    height: 20px;
+    background: url('./utils/img/tick.svg');
+  }
 
-.checkbox__field.checkbox-error~.checkbox::after {
-  border: 1px solid rgb(180, 8, 8);
-}
+  &.checkbox-error~.checkbox::after {
+    border: 1px solid $error-bright;
+  }
 
-.checkbox__field.checkbox-error~.checkbox {
-  color: rgb(180, 8, 8);
+  &.checkbox-error~.checkbox {
+    color: $error-bright;
+  }
 }
 
 .confirm__success {
   min-width: 300px;
-  background: var(--semi-bright);
+  background: $semi-bright;
   padding: 10px;
-  color: #fff;
+  color: $font-color;
   border-radius: 5px;
   margin: 8px 0;
 }
@@ -244,7 +244,7 @@ input[type='number'] {
 }
 
 .form-body {
-  background: var(--semi-dark);
+  background: $semi-dark;
   border-radius: 20px;
   padding: 35px;
   min-width: 450px;

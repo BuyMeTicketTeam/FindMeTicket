@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Input from '../utils/Input';
 import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
-import './reset.css';
+import './reset.scss';
 import { emailCheck } from '../helper/regExCheck';
 
 export default function Index() {

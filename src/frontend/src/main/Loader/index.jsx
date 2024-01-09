@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import './loader.css';
+import './loader.scss';
 
 export default function Loader() {
   const [animation, setAnimation] = useState('first');

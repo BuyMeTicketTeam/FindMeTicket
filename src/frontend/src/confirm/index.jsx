@@ -6,7 +6,7 @@ import Input from '../utils/Input';
 import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
 import timeOut from '../helper/timer';
-import './confirm.css';
+import './confirm.scss';
 
 export default function Confirm({ changePopup }) {
   const { t } = useTranslation('translation', { keyPrefix: 'confirm' });

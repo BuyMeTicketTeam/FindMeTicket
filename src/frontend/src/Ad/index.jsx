@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './ad.css';
+import './ad.scss';
 
 export default function Index({ isBig }) {
   const { t } = useTranslation('translation', { keyPrefix: 'ad' });

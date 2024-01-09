@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .transport-btn {
     display: inline-flex;
     align-items: center;
@@ -7,22 +9,22 @@
     cursor: pointer;
     border: none;
     border-radius: 10px;
-    background-color: var(--semi-dark);
-    color: var(--font-color);
+    background-color: $semi-dark;
+    color: $font-color;
     transition: background-color 0.3s, color 0.3s;
     margin-right: 10px;
-}
 
-.transport-btn:last-child {
-    margin-right: 0;
-}
+    &:last-child {
+        margin-right: 0;
+    }
 
-.transport-btn:hover {
-    background-color: var(--bright);
-}
+    &:hover {
+        background-color: $bright;
+    }
 
-.transport-btn.active {
-    background-color: var(--bright);
+    &.active {
+        background-color: $bright;
+    }
 }
 
 .transportion {
