@@ -8,6 +8,7 @@ import Calendar from '../Calendar';
 import Passangers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
+// import eventSourceQuery from '../../helper/eventSourceQuery';
 import './searchField.css';
 
 export default function SearchField({ onLoading, onTicketsData, setRequestBody }) {
@@ -75,6 +76,30 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     }
     return true;
   }
+
+  // async function sendRequest() {
+  //   if (!validation()) {
+  //     return;
+  //   }
+  //   const body = {
+  //     departureCity: cityFrom.value,
+  //     arrivalCity: cityTo.value,
+  //     departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+  //   };
+  //   setRequestBody(body);
+  //   onLoading(true);
+  //   const { eventSource } = await eventSourceQuery('searchtickets', JSON.stringify(body));
+  //   onLoading(false);
+  //   eventSource.onopen = () => console.log('open');
+  //   eventSource.onmessage = (event) => {
+  //     console.log('event:', event);
+  //     console.log('event.data:', event.data);
+  //     onTicketsData((prevTicketsData) => [...prevTicketsData, event.data]);
+  //   };
+  //   eventSource.onerror = (event) => {
+  //     console.log('error:', event);
+  //   };
+  // }
 
   async function sendRequest() {
     if (!validation()) {

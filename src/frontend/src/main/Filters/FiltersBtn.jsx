@@ -1,10 +1,11 @@
 import React from 'react';
 import './filters.css';
+import loaderIcon from './loader.svg';
 
 export default function FiltersBtn({
-  isDown, isUp, onClick, sortType, children, setSort,
+  isDown, isUp, onClick, sortType, children, loading,
 }) {
-  const btnActive = isDown || isUp ? 'active' : '';
+  const btnActive = isDown ? 'active' : '';
   const btnUp = isUp ? 'up' : '';
 
   // function prevSort(prev) {
@@ -14,18 +15,14 @@ export default function FiltersBtn({
   //   return sortType;
   // }
 
-  function handleClick() {
-    onClick(sortType);
-    setSort(sortType);
-  }
-
   return (
     <button
+      disabled={loading}
       className={`main-filters__btn ${btnActive} ${btnUp}`}
       type="button"
-      onClick={() => handleClick()}
+      onClick={() => onClick(sortType)}
     >
-      {children}
+      {loading ? <img className="main-filters__img" src={loaderIcon} alt="loaderIcon" /> : children}
     </button>
   );
 }

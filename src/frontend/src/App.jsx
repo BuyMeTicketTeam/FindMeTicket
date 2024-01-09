@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Header from './header/index';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
-// import './testServer';
+import './testServer';
 import './App.css';
 import './locales/i18n';
 

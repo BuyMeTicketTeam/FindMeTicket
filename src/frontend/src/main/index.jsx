@@ -2,19 +2,20 @@
 import React, { useState } from 'react';
 import SearchField from './SearchField';
 import Loader from './Loader';
-import Body from './Body';
 import Error from './Error';
 import Transport from './Transport';
 import Tourist from './Tourist';
+import Ticket from './Ticket';
+import Filters from './Filters';
 import Ad from '../Ad/index';
 import './main.css';
 
 export default function Index() {
-  const [ticketsData, onTicketsData] = useState([]);
-  const [loading, onLoading] = useState(false);
+  const [ticketsData, setTicketsData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
 
-  function showTickets() {
+  function ticketsBody() {
     if (loading) {
       return <Loader />;
     }
@@ -26,16 +27,13 @@ export default function Index() {
         <>
           <Tourist
             ticketsData={ticketsData}
-            onTicketsData={onTicketsData}
+            setTicketsData={setTicketsData}
             city={requestBody.arrivalCity}
           />
-          <Body
-            ticketsData={ticketsData}
-            onTicketsData={onTicketsData}
-            onLoading={onLoading}
-            setRequestBody={setRequestBody}
-            requestBody={requestBody}
-          />
+          <Filters setTicketsData={setTicketsData} requestBody={requestBody} />
+          <div className="tickets">
+            {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
+          </div>
         </>
       );
     }
@@ -49,12 +47,12 @@ export default function Index() {
           <Ad />
           <Transport />
           <SearchField
-            onLoading={onLoading}
-            onTicketsData={onTicketsData}
+            onLoading={setLoading}
+            onTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
           />
         </div>
-        {showTickets()}
+        {ticketsBody()}
       </div>
     </div>
   );
