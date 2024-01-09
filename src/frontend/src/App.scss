@@ -92,7 +92,7 @@ input[type='number'] {
   border: none;
   padding: 3px 3px 0 3px;
 
-  .hide::before {
+  &.hide::before {
     position: absolute;
     top: 13px;
     left: 5px;

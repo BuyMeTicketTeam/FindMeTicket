@@ -134,7 +134,7 @@ export default function Popup({ changePopup, onAuthorization }) {
           onShow={onShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()}>Запам&apos;ятати мене</Checkbox>
+        <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
             data-testid=""
