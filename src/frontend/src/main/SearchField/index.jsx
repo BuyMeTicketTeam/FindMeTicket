@@ -100,8 +100,9 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     onCityFrom(cityToTemp);
   }
 
-  function transformData(item) {
-    return { value: item.cityUkr, label: `${item.cityUkr}, ${item.country}` };
+  function transformData(body) {
+    const cities = Object.entries(body.cities);
+    return cities.map((item) => ({ value: item[0], label: `${item[0]}, ${item[1]}` }));
   }
 
   let timerId;
@@ -110,8 +111,8 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       clearInterval(timerId);
       const result = await new Promise((resolve) => {
         timerId = setTimeout(async () => {
-          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
-          const responseBody = response.status === 200 ? response.body.map(transformData) : [];
+          const response = await makeQuerry('typeAhead', JSON.stringify(inputValue));
+          const responseBody = response.status === 200 ? transformData(response.body) : [];
           resolve(responseBody);
         }, 500);
       });

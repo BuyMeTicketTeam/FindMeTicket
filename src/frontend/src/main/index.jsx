@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SearchField from './SearchField';
 import Loader from './Loader';
 import Body from './Body';
@@ -8,7 +9,6 @@ import Transport from './Transport';
 import Tourist from './Tourist';
 import Ad from '../Ad/index';
 import './main.scss';
-import { useNavigate } from 'react-router-dom';
 
 export default function Index() {
   const [ticketsData, onTicketsData] = useState([]);
