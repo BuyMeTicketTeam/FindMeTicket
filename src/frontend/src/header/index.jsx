@@ -31,14 +31,10 @@ export default function Header({
   }
 
   function getLanguageFromStorage() {
-    localStorage.getItem('lang');
+    return JSON.parse(localStorage.getItem('lang'));
   }
 
-  function getLanguage(languageParam) {
-    if (languageParam) {
-      setLanguageToStorage(languageParam);
-      return languageParam;
-    }
+  function getLanguage() {
     const savedLanguage = getLanguageFromStorage();
     if (savedLanguage) {
       return savedLanguage;
@@ -47,8 +43,9 @@ export default function Header({
   }
 
   function displayLanguage(languageParam) {
-    const language = getLanguage(languageParam);
+    const language = languageParam || getLanguage();
     changeLanguage(language);
+    setLanguageToStorage(language);
     i18n.changeLanguage(language.value);
   }
 
