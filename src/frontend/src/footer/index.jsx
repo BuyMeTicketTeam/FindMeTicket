@@ -24,9 +24,9 @@ function Footer() {
 
   return (
     <div className="footer-container">
-      <div
+      {/* <div
         className={`arrow-icon ${isFooterVisible ? 'open' : ''}`}
-        data-testid = "Toggle Footer"
+        data-testid="Toggle Footer"
         onClick={toggleFooter}
         role="button"
         tabIndex={0}
@@ -35,38 +35,48 @@ function Footer() {
         <div className="circle-background">
           <span>&#5169;</span>
         </div>
-      </div>
+      </div> */}
 
       <div className="content-container">
         <footer style={{ height: footerHeight }}>
           <div className="footer-container container">
             {isFooterVisible && (
-            <>
-              <div className="footer-column">
-                <h4>Туристичні місця</h4>
-                <p>&#8226; Київ</p>
-                <p>&#8226; Львів</p>
-                <p>&#8226; Одеса</p>
-              </div>
-
-              <div className="footer-column">
-                <h4>Популярні маршрути</h4>
-                <p>&#8226; Київ-Одеса</p>
-                <p>&#8226; Львів-Дніпро</p>
-                <p>&#8226; Одеса-Львів</p>
-              </div>
-
-              <div className="footer-column">
-                <h4>Контакти</h4>
-                <div className="contact-line">
-                  <span>findmeticketweb@gmail.com</span>
+              <>
+                <div className="footer-column">
+                  <h4>Туристичні місця</h4>
+                  <p>&#8226; Київ</p>
+                  <p>&#8226; Львів</p>
+                  <p>&#8226; Одеса</p>
                 </div>
-                <div className="contact-line">
-                  <span>+380958454545</span>
+
+                <div className="footer-column">
+                  <h4>Популярні маршрути</h4>
+                  <p>&#8226; Київ-Одеса</p>
+                  <p>&#8226; Львів-Дніпро</p>
+                  <p>&#8226; Одеса-Львів</p>
                 </div>
-              </div>
-            </>
+
+                <div className="footer-column">
+                  <h4>Контакти</h4>
+                  <div className="contact-line">
+                    <span>findmeticketweb@gmail.com</span>
+                  </div>
+                  <div className="contact-line">
+                    <span>+380958454545</span>
+                  </div>
+                </div>
+              </>
             )}
+          </div>
+          <div
+            className={`arrow-icon ${isFooterVisible ? 'open' : ''}`}
+            data-testid="Toggle Footer"
+            onClick={toggleFooter}
+            role="button"
+            tabIndex={0}
+            onKeyDown={handleKeyDown}
+          >
+            <span>&#5167;</span>
           </div>
           <div
             className="year"
