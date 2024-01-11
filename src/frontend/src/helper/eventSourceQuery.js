@@ -23,11 +23,13 @@ export default async function eventSourceQuery(address, body, headers, method = 
 
       // all chunks have been read?
       if (done) {
-        return JSON.parse(chunks.join(''));
+        console.log(chunks);
+        return '';
       }
 
-      const chunk = decoder.decode(value, { stream: true });
+      const chunk = decoder.decode(value);
       console.log(chunk);
+      // console.log('chunk:', JSON.parse(chunk));
       chunks.push(chunk);
       return read(); // read the next chunk
     }
@@ -37,7 +39,7 @@ export default async function eventSourceQuery(address, body, headers, method = 
 
   const jsonData = await toJSON(response.body);
 
-  console.log(jsonData);
+  console.log('jsonData:', jsonData);
 
   // const reader = response.body.getReader();
   // const chunks = [];

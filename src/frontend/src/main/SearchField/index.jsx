@@ -88,8 +88,7 @@ export default function SearchField({ onLoading, setRequestBody }) {
     };
     setRequestBody(body);
     onLoading(true);
-    const { value } = await eventSourceQuery('searchtickets', JSON.stringify(body));
-    console.log(value);
+    await eventSourceQuery('searchtickets', JSON.stringify(body));
   }
 
   // async function sendRequest() {
