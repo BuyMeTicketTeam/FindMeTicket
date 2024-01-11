@@ -81,8 +81,8 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       return;
     }
     const body = {
-      departureCity: cityFrom.valueOf,
-      arrivalCity: cityTo.valueOf,
+      departureCity: cityFrom.value,
+      arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
       indexFrom: 0,
     };
@@ -100,9 +100,17 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     onCityFrom(cityToTemp);
   }
 
-  function transformData(body) {
-    const cities = Object.entries(body.cities);
-    return cities.map((item) => ({ value: item[0], label: `${item[0]}, ${item[1]}` }));
+  function transformData(item) {
+    if (item.siteLanguage === 'ua' && item.cityEng !== null) {
+      return ({ value: item.cityUa, label: `${item.cityUa} (${item.cityEng}), ${item.country}` });
+    }
+    if (item.siteLanguage === 'ua' && item.cityEng === null) {
+      return ({ value: item.cityUa, label: `${item.cityUa}, ${item.country}` });
+    }
+    if (item.siteLanguage === 'eng' && item.cityUa == null) {
+      return ({ value: item.cityUa, label: `${item.cityEng}, ${item.country}` });
+    }
+    return ({ value: item.cityUa, label: `${item.cityEng} (${item.cityUa}), ${item.country}` });
   }
 
   let timerId;
@@ -111,8 +119,8 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       clearInterval(timerId);
       const result = await new Promise((resolve) => {
         timerId = setTimeout(async () => {
-          const response = await makeQuerry('typeAhead', JSON.stringify(inputValue));
-          const responseBody = response.status === 200 ? transformData(response.body) : [];
+          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
+          const responseBody = response.status === 200 ? response.body.map(transformData) : [];
           resolve(responseBody);
         }, 500);
       });

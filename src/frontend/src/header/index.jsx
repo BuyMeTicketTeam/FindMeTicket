@@ -1,5 +1,5 @@
 /* eslint-disable no-shadow */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
@@ -9,9 +9,8 @@ import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({
-  authorization, onAuthorization, changePopup, popupLogin,
+  authorization, onAuthorization, changePopup, popupLogin, language, changeLanguage,
 }) {
-  const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
     { value: 'UA', label: 'UA' },

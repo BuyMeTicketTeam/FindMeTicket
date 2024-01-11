@@ -2,18 +2,24 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { createServer, Response } from 'miragejs';
 
-const from = {
-  cities: {
-    Дніпро: 'Ua',
-    Київ: 'Ua',
-    Одеса: 'Ua',
+// const from = {
+//   cities: {
+//     Дніпро: 'Ua',
+//     Київ: 'Ua',
+//     Одеса: 'Ua',
+//   },
+// };
+const destination = [
+  {
+    cityUa: 'Дніпро', cityEng: 'Dnipro', country: 'UA', siteLanguage: 'eng',
   },
-};
-// const destination = [
-//   { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
-//   { cityUkr: 'Дністер', cityEng: 'Київ', country: 'UA' },
-//   { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
-// ];
+  {
+    cityUa: 'Дністеріваіваіва', cityEng: 'Kyivasdadsasd', country: 'UA', siteLanguage: 'eng',
+  },
+  {
+    cityUa: 'Одеса', cityEng: 'Odesa', country: 'UA', siteLanguage: 'eng',
+  },
+];
 const tickets = [
   {
     id: 1,
@@ -121,9 +127,9 @@ createServer({
     this.post('/get1', () => new Response(200));
     this.post('/typeAhead', (schema, request) => {
       if (JSON.parse(request.requestBody) === 'Дн') {
-        return new Response(200, undefined, JSON.stringify({ cities: {} }));
+        return new Response(200, undefined, JSON.stringify(destination));
       }
-      return new Response(200, undefined, JSON.stringify(from));
+      return new Response(200, undefined, JSON.stringify(destination));
     });
     this.post('/getfirsttickets', () => new Response(200, undefined, JSON.stringify(tickets)) /* { timing: 3000 } */);
     this.post('/getnexttickets', () => new Response(200, undefined, JSON.stringify(ticketsNew)) /* { timing: 3000 } */);
