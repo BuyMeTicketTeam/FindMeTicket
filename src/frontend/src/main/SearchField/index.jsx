@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
@@ -88,7 +89,10 @@ export default function SearchField({ onLoading, setRequestBody }) {
     };
     setRequestBody(body);
     onLoading(true);
-    await eventSourceQuery('searchtickets', JSON.stringify(body));
+    const dataStream = await eventSourceQuery('searchtickets', JSON.stringify(body));
+    for await (const chunk of dataStream) {
+      console.log('Received chunk:', chunk);
+    }
   }
 
   // async function sendRequest() {

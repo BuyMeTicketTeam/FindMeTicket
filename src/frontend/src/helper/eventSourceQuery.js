@@ -13,44 +13,44 @@ export default async function eventSourceQuery(address, body, headers, method = 
     body,
   });
 
-  async function toJSON(responseBody) {
-    const reader = responseBody.getReader(); // `ReadableStreamDefaultReader`
-    const decoder = new TextDecoder();
-    const chunks = [];
+  function extractJsonFromResponse(responseString) {
+    const jsonRegex = /\{.*\}/;
+    const match = responseString.match(jsonRegex);
 
-    async function read() {
-      const { done, value } = await reader.read();
-
-      // all chunks have been read?
-      if (done) {
-        console.log(chunks);
-        return '';
+    if (match) {
+      const jsonString = match[0];
+      try {
+        const jsonData = JSON.parse(jsonString);
+        return jsonData;
+      } catch (error) {
+        console.error('Ошибка при разборе JSON:', error);
+        return null;
       }
-
-      const chunk = decoder.decode(value);
-      console.log(chunk);
-      // console.log('chunk:', JSON.parse(chunk));
-      chunks.push(chunk);
-      return read(); // read the next chunk
+    } else {
+      console.error('В строке ответа не найдены данные JSON');
+      return null;
     }
-
-    return read();
   }
 
-  const jsonData = await toJSON(response.body);
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
 
-  console.log('jsonData:', jsonData);
+  return {
+    async* [Symbol.asyncIterator]() {
+      while (true) {
+        const { done, value } = await reader.read();
+        console.log('value', value);
+        const chunk = decoder.decode(value);
+        console.log('chunk', chunk);
+        const jsonData = extractJsonFromResponse(chunk);
+        console.log('jsonData', jsonData);
 
-  // const reader = response.body.getReader();
-  // const chunks = [];
-  // while (true) {
-  //   const { done, value } = await reader.read();
+        if (done) {
+          break;
+        }
 
-  //   if (done) {
-  //     console.log(JSON.parse(chunks.join('')));
-  //     return JSON.parse(chunks.join(''));
-  //   }
-  //   const chunk = decoder.decode(value, { stream: true });
-  //   chunks.push(chunk);
-  // }
+        yield jsonData;
+      }
+    },
+  };
 }
