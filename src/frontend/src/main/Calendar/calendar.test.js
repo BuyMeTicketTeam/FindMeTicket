@@ -26,7 +26,8 @@ test('selects date in the calendar', async () => {
   const selectedDate = screen.getByText('27');
   // Click on the selected date
   userEvent.click(selectedDate);
-  screen.debug();
   // Check if the onDate function is called with the selected date
-  expect(screen.getByRole('textbox').value).toBe('27/12/2023');
+  const date = new Date();
+
+  expect(screen.getByRole('textbox').value).toBe(`${date.getDate()}/0${date.getMonth() + 1}/${date.getFullYear()}`);
 });

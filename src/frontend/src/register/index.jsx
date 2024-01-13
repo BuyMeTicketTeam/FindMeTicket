@@ -170,6 +170,7 @@ export default function Register() {
           onShow={onShow}
         />
         <Checkbox
+          dataTestid="checkbox"
           policyError={policyError}
           onChange={() => { onPolicy(!policy); onErrorPolicy(false); }}
         >
