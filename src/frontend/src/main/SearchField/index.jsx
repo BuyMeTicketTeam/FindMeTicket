@@ -12,7 +12,7 @@ import arrowsImg from './arrows.svg';
 import eventSourceQuery from '../../helper/eventSourceQuery';
 import './searchField.css';
 
-export default function SearchField({ onLoading, setRequestBody }) {
+export default function SearchField({ onLoading, setRequestBody, onTicketsData }) {
   const { t } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, onAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
@@ -90,27 +90,13 @@ export default function SearchField({ onLoading, setRequestBody }) {
     setRequestBody(body);
     onLoading(true);
     const dataStream = await eventSourceQuery('searchtickets', JSON.stringify(body));
+    onLoading(false);
     for await (const chunk of dataStream) {
-      console.log('Received chunk:', chunk);
+      if (chunk) {
+        onTicketsData((prevTickets) => [...prevTickets, chunk]);
+      }
     }
   }
-
-  // async function sendRequest() {
-  //   if (!validation()) {
-  //     return;
-  //   }
-  //   const body = {
-  //     departureCity: cityFrom.value,
-  //     arrivalCity: cityTo.value,
-  //     departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-  //   };
-  //   setRequestBody(body);
-  //   onLoading(true);
-  //   const response = await makeQuerry('searchtickets', JSON.stringify(body));
-  //   onLoading(false);
-  //   const responseBody = response.status === 200 ? response.body : null;
-  //   onTicketsData(responseBody);
-  // }
 
   function changeCities() {
     const cityToTemp = cityTo;

@@ -23,11 +23,11 @@ export default async function eventSourceQuery(address, body, headers, method = 
         const jsonData = JSON.parse(jsonString);
         return jsonData;
       } catch (error) {
-        console.error('Ошибка при разборе JSON:', error);
+        console.error('JSON parser error:', error);
         return null;
       }
     } else {
-      console.error('В строке ответа не найдены данные JSON');
+      console.error('JSON not found');
       return null;
     }
   }
@@ -39,11 +39,8 @@ export default async function eventSourceQuery(address, body, headers, method = 
     async* [Symbol.asyncIterator]() {
       while (true) {
         const { done, value } = await reader.read();
-        console.log('value', value);
         const chunk = decoder.decode(value);
-        console.log('chunk', chunk);
         const jsonData = extractJsonFromResponse(chunk);
-        console.log('jsonData', jsonData);
 
         if (done) {
           break;
