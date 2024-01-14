@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Cookies from 'universal-cookie';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
@@ -12,6 +13,7 @@ import './login.css';
 
 export default function Popup({ updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
+  const cookies = new Cookies(null, { path: '/' });
   const navigate = useNavigate();
   const [login, onLoginChange] = useState('');
   const [loginError, onLoginError] = useState(false);
@@ -27,6 +29,18 @@ export default function Popup({ updateAuthValue }) {
       case 200:
         navigate('/');
         updateAuthValue(true);
+        console.log(response.headers);
+        response.headers.forEach((value, key) => {
+          if (key === 'rememberme') {
+            console.log('key');
+            cookies.set('rememberMe', 'true', { maxAge: 260000 * 60 * 1000 });
+          }
+
+          if (key === 'userid') {
+            console.log('userid');
+            cookies.set('USER_ID', value);
+          }
+        });
         break;
       case 401:
         onError(t('error-lp'));

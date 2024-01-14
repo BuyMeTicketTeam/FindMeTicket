@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable max-len */
 /* eslint-disable no-new */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -17,8 +18,8 @@ createServer({
   routes() {
     // Responding to a POST request
     this.post('/login', () => {
-      document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
-      return new Response(200, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN });
+      // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
+      return new Response(200, { rememberMe: process.env.REACT_APP_TEST_JWT_TOKEN, userId: 1231231421 }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN });
     });
     this.post('/register', () => new Response(200));
     this.get('/oauth2/authorize/google', () => new Response(401));
