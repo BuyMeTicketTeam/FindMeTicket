@@ -60,6 +60,7 @@ export default function Popup({ updateAuthValue }) {
     const body = {
       email: login,
       password,
+      rememberMe: remember,
     };
     makeQuerry('login', JSON.stringify(body))
       .then((response) => {
@@ -69,7 +70,7 @@ export default function Popup({ updateAuthValue }) {
   }
 
   async function auth2Request(provider) {
-    const response = await makeQuerry(`oauth2/authorize/${provider}?redirect_uri=http://build:81/oauth2/redirect`, undefined, undefined, 'GET');
+    const response = await makeQuerry(`oauth2/authorize/${provider}?redirect_uri=http://build:81/oauth2/redirect`, undefined, undefined, 'GET', 'no-cors');
     switch (response.status) {
       case 200:
         navigate('/');

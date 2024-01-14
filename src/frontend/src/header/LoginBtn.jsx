@@ -15,7 +15,6 @@ export default function LoginBtn({ status, updateAuthValue }) {
         case 200:
           updateAuthValue(false);
           localStorage.removeItem('JWTtoken');
-          localStorage.removeItem('refreshToken');
           break;
         default:
           break;
