@@ -84,7 +84,7 @@ export default function Popup({ updateAuthValue }) {
   }
 
   async function auth2Request(provider) {
-    const response = await makeQuerry(`oauth2/authorize/${provider}?redirect_uri=http://build:81/oauth2/redirect`, undefined, undefined, 'GET', 'no-cors');
+    const response = await makeQuerry(`oauth2/authorize/${provider}`, undefined, undefined, 'GET', 'no-cors');
     switch (response.status) {
       case 200:
         navigate('/');
@@ -101,7 +101,7 @@ export default function Popup({ updateAuthValue }) {
   }
 
   const hanadleGoogleAuth = useCallback(() => auth2Request('google'), []);
-  // const hanadleFacebookAuth = useCallback(auth2Request('facebook'), []);
+  const hanadleFacebookAuth = useCallback(() => auth2Request('facebook'), []);
 
   useEffect(() => {
     if (send) {
@@ -190,10 +190,10 @@ export default function Popup({ updateAuthValue }) {
           <img src="../img/google-icon.png" alt="logo" />
           {t('google')}
         </button>
-        <a href="http://localhost:8080/oauth2/authorize/facebook?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
+        <button className="login__google" onClick={hanadleFacebookAuth} type="button">
           <img src={facebookIcon} alt="logo" />
           {t('facebook')}
-        </a>
+        </button>
         <div className="link link-register">
           <Link
             data-testid="to-register-btn"

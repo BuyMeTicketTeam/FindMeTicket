@@ -8,7 +8,7 @@ import makeQuerry from '../helper/querry';
 import { codeCheck, passwordCheck } from '../helper/regExCheck';
 import timeOut from '../helper/timer';
 
-export default function Index({ changePopup }) {
+export default function Index() {
   const [code, onCodeChange] = useState('');
   const [codeError, onCodeError] = useState(false);
   const [password, onPasswordChange] = useState('');
@@ -147,8 +147,7 @@ export default function Index({ changePopup }) {
             <Link
               className="link-success"
               data-testid=""
-              to="/"
-              onClick={() => changePopup(true)}
+              to="/login"
             >
               {t('auth-link')}
             </Link>
