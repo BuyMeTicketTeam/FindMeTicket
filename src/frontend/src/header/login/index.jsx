@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Cookies from 'universal-cookie';
 import { GoogleLogin } from '@react-oauth/google';
+import FacebookLogin from '@greatsumini/react-facebook-login';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
@@ -176,12 +177,28 @@ export default function Popup({ updateAuthValue }) {
         </div>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
+            onError('');
             console.log(credentialResponse);
             auth2Request('google', credentialResponse.credential);
           }}
           onError={() => {
             console.log('Login Failed');
             onError('Помилка. Спробуйте ще раз');
+          }}
+        />
+        <FacebookLogin
+          appId="927706882244929"
+          onSuccess={(response) => {
+            onError('');
+            console.log('Login Success!', response);
+            auth2Request('facebook', response.userID);
+          }}
+          onFail={(errorFacebook) => {
+            console.log('Login Failed!', errorFacebook);
+            onError('Помилка. Спробуйте ще раз');
+          }}
+          onProfileSuccess={(response) => {
+            console.log('Get Profile Success!', response);
           }}
         />
         <div className="link link-register">
