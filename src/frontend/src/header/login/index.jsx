@@ -31,15 +31,12 @@ export default function Popup({ updateAuthValue }) {
       case 200:
         navigate('/');
         updateAuthValue(true);
-        console.log(response.headers);
         response.headers.forEach((value, key) => {
           if (key === 'rememberme') {
-            console.log('key');
             cookies.set('rememberMe', 'true', { maxAge: 260000 * 60 * 1000 });
           }
 
           if (key === 'userid') {
-            console.log('userid');
             cookies.set('USER_ID', value);
           }
         });
@@ -97,7 +94,6 @@ export default function Popup({ updateAuthValue }) {
         onError('Помилка. Спробуйте ще раз');
         break;
       default:
-        console.log(response.error);
         onError(t('error-server2'));
         break;
     }
@@ -178,11 +174,9 @@ export default function Popup({ updateAuthValue }) {
         <GoogleLogin
           onSuccess={(credentialResponse) => {
             onError('');
-            console.log(credentialResponse);
             auth2Request('google', credentialResponse.credential);
           }}
           onError={() => {
-            console.log('Login Failed');
             onError('Помилка. Спробуйте ще раз');
           }}
           shape="circle"
@@ -193,15 +187,12 @@ export default function Popup({ updateAuthValue }) {
           className="login__google"
           onSuccess={(response) => {
             onError('');
-            console.log('Login Success!', response);
             auth2Request('facebook', response.userID);
           }}
-          onFail={(errorFacebook) => {
-            console.log('Login Failed!', errorFacebook);
+          onFail={() => {
             onError('Помилка. Спробуйте ще раз');
           }}
-          onProfileSuccess={(response) => {
-            console.log('Get Profile Success!', response);
+          onProfileSuccess={() => {
           }}
         >
           <img src={facebookIcon} alt="logo" />

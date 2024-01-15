@@ -12,7 +12,6 @@ function useAuthCheck() {
       return;
     }
     if (cookies.get('rememberMe')) {
-      console.log('cookie yes');
       setAuth(true);
     }
   }, []);

@@ -54,19 +54,6 @@ export default function SearchField() {
 
   function handleClick() {
     onSend(false);
-    // for testing
-    // makeQuerry('get1', undefined, undefined, 'GET')
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       console.log(`status: ${200}`);
-    //     } else if (response.status === 401) {
-    //       console.log(`status: ${401}`);
-    //     } else if (response.status === 403) {
-    //       console.log(`status: ${403}`);
-    //     } else {
-    //       console.log('status: other');
-    //     }
-    //   });
     const body = {
       cityFrom: cityFrom.value,
       cityTo: cityTo.value,

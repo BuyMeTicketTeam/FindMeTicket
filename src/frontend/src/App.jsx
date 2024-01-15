@@ -6,7 +6,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Header from './header/index';
 import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
-// import './testServer';
+import './testServer';
 import './App.css';
 import './locales/i18n';
 
