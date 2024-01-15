@@ -24,19 +24,6 @@ function Footer() {
 
   return (
     <div className="footer-container">
-      {/* <div
-        className={`arrow-icon ${isFooterVisible ? 'open' : ''}`}
-        data-testid="Toggle Footer"
-        onClick={toggleFooter}
-        role="button"
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
-      >
-        <div className="circle-background">
-          <span>&#5169;</span>
-        </div>
-      </div> */}
-
       <div className="content-container">
         <footer style={{ height: footerHeight }}>
           <div className="footer-container container">
@@ -76,7 +63,7 @@ function Footer() {
             tabIndex={0}
             onKeyDown={handleKeyDown}
           >
-            <span>&#5167;</span>
+            <span>&#5169;</span>
           </div>
           <div
             className="year"
