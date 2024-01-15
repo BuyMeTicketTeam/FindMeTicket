@@ -10,7 +10,7 @@ import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
-// import facebookIcon from './facebook.png';
+import facebookIcon from './facebook.png';
 import './login.css';
 
 export default function Popup({ updateAuthValue }) {
@@ -188,6 +188,7 @@ export default function Popup({ updateAuthValue }) {
         />
         <FacebookLogin
           appId="927706882244929"
+          className="login__google"
           onSuccess={(response) => {
             onError('');
             console.log('Login Success!', response);
@@ -200,7 +201,11 @@ export default function Popup({ updateAuthValue }) {
           onProfileSuccess={(response) => {
             console.log('Get Profile Success!', response);
           }}
-        />
+        >
+          <img src={facebookIcon} alt="logo" />
+          {t('facebook')}
+
+        </FacebookLogin>
         <div className="link link-register">
           <Link
             data-testid="to-register-btn"
