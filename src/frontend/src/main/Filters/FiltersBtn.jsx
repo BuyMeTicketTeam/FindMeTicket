@@ -8,13 +8,6 @@ export default function FiltersBtn({
   const btnActive = isDown ? 'active' : '';
   const btnUp = isUp ? 'up' : '';
 
-  // function prevSort(prev) {
-  //   if (prev === sortType) {
-  //     return reverse;
-  //   }
-  //   return sortType;
-  // }
-
   return (
     <button
       disabled={loading}
