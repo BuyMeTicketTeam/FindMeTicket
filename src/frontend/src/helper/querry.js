@@ -1,7 +1,7 @@
 import writeToken from './writeToken';
 
 /* eslint-disable quotes */
-export default async function makeQuerry(address, body, headers, method = 'POST', mode = 'cors') {
+export default async function makeQuerry(address, body, headers, method = 'POST') {
   const token = localStorage.getItem('JWTtoken');
   let response;
   try {
@@ -13,7 +13,6 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
       },
       credentials: "include",
       method,
-      mode,
       body,
     });
   } catch (error) {
