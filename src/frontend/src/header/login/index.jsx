@@ -1,14 +1,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Cookies from 'universal-cookie';
+import { GoogleLogin } from '@react-oauth/google';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
-import facebookIcon from './facebook.png';
+// import facebookIcon from './facebook.png';
 import './login.css';
 
 export default function Popup({ updateAuthValue }) {
@@ -83,8 +84,9 @@ export default function Popup({ updateAuthValue }) {
       });
   }
 
-  async function auth2Request(provider) {
-    const response = await makeQuerry(`oauth2/authorize/${provider}`, undefined, undefined, 'GET', 'no-cors');
+  async function auth2Request(provider, credential) {
+    const bodyJSON = JSON.stringify({ idToken: credential });
+    const response = await makeQuerry(`oauth2/authorize/${provider}`, bodyJSON);
     switch (response.status) {
       case 200:
         navigate('/');
@@ -99,9 +101,6 @@ export default function Popup({ updateAuthValue }) {
         break;
     }
   }
-
-  const hanadleGoogleAuth = useCallback(() => auth2Request('google'), []);
-  const hanadleFacebookAuth = useCallback(() => auth2Request('facebook'), []);
 
   useEffect(() => {
     if (send) {
@@ -175,25 +174,16 @@ export default function Popup({ updateAuthValue }) {
           <span className="login-another__content">{t('or')}</span>
           <span className="login-another__line" />
         </div>
-        {/* <a href="http://localhost:8080/oauth2/authorize/google?redirect_uri=http://build:81/oauth2/redirect" className="login__google">
-          <img src="../img/google-icon.png" alt="logo" />
-          {t('google')}
-        </a> */}
-        {/* <Button
-          dataTestId="send-request"
-          className="btn-full"
-          // disabled={send}
-          name={t('google')}
-          onButton={hanadleGoogleAuth}
-        /> */}
-        <button className="login__google" onClick={hanadleGoogleAuth} type="button">
-          <img src="../img/google-icon.png" alt="logo" />
-          {t('google')}
-        </button>
-        <button className="login__google" onClick={hanadleFacebookAuth} type="button">
-          <img src={facebookIcon} alt="logo" />
-          {t('facebook')}
-        </button>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log(credentialResponse);
+            auth2Request('google', credentialResponse.credential);
+          }}
+          onError={() => {
+            console.log('Login Failed');
+            onError('Помилка. Спробуйте ще раз');
+          }}
+        />
         <div className="link link-register">
           <Link
             data-testid="to-register-btn"

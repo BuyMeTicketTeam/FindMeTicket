@@ -11,7 +11,6 @@ function useAuthCheck() {
       setAuth(authStoredValue);
       return;
     }
-    console.log(cookies);
     if (cookies.get('rememberMe')) {
       console.log('cookie yes');
       setAuth(true);
