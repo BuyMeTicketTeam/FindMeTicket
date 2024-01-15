@@ -185,6 +185,8 @@ export default function Popup({ updateAuthValue }) {
             console.log('Login Failed');
             onError('Помилка. Спробуйте ще раз');
           }}
+          shape="circle"
+          width={336}
         />
         <FacebookLogin
           appId="927706882244929"

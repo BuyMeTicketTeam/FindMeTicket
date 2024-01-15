@@ -101,6 +101,7 @@
   padding: 10px;
   text-decoration: none;
   border: none;
+  margin-top: 15px;
 }
 
 .login__google:hover {
