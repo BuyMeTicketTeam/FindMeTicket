@@ -69,7 +69,6 @@ TOKEN_SYMBOLS: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
 jwtSecret: fdsfsdgdryhgtrdfh45632542345fwdfsgdghfdhgdfh2FSDFGDFGffffa23
 accessTokenExpirationMs: '1440'
 refreshTokenExpirationMs: '43200'
-rememberMeTokenExpirationMs: '260000'
   ##-------------------------
   ## Language detection file-configurations
   ##-------------------------
@@ -79,4 +78,4 @@ languages: eng.txt, ua.txt
   # OAuth 2.0 configuration
   #-------------------------
 app:
-  googleClientId: ${GOOGLE_CLIENT-ID}
+  googleClientId: '827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com'
