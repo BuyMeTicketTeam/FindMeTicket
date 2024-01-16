@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RequestTicketDTO {
-    private String placeFrom;
-    private String placeAt;
+public class RequestTicketsDTO {
+    private String departureCity;
+    private String arrivalCity;
     private String departureDate;
 }
