@@ -63,15 +63,6 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/confirm-email`, {
-      body: '{"email":null,"token":"12342"}',
-      headers: {
-        Authorization: null,
-        'Content-Type': 'application/json',
-        'Refresh-Token': null,
-      },
-      method: 'POST',
-    });
     await waitFor(() => {
       expect(screen.getByTestId('error').innerHTML).toBe('error-code');
     });

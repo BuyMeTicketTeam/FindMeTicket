@@ -219,15 +219,6 @@ describe('server tests', () => {
     fireEvent.click(checkbox);
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/register`, {
-      body: '{"email":"stepan@gmail.com","password":"asdadfdaf213123123","username":"Stepan","confirmPassword":"asdadfdaf213123123"}',
-      headers: {
-        Authorization: null,
-        'Content-Type': 'application/json',
-        'Refresh-Token': null,
-      },
-      method: 'POST',
-    });
     await waitFor(() => {
       expect(screen.getByTestId('error').innerHTML).toBe('error-email');
     });

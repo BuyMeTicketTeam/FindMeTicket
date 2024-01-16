@@ -150,7 +150,7 @@ export default function Popup({ updateAuthValue }) {
         </div>
 
         <Button
-          dataTestId="send-request"
+          dataTestId="login-btn"
           className="btn-full"
           disabled={send}
           name={send ? t('processing') : t('login-buttom')}
