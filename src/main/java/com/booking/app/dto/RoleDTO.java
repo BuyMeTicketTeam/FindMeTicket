@@ -1,6 +1,6 @@
 package com.booking.app.dto;
 
-import com.booking.app.entity.enums.EnumRole;
+import com.booking.app.enums.EnumRole;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

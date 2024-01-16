@@ -1,5 +1,6 @@
 package com.booking.app.entity;
 
+import com.booking.app.enums.EnumProvider;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -9,14 +10,14 @@ import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_security")
+@Table(name = "user_credentials")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Setter
 @Getter
 @ToString
-public class UserSecurity implements UserDetails {
+public class UserCredentials implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,15 +27,19 @@ public class UserSecurity implements UserDetails {
     @Column(unique = true,name = "email")
     private String email;
 
-    @Column(nullable = true)
+    @Column
     private String password;
 
     @Column(unique = true)
     private String username;
 
     @JoinColumn(referencedColumnName = "id", name = "user_id")
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private EnumProvider provider;
 
     private boolean accountNonExpired;
 

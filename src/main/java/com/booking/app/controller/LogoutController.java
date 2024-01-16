@@ -1,6 +1,5 @@
 package com.booking.app.controller;
 
-import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.LogoutAPI;
 import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
-@CrossOrigin(origins = {CorsConfigConstants.ALLOWED_ORIGIN_80,CorsConfigConstants.ALLOWED_ORIGIN_81}, maxAge = 3600,
-        exposedHeaders = {CorsConfigConstants.EXPOSED_HEADER_REFRESH_TOKEN, CorsConfigConstants.EXPOSED_HEADER_AUTHORIZATION})
 public class LogoutController implements LogoutAPI {
 
     /**
@@ -34,7 +30,9 @@ public class LogoutController implements LogoutAPI {
     @Override
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        CookieUtils.deleteCookie(request,response,"refresh-token");
+        CookieUtils.deleteCookie(request,response,"refreshToken");
+        CookieUtils.deleteCookie(request,response,"USER_ID");
+        CookieUtils.deleteCookie(request,response,"rememberMe");
         SecurityContext context = SecurityContextHolder.getContext();
         SecurityContextHolder.clearContext();
         context.setAuthentication(null);

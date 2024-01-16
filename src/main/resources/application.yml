@@ -1,0 +1,82 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+logging:
+  level:
+    sql: debug
+    ROOT: INFO
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
+        transaction: DEBUG
+        web: DEBUG
+        security: TRACE
+      hibernate: ERROR
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  web:
+    resources:
+      add-mappings: false
+
+  ##-------------------------
+  ## Email Sender configuration
+  ##-------------------------
+  mail:
+    host: smtp.gmail.com
+    port: '587'
+    username: findmeticketweb@gmail.com
+    password: lgyn zgeb yowy vbam
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  ##-------------------------
+  ## Liquibase
+  ##-------------------------
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yaml
+    default-schema: liquibase_schema
+
+  ##-------------------------
+  ## Database configuration
+  ##-------------------------
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/db_ticket'
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+
+  ##-------------------------
+  ## Email confirmation Properties
+  ##-------------------------
+TOKEN_SYMBOLS: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  ##-------------------------
+  ## JWT Properties
+  ##-------------------------
+
+jwtSecret: fdsfsdgdryhgtrdfh45632542345fwdfsgdghfdhgdfh2FSDFGDFGffffa23
+accessTokenExpirationMs: '1440'
+refreshTokenExpirationMs: '43200'
+rememberMeTokenExpirationMs: '260000'
+  ##-------------------------
+  ## Language detection file-configurations
+  ##-------------------------
+
+languages: eng.txt, ua.txt
+  #-------------------------
+  # OAuth 2.0 configuration
+  #-------------------------
+app:
+  googleClientId: ${GOOGLE_CLIENT-ID}

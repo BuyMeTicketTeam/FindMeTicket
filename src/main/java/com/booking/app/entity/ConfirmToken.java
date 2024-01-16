@@ -2,16 +2,18 @@ package com.booking.app.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "confirm_token")
+@Table(name = "token")
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
+@Data
 @Builder
 public class ConfirmToken {
 
@@ -19,7 +21,8 @@ public class ConfirmToken {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(mappedBy = "confirmToken", cascade = CascadeType.ALL)
+//    @OneToOne(mappedBy = "confirmToken", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "confirmToken")
     private User user;
 
     @NotNull

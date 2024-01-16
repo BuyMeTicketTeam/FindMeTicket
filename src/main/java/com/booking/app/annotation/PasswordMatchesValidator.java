@@ -1,6 +1,6 @@
 package com.booking.app.annotation;
 
-import com.booking.app.dto.ConfirmPasswordUtil;
+import com.booking.app.util.ConfirmPasswordUtil;
 import com.booking.app.exception.exception.PasswordNotMatchesException;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

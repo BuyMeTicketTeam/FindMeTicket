@@ -1,6 +1,6 @@
 package com.booking.app.security.jwt;
 
-import com.booking.app.entity.UserSecurity;
+import com.booking.app.entity.UserCredentials;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -28,14 +28,14 @@ public class JwtProvider {
     @Value("${refreshTokenExpirationMs}")
     private int refreshTokenExpirationMs;
 
-    public boolean validateAccessToken(String accessToken, UserSecurity userSecurity) {
+    public boolean validateAccessToken(String accessToken, UserCredentials userCredentials) {
         String email = extractEmail(accessToken);
-        return (email.equals(userSecurity.getEmail()) && validateToken(accessToken));
+        return (email.equals(userCredentials.getEmail()) && validateToken(accessToken));
     }
 
-    public boolean validateRefreshToken(String refreshToken, UserSecurity userSecurity) {
+    public boolean validateRefreshToken(String refreshToken, UserCredentials userCredentials) {
         String email = extractEmail(refreshToken);
-        return (email.equals(userSecurity.getEmail()) && validateToken(refreshToken));
+        return (email.equals(userCredentials.getEmail()) && validateToken(refreshToken));
     }
 
     public String extractEmail(String token) {
@@ -70,11 +70,12 @@ public class JwtProvider {
 
     private String generateToken(String email, int expirationMs) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationMs * 1000L);
+        long expirationMillis = expirationMs * 60L * 1000L;
+        Date expiryDate = new Date(now.getTime() + expirationMillis);
 
         return Jwts.builder()
                 .setSubject(email)
-                .setIssuedAt(new Date())
+                .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key())
                 .compact();
@@ -117,7 +118,7 @@ public class JwtProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refresh-token")) {
+                if (cookie.getName().equals("refreshToken")) {
                     return cookie.getValue();
                 }
             }
@@ -125,5 +126,6 @@ public class JwtProvider {
 
         return null;
     }
+
 
 }

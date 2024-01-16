@@ -1,6 +1,6 @@
 package com.booking.app.entity;
 
-import com.booking.app.entity.enums.EnumRole;
+import com.booking.app.enums.EnumRole;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Set;
@@ -16,12 +16,12 @@ public class Role{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Enumerated(EnumType.STRING)
     private EnumRole enumRole;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
     private Set<User> users;
 
 }

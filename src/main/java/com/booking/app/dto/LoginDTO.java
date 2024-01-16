@@ -21,6 +21,9 @@ public class LoginDTO {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,30}$", message = "Password must be of 8 - 30 characters and contain at least one letter and one number")
     private String password;
 
+    @NotNull
+    private Boolean rememberMe;
+
 }
 
 

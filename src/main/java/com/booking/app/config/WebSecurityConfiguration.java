@@ -1,10 +1,11 @@
 package com.booking.app.config;
 
 import com.booking.app.security.CustomUserDetailsService;
+import com.booking.app.security.RestAuthenticationEntryPoint;
 import com.booking.app.security.jwt.JwtAuthFilter;
-import com.booking.app.security.oauth2.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 import java.util.List;
 
 @Configuration
@@ -29,68 +33,60 @@ public class WebSecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+    private final String[] PUBLIC_PATHS = {
+            "/v3/api-docs/**",
+            "/configuration/**",
+            "/swagger*/**",
+            "/webjars/**",
 
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
-
-    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-
-    private final CustomOAuth2UserService customOAuth2UserService;
+            "/favicon.ico",
+            "/error",
+            "/register",
+            "/confirm-email",
+            "/resend-confirm-email",
+            "/confirm-email",
+            "/reset",
+            "/new-password",
+            "/typeAhead",
+            "/fail",
+            "/login",
+            "/logout",
+            "/oauth2/authorize/google"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors();
+
         http.csrf().disable();
+        http.httpBasic().disable();
+        http.formLogin().disable();
         http.logout().disable();
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests().requestMatchers("/v3/api-docs/**", "/configuration/**", "/swagger*/**"
-                        , "/webjars/**", "/auth/**", "/oauth2/**")
-                .permitAll();
         http.authorizeHttpRequests()
-                .requestMatchers("/register",
-                        "/confirm-email",
-                        "/resend-confirm-email",
-                        "/confirm-email",
-                        "/reset",
-                        "/new-password",
-                        "/login")
-                .anonymous();
-        http.authorizeHttpRequests().requestMatchers("/typeAhead").permitAll();
-        http.authorizeHttpRequests().requestMatchers("/logout").authenticated();
+                .requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().permitAll();
 
-        http.exceptionHandling()
-                .authenticationEntryPoint(restAuthenticationEntryPoint);
-
-        http.oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/googleAuth")
-                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/login/oauth2/code/*")
-                .and()
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService)
-                .and()
-                .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler);
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling()
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
-        http.authorizeHttpRequests().requestMatchers("/getCookie").permitAll();
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
 
     @Bean
-    protected AuthenticationManager authenticationManager() {
+    public CorsFilter corsFilter(@Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfigurationSource) {
+        return new CorsFilter(corsConfigurationSource);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
         return new ProviderManager(List.of(daoAuthenticationProvider()));
     }
 
     @Bean
-    DaoAuthenticationProvider daoAuthenticationProvider() {
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);

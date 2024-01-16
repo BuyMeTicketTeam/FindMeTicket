@@ -36,7 +36,7 @@ public final class CookieUtils {
                 .sameSite("None")
                 .build();
 
-        response.setHeader("SET-COOKIE", cookie.toString());
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
@@ -44,7 +44,7 @@ public final class CookieUtils {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
-                    CookieUtils.addCookie(response, "refresh-token", "", 0, true, true);
+                    CookieUtils.addCookie(response, name, "", 0, true, true);
                 }
             }
         }

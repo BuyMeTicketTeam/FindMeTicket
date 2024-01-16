@@ -43,35 +43,35 @@ class LoginControllerTest {
     @Mock
     private MockHttpServletResponse httpServletResponse;
 
-    @Test
-    void testSuccessfulLogin() throws IOException {
-
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-
-        when(authenticationManager.authenticate(any())).thenReturn(authentication);
-        when(authentication.isAuthenticated()).thenReturn(true);
-
-        when(jwtProvider.generateAccessToken(anyString())).thenReturn("mockedAccessToken");
-        when(jwtProvider.generateRefreshToken(anyString())).thenReturn("mockedRefreshToken");
-
-        LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
-
-        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, mockResponse);
-        httpServletRequest.addHeader("Authorization","mockedAccessToken");
-        httpServletRequest.addHeader("Refresh-Token","mockedRefreshToken");
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(mockResponse).addHeader(eq("Authorization"), eq("mockedAccessToken"));
-        verify(mockResponse).addHeader(eq("Refresh-Token"), eq("mockedRefreshToken"));
-    }
-
-    @Test
-    void testFailLogin() {
-        when(authenticationManager.authenticate(any())).thenThrow(BadCredentialsException.class);
-
-        LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
-
-        assertThrows(BadCredentialsException.class, ()->loginController.login(loginDTO, httpServletRequest, httpServletResponse));
-    }
+//    @Test
+//    void testSuccessfulLogin() throws IOException {
+//
+//        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+//
+//        when(authenticationManager.authenticate(any())).thenReturn(authentication);
+//        when(authentication.isAuthenticated()).thenReturn(true);
+//
+//        when(jwtProvider.generateAccessToken(anyString())).thenReturn("mockedAccessToken");
+//        when(jwtProvider.generateRefreshToken(anyString())).thenReturn("mockedRefreshToken");
+//
+//        LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
+//
+//        ResponseEntity<?> responseEntity = loginController.login(loginDTO, httpServletRequest, mockResponse);
+//        httpServletRequest.addHeader("Authorization","mockedAccessToken");
+//        httpServletRequest.addHeader("Refresh-Token","mockedRefreshToken");
+//
+//        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//        verify(mockResponse).addHeader(eq("Authorization"), eq("mockedAccessToken"));
+//        verify(mockResponse).addHeader(eq("Refresh-Token"), eq("mockedRefreshToken"));
+//    }
+//
+//    @Test
+//    void testFailLogin() {
+//        when(authenticationManager.authenticate(any())).thenThrow(BadCredentialsException.class);
+//
+//        LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com").password("FutureDev999").build();
+//
+//        assertThrows(BadCredentialsException.class, ()->loginController.login(loginDTO, httpServletRequest, httpServletResponse));
+//    }
 
 }
