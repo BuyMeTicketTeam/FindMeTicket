@@ -1,4 +1,4 @@
-import writeToken from './writeToken';
+import responseInterceptor from './responseInterceptor';
 
 /* eslint-disable quotes */
 export default async function makeQuerry(address, body, headers, method = 'POST') {
@@ -24,6 +24,6 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
   } catch {
     bodyResponse = null;
   }
-  writeToken(response);
+  responseInterceptor(response);
   return { status: response.status, headers: response.headers, body: bodyResponse };
 }

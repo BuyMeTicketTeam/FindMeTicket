@@ -1,6 +1,6 @@
 /* eslint-disable no-proto */
 /* eslint-disable no-undef */
-import writeToken from './writeToken';
+import writeToken from './responseInterceptor';
 
 describe('writeToken function', () => {
   test('writes JWT token to localStorage if present in the response headers', () => {
