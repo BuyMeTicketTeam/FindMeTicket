@@ -1,9 +1,9 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.entity.UserSecurity;
+import com.booking.app.entity.UserCredentials;
 import com.booking.app.repositories.UserRepository;
-import com.booking.app.repositories.UserSecurityRepository;
-import com.booking.app.security.UserDetailsServiceImpl;
+import com.booking.app.repositories.UserCredentialsRepository;
+import com.booking.app.security.CustomUserDetailsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,16 +17,16 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserDetailsServiceImplTest {
+class CustomUserDetailsServiceTest {
 
     @InjectMocks
-    UserDetailsServiceImpl userDetailsService;
+    CustomUserDetailsService userDetailsService;
 
     @Mock
     private UserRepository userRepository;
 
     @Mock
-    private UserSecurityRepository userSecurityRepository;
+    private UserCredentialsRepository userCredentialsRepository;
 
 
     @Test
@@ -34,9 +34,9 @@ class UserDetailsServiceImplTest {
 
         String email = "javier_milei@gmail.com";
 
-        UserSecurity userSecurity = new UserSecurity();
+        UserCredentials userCredentials = new UserCredentials();
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
 
         Assertions.assertNotNull(userDetailsService.loadUserByUsername(email));
     }
@@ -46,7 +46,7 @@ class UserDetailsServiceImplTest {
 
         String email = "javier_milei@gmail.com";
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UsernameNotFoundException.class, ()->userDetailsService.loadUserByUsername(email));
     }

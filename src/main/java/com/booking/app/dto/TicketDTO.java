@@ -2,17 +2,19 @@ package com.booking.app.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.joda.time.DateTime;
+
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Setter
+@Getter
 public class TicketDTO {
+   private UUID id;
    private String placeFrom;
    private String placeAt;
    private String departureCity;
@@ -23,5 +25,5 @@ public class TicketDTO {
    private String arrivalDate;
    private String travelTime;
    private String price;
-    //String url;
+   private String url;
 }

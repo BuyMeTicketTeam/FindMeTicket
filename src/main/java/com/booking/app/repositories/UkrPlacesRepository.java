@@ -10,6 +10,8 @@ import java.util.Optional;
 
 @Repository
 public interface UkrPlacesRepository extends JpaRepository<UkrainianPlaces, BigInteger> {
-    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameUaStartingWithIgnoreCase(String startLetters);
-    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameEngStartingWithIgnoreCase(String startLetters);
+
+    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContaining(String startLetters,String exclusion);
+    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameUaStartsWithIgnoreCaseAndNameUaNotContaining(String startLetters,String exclusion);
+
 }

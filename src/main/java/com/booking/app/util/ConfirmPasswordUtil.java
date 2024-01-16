@@ -1,4 +1,4 @@
-package com.booking.app.dto;
+package com.booking.app.util;
 
 public interface ConfirmPasswordUtil {
 

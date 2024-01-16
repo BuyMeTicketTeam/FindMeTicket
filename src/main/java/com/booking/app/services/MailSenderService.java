@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.entity.UserSecurity;
+import com.booking.app.entity.UserCredentials;
 import jakarta.mail.MessagingException;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -19,7 +19,7 @@ public interface MailSenderService {
       * @param user UserSecurity recipient
       * @throws MessagingException If there is an issue with sending the confirmation email.
       */
-     void sendEmail(String htmlPage, String subject, String token, UserSecurity user) throws MessagingException;
+     void sendEmail(String htmlPage, String subject, String token, UserCredentials user) throws MessagingException;
 
      /**
       * This method generates new token end sends it

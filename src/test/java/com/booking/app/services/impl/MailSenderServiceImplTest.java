@@ -2,8 +2,8 @@ package com.booking.app.services.impl;
 
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.TokenService;
 import jakarta.mail.MessagingException;
@@ -37,7 +37,7 @@ class MailSenderServiceImplTest {
     private TemplateEngine templateEngine;
 
     @Mock
-    private UserSecurityRepository userSecurityRepository;
+    private UserCredentialsRepository userCredentialsRepository;
 
     @Mock
     private VerifyEmailRepository verifyEmailRepository;
@@ -51,7 +51,7 @@ class MailSenderServiceImplTest {
 
         String email = "ewyrwey_sdds@gmail.com";
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         assertFalse(mailSenderService.resendEmail(email));
     }
@@ -69,11 +69,11 @@ class MailSenderServiceImplTest {
 
         ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
         User user = User.builder().confirmToken(token).build();
-        UserSecurity userSecurity = UserSecurity.builder().email("ewyrwey_sdds@gmail.com").username("ewyrweysdds").user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().email("ewyrwey_sdds@gmail.com").username("ewyrweysdds").user(user).build();
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
         when(tokenService.createConfirmToken(user)).thenReturn(token);
-        doNothing().when(temp).sendEmail("confirmMailUa", "Email confirmation", token.getToken(), userSecurity);
+        doNothing().when(temp).sendEmail("confirmMailUa", "Email confirmation", token.getToken(), userCredentials);
 
         assertTrue(temp.resendEmail(email));
     }

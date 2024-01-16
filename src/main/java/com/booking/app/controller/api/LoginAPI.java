@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
+
 @Validated
 public interface LoginAPI {
 
@@ -20,6 +22,6 @@ public interface LoginAPI {
             @ApiResponse(responseCode = "200", description = "User has been authenticated"),
             @ApiResponse(responseCode = "403", description = "Invalid credentials or such user doesn't exist")
     })
-     ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDTO dto , HttpServletRequest request, HttpServletResponse response);
+     ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDTO dto , HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 }
