@@ -43,6 +43,3 @@ databaseChangeLog:
                         name: fk_ticket_route
                         referencedTableName: route
                         referencedColumnNames: id
-                        baseColumnNames: route_id
-                        onUpdate: CASCADE
-                        onDelete: CASCADE

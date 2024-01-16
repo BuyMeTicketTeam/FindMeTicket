@@ -16,6 +16,8 @@ http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibas
     <include file="scripts/user-security-create.yaml"/>
     <include file="scripts/ukr-places-create.yaml"/>
     <include file="scripts/role-insert.yaml"/>
+    <include file="db/changelog/changelog.yaml"/>
+    <include file="db/changelog/changelog.yaml"/>
 
     <changeSet id="load-data-from-json" author="Mykhailo-Marchuk">
         <loadData tableName="ukrainian_places" file="places/ukr-places-common.csv"/>

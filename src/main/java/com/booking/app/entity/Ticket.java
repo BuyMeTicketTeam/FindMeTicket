@@ -2,9 +2,8 @@ package com.booking.app.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.joda.time.DateTime;
 
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
-
 public class Ticket {
 
     @Id
@@ -44,8 +42,11 @@ public class Ticket {
     @Column(name = "url")
     private String url;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
+
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<TicketUrls> urls;
 
 }

@@ -60,6 +60,7 @@ public class SecurityConfiguration {
 
         http.authorizeHttpRequests().requestMatchers("/searchtickets").permitAll();
         http.authorizeHttpRequests().requestMatchers("/get/ticket/*").anonymous();
+        http.authorizeHttpRequests().requestMatchers("/sortedby").anonymous();
 
         return http.build();
 

@@ -2,10 +2,11 @@ package com.booking.app.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class Route {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "departure_city")
@@ -33,6 +35,7 @@ public class Route {
     @Column(name = "adding_time")
     private LocalDateTime addingTime;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "route", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Ticket> ticketList;
+
 }

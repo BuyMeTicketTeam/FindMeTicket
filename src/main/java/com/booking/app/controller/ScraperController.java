@@ -1,8 +1,11 @@
 package com.booking.app.controller;
 
+import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Ticket;
 import com.booking.app.services.impl.ScrapingServiceImpl;
+import com.booking.app.services.impl.SortedTicketsServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.openqa.selenium.By;
@@ -31,23 +34,30 @@ import java.util.UUID;
 public class ScraperController {
 
     private ScrapingServiceImpl scrapingService;
+    private SortedTicketsServiceImpl sortedTicketsService;
 
     @PostMapping("/searchtickets")
-    SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException {
+    public SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException, ParseException, InterruptedException {
+
         SseEmitter emitter = new SseEmitter();
 
-        scrapingService.scrapFromBusfor(ticketsDTO, emitter);
+        scrapingService.scrapeTickets(ticketsDTO, emitter);
 
         return emitter;
     }
 
     @GetMapping("/get/ticket/{id}")
-    SseEmitter getTicket(@PathVariable UUID id) throws IOException {
+    public SseEmitter getTicket(@PathVariable UUID id) throws IOException {
         SseEmitter emitter = new SseEmitter();
 
-        scrapingService.getTicket(id, emitter);
+        //scrapingService.getTicket(id, emitter);
 
         return emitter;
+    }
+
+    @PostMapping("/sortedby")
+    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO){
+        return ResponseEntity.ok().body(sortedTicketsService.getSortedTickets(requestSortedTicketsDTO));
     }
 
 }
