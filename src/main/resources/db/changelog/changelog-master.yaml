@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1705068464898-1
+      id: 1705398670644-1
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -19,7 +19,103 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1705068464898-2
+      id: 1705398670644-2
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_route
+                  name: id
+                  type: UUID
+              - column:
+                  name: departure_city
+                  type: VARCHAR(255)
+              - column:
+                  name: arrival_city
+                  type: VARCHAR(255)
+              - column:
+                  name: departure_date
+                  type: VARCHAR(255)
+              - column:
+                  name: adding_time
+                  type: DATETIME
+            tableName: route
+  - changeSet:
+      id: 1705398670644-3
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ticket
+                  name: id
+                  type: UUID
+              - column:
+                  name: place_from
+                  type: VARCHAR(255)
+              - column:
+                  name: place_at
+                  type: VARCHAR(255)
+              - column:
+                  name: departure_time
+                  type: VARCHAR(255)
+              - column:
+                  name: arrival_time
+                  type: VARCHAR(255)
+              - column:
+                  name: arrival_date
+                  type: VARCHAR(255)
+              - column:
+                  name: travel_time
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: VARCHAR(255)
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+              - column:
+                  name: route_id
+                  type: UUID
+            tableName: ticket
+  - changeSet:
+      id: 1705398670644-4
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ticket_urls
+                  name: id
+                  type: UUID
+              - column:
+                  name: busfor
+                  type: VARCHAR(255)
+              - column:
+                  name: infobus
+                  type: VARCHAR(255)
+              - column:
+                  name: proizd
+                  type: VARCHAR(255)
+              - column:
+                  name: ticket_id
+                  type: UUID
+            tableName: ticket_urls
+  - changeSet:
+      id: 1705398670644-5
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -44,7 +140,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: token
   - changeSet:
-      id: 1705068464898-3
+      id: 1705398670644-6
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -78,7 +174,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_places
   - changeSet:
-      id: 1705068464898-4
+      id: 1705398670644-7
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -128,7 +224,7 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: user_credentials
   - changeSet:
-      id: 1705068464898-5
+      id: 1705398670644-8
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -161,7 +257,7 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1705068464898-6
+      id: 1705398670644-9
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -170,7 +266,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_email
             tableName: user_credentials
   - changeSet:
-      id: 1705068464898-7
+      id: 1705398670644-10
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -179,7 +275,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_user
             tableName: user_credentials
   - changeSet:
-      id: 1705068464898-8
+      id: 1705398670644-11
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -188,7 +284,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_username
             tableName: user_credentials
   - changeSet:
-      id: 1705068464898-9
+      id: 1705398670644-12
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -197,7 +293,7 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1705068464898-10
+      id: 1705398670644-13
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -206,7 +302,29 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1705068464898-11
+      id: 1705398670644-14
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: route_id
+            baseTableName: ticket
+            constraintName: FK_TICKET_ON_ROUTE
+            referencedColumnNames: id
+            referencedTableName: route
+  - changeSet:
+      id: 1705398670644-15
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: ticket_id
+            baseTableName: ticket_urls
+            constraintName: FK_TICKET_URLS_ON_TICKET
+            referencedColumnNames: id
+            referencedTableName: ticket
+  - changeSet:
+      id: 1705398670644-16
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -217,7 +335,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1705068464898-12
+      id: 1705398670644-17
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -228,7 +346,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: token
   - changeSet:
-      id: 1705068464898-13
+      id: 1705398670644-18
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -248,7 +366,6 @@ databaseChangeLog:
               INSERT INTO role (enum_role) VALUES
                  ('USER'),
                  ('ADMIN');
-
   - changeSet:
       id: 1705059591405-14
       author: Mykhailo Marchuk

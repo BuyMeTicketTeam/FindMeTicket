@@ -51,12 +51,14 @@ public class WebSecurityConfiguration {
             "/fail",
             "/login",
             "/logout",
-            "/oauth2/authorize/google"
+            "/oauth2/authorize/google",
+            "/sortedBy",
+            "/searchTickets",
+            "/get/ticket/**"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http.csrf().disable();
         http.httpBasic().disable();
         http.formLogin().disable();
@@ -64,7 +66,6 @@ public class WebSecurityConfiguration {
 
         http.authorizeHttpRequests()
                 .requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().permitAll();
-
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.exceptionHandling()

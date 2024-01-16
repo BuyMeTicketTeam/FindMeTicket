@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -105,7 +106,7 @@ public class JwtProvider {
 
     public String extractAccessTokenFromRequest(HttpServletRequest request) {
 
-        String authorizationHeader = request.getHeader("Authorization");
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeader != null && !authorizationHeader.equals("null") && authorizationHeader.startsWith("Bearer")) {
             return authorizationHeader.substring(7);

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -47,7 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (accessTokenFromRequest != null && jwtProvider.validateAccessToken(accessTokenFromRequest, (UserCredentials) userDetails)) {
             String newAccessToken = jwtProvider.generateAccessToken(email);
             CookieUtils.addCookie(response, "refreshToken", refreshTokenFromRequest, 7200, true, true);
-            response.setHeader("Authorization", String.format("%s %s", "Bearer", newAccessToken));
+            response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", newAccessToken));
             response.setHeader("UserID", ((UserCredentials) userDetails).getId().toString());
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
@@ -63,7 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String newRefreshToken = jwtProvider.generateRefreshToken(email);
 
             CookieUtils.addCookie(response, "refreshToken", newRefreshToken, 7200, true, true);
-            response.setHeader("Authorization", String.format("%s %s", "Bearer", newAccessToken));
+            response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", newAccessToken));
             response.setHeader("UserID", ((UserCredentials) userDetails).getId().toString());
 
             UserDetails refreshedUserDetails = userDetailsService.loadUserByUsername(email);

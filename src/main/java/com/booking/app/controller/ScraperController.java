@@ -14,6 +14,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -31,12 +32,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping
 @AllArgsConstructor
+// TODO: Describe API's for controller in interfaces
 public class ScraperController {
 
     private ScrapingServiceImpl scrapingService;
     private SortedTicketsServiceImpl sortedTicketsService;
 
-    @PostMapping("/searchtickets")
+    @PostMapping("/searchTickets")
     public SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException, ParseException, InterruptedException {
 
         SseEmitter emitter = new SseEmitter();
@@ -55,7 +57,7 @@ public class ScraperController {
         return emitter;
     }
 
-    @PostMapping("/sortedby")
+    @PostMapping("/sortedBy")
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO){
         return ResponseEntity.ok().body(sortedTicketsService.getSortedTickets(requestSortedTicketsDTO));
     }

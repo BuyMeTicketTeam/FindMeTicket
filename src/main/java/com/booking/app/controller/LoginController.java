@@ -68,7 +68,7 @@ public class LoginController implements LoginAPI {
 
             CookieUtils.addCookie(response, "refreshToken", refreshToken, 7200, true, true);
             response.setHeader("UserID", userCredentials.getId().toString());
-            response.setHeader("Authorization", String.format("%s %s", "Bearer", accessToken));
+            response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", accessToken));
 
             return ResponseEntity.ok().build();
         }
@@ -85,7 +85,7 @@ public class LoginController implements LoginAPI {
 
         CookieUtils.addCookie(response, "refreshToken", refreshToken, 7200, true, true);
         response.setHeader("UserID", userCredentials.getId().toString());
-        response.setHeader("Authorization", String.format("%s %s", "Bearer", accessToken));
+        response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", accessToken));
 
         return ResponseEntity.ok().build();
     }
