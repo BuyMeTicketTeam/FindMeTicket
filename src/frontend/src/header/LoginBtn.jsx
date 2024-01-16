@@ -4,10 +4,10 @@ import makeQuerry from '../helper/querry';
 
 export default function LoginBtn({ status, changePopup, onAuthorization }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
-  const [logout, onLogout] = useState(false);
+  const [logout, setLogout] = useState(false);
 
   function handleLogoutButton() {
-    onLogout(false);
+    setLogout(false);
 
     makeQuerry('logout').then((response) => {
       switch (response.status) {
@@ -33,7 +33,7 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
         data-testid="logout-btn"
         className="login"
         type="button"
-        onClick={() => { onLogout(true); }}
+        onClick={() => { setLogout(true); }}
       >
         {t('profile')}
       </button>

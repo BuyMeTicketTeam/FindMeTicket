@@ -9,7 +9,7 @@ import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({
-  authorization, onAuthorization, changePopup, popupLogin, language, changeLanguage,
+  authorization, setAuthorization, setPopup, popupLogin, language, setLanguage,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
@@ -43,7 +43,7 @@ export default function Header({
 
   function displayLanguage(languageParam) {
     const language = languageParam || getLanguage();
-    changeLanguage(language);
+    setLanguage(language);
     setLanguageToStorage(language);
     i18n.changeLanguage(language.value);
   }
@@ -72,11 +72,11 @@ export default function Header({
 
       <LoginBtn
         status={authorization}
-        onAuthorization={onAuthorization}
-        changePopup={changePopup}
+        setAuthorization={setAuthorization}
+        setPopup={setPopup}
       />
 
-      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
+      {popupLogin && <Login setPopup={setPopup} setAuthorization={setAuthorization} />}
     </header>
   );
 }

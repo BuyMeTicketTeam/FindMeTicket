@@ -7,37 +7,37 @@ import makeQuerry from '../helper/querry';
 import { codeCheck, passwordCheck } from '../helper/regExCheck';
 import timeOut from '../helper/timer';
 
-export default function Index({ changePopup }) {
-  const [code, onCodeChange] = useState('');
-  const [codeError, onCodeError] = useState(false);
-  const [password, onPasswordChange] = useState('');
-  const [passwordError, onPasswordError] = useState(false);
-  const [confirmPassword, onConfirmPasswordChange] = useState('');
-  const [confirmPasswordError, onConfirmPasswordError] = useState(false);
-  const [error, onError] = useState('');
+export default function Index({ setPopup }) {
+  const [code, setCodeChange] = useState('');
+  const [codeError, setCodeError] = useState(false);
+  const [password, setPasswordChange] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [confirmPassword, setConfirmPasswordChange] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [error, setError] = useState('');
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(30);
-  const [success, onSucces] = useState(false);
-  const [send, onSend] = useState(false);
-  const [resend, onResend] = useState(false);
-  const [show, onShow] = useState(false);
+  const [success, setSucces] = useState(false);
+  const [send, setSend] = useState(false);
+  const [resend, setResend] = useState(false);
+  const [show, setShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
   const sendButtonIsDisabled = send || success;
   const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || success;
 
   function handleCodeInput(value) {
-    onCodeChange(value);
-    onCodeError(false);
+    setCodeChange(value);
+    setCodeError(false);
   }
 
   function handlePasswordInput(value) {
-    onPasswordChange(value);
-    onPasswordError(false);
+    setPasswordChange(value);
+    setPasswordError(false);
   }
 
   function handleConfirmPasswordInput(value) {
-    onConfirmPasswordChange(value);
-    onConfirmPasswordError(false);
+    setConfirmPasswordChange(value);
+    setConfirmPasswordError(false);
   }
 
   useEffect(() => {
@@ -56,47 +56,47 @@ export default function Index({ changePopup }) {
         setSeconds(30);
         break;
       case 419:
-        onError(t('error-server'));
+        setError(t('error-server'));
         break;
       default:
-        onError(t('error-server2'));
+        setError(t('error-server2'));
         break;
     }
   }
 
   function handleResendButton() {
-    onError('');
+    setError('');
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
         checkResponseForResend(response);
-        onResend(false);
+        setResend(false);
       });
   }
 
   function checkResponse(response) {
     if (response.status === 200) {
-      onSucces(true);
+      setSucces(true);
     } else if (response.status === 400) {
-      onError(t('error-code'));
+      setError(t('error-code'));
     } else {
-      onError(t('error-server2'));
+      setError(t('error-server2'));
     }
   }
 
   function validation() {
     switch (true) {
       case codeCheck(code):
-        onError(t('code-error'));
-        onCodeError(true);
+        setError(t('code-error'));
+        setCodeError(true);
         return false;
       case passwordCheck(password):
-        onError(t('password-error'));
-        onPasswordError(true);
+        setError(t('password-error'));
+        setPasswordError(true);
         return false;
       case password !== confirmPassword:
-        onError(t('confirm-password-error'));
-        onConfirmPasswordError(true);
+        setError(t('confirm-password-error'));
+        setConfirmPasswordError(true);
         return false;
       default:
         return true;
@@ -104,9 +104,9 @@ export default function Index({ changePopup }) {
   }
 
   function handleSendButton() {
-    onError('');
+    setError('');
     if (!validation()) {
-      onSend(false);
+      setSend(false);
       return;
     }
     const body = {
@@ -117,7 +117,7 @@ export default function Index({ changePopup }) {
     };
     makeQuerry('new-password', JSON.stringify(body))
       .then((response) => {
-        onSend(false);
+        setSend(false);
         checkResponse(response);
       });
   }
@@ -147,7 +147,7 @@ export default function Index({ changePopup }) {
               className="link-success"
               data-testid=""
               to="/"
-              onClick={() => changePopup(true)}
+              onClick={() => setPopup(true)}
             >
               {t('auth-link')}
             </Link>
@@ -176,7 +176,7 @@ export default function Index({ changePopup }) {
           onInputChange={(value) => handlePasswordInput(value)}
           tip={t('password-tip')}
           show={show}
-          onShow={onShow}
+          setShow={setShow}
         />
 
         <Field
@@ -187,12 +187,12 @@ export default function Index({ changePopup }) {
           type="password"
           onInputChange={(value) => handleConfirmPasswordInput(value)}
           show={show}
-          onShow={onShow}
+          setShow={setShow}
         />
         <Button
           name={send ? t('processing') : t('button-title')}
           className="confirm__btn"
-          onButton={onSend}
+          onButton={setSend}
           disabled={sendButtonIsDisabled}
           dataTestId="change-password-btn"
         />
@@ -201,7 +201,7 @@ export default function Index({ changePopup }) {
           data-testid="confirm-send-btn"
           className="confirm__send-again"
           disabled={resendButtonIsDisabled}
-          onClick={onResend}
+          onClick={setResend}
           type="button"
         >
           {resend ? t('processing') : t('time', { minutes, seconds })}

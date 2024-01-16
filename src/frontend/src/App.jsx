@@ -11,17 +11,17 @@ import './App.scss';
 import './locales/i18n';
 
 function App() {
-  const [authorization, onAuthorization] = useState(false);
-  const [popupLogin, changePopup] = useState(false);
-  const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
+  const [authorization, setAuthorization] = useState(false);
+  const [popupLogin, setPopup] = useState(false);
+  const [language, setLanguage] = useState({ value: 'UA', label: 'UA' });
   // const cookies = new Cookies();
   function checkAuth(value) {
     const authValue = sessionStorage.getItem('auth');
     if (authValue === 'true' && value === undefined) {
-      onAuthorization(authValue);
+      setAuthorization(authValue);
       return;
     }
-    onAuthorization(value);
+    setAuthorization(value);
     sessionStorage.setItem('auth', value);
   }
   useEffect(() => {
@@ -31,13 +31,13 @@ function App() {
     <Router>
       <Header
         language={language}
-        changeLanguage={changeLanguage}
+        setLanguage={setLanguage}
         authorization={authorization}
-        onAuthorization={(value) => checkAuth(value)}
-        changePopup={changePopup}
+        setAuthorization={(value) => checkAuth(value)}
+        setPopup={setPopup}
         popupLogin={popupLogin}
       />
-      <Routers changePopup={changePopup} language={language} />
+      <Routers setPopup={setPopup} language={language} />
       <CookieBanner />
     </Router>
 
