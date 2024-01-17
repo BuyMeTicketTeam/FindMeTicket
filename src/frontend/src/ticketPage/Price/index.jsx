@@ -2,12 +2,10 @@ import React from 'react';
 import './style.css';
 import PriceBlock from './PriceBlock';
 
-function Price() {
+function Price({ ticketsUrl }) {
   return (
     <div className="ticket-price">
-      <PriceBlock />
-      <PriceBlock />
-      <PriceBlock />
+      {ticketsUrl.map((ticketUrl) => <PriceBlock ticketUrl={ticketUrl} />)}
     </div>
   );
 }

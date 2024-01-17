@@ -15,7 +15,7 @@ export default function index({ changePopup }) {
       <Route path="/confirm" element={<Confirm changePopup={changePopup} />} />
       <Route path="/reset" element={<Reset />} />
       <Route path="/change-password" element={<ChangePassword changePopup={changePopup} />} />
-      <Route path="/ticket-page" element={<TicketPage />} />
+      <Route path="/ticket-page/:id" element={<TicketPage />} />
     </Routes>
   );
 }
