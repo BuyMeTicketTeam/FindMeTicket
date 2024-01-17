@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import './style.css';
 import HotelsMap from './image 6.png';
+import RestaurantMap from './image 7.png';
+import TouristPlaces from './image 8.png';
 
 function Maps() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState(null);
 
   const handleCategoryClick = (index) => {
@@ -39,7 +41,7 @@ function Maps() {
           onMouseEnter={() => handleCategoryHover(1)}
           onMouseLeave={handleCategoryLeave}
         >
-          Туристичні місця
+          Ресторани
         </div>
         <div
           className={getCategoryClassName(2)}
@@ -47,11 +49,13 @@ function Maps() {
           onMouseEnter={() => handleCategoryHover(2)}
           onMouseLeave={handleCategoryLeave}
         >
-          Ресторани
+          Туристичні місця
         </div>
       </div>
       <hr className="horizontal-line" />
-      <img src={HotelsMap} alt="HotelsMap" />
+      {selectedCategory === 0 && <img src={HotelsMap} alt="HotelsMap" />}
+      {selectedCategory === 1 && <img src={RestaurantMap} alt="RestaurantMap" />}
+      {selectedCategory === 2 && <img src={TouristPlaces} alt="TouristPlaces" />}
     </div>
   );
 }
