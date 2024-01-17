@@ -5,6 +5,7 @@ import Field from '../utils/Field';
 import Button from '../utils/Button';
 import ListTip from './ListTip';
 import makeQuerry from '../helper/querry';
+import Checkbox from '../utils/Checkbox';
 import { nicknameCheck, emailCheck, passwordCheck } from '../helper/regExCheck';
 import './register.css';
 
@@ -168,18 +169,13 @@ export default function Register() {
           show={show}
           onShow={onShow}
         />
-
-        <input
-          data-testid="checkbox"
-          id="policy"
-          type="checkbox"
-          className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'}
-          onClick={() => { onPolicy(!policy); onErrorPolicy(false); }}
-        />
-        <label htmlFor="policy" className="checkbox">
+        <Checkbox
+          policyError={policyError}
+          onChange={() => { onPolicy(!policy); onErrorPolicy(false); }}
+        >
           {t('agree')}
           <a href="/">{t('privacy policy')}</a>
-        </label>
+        </Checkbox>
         <Button
           dataTestId="register-btn"
           className="btn-full"

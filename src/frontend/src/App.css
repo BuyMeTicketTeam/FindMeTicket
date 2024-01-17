@@ -14,7 +14,7 @@ a {
 body {
   font-family: 'Roboto';
   color: var(--font-color);
-  background: url('../public/img/Frame 4.1.jpg');
+  background: url('./Frame 4.1.jpg');
   min-width: 800px;
 }
 
@@ -214,7 +214,7 @@ input[type='number'] {
   display: block;
   width: 15px;
   height: 20px;
-  background: url('../public/img/tick.svg');
+  background: url('./utils/img/tick.svg');
 }
 
 .checkbox__field.checkbox-error~.checkbox::after {
