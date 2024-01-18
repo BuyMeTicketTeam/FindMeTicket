@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +15,6 @@ import java.util.List;
 public interface TypeAheadAPI {
     @Operation(summary = "Type ahead feature", description = "Find cities based on type-ahead search.")
     @ApiResponse(responseCode = "200", description = "Successful operation. Returns a list of cities.")
-    ResponseEntity<List<CitiesDTO>> getCities(HttpServletRequest request, @RequestBody @NotNull @Valid StartLettersDTO startLetters) throws IOException;
+    ResponseEntity<List<CitiesDTO>> getCities(@NotNull @Valid StartLettersDTO startLetters,HttpServletRequest request) throws IOException;
 
 }
