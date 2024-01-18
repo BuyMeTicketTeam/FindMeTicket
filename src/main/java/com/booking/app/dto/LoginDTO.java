@@ -22,7 +22,8 @@ public class LoginDTO {
     private String password;
 
     @NotNull
-    private Boolean rememberMe;
+    @Builder.Default
+    private Boolean rememberMe = false;
 
 }
 

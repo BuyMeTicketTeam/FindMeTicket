@@ -1,5 +1,6 @@
 package com.booking.app.controller;
 
+import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.LoginAPI;
 import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.dto.LoginDTO;
@@ -54,7 +55,7 @@ public class LoginController implements LoginAPI {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        if (loginDTO.getRememberMe()) response.addHeader("RememberMe", loginDTO.getRememberMe().toString());
+        if (loginDTO.getRememberMe()) response.addHeader(CorsConfigConstants.EXPOSED_HEADER_REMEMBER_ME, loginDTO.getRememberMe().toString());
 
         if (response.getHeader(HttpHeaders.SET_COOKIE) != null && response.getHeader(HttpHeaders.AUTHORIZATION) != null)
             return ResponseEntity.ok().build();
@@ -67,7 +68,7 @@ public class LoginController implements LoginAPI {
 
 
             CookieUtils.addCookie(response, "refreshToken", refreshToken, 7200, true, true);
-            response.setHeader("UserID", userCredentials.getId().toString());
+            response.setHeader(CorsConfigConstants.EXPOSED_HEADER_USER_ID, userCredentials.getId().toString());
             response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", accessToken));
 
             return ResponseEntity.ok().build();
