@@ -101,16 +101,16 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
   }
 
   function transformData(item) {
-    if (item.siteLanguage === 'ua' && item.cityEng !== null) {
-      return ({ value: item.cityUa, label: `${item.cityUa} (${item.cityEng}), ${item.country}` });
+    switch (true) {
+      case item.siteLanguage === 'ua' && item.cityEng !== null:
+        return ({ value: item.cityUa, label: `${item.cityUa} (${item.cityEng}), ${item.country}` });
+      case item.siteLanguage === 'ua' && item.cityEng === null:
+        return ({ value: item.cityUa, label: `${item.cityUa}, ${item.country}` });
+      case item.siteLanguage === 'eng' && item.cityUa === null:
+        return ({ value: item.cityEng, label: `${item.cityEng}, ${item.country}` });
+      default:
+        return ({ value: item.cityEng, label: `${item.cityEng} (${item.cityUa}), ${item.country}` });
     }
-    if (item.siteLanguage === 'ua' && item.cityEng === null) {
-      return ({ value: item.cityUa, label: `${item.cityUa}, ${item.country}` });
-    }
-    if (item.siteLanguage === 'eng' && item.cityUa === null) {
-      return ({ value: item.cityEng, label: `${item.cityEng}, ${item.country}` });
-    }
-    return ({ value: item.cityEng, label: `${item.cityEng} (${item.cityUa}), ${item.country}` });
   }
 
   let timerId;
