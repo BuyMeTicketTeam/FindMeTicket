@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import { GoogleLogin } from '@react-oauth/google';
 import FacebookLogin from '@greatsumini/react-facebook-login';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
@@ -11,20 +10,19 @@ import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
 import facebookIcon from './facebook.png';
-import './login.css';
+import './login.scss';
 
 export default function Popup({ updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
-
-  const navigate = useNavigate();
-  const [login, onLoginChange] = useState('');
-  const [loginError, onLoginError] = useState(false);
-  const [password, onPasswordChange] = useState('');
-  const [passwordError, onPasswordError] = useState(false);
-  const [error, onError] = useState('');
-  const [send, onSend] = useState(false);
+  const [login, setLoginChange] = useState('');
+  const [loginError, setLoginError] = useState(false);
+  const [password, setPasswordChange] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [error, setError] = useState('');
+  const [send, setSend] = useState(false);
   const [remember, rememberMe] = useState(false);
-  const [show, onShow] = useState(false);
+  const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   function statusChecks(response) {
     switch (response.status) {
@@ -33,10 +31,10 @@ export default function Popup({ updateAuthValue }) {
         updateAuthValue(true);
         break;
       case 401:
-        onError(t('error-lp'));
+        setError(t('error-lp'));
         break;
       default:
-        onError(t('error-server2'));
+        setError(t('error-server2'));
         break;
     }
   }
@@ -44,12 +42,12 @@ export default function Popup({ updateAuthValue }) {
   function validation() {
     switch (true) {
       case emailCheck(login):
-        onError(t('login-error'));
-        onLoginError(true);
+        setError(t('login-error'));
+        setLoginError(true);
         return false;
       case passwordCheck(password):
-        onError(t('password-error'));
-        onPasswordError(true);
+        setError(t('password-error'));
+        setPasswordError(true);
         return false;
       default:
         return true;
@@ -58,7 +56,7 @@ export default function Popup({ updateAuthValue }) {
 
   function handleClick() {
     if (!validation()) {
-      onSend(false);
+      setSend(false);
       return;
     }
     const body = {
@@ -68,7 +66,7 @@ export default function Popup({ updateAuthValue }) {
     };
     makeQuerry('login', JSON.stringify(body))
       .then((response) => {
-        onSend(false);
+        setSend(false);
         statusChecks(response);
       });
   }
@@ -82,10 +80,10 @@ export default function Popup({ updateAuthValue }) {
         updateAuthValue(true);
         break;
       case 401:
-        onError('Помилка. Спробуйте ще раз');
+        setError('Помилка. Спробуйте ще раз');
         break;
       default:
-        onError(t('error-server2'));
+        setError(t('error-server2'));
         break;
     }
   }
@@ -97,15 +95,15 @@ export default function Popup({ updateAuthValue }) {
   }, [send]);
 
   function handleLoginChange(value) {
-    onLoginChange(value);
-    onLoginError(false);
-    onError('');
+    setLoginChange(value);
+    setLoginError(false);
+    setError('');
   }
 
   function handlePasswordChange(value) {
-    onPasswordChange(value);
-    onPasswordError(false);
-    onError('');
+    setPasswordChange(value);
+    setPasswordError(false);
+    setError('');
   }
 
   function handleRememberMeChange() {
@@ -137,10 +135,10 @@ export default function Popup({ updateAuthValue }) {
           type="password"
           onInputChange={(value) => handlePasswordChange(value)}
           show={show}
-          onShow={onShow}
+          setShow={setShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()} />
+        <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
             to="/reset"
@@ -154,7 +152,7 @@ export default function Popup({ updateAuthValue }) {
           className="btn-full"
           disabled={send}
           name={send ? t('processing') : t('login-buttom')}
-          onButton={onSend}
+          onButton={setSend}
         />
 
         <div className="login__another">
@@ -164,11 +162,11 @@ export default function Popup({ updateAuthValue }) {
         </div>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
-            onError('');
+            setError('');
             auth2Request('google', credentialResponse.credential);
           }}
           onError={() => {
-            onError('Помилка. Спробуйте ще раз');
+            setError('Помилка. Спробуйте ще раз');
           }}
           shape="circle"
           width={336}
@@ -177,11 +175,11 @@ export default function Popup({ updateAuthValue }) {
           appId="927706882244929"
           className="login__google"
           onSuccess={(response) => {
-            onError('');
+            setError('');
             auth2Request('facebook', response.userID);
           }}
           onFail={() => {
-            onError('Помилка. Спробуйте ще раз');
+            setError('Помилка. Спробуйте ще раз');
           }}
           onProfileSuccess={() => {
           }}

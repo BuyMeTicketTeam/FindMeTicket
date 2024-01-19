@@ -8,10 +8,10 @@ import makeQuerry from '../helper/querry';
 export default function LoginBtn({ status, updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   const cookies = new Cookies(null, { path: '/' });
-  const [logout, onLogout] = useState(false);
+  const [logout, setLogout] = useState(false);
 
   function handleLogoutButton() {
-    onLogout(false);
+    setLogout(false);
 
     makeQuerry('logout').then((response) => {
       switch (response.status) {
@@ -36,9 +36,10 @@ export default function LoginBtn({ status, updateAuthValue }) {
   if (status) {
     return (
       <button
+        data-testid="logout-btn"
         className="login"
         type="button"
-        onClick={() => { onLogout(true); }}
+        onClick={() => { setLogout(true); }}
       >
         {t('profile')}
       </button>

@@ -1,26 +1,31 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Header from './header/index';
 import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
-import './testServer';
-import './App.css';
+import CookieBanner from './cookieBanner/cookie';
+// import './testServer';
+import './App.scss';
 import './locales/i18n';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
+  const [language, setLanguage] = useState({ value: 'UA', label: 'UA' });
 
   return (
     <Router>
       <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
         <Header
+          language={language}
+          setLanguage={setLanguage}
           authorization={auth}
           updateAuthValue={updateAuthValue}
         />
-        <Routers updateAuthValue={updateAuthValue} />
+        <Routers updateAuthValue={updateAuthValue} language={language} />
+        <CookieBanner />
       </GoogleOAuthProvider>
     </Router>
 

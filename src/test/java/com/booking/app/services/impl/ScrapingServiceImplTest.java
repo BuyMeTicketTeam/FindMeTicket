@@ -1,17 +1,24 @@
 package com.booking.app.services.impl;
 
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@ExtendWith(MockitoExtension.class)
 class ScrapingServiceImplTest {
 
-    ScrapingServiceImpl scrapingService = new ScrapingServiceImpl(new ChromeDriver());
+    @InjectMocks
+    ScrapingServiceImpl scrapingService;
 
 //    @Test
 //    void scrapFromBusfor() {
 //        System.out.println(scrapingService
-//                .scrapFromBusfor("Київ", "Харків", "2023-12-10"));
+//                .scrapFromBusfor(RequestTicketDTO.builder().placeFrom("Київ").placeAt("Харків").departureDate("2023-12-10").build()));
 //    }
+
+    @Test
+    void delete(){
+
+    }
 }

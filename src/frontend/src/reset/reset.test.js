@@ -66,6 +66,15 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/reset`, {
+      body: '{"email":"stepan@gmail.com"}',
+      credentials: 'include',
+      headers: {
+        Authorization: null,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
     await waitFor(() => {
       expect(screen.getByTestId('error').innerHTML).toBe('error-user-not-found');
     });

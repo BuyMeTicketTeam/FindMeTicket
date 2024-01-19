@@ -1,74 +1,70 @@
 /* eslint-disable max-len */
-/* eslint-disable no-shadow */
-/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import SearchField from './SearchField';
-import Filters from './Filters';
-import Ticket from './Ticket';
+import Loader from './Loader';
+import Body from './Body';
+import Error from './Error';
+import Transport from './Transport';
+import Tourist from './Tourist';
+import Ad from '../Ad/index';
+import './main.scss';
 
 export default function Index() {
-  const [ticketsData, onTicketsdata] = useState(
-    [
-      {
-        id: 1,
-        dateFrom: '8:40 | 29.11, вт',
-        travelTime: '8 год 5 хв',
-        dateArrival: '16:30 | 29.11, вт',
-        placeFrom: 'Кам’янець-Подільський',
-        placeTo: 'Київ',
-        placeFromDetails: 'Автовокзал "Центральний"',
-        placeToDetails: 'Южный автовокзал',
-        priceOrdinary: '4000',
-        priceOld: '800',
-        tickerCarrier: 'nikkaBus',
-      },
-      {
-        id: 2,
-        dateFrom: '7:40 | 29.11, вт',
-        travelTime: '8 год 45 хв',
-        dateArrival: '10:30 | 29.11, вт',
-        placeFrom: 'Дніпро',
-        placeTo: 'Івано-Франківськ',
-        placeFromDetails: 'Автовокзал "Центральний"',
-        placeToDetails: 'Южный автовокзал',
-        priceOrdinary: '500',
-        priceOld: '',
-        tickerCarrier: 'nikkaBus',
-      },
-      {
-        id: 3,
-        dateFrom: '8:40 | 29.11, вт',
-        travelTime: '8 год 5 хв',
-        dateArrival: '16:30 | 29.11, вт',
-        placeFrom: 'Одеса',
-        placeTo: 'Київ',
-        placeFromDetails: 'Автовокзал "Центральний"',
-        placeToDetails: 'Южный автовокзал',
-        priceOrdinary: '1000',
-        priceOld: '8000',
-        tickerCarrier: 'nikkaBus',
-      },
-    ],
-  );
-  const [sort, onSort] = useState('price-low');
-  function sortFunc(arr, sort) {
-    if (sort === 'price-low') {
-      return arr.sort((a, b) => a.priceOrdinary - b.priceOrdinary);
-    }
-    return arr.sort((a, b) => b.priceOrdinary - a.priceOrdinary);
-  }
+  const [ticketsData, onTicketsData] = useState([]);
+  const [loading, onLoading] = useState(false);
+  const [requestBody, setRequestBody] = useState({});
+  const navigate = useNavigate();
+
   useEffect(() => {
-    onTicketsdata((prevTicketsData) => sortFunc([...prevTicketsData], sort));
-  }, [sort]);
+    function getLanguageFromStorage() {
+      return JSON.parse(localStorage.getItem('lang'));
+    }
+    const language = getLanguageFromStorage().value.toLowerCase();
+    navigate(`/${language}`);
+  }, []);
+
+  function showTickets() {
+    if (loading) {
+      return <Loader />;
+    }
+    if (ticketsData == null) {
+      return <Error />;
+    }
+    if (ticketsData.length > 0) {
+      return (
+        <>
+          <Tourist
+            ticketsData={ticketsData}
+            onTicketsData={onTicketsData}
+            city={requestBody.arrivalCity}
+          />
+          <Body
+            ticketsData={ticketsData}
+            onTicketsData={onTicketsData}
+            onLoading={onLoading}
+            setRequestBody={setRequestBody}
+            requestBody={requestBody}
+          />
+        </>
+      );
+    }
+    return <Ad isBig />;
+  }
+
   return (
     <div className="main-block">
       <div className="container">
-        <SearchField />
-        <Filters onSort={onSort} prevSort={sort} />
-        <div className="ticktets">
-          {ticketsData.map((item, elementIndex) => <Ticket key={ticketsData[elementIndex].id} data={ticketsData[elementIndex]} />)}
+        <div className="search_index">
+          <Ad />
+          <Transport />
+          <SearchField
+            onLoading={onLoading}
+            onTicketsData={onTicketsData}
+            setRequestBody={setRequestBody}
+          />
         </div>
+        {showTickets()}
       </div>
       <Outlet />
     </div>

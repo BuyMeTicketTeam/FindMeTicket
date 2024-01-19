@@ -141,6 +141,15 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/new-password`, {
+      body: '{"token":"12345","password":"b12345678","email":null,"confirmPassword":"b12345678"}',
+      credentials: 'include',
+      headers: {
+        Authorization: null,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
     await waitFor(() => {
       expect(screen.getByTestId('error').innerHTML).toBe('error-server2');
     });

@@ -6,18 +6,18 @@ import Input from '../utils/Input';
 import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
 import timeOut from '../helper/timer';
-import './confirm.css';
+import './confirm.scss';
 
 export default function Confirm() {
   const { t } = useTranslation('translation', { keyPrefix: 'confirm' });
-  const [code, onCodeChange] = useState('');
-  const [codeError, onCodeError] = useState(false);
-  const [error, onError] = useState('');
-  const [success, onSucces] = useState(false);
+  const [code, setCodeChange] = useState('');
+  const [codeError, setCodeError] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSucces] = useState(false);
   const [minutes, setMinutes] = useState(1);
   const [seconds, setSeconds] = useState(30);
-  const [send, onSend] = useState(false);
-  const [resend, onResend] = useState(false);
+  const [send, setSend] = useState(false);
+  const [resend, setResend] = useState(false);
   const sendButtonIsDisabled = send || success;
   const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || success;
 
@@ -29,26 +29,27 @@ export default function Confirm() {
       });
     }
   }, [seconds, minutes]);
+
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        onSucces(true);
-        onError('');
+        setSucces(true);
+        setError('');
         break;
       case 400:
-        onError(t('error-code'));
+        setError(t('error-code'));
         break;
       default:
-        onError(t('error-server2'));
+        setError(t('error-server2'));
         break;
     }
   }
 
   function validation() {
     if (codeCheck(code)) {
-      onSend(false);
-      onError(t('error-code'));
-      onCodeError(true);
+      setSend(false);
+      setError(t('error-code'));
+      setCodeError(true);
       return false;
     }
     return true;
@@ -56,7 +57,7 @@ export default function Confirm() {
 
   function handleSendButton() {
     if (!validation()) {
-      onSend(false);
+      setSend(false);
       return;
     }
     const body = {
@@ -65,7 +66,7 @@ export default function Confirm() {
     };
     makeQuerry('confirm-email', JSON.stringify(body))
       .then((response) => {
-        onSend(false);
+        setSend(false);
         statusChecks(response);
       });
   }
@@ -75,9 +76,9 @@ export default function Confirm() {
       setMinutes(1);
       setSeconds(30);
     } else if (response.status === 419) {
-      onError('error-server1');
+      setError(t('error-server1'));
     } else {
-      onError(t('error-server2'));
+      setError(t('error-server2'));
     }
   }
 
@@ -85,14 +86,14 @@ export default function Confirm() {
     const body = { email: sessionStorage.getItem('email') };
     makeQuerry('resend-confirm-token', JSON.stringify(body))
       .then((response) => {
-        onResend(false);
+        setResend(false);
         statusChecksForResend(response);
       });
   }
 
   function handleCodeChange(value) {
-    onCodeChange(value);
-    onCodeError(false);
+    setCodeChange(value);
+    setCodeError(false);
   }
   useEffect(() => {
     if (send) {
@@ -138,7 +139,7 @@ export default function Confirm() {
           <Button
             name={send ? t('processing') : t('send')}
             disabled={sendButtonIsDisabled}
-            onButton={onSend}
+            onButton={setSend}
             dataTestId="confirm-btn"
           />
 
@@ -146,7 +147,7 @@ export default function Confirm() {
             data-testid="send-again-btn"
             className="confirm__send-again"
             disabled={resendButtonIsDisabled}
-            onClick={onResend}
+            onClick={setResend}
             type="button"
           >
             {resend ? t('processing') : t('time', { minutes, seconds })}

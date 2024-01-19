@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UkrainianPlacesMapper {
 
-    @Mapping(source = "nameUa", target = "cityUkr")
-    @Mapping(source = "nameEng", target = "cityEng")
-    CitiesDTO ukrainianPlaceToCityDTO(UkrainianPlaces ukrainianPlaces);
+    @Mapping(target = "cityUa",source = "nameUa")
+    @Mapping(target = "cityEng",source = "nameEng")
+    CitiesDTO toCitiesDTO(UkrainianPlaces ukrainianPlaces);
 
 }

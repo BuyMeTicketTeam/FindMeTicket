@@ -2,13 +2,18 @@ package com.booking.app.controller;
 
 import com.booking.app.controller.api.TypeAheadAPI;
 import com.booking.app.dto.CitiesDTO;
-import com.booking.app.dto.RequestTypeAheadDTO;
+import com.booking.app.dto.StartLettersDTO;
 import com.booking.app.services.TypeAheadService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,10 +32,13 @@ public class TypeAheadController implements TypeAheadAPI {
      * @param startLetters DTO containing the start letters for city search.
      * @return ResponseEntity with a list of CitiesDTO as the response body.
      */
-    @PostMapping("/typeAhead")
+    @PostMapping(path = "/typeAhead")
     @Override
-    public ResponseEntity<List<CitiesDTO>> getCities(RequestTypeAheadDTO startLetters) {
-        return ResponseEntity.ok().body(typeAheadService.findMatches(startLetters));
+    public ResponseEntity<List<CitiesDTO>> getCities(@RequestBody StartLettersDTO startLetters, HttpServletRequest request) throws IOException {
+        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+
+        return ResponseEntity.ok().
+                body(typeAheadService.findMatchesUA(startLetters, siteLanguage));
     }
 
 }

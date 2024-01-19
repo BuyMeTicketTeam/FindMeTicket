@@ -1,5 +1,6 @@
 import React from 'react';
-// eslint-disable-next-line object-curly-newline
+import eyeIcon from './img/eye.svg';
+
 export default function Input(
   {
     value, onInputChange, type, dataTestId, placeholder, error, show, onShow, tip, tipDataTestId,
@@ -44,7 +45,7 @@ export default function Input(
         type="button"
         onClick={() => { onShow(!show); }}
       >
-        <img src="../img/eye.svg" alt="showPassword" />
+        <img src={eyeIcon} alt="showPassword" />
       </button>
       ) }
       <div data-testid={tipDataTestId} className="tip">{tip}</div>
