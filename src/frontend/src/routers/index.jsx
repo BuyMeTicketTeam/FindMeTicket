@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
-  Routes, Route, Navigate, useLocation, useNavigate,
+  Routes, Route,
 } from 'react-router-dom';
 import Reset from '../reset';
 import Register from '../register';
@@ -9,19 +9,10 @@ import Index from '../main';
 import Login from '../header/login/index';
 import ChangePassword from '../changePassword';
 
-export default function Routers({ updateAuthValue, language }) {
-  const location = useLocation();
-  const navigation = useNavigate();
-  useEffect(() => {
-    if (location.pathname === '/ua' || location.pathname === '/eng') {
-      navigation(`/${language.value.toLowerCase()}`);
-    }
-  }, [language]);
-
+export default function Routers({ updateAuthValue }) {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={`/${language.value}`} />} />
-      <Route path="/:locale" element={<Index />}>
+      <Route path="/*" element={<Index />}>
         <Route path="login" element={<Login updateAuthValue={updateAuthValue} />} />
       </Route>
       <Route path="/register" element={<Register />} />
