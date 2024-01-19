@@ -6,21 +6,22 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Header from './header/index';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
-import './testServer';
+// import './testServer';
 import './App.scss';
 import './locales/i18n';
 
 function App() {
-  const [authorization, onAuthorization] = useState(false);
-  const [popupLogin, changePopup] = useState(false);
+  const [authorization, setAuthorization] = useState(false);
+  const [popupLogin, setPopup] = useState(false);
+  const [language, setLanguage] = useState({ value: 'UA', label: 'UA' });
   // const cookies = new Cookies();
   function checkAuth(value) {
     const authValue = sessionStorage.getItem('auth');
     if (authValue === 'true' && value === undefined) {
-      onAuthorization(authValue);
+      setAuthorization(authValue);
       return;
     }
-    onAuthorization(value);
+    setAuthorization(value);
     sessionStorage.setItem('auth', value);
   }
   useEffect(() => {
@@ -29,12 +30,14 @@ function App() {
   return (
     <Router>
       <Header
+        language={language}
+        setLanguage={setLanguage}
         authorization={authorization}
-        onAuthorization={(value) => checkAuth(value)}
-        changePopup={changePopup}
+        setAuthorization={(value) => checkAuth(value)}
+        setPopup={setPopup}
         popupLogin={popupLogin}
       />
-      <Routers changePopup={changePopup} />
+      <Routers setPopup={setPopup} language={language} />
       <CookieBanner />
     </Router>
 

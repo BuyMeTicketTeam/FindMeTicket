@@ -1,5 +1,5 @@
 /* eslint-disable no-shadow */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
@@ -9,9 +9,8 @@ import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({
-  authorization, onAuthorization, changePopup, popupLogin,
+  authorization, setAuthorization, setPopup, popupLogin, language, setLanguage,
 }) {
-  const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
     { value: 'UA', label: 'UA' },
@@ -31,14 +30,10 @@ export default function Header({
   }
 
   function getLanguageFromStorage() {
-    localStorage.getItem('lang');
+    return JSON.parse(localStorage.getItem('lang'));
   }
 
-  function getLanguage(languageParam) {
-    if (languageParam) {
-      setLanguageToStorage(languageParam);
-      return languageParam;
-    }
+  function getLanguage() {
     const savedLanguage = getLanguageFromStorage();
     if (savedLanguage) {
       return savedLanguage;
@@ -47,8 +42,9 @@ export default function Header({
   }
 
   function displayLanguage(languageParam) {
-    const language = getLanguage(languageParam);
-    changeLanguage(language);
+    const language = languageParam || getLanguage();
+    setLanguage(language);
+    setLanguageToStorage(language);
     i18n.changeLanguage(language.value);
   }
 
@@ -76,11 +72,11 @@ export default function Header({
 
       <LoginBtn
         status={authorization}
-        onAuthorization={onAuthorization}
-        changePopup={changePopup}
+        setAuthorization={setAuthorization}
+        setPopup={setPopup}
       />
 
-      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
+      {popupLogin && <Login setPopup={setPopup} setAuthorization={setAuthorization} />}
     </header>
   );
 }

@@ -2,15 +2,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { createServer, Response } from 'miragejs';
 
-const from = [
-  { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
-  { cityUkr: 'Київ', cityEng: 'Київ', country: 'UA' },
-  { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
-];
+// const from = {
+//   cities: {
+//     Дніпро: 'Ua',
+//     Київ: 'Ua',
+//     Одеса: 'Ua',
+//   },
+// };
 const destination = [
-  { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
-  { cityUkr: 'Дністер', cityEng: 'Київ', country: 'UA' },
-  { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
+  {
+    cityUa: 'Дніпро', cityEng: 'Dnipro', country: 'UA', siteLanguage: 'eng',
+  },
+  {
+    cityUa: 'Дністеріваіваіва', cityEng: 'Kyivasdadsasd', country: 'UA', siteLanguage: 'eng',
+  },
+  {
+    cityUa: 'Одеса', cityEng: 'Odesa', country: 'UA', siteLanguage: 'eng',
+  },
 ];
 const tickets = [
   {
@@ -118,8 +126,8 @@ createServer({
     this.post('/logout', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/typeAhead', (schema, request) => {
-      if (JSON.parse(request.requestBody).startLetters === 'Дн') {
-        return new Response(200, undefined, JSON.stringify(from));
+      if (JSON.parse(request.requestBody) === 'Дн') {
+        return new Response(200, undefined, JSON.stringify(destination));
       }
       return new Response(200, undefined, JSON.stringify(destination));
     });

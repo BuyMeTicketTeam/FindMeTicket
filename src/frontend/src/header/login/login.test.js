@@ -65,7 +65,7 @@ describe('validation', () => {
     );
     const buttonLogin = screen.getByTestId('send-request');
     fireEvent.click(buttonLogin);
-    expect(screen.queryByTestId('error').innerHTML).toBe('Поле email заповнено не вірно');
+    expect(screen.queryByTestId('error').innerHTML).toBe('The email field is not filled in correctly');
   });
   test('password error', () => {
     render(
@@ -79,7 +79,7 @@ describe('validation', () => {
       target: { value: 'stepan@gmail.com' },
     });
     fireEvent.click(buttonLogin);
-    expect(screen.queryByTestId('error').innerHTML).toBe('Поле паролю заповнено не вірно');
+    expect(screen.queryByTestId('error').innerHTML).toBe('The password field is incorrect');
   });
   test('success validation', () => {
     render(
@@ -135,7 +135,7 @@ describe('server tests', () => {
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('Помилка серверу. Спробуйте ще раз');
+      expect(screen.getByTestId('error').innerHTML).toBe('Server error. Try again');
     });
   });
 });
