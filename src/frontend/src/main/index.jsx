@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
 import Loader from './Loader';
 import Body from './Body';
@@ -14,15 +14,6 @@ export default function Index() {
   const [ticketsData, onTicketsData] = useState([]);
   const [loading, onLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    function getLanguageFromStorage() {
-      return JSON.parse(localStorage.getItem('lang'));
-    }
-    const language = getLanguageFromStorage().value.toLowerCase();
-    navigate(`/${language}`);
-  }, []);
 
   function showTickets() {
     if (loading) {
@@ -66,6 +57,7 @@ export default function Index() {
         </div>
         {showTickets()}
       </div>
+      <Outlet />
     </div>
   );
 }

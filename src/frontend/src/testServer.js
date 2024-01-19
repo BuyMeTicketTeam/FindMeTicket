@@ -1,3 +1,5 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable max-len */
 /* eslint-disable no-new */
 /* eslint-disable import/no-extraneous-dependencies */
 import { createServer, Response } from 'miragejs';
@@ -117,8 +119,12 @@ const ticketsNew = [
 createServer({
   routes() {
     // Responding to a POST request
-    this.post('/login', () => new Response(200, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }));
+    this.post('/login', () => {
+      // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
+      return new Response(200, { rememberMe: process.env.REACT_APP_TEST_JWT_TOKEN, userId: 1231231421 }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN });
+    });
     this.post('/register', () => new Response(200));
+    this.post('/oauth2/authorize/google', () => new Response(200));
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));

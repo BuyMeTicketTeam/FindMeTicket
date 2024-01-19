@@ -1,17 +1,18 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import { GoogleLogin } from '@react-oauth/google';
+import FacebookLogin from '@greatsumini/react-facebook-login';
 import { passwordCheck, emailCheck } from '../../helper/regExCheck';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
 import Checkbox from '../../utils/Checkbox';
-import googleIcon from './google-icon.png';
+import facebookIcon from './facebook.png';
 import './login.scss';
 
-export default function Popup({ changePopup, onAuthorization }) {
+export default function Popup({ updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
   const [login, setLoginChange] = useState('');
   const [loginError, setLoginError] = useState(false);
@@ -22,23 +23,14 @@ export default function Popup({ changePopup, onAuthorization }) {
   const [remember, rememberMe] = useState(false);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
-  const loginRef = useRef(null);
-
-  useEffect(() => {
-    disableBodyScroll(loginRef.current);
-    return () => {
-      clearAllBodyScrollLocks();
-    };
-  }, []);
 
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        changePopup(false);
-        onAuthorization(true);
         navigate('/');
+        updateAuthValue(true);
         break;
-      case 403:
+      case 401:
         setError(t('error-lp'));
         break;
       default:
@@ -70,12 +62,30 @@ export default function Popup({ changePopup, onAuthorization }) {
     const body = {
       email: login,
       password,
+      rememberMe: remember,
     };
     makeQuerry('login', JSON.stringify(body))
       .then((response) => {
         setSend(false);
         statusChecks(response);
       });
+  }
+
+  async function auth2Request(provider, credential) {
+    const bodyJSON = JSON.stringify({ idToken: credential });
+    const response = await makeQuerry(`oauth2/authorize/${provider}`, bodyJSON);
+    switch (response.status) {
+      case 200:
+        navigate('/');
+        updateAuthValue(true);
+        break;
+      case 401:
+        setError('Помилка. Спробуйте ще раз');
+        break;
+      default:
+        setError(t('error-server2'));
+        break;
+    }
   }
 
   useEffect(() => {
@@ -102,14 +112,8 @@ export default function Popup({ changePopup, onAuthorization }) {
 
   return (
     <div data-testid="login" className="background">
-      <div ref={loginRef} className="popup__body">
-        <button
-          data-testid="close"
-          type="button"
-          className="close"
-          onClick={() => changePopup(false)}
-          aria-label="Close"
-        />
+      <div className="popup__body">
+        <Link to="/" className="close" aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           error={loginError}
@@ -137,16 +141,14 @@ export default function Popup({ changePopup, onAuthorization }) {
         <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
-            data-testid=""
             to="/reset"
-            onClick={() => changePopup(false)}
           >
             {t('forgot-password')}
           </Link>
         </div>
 
         <Button
-          dataTestId="send-request"
+          dataTestId="login-btn"
           className="btn-full"
           disabled={send}
           name={send ? t('processing') : t('login-buttom')}
@@ -158,15 +160,38 @@ export default function Popup({ changePopup, onAuthorization }) {
           <span className="login-another__content">{t('or')}</span>
           <span className="login-another__line" />
         </div>
-        <a href="http://localhost:8080/oauth2/authorize" className="login__google">
-          <img src={googleIcon} alt="logo" />
-          {t('google')}
-        </a>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            setError('');
+            auth2Request('google', credentialResponse.credential);
+          }}
+          onError={() => {
+            setError('Помилка. Спробуйте ще раз');
+          }}
+          shape="circle"
+          width={336}
+        />
+        <FacebookLogin
+          appId="927706882244929"
+          className="login__google"
+          onSuccess={(response) => {
+            setError('');
+            auth2Request('facebook', response.userID);
+          }}
+          onFail={() => {
+            setError('Помилка. Спробуйте ще раз');
+          }}
+          onProfileSuccess={() => {
+          }}
+        >
+          <img src={facebookIcon} alt="logo" />
+          {t('facebook')}
+
+        </FacebookLogin>
         <div className="link link-register">
           <Link
             data-testid="to-register-btn"
             to="/register"
-            onClick={() => changePopup(false)}
           >
             {t('register')}
           </Link>

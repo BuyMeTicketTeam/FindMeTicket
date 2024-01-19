@@ -4,12 +4,11 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import LoginBtn from './LoginBtn';
-import Login from './login/index';
 import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({
-  authorization, setAuthorization, setPopup, popupLogin, language, setLanguage,
+  authorization, updateAuthValue, language, setLanguage,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
@@ -72,11 +71,9 @@ export default function Header({
 
       <LoginBtn
         status={authorization}
-        setAuthorization={setAuthorization}
-        setPopup={setPopup}
+        updateAuthValue={updateAuthValue}
       />
 
-      {popupLogin && <Login setPopup={setPopup} setAuthorization={setAuthorization} />}
     </header>
   );
 }

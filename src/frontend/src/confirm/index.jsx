@@ -8,7 +8,7 @@ import makeQuerry from '../helper/querry';
 import timeOut from '../helper/timer';
 import './confirm.scss';
 
-export default function Confirm({ setPopup }) {
+export default function Confirm() {
   const { t } = useTranslation('translation', { keyPrefix: 'confirm' });
   const [code, setCodeChange] = useState('');
   const [codeError, setCodeError] = useState(false);
@@ -117,8 +117,7 @@ export default function Confirm({ setPopup }) {
             <Link
               className="link-success"
               data-testid=""
-              to="/"
-              onClick={() => setPopup(true)}
+              to="/login"
             >
               {t('auth-link')}
             </Link>

@@ -1,9 +1,13 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import makeQuerry from '../helper/querry';
 
-export default function LoginBtn({ status, changePopup, onAuthorization }) {
+export default function LoginBtn({ status, updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
+  const cookies = new Cookies(null, { path: '/' });
   const [logout, setLogout] = useState(false);
 
   function handleLogoutButton() {
@@ -12,8 +16,10 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
     makeQuerry('logout').then((response) => {
       switch (response.status) {
         case 200:
-          onAuthorization(!status);
+          updateAuthValue(false);
           localStorage.removeItem('JWTtoken');
+          cookies.remove('rememberMe');
+          cookies.remove('USER_ID');
           break;
         default:
           break;
@@ -40,13 +46,11 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
     );
   }
   return (
-    <button
-      data-testid="login-btn"
-      className="login"
-      onClick={() => { changePopup(true); }}
-      type="button"
+    <Link
+      className="login-link"
+      to="/login"
     >
       {t('login')}
-    </button>
+    </Link>
   );
 }
