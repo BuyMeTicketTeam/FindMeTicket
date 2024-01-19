@@ -5,7 +5,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./src/frontend
+    working-directory: src/frontend
 
 jobs:
   build:
