@@ -25,12 +25,12 @@ footer .footer-container{
 
 .footer-column h4 {
   margin-bottom: 10px;
-  font-size: 12px; 
+  font-size: 14px; 
 }
 
 .footer-column p {
   margin: 8px 0;
-  font-size: 12px; 
+  font-size: 14px; 
 }
 
 
@@ -52,7 +52,7 @@ footer .footer-container{
 }
 .year {
   text-align: center;
-  border-top: 1px solid black;
+  border-top: 1px solid var(--dark);
   padding: 20px 0;
   font-size: 12px;
 }
@@ -61,7 +61,7 @@ footer .footer-container{
 }
 
 .arrow-icon.open {
-  transform: rotate(180deg);
+  transform: translate(0, -50%) rotate(180deg);
 }
 
 .arrow-icon {

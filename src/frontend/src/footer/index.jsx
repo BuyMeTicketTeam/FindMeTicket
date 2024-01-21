@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './style.css';
+import Arrow from './arrow.svg';
 
 function Footer() {
   const [isFooterVisible, setIsFooterVisible] = useState(false);
@@ -63,7 +64,7 @@ function Footer() {
             tabIndex={0}
             onKeyDown={handleKeyDown}
           >
-            <span>&#5169;</span>
+            <img src={Arrow} alt="Arrow" />
           </div>
           <div
             className="year"
