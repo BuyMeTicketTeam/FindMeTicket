@@ -19,13 +19,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-          ref: develop
+    - name: Check if 'src/frontend' directory exists
+      run: test -d ./src/frontend
+      continue-on-error: true
+      id: check_frontend_directory
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install dependencies and run tests
+
+    - name: Install dependencies and run tests in 'src/frontend'
+      if: steps.check_frontend_directory.outputs.result == 'true'
+      run: |
+        cd ./src/frontend
+        npm ci
+        npm test
+
+    - name: Install dependencies and run tests in 'develop' branch
+      if: steps.check_frontend_directory.outputs.result == 'false'
       run: |
         npm ci
         npm test
