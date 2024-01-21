@@ -1,5 +1,6 @@
 package com.booking.app.security.jwt;
 
+import com.booking.app.constant.JwtTokenConstants;
 import com.booking.app.entity.UserCredentials;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -103,7 +104,7 @@ public class JwtProvider {
 
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authorizationHeader != null && !authorizationHeader.equals("null") && authorizationHeader.startsWith("Bearer")) {
+        if (authorizationHeader != null && !authorizationHeader.equals("null") && authorizationHeader.startsWith(JwtTokenConstants.BEARER.trim())) {
             return authorizationHeader.substring(7);
         }
 
@@ -114,7 +115,7 @@ public class JwtProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
+                if (cookie.getName().equals(JwtTokenConstants.REFRESH_TOKEN)) {
                     return cookie.getValue();
                 }
             }
