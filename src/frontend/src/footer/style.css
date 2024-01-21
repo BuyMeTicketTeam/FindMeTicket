@@ -39,18 +39,14 @@ footer .footer-container{
   margin-top: 20px;
 }
 
-.contact-line {
+.footer-contact-line {
   margin-top: 10px;
 }
-
-/* .contact-line span {
-  margin: 0 10px;
-} */
 
 .footer-column {
   margin-bottom: 20px;
 }
-.year {
+.footer-year {
   text-align: center;
   border-top: 1px solid var(--dark);
   padding: 20px 0;
@@ -60,11 +56,11 @@ footer .footer-container{
   position: relative;
 }
 
-.arrow-icon.open {
+.footer-arrow-icon.open {
   transform: translate(0, -50%) rotate(180deg);
 }
 
-.arrow-icon {
+.footer-arrow-icon {
   position: absolute;
   top: 0%;
   right: 20px;
@@ -82,7 +78,7 @@ footer .footer-container{
 }
 
 
-.arrow-icon span {
+.footer-arrow-icon span {
   font-size: 20px;
   display: inline-block;
   transform-origin: center;

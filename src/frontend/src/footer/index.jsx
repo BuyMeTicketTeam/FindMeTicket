@@ -25,7 +25,7 @@ function Footer() {
 
   return (
     <div className="footer-container">
-      <div className="content-container">
+      <div className="footer-content-container">
         <footer style={{ height: footerHeight }}>
           <div className="footer-container container">
             {isFooterVisible && (
@@ -46,10 +46,10 @@ function Footer() {
 
                 <div className="footer-column">
                   <h4>Контакти</h4>
-                  <div className="contact-line">
+                  <div className="footer-contact-line">
                     <span>findmeticketweb@gmail.com</span>
                   </div>
-                  <div className="contact-line">
+                  <div className="footer-contact-line">
                     <span>+380958454545</span>
                   </div>
                 </div>
@@ -57,7 +57,7 @@ function Footer() {
             )}
           </div>
           <div
-            className={`arrow-icon ${isFooterVisible ? 'open' : ''}`}
+            className={`footer-arrow-icon ${isFooterVisible ? 'open' : ''}`}
             data-testid="Toggle Footer"
             onClick={toggleFooter}
             role="button"
@@ -67,7 +67,7 @@ function Footer() {
             <img src={Arrow} alt="Arrow" />
           </div>
           <div
-            className="year"
+            className="footer-year"
             role="button"
             tabIndex={isDetailedInfoVisible ? '0' : '-1'}
             onClick={toggleDetailedInfo}
