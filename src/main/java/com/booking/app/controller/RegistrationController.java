@@ -23,6 +23,7 @@ import java.io.IOException;
 @RequestMapping
 @AllArgsConstructor
 @Log4j2
+
 public class RegistrationController implements RegisterAPI {
 
     private final RegistrationService registrationService;

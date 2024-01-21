@@ -5,7 +5,7 @@ import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.UserDTO;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
+import com.booking.app.entity.UserCredentials;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -15,14 +15,14 @@ public interface UserMapper {
 
     public User toEntityUser(UserDTO userDTO);
 
-    public LoginDTO toDtoLogin(UserSecurity userSecurity);
+    public LoginDTO toLoginDTO(UserCredentials userCredentials);
 
-    public UserSecurity toEntityLogin(LoginDTO userDTO);
+    public UserCredentials toUserSecurity(LoginDTO userDTO);
 
-    public RegistrationDTO toDtoRegistration(UserSecurity userSecurity);
+    public RegistrationDTO toRegistrationDTO(UserCredentials userCredentials);
 
-    public UserSecurity toEntityRegistration(RegistrationDTO registrationDTO);
+    public UserCredentials toUserSecurity(RegistrationDTO registrationDTO);
 
-    public EmailDTO toEmail(UserSecurity userSecurity);
+    public EmailDTO toEmailDTO(UserCredentials userCredentials);
 
 }

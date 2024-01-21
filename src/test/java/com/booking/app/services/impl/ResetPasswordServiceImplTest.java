@@ -3,8 +3,8 @@ package com.booking.app.services.impl;
 import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,7 +34,7 @@ class ResetPasswordServiceImplTest {
     private MailSenderService mailSenderService;
 
     @Mock
-    private UserSecurityRepository userSecurityRepository;
+    private UserCredentialsRepository userCredentialsRepository;
 
     @Mock
     private VerifyEmailRepository verifyEmailRepository;
@@ -58,21 +57,21 @@ class ResetPasswordServiceImplTest {
 
         User user = User.builder().confirmToken(token).build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(true).user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
         when(tokenService.createConfirmToken(user)).thenReturn(token);
 
-        assertTrue(resetPasswordService.sendEmailResetPassword(email));
+        assertTrue(resetPasswordService.hasEmailSent(email));
     }
 
     @Test
     void testSendEmailResetPasswordNoSuchEmail() throws MessagingException {
         String email = "dkfshkf@gmail.com";
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        assertFalse(resetPasswordService.sendEmailResetPassword(email));
+        assertFalse(resetPasswordService.hasEmailSent(email));
     }
 
     @Test
@@ -87,11 +86,11 @@ class ResetPasswordServiceImplTest {
 
         User user = User.builder().confirmToken(token).build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(false).user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(false).user(user).build();
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
 
-        assertFalse(resetPasswordService.sendEmailResetPassword(email));
+        assertFalse(resetPasswordService.hasEmailSent(email));
     }
 
     @Test
@@ -107,9 +106,9 @@ class ResetPasswordServiceImplTest {
 
         User user = User.builder().confirmToken(token).build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(true).user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
 
-        when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userCredentials));
         when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getToken())).thenReturn(true);
 
         assertTrue(resetPasswordService.resetPassword(resetPasswordDTO));
@@ -128,9 +127,9 @@ class ResetPasswordServiceImplTest {
 
         User user = User.builder().confirmToken(token).build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(true).user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
 
-        when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userCredentials));
         when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getToken())).thenReturn(false);
 
         assertFalse(resetPasswordService.resetPassword(resetPasswordDTO));
@@ -141,7 +140,7 @@ class ResetPasswordServiceImplTest {
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder().email("dkfshkf@gmail.com")
                 .token("SAD88").password("12345").confirmPassword("12345").build();
 
-        when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.empty());
 
         assertFalse(resetPasswordService.resetPassword(resetPasswordDTO));
     }
@@ -159,9 +158,9 @@ class ResetPasswordServiceImplTest {
 
         User user = User.builder().confirmToken(token).build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(false).user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(false).user(user).build();
 
-        when(userSecurityRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userCredentials));
 
         assertFalse(resetPasswordService.resetPassword(resetPasswordDTO));
     }

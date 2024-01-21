@@ -31,7 +31,8 @@ class ResetPasswordControllerTest {
         EmailDTO emailDTO = EmailDTO.builder()
                 .email("mishaakamichael999@gmail.com").build();
         String email = emailDTO.getEmail();
-        when(resetPasswordService.sendEmailResetPassword(email)).thenReturn(true);
+        when(resetPasswordService
+                .hasEmailSent(email)).thenReturn(true);
         ResponseEntity<?> responseEntity = resetPasswordController.sendResetToken(emailDTO);
         Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);
@@ -42,7 +43,7 @@ class ResetPasswordControllerTest {
         EmailDTO emailDTO = EmailDTO.builder()
                 .email("mishaakamichael999@gmail.com").build();
         String email = emailDTO.getEmail();
-        when(resetPasswordService.sendEmailResetPassword(email)).thenReturn(false);
+        when(resetPasswordService.hasEmailSent(email)).thenReturn(false);
         ResponseEntity<?> responseEntity = resetPasswordController.sendResetToken(emailDTO);
         Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         Assertions.assertNotNull(responseEntity);

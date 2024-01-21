@@ -5,12 +5,12 @@ export default function ListTip() {
   const { t } = useTranslation('translation', { keyPrefix: 'tip' });
   return (
     <>
-      {t('nickname-tip')}
+      {t('nickname-tip-title')}
       <ul className="listtip">
-        <li>{t('nickname-tip2')}</li>
-        <li>{t('nickname-tip3')}</li>
-        <li>{t('nickname-tip4')}</li>
-        <li>{t('nickname-tip5')}</li>
+        <li>{t('nickname-tip-chars-numbers')}</li>
+        <li>{t('nickname-tip-letters')}</li>
+        <li>{t('nickname-tip-sumbols')}</li>
+        <li>{t('nickname-tip-spaces')}</li>
       </ul>
     </>
   );

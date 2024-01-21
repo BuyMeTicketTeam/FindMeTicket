@@ -2,8 +2,8 @@ package com.booking.app.services.impl;
 
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Value("${TOKEN_SYMBOLS}")
     private String TOKEN_SYMBOLS;
-    private final UserSecurityRepository userSecurityRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
 
     /**
      * Verifies a given token for a specific user.
@@ -34,7 +34,7 @@ public class TokenServiceImpl implements TokenService {
      */
     @Override
     public boolean verifyToken(String email, String givenToken) {
-        Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(email);
+        Optional<UserCredentials> userByEmail = userCredentialsRepository.findByEmail(email);
         LocalDateTime now = LocalDateTime.now();
         Date dateExpiryTime = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
 

@@ -1,9 +1,7 @@
 package com.booking.app.dto;
 
 import com.booking.app.annotation.PasswordMatches;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.booking.app.util.ConfirmPasswordUtil;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
