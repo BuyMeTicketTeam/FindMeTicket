@@ -1,5 +1,7 @@
+@import '../styles/variables.scss';
+
 footer {
-  background-color: var(--semi-dark);
+  background-color: $semi-dark;
   text-align: left;
   font-size: 14px;
 }
@@ -48,7 +50,7 @@ footer .footer-container{
 }
 .footer-year {
   text-align: center;
-  border-top: 1px solid var(--dark);
+  border-top: 1px solid $dark;
   padding: 20px 0;
   font-size: 12px;
 }
@@ -68,7 +70,7 @@ footer .footer-container{
   cursor: pointer;
   transition: transform 0.3s ease;
   border-radius: 50%; 
-  background-color: var(--bright); 
+  background-color: $bright; 
   padding: 10px; 
   width: 40px;
   height: 40px;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './style.css';
+import './style.scss';
 import Arrow from './arrow.svg';
 
 function Footer() {
