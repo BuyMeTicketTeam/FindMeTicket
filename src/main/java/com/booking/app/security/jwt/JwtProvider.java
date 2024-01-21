@@ -48,14 +48,9 @@ public class JwtProvider {
                     .getBody();
 
 
-        } catch (MalformedJwtException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            log.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            log.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            log.error("JWT claims string is empty: {}", e.getMessage());
+        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            log.error("Error parsing JWT token: {}", e.getMessage());
+            return null;
         }
         return claims.getSubject();
     }
@@ -127,6 +122,5 @@ public class JwtProvider {
 
         return null;
     }
-
 
 }

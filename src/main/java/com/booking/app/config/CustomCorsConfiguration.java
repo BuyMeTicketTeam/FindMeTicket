@@ -1,5 +1,6 @@
 package com.booking.app.config;
 
+import com.booking.app.constant.CustomHttpHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,7 @@ public class CustomCorsConfiguration extends CorsConfiguration {
         configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.CONTENT_LANGUAGE, HttpHeaders.ORIGIN, HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE, HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.CONTENT_TYPE));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE,
-                EXPOSED_HEADER_USER_ID, EXPOSED_HEADER_REMEMBER_ME));
+                CustomHttpHeaders.HEADER_USER_ID, CustomHttpHeaders.HEADER_REMEMBER_ME));
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
