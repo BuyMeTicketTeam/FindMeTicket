@@ -14,11 +14,14 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.booking.app.constant.CustomHttpHeaders.HEADER_USER_ID;
+import static com.booking.app.constant.JwtTokenConstants.BEARER;
+import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 
 @Log4j2
 @Component
@@ -31,56 +34,57 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String email = null;
 
-        String accessTokenFromRequest = jwtProvider.extractAccessTokenFromRequest(request);
-        String refreshTokenFromRequest = jwtProvider.extractRefreshTokenFromRequest(request);
+        String accessToken = jwtProvider.extractAccessTokenFromRequest(request);
+        String refreshToken = jwtProvider.extractRefreshTokenFromRequest(request);
 
-        if (accessTokenFromRequest == null && refreshTokenFromRequest == null) {
+        if (accessToken == null && refreshToken == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        email = jwtProvider.extractEmail(refreshTokenFromRequest);
-
+        String email = jwtProvider.extractEmail(refreshToken);
+        if (email == null) {
+            handleAuthenticationFailure(response);
+            return;
+        }
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        if (accessTokenFromRequest != null && jwtProvider.validateAccessToken(accessTokenFromRequest, (UserCredentials) userDetails)) {
+        if (accessToken != null && jwtProvider.validateAccessToken(accessToken, (UserCredentials) userDetails)) {
             String newAccessToken = jwtProvider.generateAccessToken(email);
-            CookieUtils.addCookie(response, "refreshToken", refreshTokenFromRequest, 7200, true, true);
-            response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", newAccessToken));
-            response.setHeader("UserID", ((UserCredentials) userDetails).getId().toString());
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(context);
-
-        } else if (refreshTokenFromRequest != null && jwtProvider.validateRefreshToken(refreshTokenFromRequest, (UserCredentials) userDetails)) {
-
+            saveAuthenticationDataToResponse(response, newAccessToken, refreshToken, userDetails);
+            setSecurityContext(userDetails);
+        } else if (refreshToken != null && jwtProvider.validateRefreshToken(refreshToken, (UserCredentials) userDetails)) {
             String newAccessToken = jwtProvider.generateAccessToken(email);
             String newRefreshToken = jwtProvider.generateRefreshToken(email);
 
-            CookieUtils.addCookie(response, "refreshToken", newRefreshToken, 7200, true, true);
-            response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", newAccessToken));
-            response.setHeader("UserID", ((UserCredentials) userDetails).getId().toString());
-
-            UserDetails refreshedUserDetails = userDetailsService.loadUserByUsername(email);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(refreshedUserDetails, refreshedUserDetails.getPassword(), refreshedUserDetails.getAuthorities());
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(context);
-
+            saveAuthenticationDataToResponse(response, newAccessToken, newRefreshToken, userDetails);
+            setSecurityContext(userDetails);
         } else {
-            SecurityContextHolder.clearContext();
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired tokens");
+            handleAuthenticationFailure(response);
+            return;
         }
 
         chain.doFilter(request, response);
+    }
+
+    private void saveAuthenticationDataToResponse(HttpServletResponse response, String accessToken, String refreshToken, UserDetails userDetails) {
+        CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+        response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
+        response.setHeader(HEADER_USER_ID, ((UserCredentials) userDetails).getId().toString());
+    }
+
+    private void setSecurityContext(UserDetails userDetails) {
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authenticationToken);
+        SecurityContextHolder.setContext(context);
+    }
+
+    private void handleAuthenticationFailure(HttpServletResponse response) throws IOException {
+        SecurityContextHolder.clearContext();
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired tokens");
     }
 
 }

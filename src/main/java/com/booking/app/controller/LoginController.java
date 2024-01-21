@@ -1,9 +1,8 @@
 package com.booking.app.controller;
 
-import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.LoginAPI;
-import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.dto.LoginDTO;
+import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.security.jwt.JwtProvider;
 import com.booking.app.services.impl.GoogleAccountServiceImpl;
@@ -17,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+
+import static com.booking.app.constant.CustomHttpHeaders.HEADER_REMEMBER_ME;
+import static com.booking.app.constant.CustomHttpHeaders.HEADER_USER_ID;
+import static com.booking.app.constant.JwtTokenConstants.BEARER;
+import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 
 /**
  * LoginController handles authentication-related operations.
@@ -52,41 +58,45 @@ public class LoginController implements LoginAPI {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
 
-        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        if (loginDTO.getRememberMe()) response.addHeader(CorsConfigConstants.EXPOSED_HEADER_REMEMBER_ME, loginDTO.getRememberMe().toString());
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         if (response.getHeader(HttpHeaders.SET_COOKIE) != null && response.getHeader(HttpHeaders.AUTHORIZATION) != null)
             return ResponseEntity.ok().build();
 
         if (authentication.isAuthenticated()) {
+            if (loginDTO.getRememberMe()) {
+                response.addHeader(HEADER_REMEMBER_ME, loginDTO.getRememberMe().toString());
+            }
+
             UserCredentials userCredentials = (UserCredentials) authentication.getPrincipal();
 
             String refreshToken = jwtProvider.generateRefreshToken(loginDTO.getEmail());
             String accessToken = jwtProvider.generateAccessToken(loginDTO.getEmail());
 
+            CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, 7200, true, true);
+            response.setHeader(HEADER_USER_ID, userCredentials.getId().toString());
+            response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
-            CookieUtils.addCookie(response, "refreshToken", refreshToken, 7200, true, true);
-            response.setHeader(CorsConfigConstants.EXPOSED_HEADER_USER_ID, userCredentials.getId().toString());
-            response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", accessToken));
-
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(context);
             return ResponseEntity.ok().build();
         }
-
         return ResponseEntity.status(401).build();
     }
 
     @PostMapping("/oauth2/authorize/*")
-    public ResponseEntity<?> login(@RequestBody OAuth2IdTokenDTO OAuth2IdTokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException {
-        UserCredentials userCredentials = googleAccountServiceImpl.loginOAuthGoogle(OAuth2IdTokenDTO);
+    public ResponseEntity<?> login(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException {
+        UserCredentials userCredentials = googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
 
         String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
         String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
 
-        CookieUtils.addCookie(response, "refreshToken", refreshToken, 7200, true, true);
-        response.setHeader("UserID", userCredentials.getId().toString());
-        response.setHeader(HttpHeaders.AUTHORIZATION, String.format("%s %s", "Bearer", accessToken));
+        CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+        response.setHeader(HEADER_USER_ID, userCredentials.getId().toString());
+        response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
         return ResponseEntity.ok().build();
     }

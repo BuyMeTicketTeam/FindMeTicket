@@ -17,7 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -50,8 +50,7 @@ public class WebSecurityConfiguration {
             "/typeAhead",
             "/fail",
             "/login",
-            "/logout",
-            "/oauth2/authorize/google",
+            "/oauth2/authorize/**",
             "/sortedBy",
             "/searchTickets",
             "/get/ticket/**"
@@ -63,11 +62,12 @@ public class WebSecurityConfiguration {
         http.httpBasic().disable();
         http.formLogin().disable();
         http.logout().disable();
+        http.cors();
 
         http.authorizeHttpRequests()
-                .requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().permitAll();
+                .requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated();
 
-        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthFilter, ExceptionTranslationFilter.class);
         http.exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint());
 
