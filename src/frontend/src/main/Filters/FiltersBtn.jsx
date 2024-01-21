@@ -1,6 +1,6 @@
 import React from 'react';
-import './filters.css';
 import loaderIcon from './loader.svg';
+import './filters.scss';
 
 export default function FiltersBtn({
   isDown, isUp, onClick, sortType, children, loading,

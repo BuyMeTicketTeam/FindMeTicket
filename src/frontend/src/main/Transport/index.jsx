@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InProgress from '../../InProgress/index';
-import './style.css';
+import './transport.scss';
 import {
   busIcon, trainIcon, planeIcon, boatIcon, everythingIcon,
 } from './transport-img/img';

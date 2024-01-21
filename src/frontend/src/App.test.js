@@ -14,6 +14,6 @@ describe('App component', () => {
     // Render the App component
     render(<App />);
     // Check if checkAuth function is called
-    expect(sessionStorage.getItem('auth')).toBe('undefined');
+    expect(sessionStorage.getItem('auth')).toBe(null);
   });
 });

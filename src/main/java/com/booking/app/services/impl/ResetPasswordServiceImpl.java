@@ -3,8 +3,8 @@ package com.booking.app.services.impl;
 import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.ResetPasswordService;
@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.IOException;
+
 import java.util.Optional;
 
 /**
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     private final MailSenderService mailSenderService;
-    private final UserSecurityRepository userSecurityRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
@@ -38,17 +38,16 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @return Returns true if the email with the reset password link was sent successfully; otherwise, returns false.
      * @throws MessagingException If there is an issue with sending the email.
      */
-    @Override
     @Transactional
-    public boolean sendEmailResetPassword(String email) throws MessagingException {
-
-        Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(email);
+    public boolean hasEmailSent(String email) throws MessagingException {
+        // TODO: check naming methods when Boolean return type
+        Optional<UserCredentials> userFromDb = userCredentialsRepository.findByEmail(email);
 
         if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
             return false;
         } else {
-            UserSecurity userSecurity = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
-            User user = userSecurity.getUser();
+            UserCredentials userCredentials = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
+            User user = userCredentials.getUser();
 
             verifyEmailRepository.delete(user.getConfirmToken());
 
@@ -71,17 +70,16 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordDTO dto) {
-
-        Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(dto.getEmail());
+        Optional<UserCredentials> userFromDb = userCredentialsRepository.findByEmail(dto.getEmail());
 
         if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
             return false;
         } else {
-            UserSecurity userSecurity = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
+            UserCredentials userCredentials = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
             if (!tokenService.verifyToken(dto.getEmail(), dto.getToken())) return false;
 
-            userSecurity.setPassword(passwordEncoder.encode(dto.getPassword()));
-            userSecurityRepository.save(userSecurity);
+            userCredentials.setPassword(passwordEncoder.encode(dto.getPassword()));
+            userCredentialsRepository.save(userCredentials);
             return true;
         }
     }

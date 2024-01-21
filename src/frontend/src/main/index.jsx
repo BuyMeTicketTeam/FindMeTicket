@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
 import Loader from './Loader';
 import Error from './Error';
@@ -8,7 +9,7 @@ import Tourist from './Tourist';
 import Ticket from './Ticket';
 import Filters from './Filters';
 import Ad from '../Ad/index';
-import './main.css';
+import './main.scss';
 
 export default function Index() {
   const [ticketsData, setTicketsData] = useState([]);
@@ -41,7 +42,7 @@ export default function Index() {
   }
 
   return (
-    <div className="main-block">
+    <div className="main-block main">
       <div className="container">
         <div className="search_index">
           <Ad />
@@ -54,6 +55,7 @@ export default function Index() {
         </div>
         {ticketsBody()}
       </div>
+      <Outlet />
     </div>
   );
 }

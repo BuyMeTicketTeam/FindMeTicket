@@ -1,19 +1,25 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
 import makeQuerry from '../helper/querry';
 
-export default function LoginBtn({ status, changePopup, onAuthorization }) {
+export default function LoginBtn({ status, updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
-  const [logout, onLogout] = useState(false);
+  const cookies = new Cookies(null, { path: '/' });
+  const [logout, setLogout] = useState(false);
 
   function handleLogoutButton() {
-    onLogout(false);
+    setLogout(false);
 
     makeQuerry('logout').then((response) => {
       switch (response.status) {
         case 200:
-          onAuthorization(!status);
+          updateAuthValue(false);
           localStorage.removeItem('JWTtoken');
+          cookies.remove('rememberMe');
+          cookies.remove('USER_ID');
           break;
         default:
           break;
@@ -33,20 +39,19 @@ export default function LoginBtn({ status, changePopup, onAuthorization }) {
         data-testid="logout-btn"
         className="login"
         type="button"
-        onClick={() => { onLogout(true); }}
+        onClick={() => { setLogout(true); }}
       >
         {t('profile')}
       </button>
     );
   }
   return (
-    <button
+    <Link
       data-testid="login-btn"
-      className="login"
-      onClick={() => { changePopup(true); }}
-      type="button"
+      className="login-link"
+      to="/login"
     >
       {t('login')}
-    </button>
+    </Link>
   );
 }

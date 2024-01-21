@@ -2,8 +2,8 @@ package com.booking.app.services.impl;
 
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
@@ -29,7 +29,7 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    private final UserSecurityRepository userSecurityRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final TokenService tokenService;
 
@@ -44,7 +44,7 @@ public class MailSenderServiceImpl implements MailSenderService {
      */
     @Transactional
     @Override
-    public void sendEmail(String htmlPage, String subject, String token, UserSecurity user) throws MessagingException {
+    public void sendEmail(String htmlPage, String subject, String token, UserCredentials user) throws MessagingException {
 
         Context context = new Context();
         context.setVariable("token", token);
@@ -73,7 +73,7 @@ public class MailSenderServiceImpl implements MailSenderService {
     @Transactional
     @Override
     public boolean resendEmail(String email) throws MessagingException, UserPrincipalNotFoundException {
-        Optional<UserSecurity> userByEmailFromDb = userSecurityRepository.findByEmail(email);
+        Optional<UserCredentials> userByEmailFromDb = userCredentialsRepository.findByEmail(email);
 
         if (userByEmailFromDb.isEmpty()) return false;
 

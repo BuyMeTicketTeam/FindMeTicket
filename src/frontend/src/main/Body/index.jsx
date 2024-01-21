@@ -2,8 +2,10 @@
 import React, { useCallback } from 'react';
 import Filters from '../Filters';
 import Ticket from '../Ticket';
-// import Button from '../../utils/Button';
 import makeQuerry from '../../helper/querry';
+// TODO: Ticket upload button
+// import loaderIcon from './loading.svg';
+// import Button from '../../utils/Button';
 
 export default function Body({
   ticketsData, requestBody, onTicketsData,

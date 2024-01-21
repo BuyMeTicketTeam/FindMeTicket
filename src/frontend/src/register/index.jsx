@@ -7,7 +7,7 @@ import ListTip from './ListTip';
 import makeQuerry from '../helper/querry';
 import Checkbox from '../utils/Checkbox';
 import { nicknameCheck, emailCheck, passwordCheck } from '../helper/regExCheck';
-import './register.css';
+import './register.scss';
 
 export default function Register() {
   const { t } = useTranslation('translation', { keyPrefix: 'register' });
@@ -170,6 +170,7 @@ export default function Register() {
           onShow={onShow}
         />
         <Checkbox
+          dataTestid="checkbox"
           policyError={policyError}
           onChange={() => { onPolicy(!policy); onErrorPolicy(false); }}
         >

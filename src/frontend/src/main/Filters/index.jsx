@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FiltersBtn from './FiltersBtn';
 import makeQuerry from '../../helper/querry';
-import './filters.css';
+import './filters.scss';
 
 export default function Filters({ requestBody, setTicketsData }) {
   const [sort, setSort] = useState('');

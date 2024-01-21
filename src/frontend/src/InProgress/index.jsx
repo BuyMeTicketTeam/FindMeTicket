@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from '../utils/Button';
-import './inProgress.css';
+import './inProgress.scss';
 
 export default function Index({
   title, text, setIsOpen,

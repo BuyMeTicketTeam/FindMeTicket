@@ -10,10 +10,10 @@ import Passangers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
 import eventSourceQuery from '../../helper/eventSourceQuery';
-import './searchField.css';
+import './searchField.scss';
 
-export default function SearchField({ onLoading, setRequestBody, onTicketsData }) {
-  const { t } = useTranslation('translation', { keyPrefix: 'search' });
+export default function SearchField({ onLoading, onTicketsData, setRequestBody }) {
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, onAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
@@ -105,7 +105,16 @@ export default function SearchField({ onLoading, setRequestBody, onTicketsData }
   }
 
   function transformData(item) {
-    return { value: item.cityUkr, label: `${item.cityUkr}, ${item.country}` };
+    switch (true) {
+      case item.siteLanguage === 'ua' && item.cityEng !== null:
+        return ({ value: item.cityUa, label: `${item.cityUa} (${item.cityEng}), ${item.country}` });
+      case item.siteLanguage === 'ua' && item.cityEng === null:
+        return ({ value: item.cityUa, label: `${item.cityUa}, ${item.country}` });
+      case item.siteLanguage === 'eng' && item.cityUa === null:
+        return ({ value: item.cityEng, label: `${item.cityEng}, ${item.country}` });
+      default:
+        return ({ value: item.cityEng, label: `${item.cityEng} (${item.cityUa}), ${item.country}` });
+    }
   }
 
   let timerId;
@@ -114,7 +123,7 @@ export default function SearchField({ onLoading, setRequestBody, onTicketsData }
       clearInterval(timerId);
       const result = await new Promise((resolve) => {
         timerId = setTimeout(async () => {
-          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
+          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }), { 'Content-language': i18n.language.toLowerCase() });
           const responseBody = response.status === 200 ? response.body.map(transformData) : [];
           resolve(responseBody);
         }, 500);

@@ -1,6 +1,7 @@
 package com.booking.app.dto;
 
 import com.booking.app.annotation.PasswordMatches;
+import com.booking.app.util.ConfirmPasswordUtil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

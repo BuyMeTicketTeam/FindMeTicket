@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-  render, screen, fireEvent,
+  render, screen,
 } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import LoginBtn from './LoginBtn';
 
 jest.mock('../helper/querry', () => ({
@@ -11,22 +12,20 @@ jest.mock('../helper/querry', () => ({
 
 describe('LoginBtn component', () => {
   it('renders correctly when logged in', () => {
-    render(<LoginBtn status />);
+    render(
+      <BrowserRouter>
+        <LoginBtn status />
+      </BrowserRouter>,
+    );
     expect(screen.getByText('profile')).toBeInTheDocument();
   });
 
   it('renders correctly when logged out', () => {
-    render(<LoginBtn status={false} />);
+    render(
+      <BrowserRouter>
+        <LoginBtn status={false} />
+      </BrowserRouter>,
+    );
     expect(screen.getByTestId('login-btn')).toBeInTheDocument();
-  });
-
-  it('calls changePopup when login button is clicked', () => {
-    const changePopupMock = jest.fn();
-
-    render(<LoginBtn status={false} changePopup={changePopupMock} />);
-
-    fireEvent.click(screen.getByTestId('login-btn'));
-
-    expect(changePopupMock).toHaveBeenCalledWith(true);
   });
 });

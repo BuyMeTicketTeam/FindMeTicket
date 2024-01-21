@@ -1,16 +1,26 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable max-len */
 /* eslint-disable no-new */
 /* eslint-disable import/no-extraneous-dependencies */
 import { createServer, Response } from 'miragejs';
 
-const from = [
-  { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
-  { cityUkr: 'Київ', cityEng: 'Київ', country: 'UA' },
-  { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
-];
+// const from = {
+//   cities: {
+//     Дніпро: 'Ua',
+//     Київ: 'Ua',
+//     Одеса: 'Ua',
+//   },
+// };
 const destination = [
-  { cityUkr: 'Дніпро', cityEng: 'Дніпро', country: 'UA' },
-  { cityUkr: 'Дністер', cityEng: 'Київ', country: 'UA' },
-  { cityUkr: 'Одеса', cityEng: 'Одеса', country: 'UA' },
+  {
+    cityUa: 'Дніпро', cityEng: 'Dnipro', country: 'UA', siteLanguage: 'eng',
+  },
+  {
+    cityUa: 'Дністеріваіваіва', cityEng: 'Kyivasdadsasd', country: 'UA', siteLanguage: 'eng',
+  },
+  {
+    cityUa: 'Одеса', cityEng: 'Odesa', country: 'UA', siteLanguage: 'eng',
+  },
 ];
 const tickets = [
   {
@@ -109,8 +119,12 @@ const ticketsNew = [
 createServer({
   routes() {
     // Responding to a POST request
-    this.post('/login', () => new Response(200, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN }));
+    this.post('/login', () => {
+      // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
+      return new Response(200, { rememberMe: process.env.REACT_APP_TEST_JWT_TOKEN, userId: 1231231421 }, { Authorization: process.env.REACT_APP_TEST_JWT_TOKEN });
+    });
     this.post('/register', () => new Response(200));
+    this.post('/oauth2/authorize/google', () => new Response(200));
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
@@ -118,8 +132,8 @@ createServer({
     this.post('/logout', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/typeAhead', (schema, request) => {
-      if (JSON.parse(request.requestBody).startLetters === 'Дн') {
-        return new Response(200, undefined, JSON.stringify(from));
+      if (JSON.parse(request.requestBody) === 'Дн') {
+        return new Response(200, undefined, JSON.stringify(destination));
       }
       return new Response(200, undefined, JSON.stringify(destination));
     });
