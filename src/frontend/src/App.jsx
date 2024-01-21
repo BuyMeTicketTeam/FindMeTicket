@@ -8,6 +8,7 @@ import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
 // import './testServer';
+import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
 
@@ -17,16 +18,19 @@ function App() {
 
   return (
     <Router>
-      <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
-        <Header
-          language={language}
-          setLanguage={setLanguage}
-          authorization={auth}
-          updateAuthValue={updateAuthValue}
-        />
-        <Routers updateAuthValue={updateAuthValue} language={language} />
-        <CookieBanner />
-      </GoogleOAuthProvider>
+      <div className="body">
+        <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+          <Header
+            language={language}
+            setLanguage={setLanguage}
+            authorization={auth}
+            updateAuthValue={updateAuthValue}
+          />
+          <Routers updateAuthValue={updateAuthValue} language={language} />
+          <CookieBanner />
+          <Footer />
+        </GoogleOAuthProvider>
+      </div>
     </Router>
 
   );

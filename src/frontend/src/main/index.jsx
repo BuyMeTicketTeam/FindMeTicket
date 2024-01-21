@@ -44,7 +44,7 @@ export default function Index() {
   }
 
   return (
-    <div className="main-block">
+    <div className="main-block main">
       <div className="container">
         <div className="search_index">
           <Ad />
