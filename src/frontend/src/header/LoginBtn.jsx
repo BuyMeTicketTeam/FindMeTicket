@@ -47,6 +47,7 @@ export default function LoginBtn({ status, updateAuthValue }) {
   }
   return (
     <Link
+      data-testid="login-btn"
       className="login-link"
       to="/login"
     >

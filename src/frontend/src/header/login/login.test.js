@@ -74,7 +74,7 @@ describe('validation', () => {
     );
     const buttonLogin = screen.getByTestId('login-btn');
     fireEvent.click(buttonLogin);
-    expect(screen.queryByTestId('error').innerHTML).toBe('The email field is not filled in correctly');
+    expect(screen.queryByTestId('error').innerHTML).toBe('login-error');
   });
   test('password error', () => {
     render(
@@ -90,7 +90,7 @@ describe('validation', () => {
       target: { value: 'stepan@gmail.com' },
     });
     fireEvent.click(buttonLogin);
-    expect(screen.queryByTestId('error').innerHTML).toBe('The password field is incorrect');
+    expect(screen.queryByTestId('error').innerHTML).toBe('password-error');
   });
   test('success validation', () => {
     render(
@@ -143,7 +143,7 @@ describe('server tests', () => {
     fireEvent.click(buttonLogin);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/login`, {
-      body: '{"email":"stepan@gmail.com","password":"stepan123132123"}',
+      body: '{"email":"stepan@gmail.com","password":"stepan123132123","rememberMe":false}',
       credentials: 'include',
       headers: {
         Authorization: null,
@@ -152,7 +152,7 @@ describe('server tests', () => {
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('Server error. Try again');
+      expect(screen.getByTestId('error').innerHTML).toBe('error-server2');
     });
   });
 });
