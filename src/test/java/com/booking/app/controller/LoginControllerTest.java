@@ -53,21 +53,32 @@ class LoginControllerTest {
 
     private MockMvc mockMvc;
 
+    private UserCredentials userCredentials;
+
+    private OAuth2IdTokenDTO tokenDTO;
+
+    private ObjectMapper objectMapper;
+
+    private  LoginDTO loginDTO;
+
     @BeforeEach
     void setUp() {
         mockMvc = standaloneSetup(loginController).build();
+        userCredentials = UserCredentials.builder()
+                .id(UUID.randomUUID())
+                .username("michael999")
+                .user(User.builder().role(Role.builder().enumRole(EnumRole.USER).build()).build())
+                .email("mishaakamichael999@gmail.com").build();
+        objectMapper = new ObjectMapper();
+        tokenDTO = OAuth2IdTokenDTO.builder().idToken("token777").build();
+        loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com")
+                .password("michael999")
+                .rememberMe(true)
+                .build();
     }
 
     @Test
     void login_rightCredentials_ok() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com")
-                .password("michael999")
-                .rememberMe(true)
-                .build();
-        UserCredentials userCredentials = UserCredentials.builder().id(UUID.randomUUID()).build();
-
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
 
         doReturn(true).when(authentication).isAuthenticated();
@@ -89,13 +100,6 @@ class LoginControllerTest {
 
     @Test
     void login_invalidCredentials_unauthorized() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        LoginDTO loginDTO = LoginDTO.builder().email("mishaakamichael999@gmail.com")
-                .password("michael999")
-                .rememberMe(true)
-                .build();
-
         when(authenticationManager.authenticate(any())).thenReturn(authentication);
         when(authentication.isAuthenticated()).thenReturn(false);
 
@@ -113,14 +117,6 @@ class LoginControllerTest {
 
     @Test
     void loginOAuth2_validAccess_ok() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        OAuth2IdTokenDTO tokenDTO = OAuth2IdTokenDTO.builder().idToken("token777").build();
-        UserCredentials userCredentials = UserCredentials.builder()
-                .id(UUID.randomUUID())
-                .username("michael999")
-                .user(User.builder().role(Role.builder().enumRole(EnumRole.USER).build()).build())
-                .email("mishaakamichael999@gmail.com").build();
         when(googleAccountService.loginOAuthGoogle(any())).thenReturn(Optional.of(userCredentials));
         when(jwtProvider.generateRefreshToken(Mockito.anyString())).thenReturn("mockedRefreshToken");
         when(jwtProvider.generateAccessToken(Mockito.anyString())).thenReturn("mockedAccessToken");
@@ -140,10 +136,6 @@ class LoginControllerTest {
 
     @Test
     void loginOAuth2_invalidToken_unauthorized() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        OAuth2IdTokenDTO tokenDTO = OAuth2IdTokenDTO.builder().idToken("token777").build();
-
         when(googleAccountService.loginOAuthGoogle(any())).thenReturn(Optional.ofNullable(null));
 
         doReturn(false).when(authentication).isAuthenticated();
