@@ -89,9 +89,9 @@ public class LoginController implements LoginAPI {
     }
 
     /**
-     * Handles OAuth2 authentication with Google ID token.
+     * Handles OAuth2 authentication with ID token.
      *
-     * @param tokenDTO The OAuth2IdTokenDTO containing the ID token from Google.
+     * @param tokenDTO The OAuth2IdTokenDTO containing the ID token.
      * @param response The HttpServletResponse used to set cookies and headers in the HTTP response.
      * @return ResponseEntity with HTTP status 200 if authentication is successful, or
      * ResponseEntity with HTTP status 401 if authentication fails.
@@ -99,24 +99,30 @@ public class LoginController implements LoginAPI {
      * @throws IOException              If an I/O error occurs during ID token verification.
      */
     @PostMapping("/oauth2/authorize/*")
-    public ResponseEntity<?> loginOAuth2(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException {
-        Optional<UserCredentials> user =
-                googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
-        if (user.isPresent()) {
-            UserCredentials userCredentials = user.get();
-            String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
-            String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
+    public ResponseEntity<?> loginOAuth2(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws IOException, GeneralSecurityException {
+        Optional<UserCredentials> user = googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
 
-            CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-            response.setHeader(USER_ID, userCredentials.getId().toString());
-            response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
+        user.ifPresentOrElse(
+                userCredentials -> {
+                    String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
+                    String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
 
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            context.setAuthentication(new UsernamePasswordAuthenticationToken(userCredentials.getEmail(), userCredentials.getUsername(), userCredentials.getAuthorities()));
-            SecurityContextHolder.setContext(context);
+                    CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+                    response.setHeader(USER_ID, userCredentials.getId().toString());
+                    response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
-            return ResponseEntity.ok().build();
-        } else return ResponseEntity.status(401).build();
+                    SecurityContext context = SecurityContextHolder.createEmptyContext();
+                    context.setAuthentication(new UsernamePasswordAuthenticationToken(userCredentials.getEmail(), userCredentials.getUsername(), userCredentials.getAuthorities()));
+                    SecurityContextHolder.setContext(context);
+                },
+                () -> {
+                    try {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "ID client is not right");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
+        return ResponseEntity.ok().build();
     }
-
 }
