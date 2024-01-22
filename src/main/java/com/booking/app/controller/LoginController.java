@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Optional;
 
 import static com.booking.app.constant.CustomHttpHeaders.REMEMBER_ME;
 import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
@@ -87,18 +88,35 @@ public class LoginController implements LoginAPI {
         return ResponseEntity.status(401).build();
     }
 
+    /**
+     * Handles OAuth2 authentication with Google ID token.
+     *
+     * @param tokenDTO The OAuth2IdTokenDTO containing the ID token from Google.
+     * @param response The HttpServletResponse used to set cookies and headers in the HTTP response.
+     * @return ResponseEntity with HTTP status 200 if authentication is successful, or
+     * ResponseEntity with HTTP status 401 if authentication fails.
+     * @throws GeneralSecurityException If a security error occurs during ID token verification.
+     * @throws IOException              If an I/O error occurs during ID token verification.
+     */
     @PostMapping("/oauth2/authorize/*")
     public ResponseEntity<?> loginOAuth2(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException {
-        UserCredentials userCredentials = googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
+        Optional<UserCredentials> user =
+                googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
+        if (user.isPresent()) {
+            UserCredentials userCredentials = user.get();
+            String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
+            String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
 
-        String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
-        String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
+            CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+            response.setHeader(USER_ID, userCredentials.getId().toString());
+            response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
-        CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-        response.setHeader(USER_ID, userCredentials.getId().toString());
-        response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(new UsernamePasswordAuthenticationToken(userCredentials.getEmail(), userCredentials.getUsername(), userCredentials.getAuthorities()));
+            SecurityContextHolder.setContext(context);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+        } else return ResponseEntity.status(401).build();
     }
 
 }

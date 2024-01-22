@@ -28,6 +28,7 @@ public interface LoginAPI {
     @Operation(summary = "OAuth 2.0 authentication")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been authenticated"),
+            @ApiResponse(responseCode = "401", description = "ID token is invalid")
     })
     ResponseEntity<?> loginOAuth2(@RequestBody @Valid @NotNull OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException;
 

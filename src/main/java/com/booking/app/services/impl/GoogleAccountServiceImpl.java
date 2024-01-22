@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Service implementation for Google Account-related operations.
@@ -55,13 +56,12 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
      * @throws GeneralSecurityException If an issue occurs during security-related operations.
      * @throws IOException              If an I/O error occurs during ID Token verification.
      */
-    public UserCredentials loginOAuthGoogle(OAuth2IdTokenDTO requestBody) throws GeneralSecurityException, IOException {
+    public Optional<UserCredentials> loginOAuthGoogle(OAuth2IdTokenDTO requestBody) throws GeneralSecurityException, IOException {
         GoogleIdToken account = verifyIDToken(requestBody.getIdToken());
         if (account == null) {
             throw new BadCredentialsException("ID Token is wrong");
         }
-        return createOrUpdateUser(account);
-
+        return Optional.of(createOrUpdateUser(account));
     }
 
     /**
