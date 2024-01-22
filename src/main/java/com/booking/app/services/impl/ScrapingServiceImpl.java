@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -46,7 +47,10 @@ public class ScrapingServiceImpl {
     private final TicketMapper ticketMapper;
 
     @Async
+  //  @Transactional
     public void scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter) throws IOException, ParseException, InterruptedException {
+
+        log.info("1111");
 
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
@@ -59,15 +63,21 @@ public class ScrapingServiceImpl {
                     .departureDate(requestTicketDTO.getDepartureDate())
                     .ticketList(new LinkedList<>()).build();
 
+           // routeRepository.save(newRoute);
+//            Ticket ticket = Ticket.builder().route(newRoute).build();
+//            newRoute.getTicketList().add(ticket);
+//            ticket = ticketRepository.save(ticket);
+//            log.info("99999sad"+ticket);
+
             ExecutorService executorService = Executors.newFixedThreadPool(3);
 
-            executorService.execute(() -> {
-                try {
-                    busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+//            executorService.execute(() -> {
+//                try {
+//                    busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            });
 
             executorService.execute(() -> {
                 try {
@@ -77,12 +87,12 @@ public class ScrapingServiceImpl {
                 }
             });
 
-            executorService.execute(() -> {
-                try {
-                    proizdScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
-                } catch (IOException | ParseException e) {
-                }
-            });
+//            executorService.execute(() -> {
+//                try {
+//                    proizdScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
+//                } catch (IOException | ParseException e) {
+//                }
+//            });
 
             executorService.shutdown();
 
@@ -92,7 +102,7 @@ public class ScrapingServiceImpl {
                 }
             } catch (InterruptedException e) {
             }
-            routeRepository.save(newRoute);
+
 
         } else {
             for (Ticket ticket : route.getTicketList()) {

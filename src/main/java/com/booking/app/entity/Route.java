@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
+@ToString(exclude = "ticketList")
 public class Route {
 
     @Id

@@ -9,6 +9,8 @@ import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -16,6 +18,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -26,6 +29,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class InfobusScrapeServiceImpl {
 
     private static final String infobusLink = "https://infobus.eu/ua";
@@ -34,8 +38,11 @@ public class InfobusScrapeServiceImpl {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
+
+    //@Transactional
     public void scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws ParseException, IOException {
 
+        log.info("2222");
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
@@ -64,7 +71,7 @@ public class InfobusScrapeServiceImpl {
             Date date = ticketDate.parse(arrivalDate);
 
             Ticket ticket = Ticket.builder()
-                    .id(UUID.randomUUID())
+                    .route(route)
                     .price(element.findElement(By.cssSelector("span.price-number")).getText())
                     .placeFrom(element.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
                     .placeAt(element.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
@@ -76,6 +83,11 @@ public class InfobusScrapeServiceImpl {
             synchronized(route){
                 route.getTicketList().add(ticket);
             }
+
+            log.info("sad321312312");
+
+            //ticket = ticketRepository.save(ticket);
+            routeRepository.save(route);
 
             synchronized (emitter) {
                 emitter.send(SseEmitter.event().name("ticket data: ").data(toDTO(ticket, route)));
@@ -125,8 +137,6 @@ public class InfobusScrapeServiceImpl {
         String requestMonth = outputMonthFormat.format(inputDate);
         String requestYear = outputYearFormat.format(inputDate);
         String requestDay = outputDayFormat.format(inputDate);
-
-        System.out.println(requestDay + " " + requestMonth + " " + requestYear);
 
         String calendarMonth = driver.findElement(By.cssSelector("span.ui-datepicker-month")).getText();
         String calendarYear = driver.findElement(By.cssSelector("span.ui-datepicker-year")).getText();

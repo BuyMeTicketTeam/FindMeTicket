@@ -13,9 +13,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
+@ToString
 public class Ticket {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "place_from")
