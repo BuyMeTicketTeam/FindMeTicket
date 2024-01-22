@@ -4,6 +4,7 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.entity.TicketUrls;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
@@ -19,107 +20,103 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
 public class BusforScrapeServiceImpl {
 
     private static final String busforLink = "https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true";
-    //private final ChromeDriver driver;
     private final RouteRepository routeRepository;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
-    public void scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws IOException {
+    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws IOException {
+
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
-        Route routeFromDb = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
+        String url = String.format(busforLink, requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
-        if (routeFromDb == null) {
+        driver.get(url);
 
-            String url = String.format(busforLink, requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
-
-
-            driver.get(url);
-
-            try {
-                synchronized (driver) {
-                    driver.wait(5000);
-                }
-            } catch (InterruptedException e) {
+        try {
+            synchronized (driver) {
+                driver.wait(5000);
             }
+        } catch (InterruptedException e) {
+        }
 
-            List<WebElement> products = driver.findElements(By.cssSelector("div.ticket"));
+        List<WebElement> products = driver.findElements(By.cssSelector("div.ticket"));
 
 
-            for (int i = 0; i < products.size() && i < 150; i++) {
+        for (int i = 0; i < products.size() && i < 150; i++) {
 
-                WebElement ticket = driver.findElements(By.cssSelector("div.ticket")).get(i);
+            WebElement ticket = driver.findElements(By.cssSelector("div.ticket")).get(i);
 
-                List<WebElement> ticketInfo = ticket.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
+            List<WebElement> ticketInfo = ticket.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
 
-                WebElement departureInfo = ticketInfo.get(0);
-                WebElement arrivalInfo = ticketInfo.get(1);
+            WebElement departureInfo = ticketInfo.get(0);
+            WebElement arrivalInfo = ticketInfo.get(1);
 
-                String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
-                String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
-                String travelTime = ticket.findElement(By.cssSelector("span.Style__TimeInRoad-yh63zd-0.btMUVs")).getText();
+            String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
+            String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
+            String travelTime = ticket.findElement(By.cssSelector("span.Style__TimeInRoad-yh63zd-0.btMUVs")).getText();
+            travelTime = travelTime.substring(0, travelTime.length() - 9);
 
-                Ticket temp = Ticket.builder()
-                        .id(UUID.randomUUID())
-                        .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                        .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                        .departureTime(departureDateTime.substring(0, 5))
-                        .arrivalTime(arrivalDateTime.substring(0, 5))
-                        .arrivalDate(formatDate(arrivalDateTime.substring(6)))
-                        .price(ticket.findElement(By.cssSelector("span.price")).getText())
-                        .travelTime(travelTime.substring(0, travelTime.length() - 9))
-                        .route(route)
-                        .build();
+            String[] parts = travelTime.split("[^\\d]+");
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            int totalMinutes = hours * 60 + minutes;
 
-                synchronized (route) {
-                    route.getTicketList().add(temp);
-                }
+            TicketUrls ticketUrls = new TicketUrls();
 
-                synchronized (emitter) {
-                    emitter.send(SseEmitter.event().name("ticket data: ").data(toDTO(temp, route)));
-                }
-            }
-            //routeRepository.save(route);
-        } else {
-            for (Ticket ticket : routeFromDb.getTicketList()) {
-                synchronized (emitter) {
-                    emitter.send(SseEmitter.event().name("ticket data: ").data(toDTO(ticket, routeFromDb)));
-                }
+            Ticket temp = Ticket.builder()
+                    .route(route)
+                    .urls(ticketUrls)
+                    .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                    .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                    .departureTime(departureDateTime.substring(0, 5))
+                    .arrivalTime(arrivalDateTime.substring(0, 5))
+                    .arrivalDate(formatDate(arrivalDateTime.substring(6)))
+                    .price(BigDecimal.valueOf(Long.parseLong(ticket.findElement(By.cssSelector("span.price")).getText())))
+                    .travelTime(BigDecimal.valueOf(totalMinutes))
+                    .build();
+
+            ticketUrls.setTicket(temp);
+
+            synchronized (emitter) {
+                temp = ticketRepository.save(temp);
+                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(temp)));
             }
         }
 
+
         driver.quit();
+        return CompletableFuture.completedFuture(true);
     }
 
     @Async
-    public void getTicket(UUID id, SseEmitter emitter) throws IOException {
+    public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
-        Ticket ticket = ticketRepository.findById(id).orElseThrow();
 
-        if (ticket.getUrl() == null || ticket.getUrl().isEmpty() || ticket.getUrl().equals("null")) {
+
+        if (ticket.getUrls().getBusfor() == null || ticket.getUrls().getBusfor().isEmpty() || ticket.getUrls().getBusfor().equals("null")) {
 
             String departureCity = ticket.getRoute().getDepartureCity();
             String arrivalCity = ticket.getRoute().getArrivalCity();
@@ -149,31 +146,38 @@ public class BusforScrapeServiceImpl {
                 String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
                 String travelTime = element.findElement(By.cssSelector("span.Style__TimeInRoad-yh63zd-0.btMUVs")).getText();
 
-                if (ticket.getArrivalDate().equals(formatDate(arrivalDateTime.substring(6))) &&
-                        ticket.getPrice().equals(element.findElement(By.cssSelector("span.price")).getText()) &&
+                if (ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(element.findElement(By.cssSelector("span.price")).getText()))) &&
                         ticket.getArrivalTime().equals(arrivalDateTime.substring(0, 5)) &&
-                        ticket.getDepartureTime().equals(departureDateTime.substring(0, 5)) &&
-                        ticket.getTravelTime().equals(travelTime.substring(0, travelTime.length() - 9))) {
+                        ticket.getDepartureTime().equals(departureDateTime.substring(0, 5))) {
 
                     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
                     element.findElement(By.tagName("button")).findElement(By.tagName("span")).click();
                     wait.until(ExpectedConditions.urlContains("preorders"));
                     url = driver.getCurrentUrl();
-                    ticket.setUrl(url);
+                    ticket.getUrls().setBusfor(url);
+                    break;
                 }
             }
 
-            if(ticket.getUrl()!=null) {
+            if (ticket.getUrls().getBusfor() != null) {
                 synchronized (emitter) {
-                    emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrl()));
+                    ticketRepository.save(ticket);
+                    emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
                 }
-            }else
+            } else {
                 synchronized (emitter) {
                     emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
                 }
+            }
+        } else {
+            synchronized (emitter) {
+                ticketRepository.save(ticket);
+                emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
+            }
         }
 
         driver.quit();
+        return CompletableFuture.completedFuture(true);
     }
 
     private static String formatDate(String inputDate) {
@@ -181,14 +185,6 @@ public class BusforScrapeServiceImpl {
         LocalDate date = LocalDate.parse(inputDate + " 2023", formatter);
         formatter = DateTimeFormatter.ofPattern("dd.MM, EEE", new Locale("uk"));
         return date.format(formatter);
-    }
-
-    private TicketDTO toDTO(Ticket ticket, Route route) {
-        TicketDTO result = ticketMapper.toTicketDTO(ticket);
-        result.setDepartureCity(route.getDepartureCity());
-        result.setArrivalCity(route.getArrivalCity());
-        result.setDepartureDate(route.getDepartureDate());
-        return result;
     }
 
 }

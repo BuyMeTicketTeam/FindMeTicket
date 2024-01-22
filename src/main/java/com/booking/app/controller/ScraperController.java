@@ -2,7 +2,9 @@ package com.booking.app.controller;
 
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.services.impl.InfobusScrapeServiceImpl;
 import com.booking.app.services.impl.ScrapingServiceImpl;
 import com.booking.app.services.impl.SortedTicketsServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,9 +27,12 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
 @RequestMapping
@@ -37,6 +42,7 @@ public class ScraperController {
 
     private ScrapingServiceImpl scrapingService;
     private SortedTicketsServiceImpl sortedTicketsService;
+    private InfobusScrapeServiceImpl infobusScrapeService;
 
     @PostMapping("/searchTickets")
     public SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException, ParseException, InterruptedException {
@@ -52,13 +58,13 @@ public class ScraperController {
     public SseEmitter getTicket(@PathVariable UUID id) throws IOException {
         SseEmitter emitter = new SseEmitter();
 
-        //scrapingService.getTicket(id, emitter);
+        scrapingService.getTicket(id, emitter);
 
         return emitter;
     }
 
     @PostMapping("/sortedBy")
-    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO){
+    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO) {
         return ResponseEntity.ok().body(sortedTicketsService.getSortedTickets(requestSortedTicketsDTO));
     }
 
