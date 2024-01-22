@@ -1,7 +1,6 @@
 package com.booking.app.controller;
 
 import com.booking.app.dto.CitiesDTO;
-import com.booking.app.dto.RequestTypeAheadDTO;
 import com.booking.app.dto.StartLettersDTO;
 import com.booking.app.services.TypeAheadService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,38 +8,38 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 @ExtendWith(MockitoExtension.class)
 class TypeAheadControllerTest {
+    @InjectMocks
+    private TypeAheadController typeAheadController;
 
     @Mock
     private TypeAheadService typeAheadService;
 
-    @InjectMocks
-    private TypeAheadController typeAheadController;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        mockMvc = standaloneSetup(typeAheadController).build();
     }
 
     @Test
     void getCities_success() throws IOException {
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader(HttpHeaders.CONTENT_LANGUAGE, "en");
 
@@ -55,7 +54,7 @@ class TypeAheadControllerTest {
         when(typeAheadService.findMatchesUA(any(StartLettersDTO.class), any(String.class)))
                 .thenReturn(expectedCities);
 
-        ResponseEntity<List<CitiesDTO>> responseEntity = typeAheadController.getCities( startLettersDTO,request);
+        ResponseEntity<List<CitiesDTO>> responseEntity = typeAheadController.getCities(startLettersDTO, request);
 
         assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals(expectedCities, responseEntity.getBody());

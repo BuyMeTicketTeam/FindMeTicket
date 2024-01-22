@@ -5,7 +5,7 @@ import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.security.jwt.JwtProvider;
-import com.booking.app.services.impl.GoogleAccountServiceImpl;
+import com.booking.app.services.GoogleAccountService;
 import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import static com.booking.app.constant.CustomHttpHeaders.HEADER_REMEMBER_ME;
-import static com.booking.app.constant.CustomHttpHeaders.HEADER_USER_ID;
+import static com.booking.app.constant.CustomHttpHeaders.REMEMBER_ME;
+import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 import static com.booking.app.constant.JwtTokenConstants.BEARER;
 import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 
@@ -45,7 +45,7 @@ public class LoginController implements LoginAPI {
 
     private final JwtProvider jwtProvider;
 
-    private final GoogleAccountServiceImpl googleAccountServiceImpl;
+    private final GoogleAccountService googleAccountServiceImpl;
 
     /**
      * Handles user sign-in request.
@@ -67,7 +67,7 @@ public class LoginController implements LoginAPI {
 
         if (authentication.isAuthenticated()) {
             if (loginDTO.getRememberMe()) {
-                response.addHeader(HEADER_REMEMBER_ME, loginDTO.getRememberMe().toString());
+                response.addHeader(REMEMBER_ME, loginDTO.getRememberMe().toString());
             }
 
             UserCredentials userCredentials = (UserCredentials) authentication.getPrincipal();
@@ -75,8 +75,8 @@ public class LoginController implements LoginAPI {
             String refreshToken = jwtProvider.generateRefreshToken(loginDTO.getEmail());
             String accessToken = jwtProvider.generateAccessToken(loginDTO.getEmail());
 
-            CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, 7200, true, true);
-            response.setHeader(HEADER_USER_ID, userCredentials.getId().toString());
+            CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+            response.setHeader(USER_ID, userCredentials.getId().toString());
             response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -88,14 +88,14 @@ public class LoginController implements LoginAPI {
     }
 
     @PostMapping("/oauth2/authorize/*")
-    public ResponseEntity<?> login(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException {
+    public ResponseEntity<?> loginOAuth2(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws GeneralSecurityException, IOException {
         UserCredentials userCredentials = googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
 
         String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
         String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
 
         CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-        response.setHeader(HEADER_USER_ID, userCredentials.getId().toString());
+        response.setHeader(USER_ID, userCredentials.getId().toString());
         response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
         return ResponseEntity.ok().build();

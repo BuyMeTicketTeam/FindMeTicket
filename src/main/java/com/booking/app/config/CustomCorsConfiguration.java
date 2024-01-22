@@ -22,7 +22,7 @@ public class CustomCorsConfiguration extends CorsConfiguration {
         configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.CONTENT_LANGUAGE, HttpHeaders.ORIGIN, HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE, HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, HttpHeaders.CONTENT_TYPE));
         configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(Arrays.asList(HttpHeaders.AUTHORIZATION, HttpHeaders.SET_COOKIE,
-                CustomHttpHeaders.HEADER_USER_ID, CustomHttpHeaders.HEADER_REMEMBER_ME));
+                CustomHttpHeaders.USER_ID, CustomHttpHeaders.REMEMBER_ME));
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

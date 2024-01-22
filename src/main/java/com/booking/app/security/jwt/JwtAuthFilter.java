@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.booking.app.constant.CustomHttpHeaders.HEADER_USER_ID;
+import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 import static com.booking.app.constant.JwtTokenConstants.BEARER;
 import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 
@@ -72,7 +72,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private void saveAuthenticationDataToResponse(HttpServletResponse response, String accessToken, String refreshToken, UserDetails userDetails) {
         CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
         response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
-        response.setHeader(HEADER_USER_ID, ((UserCredentials) userDetails).getId().toString());
+        response.setHeader(USER_ID, ((UserCredentials) userDetails).getId().toString());
     }
 
     private void setSecurityContext(UserDetails userDetails) {
