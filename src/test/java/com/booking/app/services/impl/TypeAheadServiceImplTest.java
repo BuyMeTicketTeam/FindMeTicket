@@ -2,14 +2,19 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.CitiesDTO;
 import com.booking.app.dto.RequestTypeAheadDTO;
+import com.booking.app.dto.StartLettersDTO;
 import com.booking.app.entity.UkrainianPlaces;
 import com.booking.app.mapper.UkrainianPlacesMapper;
 import com.booking.app.repositories.UkrPlacesRepository;
+import com.booking.app.services.LanguageDetectorService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,36 +32,49 @@ class TypeAheadServiceImplTest {
     private UkrPlacesRepository ukrPlacesRepository;
 
     @Mock
-    private UkrainianPlacesMapper ukrainianPlacesMapper;
+    private LanguageDetectorService languageDetectorService;
 
-//    @Test
-//    void testFindMatches() {
-//        RequestTypeAheadDTO request = RequestTypeAheadDTO.builder().startLetters("Дн").build();
-//
-//        UkrainianPlaces place1 = UkrainianPlaces.builder()
-//                .nameUa("Дніпро").nameEng("Dnipro").build();
-//        UkrainianPlaces place2 = UkrainianPlaces.builder()
-//                .nameUa("Дніпрорудне").nameEng("Dniprorudne").build();
-//
-//        List<UkrainianPlaces> placesList = new ArrayList<>();
-//        placesList.add(place1);
-//        placesList.add(place2);
-//
-//        when(ukrPlacesRepository.findUkrainianPlacesByNameUaStartingWithIgnoreCase(request.getStartLetters()))
-//                .thenReturn(Optional.of(placesList));
-//
-//        CitiesDTO cityDTO1 = CitiesDTO.builder()
-//                .cityUkr(place1.getNameUa()).cityEng(place1.getNameEng()).build();
-//        CitiesDTO cityDTO2 = CitiesDTO.builder()
-//                .cityUkr(place2.getNameUa()).cityEng(place2.getNameEng()).build();
-//
-//        when(ukrainianPlacesMapper.ukrainianPlaceToCityDTO(place1)).thenReturn(cityDTO1);
-//        when(ukrainianPlacesMapper.ukrainianPlaceToCityDTO(place2)).thenReturn(cityDTO2);
-//
-//        List<CitiesDTO> result = typeAheadService.findMatchesUA(request,"ua");
-//
-//        assertEquals(2, result.size());
-//        assertEquals("Дніпро", result.get(0).getCityUkr());
-//        assertEquals("Дніпрорудне", result.get(1).getCityUkr());
-//    }
+
+    @BeforeEach
+    void setUp() {
+
+    }
+
+    @Test
+    void findMatchesUA_Success() throws IOException {
+        // Arrange
+        StartLettersDTO startLettersDTO = new StartLettersDTO("Dn");
+        String siteLanguage = "ua";
+
+        when(languageDetectorService.detectLanguage("en")).thenReturn(Optional.of("eng"));
+
+        UkrainianPlaces place1 = UkrainianPlaces.builder()
+                .nameEng("Dnipro")
+                .country("Country")
+                .build(); 6
+        UkrainianPlaces place2 = UkrainianPlaces.builder()
+                .nameEng("Dniprovka")
+                .country("Country")
+                .build();
+        List<UkrainianPlaces> placesList = List.of(place1, place2);
+
+        when(ukrPlacesRepository.findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContaining(eq("Dn"), anyString()))
+                .thenReturn(Optional.of(placesList));
+
+        // Act
+        List<CitiesDTO> result = typeAheadService.findMatchesUA(startLettersDTO, siteLanguage);
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals("Country", result.get(0).getCountry());
+        assertEquals("Dnipro", result.get(0).getCityUa());
+        assertEquals("Dnipro", result.get(0).getCityEng());
+        assertEquals("Country", result.get(1).getCountry());
+        assertEquals("Dniprovka", result.get(1).getCityUa());
+        assertEquals("Dniprovka", result.get(1).getCityEng());
+
+        // Verify interactions with mocks
+        verify(languageDetectorService, times(1)).detectLanguage("Dn");
+        verify(ukrPlacesRepository, times(1)).findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContaining(eq("Dn"), anyString());
+    }
 }
