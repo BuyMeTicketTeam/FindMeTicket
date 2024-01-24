@@ -20,7 +20,7 @@ export default function Filters({ requestBody, setTicketsData }) {
       ascending: reverse,
     };
     setLoading(true);
-    const response = await makeQuerry('sortedby', JSON.stringify(body));
+    const response = await makeQuerry('sortedBy', JSON.stringify(body));
     setLoading(false);
 
     const responseBody = response.status === 200 ? response.body : null;

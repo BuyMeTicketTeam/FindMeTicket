@@ -89,7 +89,8 @@ export default function SearchField({ onLoading, setTicketsData, setRequestBody 
     };
     setRequestBody(body);
     onLoading(true);
-    const dataStream = await eventSourceQuery('searchtickets', JSON.stringify(body));
+    setTicketsData([]);
+    const dataStream = await eventSourceQuery('searchTickets', JSON.stringify(body));
     onLoading(false);
     for await (const chunk of dataStream) {
       if (chunk) {
