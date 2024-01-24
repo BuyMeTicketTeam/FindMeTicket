@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
@@ -5,33 +6,34 @@ import { useTranslation } from 'react-i18next';
 import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
-import Passangers from '../Passangers';
+import Passengers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
+import eventSourceQuery from '../../helper/eventSourceQuery';
 import './searchField.scss';
 
-export default function SearchField({ onLoading, onTicketsData, setRequestBody }) {
+export default function SearchField({ onLoading, setTicketsData, setRequestBody }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
-  const [adultsValue, onAdultsValue] = useState(1);
+  const [adultsValue, setAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
   const [cityTo, onCityTo] = useState('');
-  const [errorCityFrom, onErrorCityFrom] = useState('');
-  const [errorCityTo, onErrorCityTo] = useState('');
+  const [errorCityFrom, onErrorCityFrom] = useState(false);
+  const [errorCityTo, onErrorCityTo] = useState(false);
   const [date, onDate] = useState(new Date());
-  const [passanger, onPassangers] = useState(`1 ${t('adults')}, 0 ${t('child')}`);
-  const [showPassangers, onShowPassangers] = useState(false);
+  const [passanger, onPassengers] = useState(`1 ${t('adults')}, 0 ${t('child')}`);
+  const [showPassengers, onShowPassengers] = useState(false);
   const fieldRef = React.createRef();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
-  function showPassangersDrop() {
-    onShowPassangers(!showPassangers);
+  function showPassengersDrop() {
+    onShowPassengers(!showPassengers);
   }
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
-      if (showPassangers && fieldRef.current && !fieldRef.current.contains(e.target)) {
-        onShowPassangers(false);
+      if (showPassengers && fieldRef.current && !fieldRef.current.contains(e.target)) {
+        onShowPassengers(false);
       }
     };
     document.addEventListener('mousedown', checkIfClickedOutside);
@@ -39,7 +41,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     return () => {
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
-  }, [showPassangers, fieldRef]);
+  }, [showPassengers, fieldRef]);
 
   function updatePassangerText() {
     let adults = (t('adult'));
@@ -52,7 +54,7 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
     } else if (childrenValue > 4) {
       kids = (t('childrens'));
     }
-    onPassangers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
+    onPassengers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
   }
 
   useEffect(() => {
@@ -61,16 +63,16 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
 
   function validation() {
     if (!cityFrom && !cityTo) {
-      onErrorCityFrom((t('error2')));
-      onErrorCityTo((t('error2')));
+      onErrorCityFrom(true);
+      onErrorCityTo(true);
       return false;
     }
     if (!cityFrom) {
-      onErrorCityFrom((t('error2')));
+      onErrorCityFrom(true);
       return false;
     }
     if (!cityTo) {
-      onErrorCityTo((t('error2')));
+      onErrorCityTo(true);
       return false;
     }
     return true;
@@ -84,14 +86,16 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
       departureCity: cityFrom.value,
       arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      indexFrom: 0,
     };
     setRequestBody(body);
     onLoading(true);
-    const response = await makeQuerry('getfirsttickets', JSON.stringify(body));
+    const dataStream = await eventSourceQuery('searchtickets', JSON.stringify(body));
     onLoading(false);
-    const responseBody = response.status === 200 ? response.body : null;
-    onTicketsData(responseBody);
+    for await (const chunk of dataStream) {
+      if (chunk) {
+        setTicketsData((prevTickets) => [...prevTickets, chunk]);
+      }
+    }
   }
 
   function changeCities() {
@@ -144,9 +148,9 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
           loadOptions={getCities}
           placeholder="Київ"
           onChange={onCityFrom}
-          onInputChange={() => onErrorCityFrom('')}
+          onInputChange={() => onErrorCityFrom(false)}
         />
-        {errorCityFrom !== '' && <p data-testid="errorCityFrom" className="search-field__error">{errorCityFrom}</p>}
+        {errorCityFrom && <p data-testid="errorCityFrom" className="search-field__error">{t('error2')}</p>}
       </div>
       <button
         className="search-field__img"
@@ -168,9 +172,9 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
           loadOptions={getCities}
           placeholder="Одеса"
           onChange={onCityTo}
-          onInputChange={() => onErrorCityTo('')}
+          onInputChange={() => onErrorCityTo(false)}
         />
-        {errorCityTo !== '' && <p data-testid="errorCityTo" className="search-field__error">{errorCityTo}</p>}
+        {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
       <Field
@@ -181,15 +185,15 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
         value={passanger}
         type="text"
         tip={(
-          <Passangers
-            status={showPassangers}
+          <Passengers
+            status={showPassengers}
             adultsValue={adultsValue}
-            onAdultsValue={onAdultsValue}
+            setAdultsValue={setAdultsValue}
             childrenValue={childrenValue}
             onChildrenValue={onChildrenValue}
           />
 )}
-        onClick={() => showPassangersDrop()}
+        onClick={() => showPassengersDrop()}
       />
       <Button name={t('find')} onButton={sendRequest} />
     </div>

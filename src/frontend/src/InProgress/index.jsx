@@ -1,7 +1,5 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-// import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 import Button from '../utils/Button';
 import './inProgress.scss';
 
@@ -10,13 +8,6 @@ export default function Index({
 }) {
   const { t } = useTranslation('translation', { keyPrefix: 'in-progress' });
   const inProgressRef = useRef(null);
-
-  // useEffect(() => {
-  //   disableBodyScroll(inProgressRef.current);
-  //   return () => {
-  //     clearAllBodyScrollLocks();
-  //   };
-  // }, []);
 
   return (
     <div className="message background">

@@ -137,8 +137,8 @@ createServer({
       }
       return new Response(200, undefined, JSON.stringify(destination));
     });
-    this.post('/getfirsttickets', () => new Response(200, undefined, JSON.stringify(tickets)) /* { timing: 3000 } */);
-    this.post('/getnexttickets', () => new Response(200, undefined, JSON.stringify(ticketsNew)) /* { timing: 3000 } */);
+    this.post('/searchtickets', () => new Response(200, undefined, JSON.stringify(tickets)) /* { timing: 3000 } */);
+    this.post('/sortedby', () => new Response(200, undefined, JSON.stringify(ticketsNew)), { timing: 1000 });
     this.post('/get', () => {
       document.cookie = 'remember_me=true; path=/; max-age=600';
       return new Response(200, { Authorization: 'alkshfksadfjs2143234' });

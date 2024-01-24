@@ -1,30 +1,31 @@
-/* eslint-disable no-proto */
-/* eslint-disable no-undef */
-import writeToken from './responseInterceptor';
+import Cookies from 'universal-cookie';
+import responseInterceptor from './responseInterceptor';
 
-describe('writeToken function', () => {
-  test('writes JWT token to localStorage if present in the response headers', () => {
-    const response = new Response(null, { headers: new Headers({ Authorization: 'Bearer JWTToken123' }) });
-    const setItemSpy = jest.spyOn(window.localStorage.__proto__, 'setItem');
+jest.mock('universal-cookie'); // Mock the Cookies library
 
-    writeToken(response);
+describe('responseInterceptor', () => {
+  const mockResponse = {
+    status: 200,
+    headers: new Headers({
+      authorization: 'Bearer 12345',
+      rememberme: 'yes',
+      userid: '42',
+    }),
+  };
 
-    expect(setItemSpy).toHaveBeenCalledWith('JWTtoken', 'Bearer JWTToken123');
-
-    setItemSpy.mockRestore();
+  beforeEach(() => {
+    Cookies.mockClear(); // Clear any mock calls before each test
+    localStorage.clear();
   });
 
-  test('does not write anything to localStorage if Authorization header is not present', () => {
-    const response = new Response();
+  it('should set JWT token in localStorage when authorization header is present', () => {
+    responseInterceptor(mockResponse);
+    expect(localStorage.getItem('JWTtoken')).toBe('Bearer 12345');
+  });
 
-    const localStorageMock = {
-      setItem: jest.fn(),
-    };
-
-    global.localStorage = localStorageMock;
-
-    writeToken(response);
-
-    expect(localStorageMock.setItem).not.toHaveBeenCalled();
+  it('should not set cookies or local storage if response status is not 200', () => {
+    const mockErrorResponse = { status: 401 };
+    responseInterceptor(mockErrorResponse);
+    expect(localStorage.getItem('JWTtoken')).toBeNull();
   });
 });

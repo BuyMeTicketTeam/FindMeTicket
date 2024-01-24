@@ -153,16 +153,16 @@
             },
             "filters": {
                   "price": "Price",
-                  "travel-time": "Travel time",
-                  "departure-time": "Departure time",
-                  "arrival-time": "Arrival time"
+                  "travelTime": "Travel time",
+                  "departureTime": "Departure time",
+                  "arrivalTime": "Arrival time"
             },
             "passengers": {
                   "adults": "Adults:",
                   "children": "Children under 14 years old:"
             },
             "banner": {
-                  "banner-text": "We have a number of places that you can find locally",
+                  "banner-text": "We have a number of places that you can find locally in",
                   "banner-btn": "More information"
             },
             "ticket": {

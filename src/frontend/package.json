@@ -28,7 +28,7 @@
     "start": "react-scripts --max-old-space-size=8192 start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage --collectCoverageFrom=!src/testServer.js --collectCoverageFrom=!src/reportWebVitals.js --collectCoverageFrom=!src/.eslintrc.js --collectCoverageFrom=!src/index.js --collectCoverageFrom=!src/utils/*",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -60,5 +60,16 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "miragejs": "^0.1.48",
     "mocha": "^10.2.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.jsx",
+      "src/**/*.js",
+      "!src/testServer.js",
+      "!src/reportWebVitals.js",
+      "!src/.eslintrc.js",
+      "!src/index.js",
+      "!src/utils/*"
+    ]
   }
 }

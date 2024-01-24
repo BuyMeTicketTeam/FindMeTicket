@@ -11,7 +11,7 @@ export default function Ticket({ data }) {
   const { t } = useTranslation('translation', { keyPrefix: 'ticket' });
 
   return (
-    <div className="ticket">
+    <div data-testid="ticket" className="ticket">
       <div className="ticket__body">
         <div className="information">
           <div className="information__row">
