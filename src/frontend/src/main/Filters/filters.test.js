@@ -16,7 +16,7 @@ describe('Filters component', () => {
   it('renders the FiltersBtn components', () => {
     render(<Filters requestBody={requestBody} setTicketsData={setTicketsData} />);
 
-    const filtersBtns = screen.getAllByRole('button', { name: /price|travel-time|departure-time|arrival-time/i });
+    const filtersBtns = screen.getAllByRole('button', { name: /price|travelTime|departureTime|arrivalTime/i });
     expect(filtersBtns).toHaveLength(4);
   });
 
