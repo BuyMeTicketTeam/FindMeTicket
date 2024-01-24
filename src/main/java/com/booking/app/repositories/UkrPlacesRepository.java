@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UkrPlacesRepository extends JpaRepository<UkrainianPlaces, BigInteger> {
 
-    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContaining(String startLetters,String exclusion);
-    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameUaStartsWithIgnoreCaseAndNameUaNotContaining(String startLetters,String exclusion);
+    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContainingIgnoreCase(String startLetters,String exclusion);
+    Optional<List<UkrainianPlaces>> findUkrainianPlacesByNameUaStartsWithIgnoreCaseAndNameUaNotContainingIgnoreCase(String startLetters,String exclusion);
 
 }
