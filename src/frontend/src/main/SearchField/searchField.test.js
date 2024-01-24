@@ -1,45 +1,56 @@
-/* eslint-disable no-param-reassign */
 import React from 'react';
-import {
-  render, fireEvent, waitFor, screen,
-} from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import SearchField from './index';
-import '../../locales/i18n';
 
-test('renders SearchField component with initial values', () => {
-  render(<SearchField onLoading={() => {}} onTicketsData={() => {}} setRequestBody={() => {}} />);
+test('renders city selection fields', () => {
+  render(<SearchField />);
 
-  expect(screen.getByLabelText('cityFromSelect')).toBeInTheDocument();
-  expect(screen.getByLabelText('cityToSelect')).toBeInTheDocument();
-  expect(screen.getByText('Знайти')).toBeInTheDocument();
+  const cityFromInput = screen.getByLabelText('cityFromSelect');
+  const cityToInput = screen.getByLabelText('cityToSelect');
+
+  expect(cityFromInput).toBeInTheDocument();
+  expect(cityToInput).toBeInTheDocument();
 });
 
-test('displays error messages when submitting without selecting cities', async () => {
-  render(<SearchField onLoading={() => {}} onTicketsData={() => {}} setRequestBody={() => {}} />);
+test('displays error message when city is not selected', async () => {
+  render(<SearchField />);
 
-  fireEvent.click(screen.getByText('Знайти'));
+  userEvent.click(screen.getByRole('button', { name: /find/i })); // Simulate clicking the "Find" button
 
   await waitFor(() => {
-    expect(screen.getByTestId('errorCityFrom')).toBeInTheDocument();
-    expect(screen.getByTestId('errorCityTo')).toBeInTheDocument();
+    const errorFrom = screen.getByTestId('errorCityFrom');
+    const errorTo = screen.getByTestId('errorCityTo');
+
+    expect(errorFrom).toHaveTextContent('error2');
+    expect(errorTo).toHaveTextContent('error2');
   });
 });
 
-// test('swaps departure and arrival cities when arrows button is clicked', async () => {
-// render(<SearchField onLoading={() => {}} onTicketsData={() => {}} setRequestBody={() => {}} />);
+test('renders passenger field', () => {
+  render(<SearchField />);
 
-//   fireEvent.change(screen.getByLabelText('cityFromSelect'), { target: { inputValue: 'Київ' } });
-//   await waitFor(() => {
-//     expect(screen.getByText('Київ, Україна')).toBeInTheDocument();
-//   });
-//   fireEvent.click(screen.getByText('Київ, Україна'));
+  const passengersField = screen.getByTestId('passengers');
 
-//   fireEvent.change(screen.getByLabelText('cityToSelect'), { target: { inputValue: 'Одеса' } });
-//   fireEvent.click(screen.getByText('Одеса, Україна'));
+  expect(passengersField).toBeInTheDocument();
+});
 
-//   fireEvent.click(screen.getByAltText('arrows'));
+test('displays passenger dropdown when clicked', () => {
+  render(<SearchField />);
 
-//   expect(screen.getByText('Київ, Україна')).toBeInTheDocument();
-//   expect(screen.getByText('Одеса, Україна')).toBeInTheDocument();
-// });
+  const passengersField = screen.getByTestId('passengers');
+
+  userEvent.click(passengersField);
+
+  const passengersDropdown = screen.getByTestId('passengers-dropdown'); // Assuming a test ID for the dropdown
+
+  expect(passengersDropdown).toBeInTheDocument();
+});
+
+test('renders date picker', () => {
+  render(<SearchField />);
+
+  const datePicker = screen.getByTestId('datepicker'); // Assuming a role for the datepicker
+
+  expect(datePicker).toBeInTheDocument();
+});

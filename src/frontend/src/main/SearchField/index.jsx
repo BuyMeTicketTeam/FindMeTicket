@@ -18,8 +18,8 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
   const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
   const [cityTo, onCityTo] = useState('');
-  const [errorCityFrom, onErrorCityFrom] = useState('');
-  const [errorCityTo, onErrorCityTo] = useState('');
+  const [errorCityFrom, onErrorCityFrom] = useState(false);
+  const [errorCityTo, onErrorCityTo] = useState(false);
   const [date, onDate] = useState(new Date());
   const [passanger, onPassangers] = useState(`1 ${t('adults')}, 0 ${t('child')}`);
   const [showPassangers, onShowPassangers] = useState(false);
@@ -63,16 +63,16 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
 
   function validation() {
     if (!cityFrom && !cityTo) {
-      onErrorCityFrom((t('error2')));
-      onErrorCityTo((t('error2')));
+      onErrorCityFrom(true);
+      onErrorCityTo(true);
       return false;
     }
     if (!cityFrom) {
-      onErrorCityFrom((t('error2')));
+      onErrorCityFrom(true);
       return false;
     }
     if (!cityTo) {
-      onErrorCityTo((t('error2')));
+      onErrorCityTo(true);
       return false;
     }
     return true;
@@ -148,9 +148,9 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
           loadOptions={getCities}
           placeholder="Київ"
           onChange={onCityFrom}
-          onInputChange={() => onErrorCityFrom('')}
+          onInputChange={() => onErrorCityFrom(false)}
         />
-        {errorCityFrom !== '' && <p data-testid="errorCityFrom" className="search-field__error">{errorCityFrom}</p>}
+        {errorCityFrom !== '' && <p data-testid="errorCityFrom" className="search-field__error">{t('error2')}</p>}
       </div>
       <button
         className="search-field__img"
@@ -172,9 +172,9 @@ export default function SearchField({ onLoading, onTicketsData, setRequestBody }
           loadOptions={getCities}
           placeholder="Одеса"
           onChange={onCityTo}
-          onInputChange={() => onErrorCityTo('')}
+          onInputChange={() => onErrorCityTo(false)}
         />
-        {errorCityTo !== '' && <p data-testid="errorCityTo" className="search-field__error">{errorCityTo}</p>}
+        {errorCityTo !== '' && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
       <Field

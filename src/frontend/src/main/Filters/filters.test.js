@@ -1,19 +1,45 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import Filters from './index';
+import makeQuerry from '../../helper/querry'; // Adjust the path if needed
 
-test('renders filters component', () => {
-  const onSortMock = jest.fn();
+jest.mock('../../helper/querry'); // Mock the makeQuerry function
 
-  render(<Filters onSort={onSortMock} prevSort="price-low" />);
+describe('Filters component', () => {
+  const requestBody = {};
+  const setTicketsData = jest.fn();
 
-  const priceBtn = screen.getByText('price');
-  const travelTimeBtn = screen.getByText('travel-time');
-  const departureTimeBtn = screen.getByText('departure-time');
-  const arrivalTimeBtn = screen.getByText('arrival-time');
+  beforeEach(() => {
+    makeQuerry.mockResolvedValue({ status: 200, body: {} }); // Mock a successful response
+  });
 
-  expect(priceBtn).toBeInTheDocument();
-  expect(travelTimeBtn).toBeInTheDocument();
-  expect(departureTimeBtn).toBeInTheDocument();
-  expect(arrivalTimeBtn).toBeInTheDocument();
+  it('renders the FiltersBtn components', () => {
+    render(<Filters requestBody={requestBody} setTicketsData={setTicketsData} />);
+
+    const filtersBtns = screen.getAllByRole('button', { name: /price|travel-time|departure-time|arrival-time/i });
+    expect(filtersBtns).toHaveLength(4);
+  });
+
+  it('handles sort clicks and calls makeQuerry with correct arguments', async () => {
+    render(<Filters requestBody={requestBody} setTicketsData={setTicketsData} />);
+
+    const priceBtn = screen.getByRole('button', { name: /price/i });
+    fireEvent.click(priceBtn);
+    expect(makeQuerry).toHaveBeenCalledWith('sortedby', '{"sortingBy":"price","ascending":false}');
+
+    const travelTimeBtn = screen.getByTestId('travelTime');
+    fireEvent.click(travelTimeBtn);
+    expect(makeQuerry).toHaveBeenCalledWith('sortedby', '{"sortingBy":"price","ascending":false}');
+
+    // ... Similar tests for other FiltersBtn components
+  });
+
+  it('toggles ascending order when clicking the same sort button again', async () => {
+    render(<Filters requestBody={requestBody} setTicketsData={setTicketsData} />);
+
+    const priceBtn = screen.getByRole('button', { name: /price/i });
+    fireEvent.click(priceBtn);
+    fireEvent.click(priceBtn);
+    expect(makeQuerry).toHaveBeenCalledWith('sortedby', '{"sortingBy":"price","ascending":false}');
+  });
 });

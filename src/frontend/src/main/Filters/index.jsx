@@ -36,8 +36,9 @@ export default function Filters({ requestBody, setTicketsData }) {
   }
 
   return (
-    <div className="main-filters">
+    <div data-testid="filters" className="main-filters">
       <FiltersBtn
+        dataTestId="price"
         onClick={(sortType) => handleSort(sortType)}
         sortType="price"
         reverse="price-up"
@@ -48,6 +49,7 @@ export default function Filters({ requestBody, setTicketsData }) {
         {t('price')}
       </FiltersBtn>
       <FiltersBtn
+        dataTestId="travelTime"
         onClick={(sortType) => handleSort(sortType)}
         sortType="travelTime"
         reverse="time-travel-up"
@@ -58,6 +60,7 @@ export default function Filters({ requestBody, setTicketsData }) {
         {t('travel-time')}
       </FiltersBtn>
       <FiltersBtn
+        dataTestId="departureTime"
         onClick={(sortType) => handleSort(sortType)}
         sortType="departureTime"
         reverse="time-departure-up"
@@ -68,6 +71,7 @@ export default function Filters({ requestBody, setTicketsData }) {
         {t('departure-time')}
       </FiltersBtn>
       <FiltersBtn
+        dataTestId="arrivalTime"
         onClick={(sortType) => handleSort(sortType)}
         sortType="arrivalTime"
         reverse="time-arrival-up"

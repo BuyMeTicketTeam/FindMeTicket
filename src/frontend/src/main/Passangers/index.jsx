@@ -10,7 +10,7 @@ export default function Passengers({
   const { t } = useTranslation('translation', { keyPrefix: 'passengers' });
 
   return (
-    <ul className={status ? 'passengers__list open' : 'passengers__list close'}>
+    <ul data-testid="passengers-dropdown" className={status ? 'passengers__list open' : 'passengers__list close'}>
       <li className="passengers__item">
         <p className="passengers__category">{t('adults')}</p>
         <div className="passengers__form">
