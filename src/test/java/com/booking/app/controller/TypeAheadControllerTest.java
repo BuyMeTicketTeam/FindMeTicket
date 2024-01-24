@@ -58,7 +58,7 @@ class TypeAheadControllerTest {
     void getCities_citiesResponse_ok() throws Exception {
         request.addHeader(HttpHeaders.CONTENT_LANGUAGE, "en");
         StartLettersDTO startLettersDTO = new StartLettersDTO("Dn");
-        when(typeAheadService.findMatchesUA(startLettersDTO, request.getHeader(HttpHeaders.CONTENT_LANGUAGE)))
+        when(typeAheadService.findMatches(startLettersDTO, request.getHeader(HttpHeaders.CONTENT_LANGUAGE)))
                 .thenReturn(expectedCities);
         MvcResult mvcResult = mockMvc.perform(post("/typeAhead")
                         .contentType(MediaType.APPLICATION_JSON)
