@@ -50,7 +50,7 @@ describe('Body', () => {
       /* ваш тестовый requestBody */
     };
 
-    render(<Body ticketsData={ticketsData} requestBody={requestBody} onTicketsData={jest.fn()} />);
+    render(<Body ticketsData={ticketsData} requestBody={requestBody} setTicketsData={jest.fn()} />);
 
     // Проверяем, что компонент отрисовался
     expect(screen.getByTestId('filters')).toBeInTheDocument();

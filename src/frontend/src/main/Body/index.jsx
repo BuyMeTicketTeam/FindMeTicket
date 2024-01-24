@@ -8,7 +8,7 @@ import makeQuerry from '../../helper/querry';
 // import Button from '../../utils/Button';
 
 export default function Body({
-  ticketsData, requestBody, onTicketsData,
+  ticketsData, requestBody, setTicketsData,
 }) {
   async function sendRequest(sortArg) {
     const body = {
@@ -17,7 +17,7 @@ export default function Body({
     };
     const response = await makeQuerry('sortedby', JSON.stringify(body));
     const responseBody = response.status === 200 ? response.body : null;
-    onTicketsData(responseBody);
+    setTicketsData(responseBody);
   }
 
   const handleSort = useCallback((sortArg) => sendRequest(sortArg), [requestBody]);

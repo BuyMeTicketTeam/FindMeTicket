@@ -49,7 +49,7 @@ export default function Index() {
           <Transport />
           <SearchField
             onLoading={setLoading}
-            onTicketsData={setTicketsData}
+            setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
           />
         </div>

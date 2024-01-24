@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import './passangers.scss';
 
 export default function Passengers({
-  status, adultsValue, onAdultsValue, childrenValue, onChildrenValue,
+  status, adultsValue, setAdultsValue, childrenValue, onChildrenValue,
 }) {
   const { t } = useTranslation('translation', { keyPrefix: 'passengers' });
 
@@ -17,7 +17,7 @@ export default function Passengers({
           <button
             className="passengers__btn"
             type="button"
-            onClick={() => onAdultsValue(adultsValue + 1)}
+            onClick={() => setAdultsValue(adultsValue + 1)}
           >
             +
           </button>
@@ -25,12 +25,12 @@ export default function Passengers({
             type="number"
             className="passengers__input"
             value={adultsValue}
-            onChange={(e) => onAdultsValue(e.target.value)}
+            onChange={(e) => setAdultsValue(e.target.value)}
           />
           <button
             className="passengers__btn"
             type="button"
-            onClick={() => onAdultsValue((adultsValue - 1 > 0) ? adultsValue - 1 : adultsValue)}
+            onClick={() => setAdultsValue((adultsValue - 1 > 0) ? adultsValue - 1 : adultsValue)}
           >
             -
           </button>
