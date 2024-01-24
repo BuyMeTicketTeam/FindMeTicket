@@ -154,9 +154,9 @@
             },
             "filters": {
                   "price": "Ціна",
-                  "travel-time": "Тривалість поїздки",
-                  "departure-time": "Час відправлення",
-                  "arrival-time": "Час прибуття"
+                  "travelTime": "Тривалість поїздки",
+                  "departureTime": "Час відправлення",
+                  "arrivalTime": "Час прибуття"
             },
             "passengers": {
                   "adults": "Дорослі:",

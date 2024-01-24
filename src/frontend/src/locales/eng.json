@@ -153,9 +153,9 @@
             },
             "filters": {
                   "price": "Price",
-                  "travel-time": "Travel time",
-                  "departure-time": "Departure time",
-                  "arrival-time": "Arrival time"
+                  "travelTime": "Travel time",
+                  "departureTime": "Departure time",
+                  "arrivalTime": "Arrival time"
             },
             "passengers": {
                   "adults": "Adults:",
