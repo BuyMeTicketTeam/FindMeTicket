@@ -52,7 +52,7 @@ function Maps() {
           Туристичні місця
         </div>
       </div>
-      <hr className="horizontal-line" />
+      <hr className="horizontal-line" data-testid="horizontal-line" />
       {selectedCategory === 0 && <img src={HotelsMap} alt="HotelsMap" />}
       {selectedCategory === 1 && <img src={RestaurantMap} alt="RestaurantMap" />}
       {selectedCategory === 2 && <img src={TouristPlaces} alt="TouristPlaces" />}
