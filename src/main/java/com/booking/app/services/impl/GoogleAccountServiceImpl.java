@@ -57,7 +57,8 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
      * @throws IOException              If an I/O error occurs during ID Token verification.
      */
     public Optional<UserCredentials> loginOAuthGoogle(OAuth2IdTokenDTO requestBody) throws GeneralSecurityException, IOException {
-        GoogleIdToken account = verifyIDToken(requestBody.getIdToken());
+        GoogleIdToken account = verifier.verify(requestBody.getIdToken());
+
         if (account == null) {
             throw new BadCredentialsException("ID Token is wrong");
         }
@@ -99,16 +100,4 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
         return existingAccount;
     }
 
-    /**
-     * Verify the provided Google ID Token.
-     *
-     * @param idToken Google OAuth2 ID Token to be verified.
-     * @return Verified GoogleIdToken or null if verification fails.
-     */
-    private GoogleIdToken verifyIDToken(String idToken) throws GeneralSecurityException, IOException {
-        return verifier.verify(idToken);
-    }
-
 }
-
-
