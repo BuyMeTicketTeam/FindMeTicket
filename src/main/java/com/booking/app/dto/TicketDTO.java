@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.joda.time.DateTime;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -24,6 +25,5 @@ public class TicketDTO {
    private String arrivalTime;
    private String arrivalDate;
    private String travelTime;
-   private String price;
-   private String url;
+   private BigDecimal price;
 }

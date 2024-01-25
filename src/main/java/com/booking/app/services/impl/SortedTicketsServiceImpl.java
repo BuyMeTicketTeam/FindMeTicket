@@ -2,7 +2,6 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.TicketDTO;
-import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +34,9 @@ public class SortedTicketsServiceImpl {
                 Comparable fieldValue1 = (Comparable) field.get(o1);
                 Comparable fieldValue2 = (Comparable) field.get(o2);
 
-                return fieldValue1.compareTo(fieldValue2);
+                int ascending = requestSortedTicketsDTO.isAscending() ? 1 : -1;
+
+                return ascending * fieldValue1.compareTo(fieldValue2);
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 return 0;
             }
@@ -45,7 +45,7 @@ public class SortedTicketsServiceImpl {
         List<TicketDTO> result = new LinkedList<>();
 
         for(int i = 0; i<30 && i < tickets.size(); i++){
-            result.add(ticketMapper.toTicketDTO(tickets.get(i)));
+            result.add(ticketMapper.toDto(tickets.get(i)));
         }
 
         return result;
