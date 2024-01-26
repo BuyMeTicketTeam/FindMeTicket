@@ -25,11 +25,11 @@ describe('Filters component', () => {
 
     const priceBtn = screen.getByRole('button', { name: /price/i });
     fireEvent.click(priceBtn);
-    expect(makeQuerry).toHaveBeenCalledWith('sortedby', '{"sortingBy":"price","ascending":false}');
+    expect(makeQuerry).toHaveBeenCalledWith('sortedBy', '{"sortingBy":"price","ascending":false}');
 
     const travelTimeBtn = screen.getByTestId('travelTime');
     fireEvent.click(travelTimeBtn);
-    expect(makeQuerry).toHaveBeenCalledWith('sortedby', '{"sortingBy":"price","ascending":false}');
+    expect(makeQuerry).toHaveBeenCalledWith('sortedBy', '{"sortingBy":"price","ascending":false}');
 
     // ... Similar tests for other FiltersBtn components
   });
@@ -40,6 +40,6 @@ describe('Filters component', () => {
     const priceBtn = screen.getByRole('button', { name: /price/i });
     fireEvent.click(priceBtn);
     fireEvent.click(priceBtn);
-    expect(makeQuerry).toHaveBeenCalledWith('sortedby', '{"sortingBy":"price","ascending":false}');
+    expect(makeQuerry).toHaveBeenCalledWith('sortedBy', '{"sortingBy":"price","ascending":false}');
   });
 });
