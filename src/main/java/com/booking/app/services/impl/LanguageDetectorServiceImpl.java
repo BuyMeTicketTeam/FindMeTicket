@@ -24,7 +24,6 @@ public class LanguageDetectorServiceImpl implements LanguageDetectorService {
     @Value("${languages}")
     private final List<String> languageProfiles;
 
-
     @Override
     public Optional<String> detectLanguage(String letters) throws IOException {
         List<LanguageProfile> loadedProfiles = new LanguageProfileReader().read(languageProfiles);

@@ -1,5 +1,6 @@
 package com.booking.app.security.jwt;
 
+import com.booking.app.constant.JwtTokenConstants;
 import com.booking.app.entity.UserCredentials;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -48,14 +49,9 @@ public class JwtProvider {
                     .getBody();
 
 
-        } catch (MalformedJwtException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            log.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            log.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            log.error("JWT claims string is empty: {}", e.getMessage());
+        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
+            log.error("Error parsing JWT token: {}", e.getMessage());
+            return null;
         }
         return claims.getSubject();
     }
@@ -108,7 +104,7 @@ public class JwtProvider {
 
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authorizationHeader != null && !authorizationHeader.equals("null") && authorizationHeader.startsWith("Bearer")) {
+        if (authorizationHeader != null && !authorizationHeader.equals("null") && authorizationHeader.startsWith(JwtTokenConstants.BEARER.trim())) {
             return authorizationHeader.substring(7);
         }
 
@@ -119,7 +115,7 @@ public class JwtProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
+                if (cookie.getName().equals(JwtTokenConstants.REFRESH_TOKEN)) {
                     return cookie.getValue();
                 }
             }
@@ -127,6 +123,5 @@ public class JwtProvider {
 
         return null;
     }
-
 
 }

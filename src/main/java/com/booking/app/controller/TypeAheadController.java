@@ -38,7 +38,7 @@ public class TypeAheadController implements TypeAheadAPI {
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
 
         return ResponseEntity.ok().
-                body(typeAheadService.findMatchesUA(startLetters, siteLanguage));
+                body(typeAheadService.findMatches(startLetters, siteLanguage));
     }
 
 }
