@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +23,7 @@ public class SortedTicketsServiceImpl {
 
     public List<TicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO){
 
-        List<Ticket> tickets = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestSortedTicketsDTO.getDepartureCity(), requestSortedTicketsDTO.getArrivalCity(), requestSortedTicketsDTO.getDepartureDate()).getTicketList();
-
+        List<Ticket> tickets = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestSortedTicketsDTO.getDepartureCity(), requestSortedTicketsDTO.getArrivalCity(), requestSortedTicketsDTO.getDepartureDate()).getTickets().stream().toList();
 
 
         tickets.sort((o1, o2) -> {

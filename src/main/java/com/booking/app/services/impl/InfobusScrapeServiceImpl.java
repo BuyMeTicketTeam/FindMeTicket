@@ -4,12 +4,14 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.entity.TicketUrls;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -33,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
 public class InfobusScrapeServiceImpl {
 
     private static final String infobusLink = "https://infobus.eu/ua";
-    //private final ChromeDriver driver;
     private final RouteRepository routeRepository;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
@@ -42,7 +43,6 @@ public class InfobusScrapeServiceImpl {
     @Async
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws ParseException, IOException {
 
-        routeRepository.save(route);
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
@@ -60,45 +60,60 @@ public class InfobusScrapeServiceImpl {
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div.main-detail-wrap"));
 
-        SimpleDateFormat ticketDate = new SimpleDateFormat("dd.MM");
-        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM E", new Locale("uk"));
 
         for (WebElement element : elements) {
 
-            String arrivalDate = element.findElements(By.cssSelector("span.day-preffix")).get(1).getText().substring(3);
-
-            Date date = ticketDate.parse(arrivalDate);
-
-            String price = element.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
-            String travelTime = element.findElement(By.className("duration-time")).getText().toLowerCase().replace(" г", "год.").replace(" хв", "хв");
+            Ticket ticket = scrapeTicketInfo(element, route);
 
 
-            String[] parts = travelTime.split("[^\\d]+");
-            int hours = Integer.parseInt(parts[0]);
-            int minutes = Integer.parseInt(parts[1]);
-            int totalMinutes = hours * 60 + minutes;
-
-            Ticket ticket = Ticket.builder()
-                    .route(route)
-                    .price(BigDecimal.valueOf(Long.parseLong(price)))
-                    .placeFrom(element.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
-                    .placeAt(element.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
-                    .travelTime(BigDecimal.valueOf(totalMinutes))
-                    .departureTime(element.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                    .arrivalTime(element.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                    .arrivalDate(formatedTicketDate.format(date)).build();
-
-
-            synchronized (emitter) {
-                ticket = ticketRepository.save(ticket);
-                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
+            synchronized (route) {
+                if (route.getTickets().add(ticket)) {
+                    emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
+                }
             }
-
         }
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
+
+    private Ticket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
+
+        SimpleDateFormat ticketDate = new SimpleDateFormat("dd.MM YYYY", new Locale("uk"));
+        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
+
+        String arrivalDate = webTicket.findElements(By.cssSelector("span.day-preffix")).get(1).getText().substring(3);
+
+        Date date = ticketDate.parse(arrivalDate);
+
+        String price = webTicket.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
+        String travelTime = webTicket.findElement(By.className("duration-time")).getText().toLowerCase().replace(" г", "год.").replace(" хв", "хв");
+
+
+        String[] parts = travelTime.split("[^\\d]+");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int totalMinutes = hours * 60 + minutes;
+
+        TicketUrls ticketUrls = new TicketUrls();
+
+        Ticket ticket = Ticket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .urls(ticketUrls)
+                .price(BigDecimal.valueOf(Long.parseLong(price)))
+                .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
+                .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
+                .travelTime(BigDecimal.valueOf(totalMinutes))
+                .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
+                .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
+                .arrivalDate(formatedTicketDate.format(date)).build();
+
+        ticketUrls.setTicket(ticket);
+
+        return ticket;
+    }
+
 
     @Async
     public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException, ParseException {
@@ -138,27 +153,21 @@ public class InfobusScrapeServiceImpl {
 
                 element.findElement(By.cssSelector("button.btn")).click();
                 wait.until(ExpectedConditions.urlContains("deeplink"));
-                ticket.setUrl(driver.getCurrentUrl());
+                ticket.getUrls().setInfobus(driver.getCurrentUrl());
                 break;
             }
         }
 
-        if (ticket.getUrl() != null) {
+        if (ticket.getUrls().getInfobus() != null) {
             synchronized (emitter) {
                 ticketRepository.save(ticket);
-                emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrl()));
+                emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getInfobus()));
             }
         } else {
             synchronized (emitter) {
                 emitter.send(SseEmitter.event().name("Infobus url:").data("no such url"));
             }
         }
-//        }else {
-//            synchronized (emitter) {
-//                ticketRepository.save(ticket);
-//                emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getProizd()));
-//            }
-//        }
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
@@ -171,18 +180,23 @@ public class InfobusScrapeServiceImpl {
 
         driver.get(infobusLink);
 
-        WebElement cityFrom = driver.findElement(By.id("city_from"));
-        cityFrom.click();
-        cityFrom.sendKeys(departureCity);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ui-id-1"))).findElement(By.cssSelector("li.parent.bus.ui-menu-item")).click();
 
+        selectCity("city_from", "ui-id-1", departureCity, driver, wait);
+        selectCity("city_to", "ui-id-2", arrivalCity, driver, wait);
 
-        WebElement cityTo = driver.findElement(By.id("city_to"));
-        wait.until(ExpectedConditions.elementToBeClickable(cityTo)).click();
-        cityTo.sendKeys(arrivalCity);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ui-id-2"))).findElement(By.cssSelector("li.parent.bus.ui-menu-item")).click();
+        selectDate(departureDate, driver, wait);
 
+        driver.findElement(By.id("main_form_search_button")).click();
+    }
 
+    private void selectCity(String inputCityId, String clickableElementId, String city, WebDriver driver, WebDriverWait wait) {
+        WebElement inputCity = driver.findElement(By.id(inputCityId));
+        inputCity.click();
+        inputCity.sendKeys(city);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElement(By.cssSelector("li.parent.bus.ui-menu-item")).click();
+    }
+
+    private void selectDate(String departureDate, WebDriver driver, WebDriverWait wait) throws ParseException {
         WebElement dateFrom = driver.findElement(By.id("dateFrom"));
         dateFrom.click();
 
@@ -211,8 +225,5 @@ public class InfobusScrapeServiceImpl {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.ui-state-default")));
 
         driver.findElements(By.cssSelector("a.ui-state-default")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
-
-        driver.findElement(By.id("main_form_search_button")).click();
     }
-
 }

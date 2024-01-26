@@ -49,22 +49,24 @@ public class ScrapingServiceImpl {
                     .departureCity(requestTicketDTO.getDepartureCity())
                     .arrivalCity(requestTicketDTO.getArrivalCity())
                     .departureDate(requestTicketDTO.getDepartureDate())
-                    .ticketList(new LinkedList<>()).build();
+                    .tickets(new HashSet<>()).build();
 
-            routeRepository.save(newRoute);
 
-            CompletableFuture<Boolean> infobus = infobusScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
+
+//            CompletableFuture<Boolean> infobus = infobusScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
 
             CompletableFuture<Boolean> proizd = proizdScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
+//
+//            CompletableFuture<Boolean> busfor = busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
 
-            CompletableFuture<Boolean> busfor = busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
-
-            while (!(busfor.isDone() && proizd.isDone() && infobus.isDone())) {
+            while (!(proizd.isDone())) {
 
             }
 
+            routeRepository.save(newRoute);
+
         } else {
-            for (Ticket ticket : route.getTicketList()) {
+            for (Ticket ticket : route.getTickets()) {
                 emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
         }

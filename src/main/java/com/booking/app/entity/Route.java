@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -36,6 +37,6 @@ public class Route {
     private LocalDateTime addingTime;
 
     @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Ticket> ticketList;
+    private Set<Ticket> tickets;
 
 }

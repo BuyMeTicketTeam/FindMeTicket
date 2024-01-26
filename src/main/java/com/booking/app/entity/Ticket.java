@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,10 +14,10 @@ import java.util.UUID;
 @Setter
 @Getter
 @ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Ticket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "place_from")
@@ -28,22 +27,23 @@ public class Ticket {
     private String placeAt;
 
     @Column(name = "departure_time")
+    @EqualsAndHashCode.Include
     private String departureTime;
 
     @Column(name = "arrival_time")
+    @EqualsAndHashCode.Include
     private String arrivalTime;
 
     @Column(name = "arrival_date")
+    @EqualsAndHashCode.Include
     private String arrivalDate;
 
     @Column(name = "travel_time")
     private BigDecimal travelTime;
 
     @Column(name = "price")
+    @EqualsAndHashCode.Include
     private BigDecimal price;
-
-    @Column(name = "url")
-    private String url;
 
     @ManyToOne
     @JoinColumn(name = "route_id")

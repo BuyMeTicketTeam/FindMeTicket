@@ -1,12 +1,10 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.dto.TicketDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
 import com.booking.app.entity.TicketUrls;
 import com.booking.app.mapper.TicketMapper;
-import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
@@ -34,7 +32,6 @@ import java.util.concurrent.CompletableFuture;
 public class BusforScrapeServiceImpl {
 
     private static final String busforLink = "https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true";
-    private final RouteRepository routeRepository;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
@@ -62,48 +59,61 @@ public class BusforScrapeServiceImpl {
 
         for (int i = 0; i < products.size() && i < 150; i++) {
 
-            WebElement ticket = driver.findElements(By.cssSelector("div.ticket")).get(i);
+            WebElement webTicket = driver.findElements(By.cssSelector("div.ticket")).get(i);
 
-            List<WebElement> ticketInfo = ticket.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
+            Ticket ticket = scrapeTicketInfo(webTicket, route);
 
-            WebElement departureInfo = ticketInfo.get(0);
-            WebElement arrivalInfo = ticketInfo.get(1);
-
-            String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
-            String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
-            String travelTime = ticket.findElement(By.cssSelector("span.Style__TimeInRoad-yh63zd-0.btMUVs")).getText();
-            travelTime = travelTime.substring(0, travelTime.length() - 9);
-
-            String[] parts = travelTime.split("[^\\d]+");
-            int hours = Integer.parseInt(parts[0]);
-            int minutes = Integer.parseInt(parts[1]);
-            int totalMinutes = hours * 60 + minutes;
-
-            TicketUrls ticketUrls = new TicketUrls();
-
-            Ticket temp = Ticket.builder()
-                    .route(route)
-                    .urls(ticketUrls)
-                    .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                    .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                    .departureTime(departureDateTime.substring(0, 5))
-                    .arrivalTime(arrivalDateTime.substring(0, 5))
-                    .arrivalDate(formatDate(arrivalDateTime.substring(6)))
-                    .price(BigDecimal.valueOf(Long.parseLong(ticket.findElement(By.cssSelector("span.price")).getText())))
-                    .travelTime(BigDecimal.valueOf(totalMinutes))
-                    .build();
-
-            ticketUrls.setTicket(temp);
-
-            synchronized (emitter) {
-                temp = ticketRepository.save(temp);
-                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(temp)));
+            synchronized (route) {
+                if (route.getTickets().add(ticket)) {
+                    emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
+                }
             }
         }
 
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
+    }
+
+    private Ticket scrapeTicketInfo(WebElement webTicket, Route route) {
+
+
+        List<WebElement> ticketInfo = webTicket.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
+
+        WebElement departureInfo = ticketInfo.get(0);
+        WebElement arrivalInfo = ticketInfo.get(1);
+
+        String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
+        String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
+        String travelTime = webTicket.findElement(By.cssSelector("span.Style__TimeInRoad-yh63zd-0.btMUVs")).getText();
+        travelTime = travelTime.substring(0, travelTime.length() - 9);
+
+        String[] parts = travelTime.split("[^\\d]+");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = 0;
+        if (parts.length == 2) {
+            minutes = Integer.parseInt(parts[1]);
+        }
+        int totalMinutes = hours * 60 + minutes;
+
+        TicketUrls ticketUrls = new TicketUrls();
+
+        Ticket ticket = Ticket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .urls(ticketUrls)
+                .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                .departureTime(departureDateTime.substring(0, 5))
+                .arrivalTime(arrivalDateTime.substring(0, 5))
+                .arrivalDate(formatDate(arrivalDateTime.substring(6)))
+                .price(BigDecimal.valueOf(Long.parseLong(webTicket.findElement(By.cssSelector("span.price")).getText())))
+                .travelTime(BigDecimal.valueOf(totalMinutes))
+                .build();
+
+        ticketUrls.setTicket(ticket);
+
+        return ticket;
     }
 
     @Async
@@ -113,7 +123,6 @@ public class BusforScrapeServiceImpl {
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
-
 
 
         if (ticket.getUrls().getBusfor() == null || ticket.getUrls().getBusfor().isEmpty() || ticket.getUrls().getBusfor().equals("null")) {
@@ -144,7 +153,6 @@ public class BusforScrapeServiceImpl {
 
                 String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
                 String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
-                String travelTime = element.findElement(By.cssSelector("span.Style__TimeInRoad-yh63zd-0.btMUVs")).getText();
 
                 if (ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(element.findElement(By.cssSelector("span.price")).getText()))) &&
                         ticket.getArrivalTime().equals(arrivalDateTime.substring(0, 5)) &&

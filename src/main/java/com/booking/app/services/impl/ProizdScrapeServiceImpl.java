@@ -4,11 +4,13 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.entity.TicketUrls;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -34,7 +36,6 @@ import java.util.concurrent.CompletableFuture;
 public class ProizdScrapeServiceImpl {
 
     private static final String proizdLink = "https://bus.proizd.ua/";
-    private final RouteRepository routeRepository;
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
@@ -58,50 +59,61 @@ public class ProizdScrapeServiceImpl {
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
 
-        SimpleDateFormat ticketDate = new SimpleDateFormat("d MMMM", new Locale("uk"));
-        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM E", new Locale("uk"));
-
         for (WebElement element : elements) {
 
-            String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
-            arrivalDate = arrivalDate.substring(5);
+            Ticket ticket = scrapeTicketInfo(element, route);
 
-            Date date = ticketDate.parse(arrivalDate);
-
-            String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
-            price = price.substring(0, price.length() - 6);
-
-            String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
-            travelTime = travelTime.replaceFirst("г", "год.");
-
-
-            String[] parts = travelTime.split("[^\\d]+");
-            int hours = Integer.parseInt(parts[0]);
-            int minutes = Integer.parseInt(parts[1]);
-            int totalMinutes = hours * 60 + minutes;
-
-
-            Ticket ticket = Ticket.builder()
-                    .route(route)
-                    .price(BigDecimal.valueOf(Long.parseLong(price)))
-                    .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
-                    .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
-                    .travelTime(BigDecimal.valueOf(totalMinutes))
-                    .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
-                    .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
-                    .arrivalDate(formatedTicketDate.format(date).replace(" ", ", ")).build();
-
-
-            synchronized (emitter) {
-                ticket = ticketRepository.save(ticket);
-                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
+            synchronized (route) {
+                if (route.getTickets().add(ticket)) {
+                    emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
+                }
             }
         }
-
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
+
+    private Ticket scrapeTicketInfo(WebElement element, Route route) throws ParseException {
+
+        SimpleDateFormat ticketDate = new SimpleDateFormat("d MMMM", Locale.UK);
+        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", Locale.UK);
+
+        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
+        arrivalDate = arrivalDate.substring(4);
+
+        Date date = ticketDate.parse(arrivalDate);
+
+        String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
+        price = price.substring(0, price.length() - 6);
+
+        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
+        travelTime = travelTime.replaceFirst("г", "год.");
+
+
+        String[] parts = travelTime.split("[^\\d]+");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int totalMinutes = hours * 60 + minutes;
+
+        TicketUrls ticketUrls = new TicketUrls();
+
+        Ticket ticket = Ticket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .urls(ticketUrls)
+                .price(BigDecimal.valueOf(Long.parseLong(price)))
+                .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
+                .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
+                .travelTime(BigDecimal.valueOf(totalMinutes))
+                .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
+                .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
+                .arrivalDate(formatedTicketDate.format(date)).build();
+
+        ticketUrls.setTicket(ticket);
+        return ticket;
+    }
+
 
     @Async
     public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException, ParseException {
@@ -137,15 +149,15 @@ public class ProizdScrapeServiceImpl {
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
                     ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(priceString)))) {
-                ticket.setUrl(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
+                ticket.getUrls().setProizd(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 break;
             }
         }
 
-        if (ticket.getUrl() != null) {
+        if (ticket.getUrls().getProizd() != null) {
             synchronized (emitter) {
                 ticketRepository.save(ticket);
-                emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrl()));
+                emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
             }
         } else {
             synchronized (emitter) {
@@ -163,18 +175,23 @@ public class ProizdScrapeServiceImpl {
 
         driver.get(proizdLink);
 
+        selectCity(wait, departureCity, "//input[@placeholder='Станція відправлення']");
+        selectCity(wait, arrivalCity, "//input[@placeholder='Станція прибуття']");
 
-        WebElement cityFrom = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Станція відправлення']")));
-        cityFrom.click();
-        cityFrom.sendKeys(departureCity);
+
+        selectDate(departureDate, driver, wait);
+
+        driver.findElement(By.cssSelector("button.btn.search-form__btn")).click();
+    }
+
+    private void selectCity(WebDriverWait wait, String city, String inputXpath) {
+        WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
+        inputCity.click();
+        inputCity.sendKeys(city);
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
+    }
 
-
-        WebElement cityTo = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//input[@placeholder='Станція прибуття']")));
-        wait.until(ExpectedConditions.elementToBeClickable(cityTo)).click();
-        cityTo.sendKeys(arrivalCity);
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
-
+    private void selectDate(String departureDate, WebDriver driver, WebDriverWait wait) throws ParseException {
 
         while (true) {
             WebElement dateFrom = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.search-form__field.search-form__date")));
@@ -223,8 +240,5 @@ public class ProizdScrapeServiceImpl {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.calbody")));
 
         driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
-
-        driver.findElement(By.cssSelector("button.btn.search-form__btn")).click();
     }
-
 }

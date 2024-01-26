@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1706114563068-1
+      id: 1706286897187-1
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -19,7 +19,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1706114563068-2
+      id: 1706286897187-2
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -46,7 +46,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1706114563068-3
+      id: 1706286897187-3
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -81,14 +81,11 @@ databaseChangeLog:
                   name: price
                   type: DECIMAL
               - column:
-                  name: url
-                  type: VARCHAR(255)
-              - column:
                   name: route_id
                   type: UUID
             tableName: ticket
   - changeSet:
-      id: 1706114563068-4
+      id: 1706286897187-4
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -103,19 +100,19 @@ databaseChangeLog:
                   type: UUID
               - column:
                   name: busfor
-                  type: VARCHAR(255)
+                  type: VARCHAR(1000)
               - column:
                   name: infobus
-                  type: VARCHAR(255)
+                  type: VARCHAR(1000)
               - column:
                   name: proizd
-                  type: VARCHAR(255)
+                  type: VARCHAR(1000)
               - column:
                   name: ticket_id
                   type: UUID
             tableName: ticket_urls
   - changeSet:
-      id: 1706114563068-5
+      id: 1706286897187-5
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -140,7 +137,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: token
   - changeSet:
-      id: 1706114563068-6
+      id: 1706286897187-6
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -174,7 +171,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_places
   - changeSet:
-      id: 1706114563068-7
+      id: 1706286897187-7
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -224,7 +221,7 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: user_credentials
   - changeSet:
-      id: 1706114563068-8
+      id: 1706286897187-8
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -257,7 +254,7 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1706114563068-9
+      id: 1706286897187-9
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -266,7 +263,7 @@ databaseChangeLog:
             constraintName: uc_ticket_urls_ticket
             tableName: ticket_urls
   - changeSet:
-      id: 1706114563068-10
+      id: 1706286897187-10
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -275,7 +272,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_email
             tableName: user_credentials
   - changeSet:
-      id: 1706114563068-11
+      id: 1706286897187-11
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -284,7 +281,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_user
             tableName: user_credentials
   - changeSet:
-      id: 1706114563068-12
+      id: 1706286897187-12
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -293,7 +290,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_username
             tableName: user_credentials
   - changeSet:
-      id: 1706114563068-13
+      id: 1706286897187-13
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -302,7 +299,7 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1706114563068-14
+      id: 1706286897187-14
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -311,7 +308,7 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1706114563068-15
+      id: 1706286897187-15
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -322,7 +319,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1706114563068-16
+      id: 1706286897187-16
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -333,7 +330,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1706114563068-17
+      id: 1706286897187-17
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -344,7 +341,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1706114563068-18
+      id: 1706286897187-18
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -355,7 +352,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: token
   - changeSet:
-      id: 1706114563068-19
+      id: 1706286897187-19
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -365,22 +362,4 @@ databaseChangeLog:
             constraintName: FK_USER_CREDENTIALS_ON_USER
             referencedColumnNames: id
             referencedTableName: users
-  - changeSet:
-      id: insert_data_role
-      author: Mykhailo Marchuk
 
-      changes:
-        - sql:
-            sql: |
-              INSERT INTO role (enum_role) VALUES
-                 ('USER'),
-                 ('ADMIN');
-  - changeSet:
-      id: 1705059591405-14
-      author: Mykhailo Marchuk
-
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - loadData:
-            tableName: ukrainian_places
-            file: places/ukr-places-common.csv
