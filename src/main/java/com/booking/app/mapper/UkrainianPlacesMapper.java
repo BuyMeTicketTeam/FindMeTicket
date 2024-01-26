@@ -17,29 +17,37 @@ public interface UkrainianPlacesMapper {
     CitiesDTO toCitiesDTO(UkrainianPlaces ukrainianPlaces);
 
     default List<CitiesDTO> toCitiesDTOList(List<UkrainianPlaces> ukrainianPlacesList, String inputLanguage, String siteLanguage) {
-
         return ukrainianPlacesList.stream()
                 .map(place -> {
                     CitiesDTO citiesDTO = toCitiesDTO(place);
                     citiesDTO.setSiteLanguage(siteLanguage);
-                    if (siteLanguage.contains("ua")) {
-                        if (inputLanguage.equals("ua")) {
-                            citiesDTO.setCityUa(place.getNameUa());
-                        }
-                        if (inputLanguage.equals("eng")) {
-                            citiesDTO.setCityEng(place.getNameEng());
-                            citiesDTO.setCityUa(place.getNameUa());
-                        }
+
+                    switch (siteLanguage) {
+                        case "ua":
+                            switch (inputLanguage) {
+                                case "ua":
+                                    citiesDTO.setCityUa(place.getNameUa());
+                                    break;
+                                case "eng":
+                                    citiesDTO.setCityEng(place.getNameEng());
+                                    citiesDTO.setCityUa(place.getNameUa());
+                                    break;
+                            }
+                            break;
+
+                        case "eng":
+                            switch (inputLanguage) {
+                                case "eng":
+                                    citiesDTO.setCityEng(place.getNameEng());
+                                    break;
+                                case "ua":
+                                    citiesDTO.setCityEng(place.getNameEng());
+                                    citiesDTO.setCityUa(place.getNameUa());
+                                    break;
+                            }
+                            break;
                     }
-                    if (siteLanguage.contains("eng")) {
-                        if (inputLanguage.equals("eng")) {
-                            citiesDTO.setCityEng(place.getNameEng());
-                        }
-                        if (inputLanguage.equals("ua")) {
-                            citiesDTO.setCityEng(place.getNameEng());
-                            citiesDTO.setCityUa(place.getNameUa());
-                        }
-                    }
+
                     return citiesDTO;
                 })
                 .toList();
