@@ -26,10 +26,10 @@ function TicketPage() {
   //   }
   // }
 
-  console.log(ticketId);
+  console.log('ticketId', ticketId);
 
   async function serverRequest() {
-    await fetchEventSource(`http://localhost:/8080/tickets/${ticketId}`, {
+    await fetchEventSource(`http://localhost:8080/get/tickets/${ticketId}`, {
       method: 'POST',
       headers: {
         Accept: 'text/event-stream',
@@ -46,7 +46,8 @@ function TicketPage() {
         }
       },
       onmessage(event) {
-        console.log(event.data);
+        console.log('event', event);
+        console.log('event data:', event.data);
         const parsedData = JSON.parse(event.data);
         console.log(parsedData);
       },
