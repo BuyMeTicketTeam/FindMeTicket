@@ -31,7 +31,6 @@ import java.util.concurrent.CompletableFuture;
 public class BusforScrapeServiceImpl {
 
     private static final String busforLink = "https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true";
-    private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws IOException {
@@ -157,13 +156,10 @@ public class BusforScrapeServiceImpl {
             }
         }
 
-        if (ticket.getUrls().getBusfor() == null) {
+        if (ticket.getUrls().getBusfor() != null) {
             emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
-
         } else {
-
             emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
-
         }
 
         driver.quit();
