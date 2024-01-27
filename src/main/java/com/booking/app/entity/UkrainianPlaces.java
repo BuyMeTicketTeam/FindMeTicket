@@ -17,6 +17,7 @@ public class UkrainianPlaces {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BIGINT")
     private BigInteger id;
 
     @Column(name = "name_eng")
@@ -33,5 +34,4 @@ public class UkrainianPlaces {
 
     @Column(name = "name_ru")
     private String nameRu;
-
 }

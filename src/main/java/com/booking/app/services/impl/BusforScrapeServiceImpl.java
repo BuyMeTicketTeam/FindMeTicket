@@ -3,7 +3,6 @@ package com.booking.app.services.impl;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
-import com.booking.app.entity.TicketUrls;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -63,10 +62,8 @@ public class BusforScrapeServiceImpl {
 
             Ticket ticket = scrapeTicketInfo(webTicket, route);
 
-            synchronized (route) {
-                if (route.getTickets().add(ticket)) {
-                    emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
-                }
+            if (route.getTickets().add(ticket)) {
+                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
         }
 
@@ -161,13 +158,12 @@ public class BusforScrapeServiceImpl {
         }
 
         if (ticket.getUrls().getBusfor() == null) {
-            synchronized (emitter) {
-                emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
-            }
+            emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
+
         } else {
-            synchronized (emitter) {
-                emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
-            }
+
+            emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
+
         }
 
         driver.quit();

@@ -6,22 +6,25 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ticket_urls")
+@Table(name = "ticket_url")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-public class TicketUrls {
+public class TicketUrl {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String busfor;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String infobus;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String proizd;
 
     @OneToOne

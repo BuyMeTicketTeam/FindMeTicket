@@ -1,13 +1,9 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.dto.TicketDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
-import com.booking.app.entity.TicketUrls;
 import com.booking.app.mapper.TicketMapper;
-import com.booking.app.repositories.RouteRepository;
-import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
@@ -40,7 +36,6 @@ import java.util.concurrent.CompletableFuture;
 public class ProizdScrapeServiceImpl {
 
     private static final String proizdLink = "https://bus.proizd.ua/";
-    private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
 
@@ -68,10 +63,8 @@ public class ProizdScrapeServiceImpl {
 
             Ticket ticket = scrapeTicketInfo(element, route);
 
-            synchronized (route) {
-                if (route.getTickets().add(ticket)) {
-                    emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
-                }
+            if (route.getTickets().add(ticket)) {
+                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
         }
 
@@ -79,12 +72,10 @@ public class ProizdScrapeServiceImpl {
         return CompletableFuture.completedFuture(true);
     }
 
-    private Ticket scrapeTicketInfo(WebElement element, Route route) throws ParseException {
+    private Ticket scrapeTicketInfo(WebElement element, Route route) {
 
 //        SimpleDateFormat ticketDate = new SimpleDateFormat("d MMMM u", new Locale("uk"));
 //        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
-
-
 
 
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
@@ -170,13 +161,10 @@ public class ProizdScrapeServiceImpl {
         }
 
         if (ticket.getUrls().getProizd() != null) {
-            synchronized (emitter) {
-                emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
-            }
+            emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
+
         } else {
-            synchronized (emitter) {
-                emitter.send(SseEmitter.event().name("Proizd url:").data("no such url"));
-            }
+            emitter.send(SseEmitter.event().name("Proizd url:").data("no such url"));
         }
 
         driver.quit();

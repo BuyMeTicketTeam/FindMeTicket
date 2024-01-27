@@ -54,6 +54,6 @@ public class Ticket {
     private Route route;
 
     @OneToOne(mappedBy = "ticket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private TicketUrls urls;
+    private TicketUrl urls;
 
 }
