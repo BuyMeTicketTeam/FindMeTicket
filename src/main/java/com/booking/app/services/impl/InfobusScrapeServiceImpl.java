@@ -99,12 +99,9 @@ public class InfobusScrapeServiceImpl {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        TicketUrls ticketUrls = new TicketUrls();
-
         Ticket ticket = Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .urls(ticketUrls)
                 .price(BigDecimal.valueOf(Long.parseLong(price)))
                 .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
                 .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
@@ -113,7 +110,6 @@ public class InfobusScrapeServiceImpl {
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalDate(formatedTicketDate.format(date)).build();
 
-        ticketUrls.setTicket(ticket);
 
         return ticket;
     }
@@ -164,7 +160,6 @@ public class InfobusScrapeServiceImpl {
 
         if (ticket.getUrls().getInfobus() != null) {
             synchronized (emitter) {
-                ticketRepository.save(ticket);
                 emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getInfobus()));
             }
         } else {

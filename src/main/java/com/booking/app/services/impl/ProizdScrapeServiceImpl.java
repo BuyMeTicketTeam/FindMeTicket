@@ -114,12 +114,10 @@ public class ProizdScrapeServiceImpl {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        TicketUrls ticketUrls = new TicketUrls();
 
         Ticket ticket = Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .urls(ticketUrls)
                 .price(BigDecimal.valueOf(Long.parseLong(price)))
                 .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
                 .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
@@ -128,7 +126,6 @@ public class ProizdScrapeServiceImpl {
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
                 .arrivalDate(formattedTime).build();
 
-        ticketUrls.setTicket(ticket);
         return ticket;
     }
 
@@ -174,7 +171,6 @@ public class ProizdScrapeServiceImpl {
 
         if (ticket.getUrls().getProizd() != null) {
             synchronized (emitter) {
-                ticketRepository.save(ticket);
                 emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
             }
         } else {

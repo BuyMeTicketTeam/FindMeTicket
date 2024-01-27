@@ -32,9 +32,9 @@ public interface TicketMapper {
     }
 
     @Named("departureTimeMapping")
-    public static String departureTimeMapping(String departureCity){
+    public static String departureTimeMapping(String departureDate){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date = LocalDate.parse(departureCity, formatter);
+        LocalDate date = LocalDate.parse(departureDate, formatter);
         formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
         return date.format(formatter);
     }
