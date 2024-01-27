@@ -160,7 +160,7 @@ public class BusforScrapeServiceImpl {
             }
         }
 
-        if (ticket.getUrls().getBusfor() == null) {
+        if (ticket.getUrls().getBusfor() != null) {
             synchronized (emitter) {
                 emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
             }
