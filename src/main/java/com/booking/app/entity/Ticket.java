@@ -1,5 +1,6 @@
 package com.booking.app.entity;
 
+import com.booking.app.enums.TypeTransportEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,6 +45,9 @@ public class Ticket {
     @Column(name = "price")
     @EqualsAndHashCode.Include
     private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    private TypeTransportEnum type;
 
     @ManyToOne
     @JoinColumn(name = "route_id")
