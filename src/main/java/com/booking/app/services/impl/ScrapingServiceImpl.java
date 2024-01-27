@@ -41,10 +41,6 @@ public class ScrapingServiceImpl {
     public void scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter) throws IOException, ParseException, InterruptedException {
 
 
-
-
-
-
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
 
@@ -58,11 +54,8 @@ public class ScrapingServiceImpl {
                     .tickets(new HashSet<>()).build();
 
 
-
             CompletableFuture<Boolean> infobus = infobusScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
-
             CompletableFuture<Boolean> proizd = proizdScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
-
             CompletableFuture<Boolean> busfor = busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
 
             while (!(infobus.isDone() && proizd.isDone() && busfor.isDone())) {
@@ -85,13 +78,17 @@ public class ScrapingServiceImpl {
     public void getTicket(UUID id, SseEmitter emitter) throws IOException, ParseException {
 
         Ticket ticket = ticketRepository.findById(id).get();
-        TicketUrls urls = ticket.getUrls();
 
         synchronized (emitter) {
             emitter.send(SseEmitter.event().name("ticket info").data(ticketMapper.toDto(ticket)));
         }
 
-        if (urls.getProizd() == null && urls.getBusfor() == null && urls.getInfobus() == null) {
+        TicketUrls urls = ticket.getUrls();
+
+        if (urls == null) {
+
+            ticket.setUrls(new TicketUrls());
+            ticket.getUrls().setTicket(ticket);
 
             CompletableFuture<Boolean> busfor = busforScrapeService.getTicket(emitter, ticket);
             CompletableFuture<Boolean> infobus = infobusScrapeService.getTicket(emitter, ticket);
@@ -100,11 +97,15 @@ public class ScrapingServiceImpl {
             while (!(busfor.isDone() && infobus.isDone() && proizd.isDone())) {
             }
 
+            ticketRepository.save(ticket);
         } else {
-            synchronized (emitter){
-                if(urls.getProizd() != null) emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
-                if(urls.getBusfor() != null) emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
-                if(urls.getInfobus() != null) emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getInfobus()));
+            synchronized (emitter) {
+                if (urls.getProizd() != null)
+                    emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
+                if (urls.getBusfor() != null)
+                    emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
+                if (urls.getInfobus() != null)
+                    emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getInfobus()));
             }
         }
 

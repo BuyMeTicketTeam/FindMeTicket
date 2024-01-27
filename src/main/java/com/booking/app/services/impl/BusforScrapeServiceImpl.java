@@ -96,12 +96,9 @@ public class BusforScrapeServiceImpl {
         }
         int totalMinutes = hours * 60 + minutes;
 
-        TicketUrls ticketUrls = new TicketUrls();
-
         Ticket ticket = Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .urls(ticketUrls)
                 .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
                 .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
                 .departureTime(departureDateTime.substring(0, 5))
@@ -110,8 +107,6 @@ public class BusforScrapeServiceImpl {
                 .price(BigDecimal.valueOf(Long.parseLong(webTicket.findElement(By.cssSelector("span.price")).getText())))
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .build();
-
-        ticketUrls.setTicket(ticket);
 
         return ticket;
     }
@@ -125,62 +120,53 @@ public class BusforScrapeServiceImpl {
         ChromeDriver driver = new ChromeDriver(options);
 
 
-        if (ticket.getUrls().getBusfor() == null || ticket.getUrls().getBusfor().isEmpty() || ticket.getUrls().getBusfor().equals("null")) {
+        String departureCity = ticket.getRoute().getDepartureCity();
+        String arrivalCity = ticket.getRoute().getArrivalCity();
+        String departureDate = ticket.getRoute().getDepartureDate();
 
-            String departureCity = ticket.getRoute().getDepartureCity();
-            String arrivalCity = ticket.getRoute().getArrivalCity();
-            String departureDate = ticket.getRoute().getDepartureDate();
+        String url = String.format(busforLink, departureCity, arrivalCity, departureDate);
 
-            String url = String.format(busforLink, departureCity, arrivalCity, departureDate);
+        driver.get(url);
 
-            driver.get(url);
-
-            try {
-                synchronized (driver) {
-                    driver.wait(5000);
-                }
-            } catch (InterruptedException e) {
+        try {
+            synchronized (driver) {
+                driver.wait(5000);
             }
+        } catch (InterruptedException e) {
+        }
 
-            List<WebElement> tickets = driver.findElements(By.cssSelector("div.ticket"));
+        List<WebElement> tickets = driver.findElements(By.cssSelector("div.ticket"));
 
-            for (WebElement element : tickets) {
+        for (WebElement element : tickets) {
 
-                List<WebElement> ticketInfo = element.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
+            List<WebElement> ticketInfo = element.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
 
-                WebElement departureInfo = ticketInfo.get(0);
-                WebElement arrivalInfo = ticketInfo.get(1);
+            WebElement departureInfo = ticketInfo.get(0);
+            WebElement arrivalInfo = ticketInfo.get(1);
 
-                String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
-                String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
+            String departureDateTime = departureInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
+            String arrivalDateTime = arrivalInfo.findElement(By.cssSelector("div.Style__Time-sc-1n9rkhj-0.bmnWRj")).getText();
 
-                if (ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(element.findElement(By.cssSelector("span.price")).getText()))) &&
-                        ticket.getArrivalTime().equals(arrivalDateTime.substring(0, 5)) &&
-                        ticket.getDepartureTime().equals(departureDateTime.substring(0, 5))) {
+            if (ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(element.findElement(By.cssSelector("span.price")).getText()))) &&
+                    ticket.getArrivalTime().equals(arrivalDateTime.substring(0, 5)) &&
+                    ticket.getDepartureTime().equals(departureDateTime.substring(0, 5))) {
 
-                    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
-                    element.findElement(By.tagName("button")).findElement(By.tagName("span")).click();
-                    wait.until(ExpectedConditions.urlContains("preorders"));
-                    url = driver.getCurrentUrl();
-                    ticket.getUrls().setBusfor(url);
-                    break;
-                }
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+                element.findElement(By.tagName("button")).findElement(By.tagName("span")).click();
+                wait.until(ExpectedConditions.urlContains("preorders"));
+                url = driver.getCurrentUrl();
+                ticket.getUrls().setBusfor(url);
+                break;
             }
+        }
 
-            if (ticket.getUrls().getBusfor() != null) {
-                synchronized (emitter) {
-                    ticketRepository.save(ticket);
-                    emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
-                }
-            } else {
-                synchronized (emitter) {
-                    emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
-                }
+        if (ticket.getUrls().getBusfor() == null) {
+            synchronized (emitter) {
+                emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
             }
         } else {
             synchronized (emitter) {
-                ticketRepository.save(ticket);
-                emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
+                emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
             }
         }
 
