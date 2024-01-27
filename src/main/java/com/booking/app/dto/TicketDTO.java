@@ -25,5 +25,6 @@ public class TicketDTO {
    private String arrivalTime;
    private String arrivalDate;
    private String travelTime;
+   private String type;
    private BigDecimal price;
 }
