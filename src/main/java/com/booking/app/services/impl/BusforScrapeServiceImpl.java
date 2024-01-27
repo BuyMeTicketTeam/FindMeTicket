@@ -190,7 +190,7 @@ public class BusforScrapeServiceImpl {
 
     private static String formatDate(String inputDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMM u", new Locale("uk"));
-        LocalDate date = LocalDate.parse(inputDate + " 2023", formatter);
+        LocalDate date = LocalDate.parse(inputDate + " 2024", formatter);
         formatter = DateTimeFormatter.ofPattern("dd.MM, EEE", new Locale("uk"));
         return date.format(formatter);
     }

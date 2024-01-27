@@ -10,6 +10,8 @@ import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,10 @@ public class ScrapingServiceImpl {
     public void scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter) throws IOException, ParseException, InterruptedException {
 
 
+
+
+
+
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
 
@@ -53,13 +59,13 @@ public class ScrapingServiceImpl {
 
 
 
-//            CompletableFuture<Boolean> infobus = infobusScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
+            CompletableFuture<Boolean> infobus = infobusScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
 
             CompletableFuture<Boolean> proizd = proizdScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
-//
-//            CompletableFuture<Boolean> busfor = busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
 
-            while (!(proizd.isDone())) {
+            CompletableFuture<Boolean> busfor = busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute);
+
+            while (!(infobus.isDone() && proizd.isDone() && busfor.isDone())) {
 
             }
 

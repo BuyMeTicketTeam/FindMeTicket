@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -79,12 +81,14 @@ public class InfobusScrapeServiceImpl {
 
     private Ticket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
 
-        SimpleDateFormat ticketDate = new SimpleDateFormat("dd.MM YYYY", new Locale("uk"));
+        SimpleDateFormat ticketDate = new SimpleDateFormat("dd.MM yyyy");
         SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
 
-        String arrivalDate = webTicket.findElements(By.cssSelector("span.day-preffix")).get(1).getText().substring(3);
+        String arrivalDate = webTicket.findElements(By.cssSelector("span.day-preffix")).get(1).getText().substring(3) +" 2024";
 
         Date date = ticketDate.parse(arrivalDate);
+
+
 
         String price = webTicket.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
         String travelTime = webTicket.findElement(By.className("duration-time")).getText().toLowerCase().replace(" г", "год.").replace(" хв", "хв");

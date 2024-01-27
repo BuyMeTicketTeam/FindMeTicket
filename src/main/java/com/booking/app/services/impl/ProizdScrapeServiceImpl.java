@@ -9,6 +9,7 @@ import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -25,6 +26,8 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +36,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class ProizdScrapeServiceImpl {
 
     private static final String proizdLink = "https://bus.proizd.ua/";
@@ -59,6 +63,7 @@ public class ProizdScrapeServiceImpl {
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
 
+        log.info(elements.size());
         for (WebElement element : elements) {
 
             Ticket ticket = scrapeTicketInfo(element, route);
@@ -76,13 +81,26 @@ public class ProizdScrapeServiceImpl {
 
     private Ticket scrapeTicketInfo(WebElement element, Route route) throws ParseException {
 
-        SimpleDateFormat ticketDate = new SimpleDateFormat("d MMMM", Locale.UK);
-        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", Locale.UK);
+//        SimpleDateFormat ticketDate = new SimpleDateFormat("d MMMM u", new Locale("uk"));
+//        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
+
+
+
 
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
         arrivalDate = arrivalDate.substring(4);
 
-        Date date = ticketDate.parse(arrivalDate);
+
+        DateTimeFormatter ticketDate = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk", "UA"));
+
+
+        LocalDate date = LocalDate.parse(arrivalDate + " 2024", ticketDate);
+//        Date date = ticketDate.parse(arrivalDate);
+
+        ticketDate = DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
+
+        String formattedTime = date.format(ticketDate);
+
 
         String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
         price = price.substring(0, price.length() - 6);
@@ -108,7 +126,7 @@ public class ProizdScrapeServiceImpl {
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
-                .arrivalDate(formatedTicketDate.format(date)).build();
+                .arrivalDate(formattedTime).build();
 
         ticketUrls.setTicket(ticket);
         return ticket;
