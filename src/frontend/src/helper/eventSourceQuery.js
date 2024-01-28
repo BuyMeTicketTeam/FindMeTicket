@@ -2,7 +2,7 @@
 /* eslint-disable no-await-in-loop */
 export default async function eventSourceQuery(address, body, headers, method = 'POST') {
   const token = localStorage.getItem('JWTtoken');
-  const response = await fetch('http://localhost:3000', {
+  const response = await fetch(`http://localhost:8080${address}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: token || null,
