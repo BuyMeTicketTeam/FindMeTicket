@@ -17,8 +17,6 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
 
     Route findByAddingTime(LocalDateTime dateTime);
 
-
-
     @Modifying
     @Query("DELETE FROM Route e WHERE e.addingTime < :thresholdDateTime")
     void deleteOlderThan(@Param("thresholdDateTime") LocalDateTime thresholdDateTime);

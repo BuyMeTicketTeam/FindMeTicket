@@ -8,7 +8,7 @@ import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
-import com.google.common.collect.Sets;
+import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Async;
@@ -27,14 +27,20 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class ScrapingServiceImpl {
+public class ScraperServiceImpl {
 
-    private final BusforScrapeServiceImpl busforScrapeService;
-    private final InfobusScrapeServiceImpl infobusScrapeService;
-    private final ProizdScrapeServiceImpl proizdScrapeService;
+    private final ScraperService busfor;
+
+    private final ScraperService infobus;
+
+    private final ScraperService proizd;
+
     private final RouteRepository routeRepository;
+
     private final TicketRepository ticketRepository;
+
     private final TicketMapper ticketMapper;
+
 
     @Async
     public void scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter) throws IOException, ParseException {
@@ -44,7 +50,7 @@ public class ScrapingServiceImpl {
             Route newRoute = createRoute(requestTicketDTO);
 
             List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(requestTicketDTO, emitter, newRoute);
-            CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(new CompletableFuture[0]));
+            CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
             try {
                 allOf.join();
             } catch (Exception e) {
@@ -66,7 +72,15 @@ public class ScrapingServiceImpl {
     @Async
     public void getTicket(UUID id, SseEmitter emitter) throws IOException, ParseException {
         Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("No ticket present by %s ID", id)));
+                .orElseGet(() -> {
+                    try {
+                        throw new ResourceNotFoundException(String.format("No ticket present by %s ID", id));
+                    } catch (ResourceNotFoundException e) {
+                        emitter.completeWithError(e);
+                        return null;
+                    }
+                });
+        if (ticket == null) return;
 
         emitter.send(SseEmitter.event().name("ticket info").data(ticketMapper.toDto(ticket)));
 
@@ -77,9 +91,9 @@ public class ScrapingServiceImpl {
             ticket.setUrls(new TicketUrl());
             ticket.getUrls().setTicket(ticket);
             List<CompletableFuture<Boolean>> completableFutureListBus = Arrays.asList(
-                    busforScrapeService.getTicket(emitter, ticket),
-                    infobusScrapeService.getTicket(emitter, ticket),
-                    proizdScrapeService.getTicket(emitter, ticket)
+                    busfor.getTicket(emitter, ticket),
+                    infobus.getTicket(emitter, ticket),
+                    proizd.getTicket(emitter, ticket)
             );
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(new CompletableFuture[0]));
             while (!allOf.isDone())
@@ -103,14 +117,14 @@ public class ScrapingServiceImpl {
                 .departureCity(requestTicketDTO.getDepartureCity())
                 .arrivalCity(requestTicketDTO.getArrivalCity())
                 .departureDate(requestTicketDTO.getDepartureDate())
-                .tickets(Sets.newConcurrentHashSet()).build();
+                .build();
     }
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route newRoute) throws ParseException, IOException {
         return Arrays.asList(
-                infobusScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute),
-                proizdScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute),
-                busforScrapeService.scrapeTickets(requestTicketDTO, emitter, newRoute)
+                infobus.scrapeTickets(requestTicketDTO, emitter, newRoute),
+                proizd.scrapeTickets(requestTicketDTO, emitter, newRoute),
+                busfor.scrapeTickets(requestTicketDTO, emitter, newRoute)
         );
     }
 

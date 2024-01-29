@@ -3,8 +3,8 @@ package com.booking.app.controller;
 import com.booking.app.controller.api.ScraperAPI;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.services.impl.ScrapingServiceImpl;
-import com.booking.app.services.impl.SortedTicketsServiceImpl;
+import com.booking.app.services.SortTicketsService;
+import com.booking.app.services.impl.ScraperServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +19,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ScraperController implements ScraperAPI {
 
-    private final ScrapingServiceImpl scrapingService;
+    private final ScraperServiceImpl scrapingService;
 
-    private final SortedTicketsServiceImpl sortedTicketsService;
+    private final SortTicketsService sortTicketsService;
 
     @PostMapping("/searchTickets")
-    public SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException, ParseException, InterruptedException {
+    public SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
 
         scrapingService.scrapeTickets(ticketsDTO, emitter);
@@ -43,7 +43,7 @@ public class ScraperController implements ScraperAPI {
 
     @PostMapping("/sortedBy")
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO) {
-        return ResponseEntity.ok().body(sortedTicketsService.getSortedTickets(requestSortedTicketsDTO));
+        return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.booking.app.entity;
 
+import com.google.common.collect.Sets;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString(exclude = "ticketList")
 public class Route {
 
     @Id
@@ -33,7 +33,8 @@ public class Route {
     @Column(name = "adding_time")
     private LocalDateTime addingTime;
 
-    @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Ticket> tickets;
+    @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @Builder.Default
+    private Set<Ticket> tickets = Sets.newConcurrentHashSet();
 
 }
