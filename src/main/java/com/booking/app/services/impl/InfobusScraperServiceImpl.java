@@ -1,9 +1,12 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.config.LinkProps;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.TicketMapper;
+import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
@@ -28,19 +31,17 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Service
+@Service("infobus")
 @RequiredArgsConstructor
 @Log4j2
-public class InfobusScrapeServiceImpl {
+public class InfobusScraperServiceImpl implements ScraperService {
 
-    private static final String infobusLink = "https://infobus.eu/ua";
+    private final LinkProps linkProps;
+
     private final TicketMapper ticketMapper;
-
 
     @Async
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws ParseException, IOException {
-
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
@@ -56,7 +57,7 @@ public class InfobusScrapeServiceImpl {
         }
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div.main-detail-wrap"));
-
+        log.info("INFOBUS TICKETS: " + elements.size());
 
         for (WebElement element : elements) {
 
@@ -72,7 +73,6 @@ public class InfobusScrapeServiceImpl {
     }
 
     private Ticket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
-
         SimpleDateFormat ticketDate = new SimpleDateFormat("dd.MM yyyy");
         SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
 
@@ -90,25 +90,11 @@ public class InfobusScrapeServiceImpl {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        Ticket ticket = Ticket.builder()
-                .id(UUID.randomUUID())
-                .route(route)
-                .price(BigDecimal.valueOf(Long.parseLong(price)))
-                .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
-                .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                .arrivalDate(formatedTicketDate.format(date)).build();
-
-
-        return ticket;
+        return createTicket(webTicket, route, price, totalMinutes, formatedTicketDate, date);
     }
-
 
     @Async
     public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException, ParseException {
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
@@ -160,12 +146,11 @@ public class InfobusScrapeServiceImpl {
         return CompletableFuture.completedFuture(true);
     }
 
-
     private void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver) throws ParseException {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get(infobusLink);
+        driver.get(linkProps.getInfobus());
 
 
         selectCity("city_from", "ui-id-1", departureCity, driver, wait);
@@ -213,4 +198,19 @@ public class InfobusScrapeServiceImpl {
 
         driver.findElements(By.cssSelector("a.ui-state-default")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
     }
+
+    private static Ticket createTicket(WebElement webTicket, Route route, String price, int totalMinutes, SimpleDateFormat formatedTicketDate, Date date) {
+        return Ticket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .price(BigDecimal.valueOf((long) Double.parseDouble(price)))
+                .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
+                .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
+                .travelTime(BigDecimal.valueOf(totalMinutes))
+                .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
+                .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
+                .arrivalDate(formatedTicketDate.format(date))
+                .type(TypeTransportEnum.BUS).build();
+    }
+
 }

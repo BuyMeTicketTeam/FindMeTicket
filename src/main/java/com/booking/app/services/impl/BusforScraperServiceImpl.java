@@ -1,11 +1,14 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.config.LinkProps;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.TicketMapper;
-import com.booking.app.repositories.TicketRepository;
+import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -26,22 +29,22 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Service
+@Service("busfor")
 @RequiredArgsConstructor
-public class BusforScrapeServiceImpl {
+@Log4j2
+public class BusforScraperServiceImpl implements ScraperService {
 
-    private static final String busforLink = "https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true";
+    private final LinkProps linkProps;
+
     private final TicketMapper ticketMapper;
 
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws IOException {
-
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
-        String url = String.format(busforLink, requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
+        String url = String.format(linkProps.getBusfor(), requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
         driver.get(url);
 
@@ -54,6 +57,7 @@ public class BusforScrapeServiceImpl {
 
         List<WebElement> products = driver.findElements(By.cssSelector("div.ticket"));
 
+        log.info("BUSFOR TICKETS: " + products.size());
 
         for (int i = 0; i < products.size() && i < 150; i++) {
 
@@ -66,14 +70,11 @@ public class BusforScrapeServiceImpl {
             }
         }
 
-
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
 
     private Ticket scrapeTicketInfo(WebElement webTicket, Route route) {
-
-
         List<WebElement> ticketInfo = webTicket.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
 
         WebElement departureInfo = ticketInfo.get(0);
@@ -92,24 +93,11 @@ public class BusforScrapeServiceImpl {
         }
         int totalMinutes = hours * 60 + minutes;
 
-        Ticket ticket = Ticket.builder()
-                .id(UUID.randomUUID())
-                .route(route)
-                .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                .departureTime(departureDateTime.substring(0, 5))
-                .arrivalTime(arrivalDateTime.substring(0, 5))
-                .arrivalDate(formatDate(arrivalDateTime.substring(6)))
-                .price(BigDecimal.valueOf(Long.parseLong(webTicket.findElement(By.cssSelector("span.price")).getText())))
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .build();
-
-        return ticket;
+        return createTicket(webTicket, route, departureInfo, arrivalInfo, departureDateTime, arrivalDateTime, totalMinutes);
     }
 
     @Async
     public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException {
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
@@ -120,7 +108,7 @@ public class BusforScrapeServiceImpl {
         String arrivalCity = ticket.getRoute().getArrivalCity();
         String departureDate = ticket.getRoute().getDepartureDate();
 
-        String url = String.format(busforLink, departureCity, arrivalCity, departureDate);
+        String url = String.format(linkProps.getBusfor(), departureCity, arrivalCity, departureDate);
 
         driver.get(url);
 
@@ -171,6 +159,20 @@ public class BusforScrapeServiceImpl {
         LocalDate date = LocalDate.parse(inputDate + " 2024", formatter);
         formatter = DateTimeFormatter.ofPattern("dd.MM, EEE", new Locale("uk"));
         return date.format(formatter);
+    }
+
+    private static Ticket createTicket(WebElement webTicket, Route route, WebElement departureInfo, WebElement arrivalInfo, String departureDateTime, String arrivalDateTime, int totalMinutes) {
+        return Ticket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                .departureTime(departureDateTime.substring(0, 5))
+                .arrivalTime(arrivalDateTime.substring(0, 5))
+                .arrivalDate(formatDate(arrivalDateTime.substring(6)))
+                .price(BigDecimal.valueOf(Long.parseLong(webTicket.findElement(By.cssSelector("span.price")).getText())))
+                .travelTime(BigDecimal.valueOf(totalMinutes))
+                .type(TypeTransportEnum.BUS).build();
     }
 
 }

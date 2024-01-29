@@ -1,9 +1,12 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.config.LinkProps;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
+import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.TicketMapper;
+import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;
@@ -30,14 +33,14 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Service
+@Service("proizd")
 @RequiredArgsConstructor
 @Log4j2
-public class ProizdScrapeServiceImpl {
+public class ProizdScraperServiceImpl implements ScraperService {
 
-    private static final String proizdLink = "https://bus.proizd.ua/";
+    private final LinkProps linkProps;
+
     private final TicketMapper ticketMapper;
-
 
     @Async
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws ParseException, IOException {
@@ -58,7 +61,7 @@ public class ProizdScrapeServiceImpl {
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
 
-        log.info(elements.size());
+        log.info("PROIZD TICKETS: " + elements.size());
         for (WebElement element : elements) {
 
             Ticket ticket = scrapeTicketInfo(element, route);
@@ -73,20 +76,13 @@ public class ProizdScrapeServiceImpl {
     }
 
     private Ticket scrapeTicketInfo(WebElement element, Route route) {
-
-//        SimpleDateFormat ticketDate = new SimpleDateFormat("d MMMM u", new Locale("uk"));
-//        SimpleDateFormat formatedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
-
-
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
         arrivalDate = arrivalDate.substring(4);
-
 
         DateTimeFormatter ticketDate = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk", "UA"));
 
 
         LocalDate date = LocalDate.parse(arrivalDate + " 2024", ticketDate);
-//        Date date = ticketDate.parse(arrivalDate);
 
         ticketDate = DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
 
@@ -99,39 +95,23 @@ public class ProizdScrapeServiceImpl {
         String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
         travelTime = travelTime.replaceFirst("г", "год.");
 
-
         String[] parts = travelTime.split("[^\\d]+");
         int hours = Integer.parseInt(parts[0]);
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
 
-        Ticket ticket = Ticket.builder()
-                .id(UUID.randomUUID())
-                .route(route)
-                .price(BigDecimal.valueOf(Long.parseLong(price)))
-                .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
-                .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
-                .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
-                .arrivalDate(formattedTime).build();
-
-        return ticket;
+        return createTicket(element, route, price, totalMinutes, formattedTime);
     }
-
 
     @Async
     public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException, ParseException {
-
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
-
         Route route = ticket.getRoute();
-
 
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver);
 
@@ -172,10 +152,9 @@ public class ProizdScrapeServiceImpl {
     }
 
     private void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver) throws ParseException {
-
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        driver.get(proizdLink);
+        driver.get(linkProps.getProizd());
 
         selectCity(wait, departureCity, "//input[@placeholder='Станція відправлення']");
         selectCity(wait, arrivalCity, "//input[@placeholder='Станція прибуття']");
@@ -194,7 +173,6 @@ public class ProizdScrapeServiceImpl {
     }
 
     private void selectDate(String departureDate, WebDriver driver, WebDriverWait wait) throws ParseException {
-
         while (true) {
             WebElement dateFrom = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.search-form__field.search-form__date")));
             dateFrom.click();
@@ -243,4 +221,19 @@ public class ProizdScrapeServiceImpl {
 
         driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
     }
+
+    private static Ticket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime) {
+        return Ticket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .price(BigDecimal.valueOf(Long.parseLong(price)))
+                .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
+                .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
+                .travelTime(BigDecimal.valueOf(totalMinutes))
+                .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
+                .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
+                .arrivalDate(formattedTime)
+                .type(TypeTransportEnum.BUS).build();
+    }
+
 }
