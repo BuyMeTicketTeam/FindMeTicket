@@ -89,3 +89,11 @@ server:
       charset: UTF-8
       force: true
       enabled: true
+
+  #-------------------------
+  # Third-party ticket's services
+  #-------------------------
+link:
+  busfor: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+  infobus: 'https://infobus.eu/ua'
+  proizd: 'https://bus.proizd.ua/'
