@@ -5,7 +5,7 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useParams } from 'react-router-dom';
 // import Price from './Price/index';
 // import Information from './Information/index ';
-// import Maps from './Maps/index';
+import Maps from './Maps/index';
 // import eventSourceQuery from '../helper/eventSourceQuery';
 import './style.css';
 
@@ -78,6 +78,7 @@ function TicketPage() {
       <div className="ticketPage-text">Ціни</div>
       <Price ticketUrl={ticketUrl} />
       <Maps /> */}
+      <Maps />
       <h2>testing</h2>
     </div>
   );
