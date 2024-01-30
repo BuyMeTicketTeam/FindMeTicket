@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import './style.css';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+// import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 // import HotelsMap from './image 6.png';
 // import './googleMap';
 import RestaurantMap from './image 7.png';
@@ -24,40 +24,40 @@ function Maps() {
     setHoveredCategory(null);
   };
 
-  const containerStyle = {
-    width: '100%',
-    height: '400px',
-  };
+  // const containerStyle = {
+  //   width: '100%',
+  //   height: '400px',
+  // };
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyDEZtKdK2xPWTbf6ydCsVm4ryehF1ph5A0',
-  });
+  // const { isLoaded } = useJsApiLoader({
+  //   id: 'google-map-script',
+  //   googleMapsApiKey: 'AIzaSyDEZtKdK2xPWTbf6ydCsVm4ryehF1ph5A0',
+  // });
 
-  const mapRef = useRef(null);
+  // const mapRef = useRef(null);
 
-  const onLoad = React.useCallback((map) => {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    mapRef.current = map;
-    const geocoder = new window.google.maps.Geocoder();
-    const address = 'Днепр';
-    geocoder.geocode({ address }, (results, status) => {
-      if (status === 'OK') {
-        console.log(results);
-        map.setCenter(results[0].geometry.location);
-        const marker = new window.google.maps.Marker({
-          map,
-          position: results[0].geometry.location,
-        });
-      } else {
-        alert(`Geocode was not successful for the following reason: ${status}`);
-      }
-    });
-  }, []);
+  // const onLoad = React.useCallback((map) => {
+  //   // This is just an example of getting and using the map instance!!! don't just blindly copy!
+  //   mapRef.current = map;
+  //   const geocoder = new window.google.maps.Geocoder();
+  //   const address = 'Днепр';
+  //   geocoder.geocode({ address }, (results, status) => {
+  //     if (status === 'OK') {
+  //       console.log(results);
+  //       map.setCenter(results[0].geometry.location);
+  //       const marker = new window.google.maps.Marker({
+  //         map,
+  //         position: results[0].geometry.location,
+  //       });
+  //     } else {
+  //       alert(`Geocode was not successful for the following reason: ${status}`);
+  //     }
+  //   });
+  // }, []);
 
-  const onUnmount = useCallback(() => {
-    mapRef.current = null;
-  }, []);
+  // const onUnmount = useCallback(() => {
+  //   mapRef.current = null;
+  // }, []);
 
   const getCategoryClassName = (index) => `category ${selectedCategory === index ? 'active' : ''} ${hoveredCategory === index ? 'hovered' : ''}`;
 
@@ -90,7 +90,7 @@ function Maps() {
         </div>
       </div>
       <hr className="horizontal-line" data-testid="horizontal-line" />
-      {selectedCategory === 0 && (
+      {/* {selectedCategory === 0 && (
         isLoaded && (
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -99,7 +99,7 @@ function Maps() {
             onUnmount={onUnmount}
           />
         )
-      )}
+      )} */}
       {selectedCategory === 1 && <img src={RestaurantMap} alt="RestaurantMap" />}
       {selectedCategory === 2 && <img src={TouristPlaces} alt="TouristPlaces" />}
     </div>
