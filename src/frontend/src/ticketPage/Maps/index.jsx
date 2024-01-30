@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useRef, useState, useCallback } from 'react';
@@ -26,31 +27,60 @@ function Maps() {
 
   const containerStyle = {
     width: '100%',
-    height: '400px',
+    height: '300px',
   };
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: 'AIzaSyDEZtKdK2xPWTbf6ydCsVm4ryehF1ph5A0',
+    libraries: ['places'],
   });
 
   const mapRef = useRef(null);
+
+  function createMarker(place, map) {
+    if (!place.geometry || !place.geometry.location) return;
+
+    const marker = new window.google.maps.Marker({
+      map,
+      position: place.geometry.location,
+    });
+
+    const infoWindow = new window.google.maps.InfoWindow();
+
+    window.google.maps.event.addListener(marker, 'click', (event) => {
+      console.log(place.place_id, place.name, event);
+    });
+  }
+
+  function nearbySearch(stationLocation, map) {
+    const request = {
+      location: stationLocation,
+      radius: '500',
+      type: ['restaurant'],
+    };
+    const service = new window.google.maps.places.PlacesService(map);
+    service.nearbySearch(request, (results, status) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+        results.forEach((result) => {
+          createMarker(result, map);
+        });
+      }
+    });
+  }
 
   const onLoad = React.useCallback((map) => {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     mapRef.current = map;
     const geocoder = new window.google.maps.Geocoder();
-    const address = 'Днепр';
+    const address = 'пл. Вокзальная Днепр';
     geocoder.geocode({ address }, (results, status) => {
       if (status === 'OK') {
-        console.log(results);
         map.setCenter(results[0].geometry.location);
-        const marker = new window.google.maps.Marker({
-          map,
-          position: results[0].geometry.location,
-        });
+        const stationLocation = new window.google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+        nearbySearch(stationLocation, map);
       } else {
-        alert(`Geocode was not successful for the following reason: ${status}`);
+        console.error(`Geocode was not successful for the following reason: ${status}`);
       }
     });
   }, []);
@@ -94,7 +124,7 @@ function Maps() {
         isLoaded && (
           <GoogleMap
             mapContainerStyle={containerStyle}
-            zoom={100}
+            zoom={16}
             onLoad={onLoad}
             onUnmount={onUnmount}
           />
