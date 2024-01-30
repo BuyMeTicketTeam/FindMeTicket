@@ -42,4 +42,18 @@
     color: #ff7f50; 
   }
   
-  
+/* Place preview list*/
+
+.placeList {
+  min-height: 100%;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: var(--dark);
+}
+
+.place__item {
+  display: flex;
+  justify-content: space-between;
+}

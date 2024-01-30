@@ -8,10 +8,12 @@ import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 // import './googleMap';
 import RestaurantMap from './image 7.png';
 import TouristPlaces from './image 8.png';
+import PlacePreviewList from './placePreviewList';
 
 function Maps() {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [placesInfo, setPlacesInfo] = useState([]);
 
   const handleCategoryClick = (index) => {
     setSelectedCategory(selectedCategory === index ? null : index);
@@ -46,10 +48,18 @@ function Maps() {
       position: place.geometry.location,
     });
 
-    const infoWindow = new window.google.maps.InfoWindow();
-
     window.google.maps.event.addListener(marker, 'click', (event) => {
       console.log(place.place_id, place.name, event);
+    });
+  }
+
+  function getPlaceDetails(service, place) {
+    const request = {
+      placeId: place.place_id,
+    };
+    service.getDetails(request, (results) => {
+      console.log(results);
+      setPlacesInfo(results);
     });
   }
 
@@ -62,6 +72,7 @@ function Maps() {
     const service = new window.google.maps.places.PlacesService(map);
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+        getPlaceDetails(service, results[0]);
         results.forEach((result) => {
           createMarker(result, map);
         });
@@ -127,7 +138,9 @@ function Maps() {
             zoom={16}
             onLoad={onLoad}
             onUnmount={onUnmount}
-          />
+          >
+            <PlacePreviewList placesInfo={placesInfo} />
+          </GoogleMap>
         )
       )}
       {selectedCategory === 1 && <img src={RestaurantMap} alt="RestaurantMap" />}
