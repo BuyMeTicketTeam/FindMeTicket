@@ -1,19 +1,19 @@
 /* eslint-disable max-len */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { useParams } from 'react-router-dom';
-// import Price from './Price/index';
-// import Information from './Information/index ';
+import Price from './Price/index';
+import Information from './Information/index ';
 // import Maps from './Maps/index';
 // import eventSourceQuery from '../helper/eventSourceQuery';
 import './style.css';
 
 function TicketPage() {
   const { ticketId } = useParams();
-  // const [ticketData, setTicketData] = useState(null);
-  // const [ticketUrl, setTicketUrl] = useState([]);
+  const [ticketData, setTicketData] = useState(null);
+  const [ticketUrl, setTicketUrl] = useState([]);
 
   // async function serverRequest() {
   //   const dataStream = await eventSourceQuery(`/get/ticket/${ticketId}`, undefined, undefined, 'GET');
@@ -49,9 +49,12 @@ function TicketPage() {
         },
         onmessage(event) {
           console.log('event', event);
-          console.log('event data:', event.data);
-          const parsedData = JSON.parse(event.data);
-          console.log(parsedData);
+          if (event.event === 'ticket info') {
+            const parsedData = JSON.parse(event.data);
+            console.log(parsedData);
+            setTicketData(parsedData);
+          }
+          setTicketUrl(...ticketUrl, { provider: event.event, url: event.data });
         },
         onclose() {
           console.log('Connection closed by the server');
@@ -74,11 +77,11 @@ function TicketPage() {
 
   return (
     <div className="ticket-page-container">
-      {/* <div className="ticketPage-header">{ticketData.date}</div>
+      <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">Ціни</div>
-      <Price ticketUrl={ticketUrl} />
-      <Maps /> */}
+      <Price ticketUrl={ticketUrl} price={ticketData.price} />
+      {/* <Maps /> */}
       {/* <Maps /> */}
       <h2>testing</h2>
     </div>
