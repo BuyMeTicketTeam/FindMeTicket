@@ -9,11 +9,13 @@ import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import RestaurantMap from './image 7.png';
 import TouristPlaces from './image 8.png';
 import PlacePreviewList from './placePreviewList';
+import PlacePreview from './placePreview';
 
 function Maps() {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [placesInfo, setPlacesInfo] = useState([]);
+  const [currentPlaceId, setCurrentPlaceId] = useState(null);
 
   const handleCategoryClick = (index) => {
     setSelectedCategory(selectedCategory === index ? null : index);
@@ -29,15 +31,16 @@ function Maps() {
 
   const containerStyle = {
     width: '100%',
-    height: '300px',
+    height: '400px',
   };
 
-  const libraries = ['places'];
+  const libraries = ['places', 'marker'];
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: 'AIzaSyDEZtKdK2xPWTbf6ydCsVm4ryehF1ph5A0',
     libraries,
+    language: 'uk',
   });
 
   const mapRef = useRef(null);
@@ -50,8 +53,20 @@ function Maps() {
       position: place.geometry.location,
     });
 
-    window.google.maps.event.addListener(marker, 'click', (event) => {
-      console.log(place.place_id, place.name, event);
+    console.log(place.name);
+
+    const infowindow = new window.google.maps.InfoWindow({
+      content: place.name,
+      ariaLabel: 'Uluru',
+    });
+
+    window.google.maps.event.addListener(marker, 'click', () => {
+      console.log(place.place_id);
+      setCurrentPlaceId(place.place_id);
+      infowindow.open({
+        anchor: marker,
+        map,
+      });
     });
   }
 
@@ -60,7 +75,6 @@ function Maps() {
       placeId: place.place_id,
     };
     service.getDetails(request, (result) => {
-      console.log(result);
       setPlacesInfo((prevPlacesInfo) => [...prevPlacesInfo, result]);
     });
   }
@@ -142,6 +156,7 @@ function Maps() {
             onUnmount={onUnmount}
           >
             <PlacePreviewList placesInfo={placesInfo} />
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} />}
           </GoogleMap>
         )
       )}
