@@ -164,6 +164,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
     private void selectCity(String inputCityId, String clickableElementId, String city, WebDriver driver, WebDriverWait wait) {
         WebElement inputCity = driver.findElement(By.id(inputCityId));
         inputCity.click();
+        inputCity.click();
         inputCity.sendKeys(city);
         wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElement(By.cssSelector("li.parent.bus.ui-menu-item")).click();
     }
