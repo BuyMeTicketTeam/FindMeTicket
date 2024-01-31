@@ -32,10 +32,12 @@ function Maps() {
     height: '300px',
   };
 
+  const libraries = ['places'];
+
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: 'AIzaSyDEZtKdK2xPWTbf6ydCsVm4ryehF1ph5A0',
-    libraries: ['places'],
+    libraries,
   });
 
   const mapRef = useRef(null);
@@ -57,9 +59,9 @@ function Maps() {
     const request = {
       placeId: place.place_id,
     };
-    service.getDetails(request, (results) => {
-      console.log(results);
-      setPlacesInfo(results);
+    service.getDetails(request, (result) => {
+      console.log(result);
+      setPlacesInfo((prevPlacesInfo) => [...prevPlacesInfo, result]);
     });
   }
 
@@ -72,15 +74,15 @@ function Maps() {
     const service = new window.google.maps.places.PlacesService(map);
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        getPlaceDetails(service, results[0]);
         results.forEach((result) => {
+          getPlaceDetails(service, result);
           createMarker(result, map);
         });
       }
     });
   }
 
-  const onLoad = React.useCallback((map) => {
+  const onLoad = useCallback((map) => {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     mapRef.current = map;
     const geocoder = new window.google.maps.Geocoder();

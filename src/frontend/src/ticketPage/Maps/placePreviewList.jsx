@@ -1,4 +1,5 @@
 import React from 'react';
+import starIcon from './star.svg';
 
 function PlaceItem({
   name, img, openNow, rating,
@@ -10,7 +11,7 @@ function PlaceItem({
         <h3 className="place__name">{name}</h3>
         <div className="place__addInfo">
           <div className="place__rating">
-            <img src="" alt="star" />
+            <img src={starIcon} alt="star" />
             <span>{rating}</span>
           </div>
           <p className="place__status">{openNow ? 'Відкрито' : 'Закрито'}</p>
@@ -26,9 +27,10 @@ export default function PlacePreviewList({ placesInfo }) {
     <div className="placeList">
       {placesInfo.map((placeInfo) => (
         <PlaceItem
-          name={placeInfo.place}
+          key={placeInfo.place_id}
+          name={placeInfo.name}
           img={placeInfo.photos[0]}
-          openNow={placeInfo.opening_hours.open_now}
+          openNow={placeInfo.opening_hours.isOpen()}
           rating={placeInfo.rating}
         />
       ))}
