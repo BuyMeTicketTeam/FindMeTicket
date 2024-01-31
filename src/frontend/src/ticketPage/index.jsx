@@ -77,13 +77,18 @@ function TicketPage() {
 
   return (
     <div className="ticket-page-container">
-      <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
-      <Information ticketData={ticketData} />
-      <div className="ticketPage-text">Ціни</div>
-      <Price ticketUrl={ticketUrl} price={ticketData.price} />
-      {/* <Maps /> */}
-      {/* <Maps /> */}
-      <h2>testing</h2>
+      {ticketData
+        ? (
+          <>
+            <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
+            <Information ticketData={ticketData} />
+            <div className="ticketPage-text">Ціни</div>
+            <Price ticketUrl={ticketUrl} price={ticketData.price} />
+            {/* <Maps /> */}
+            {/* <Maps /> */}
+          </>
+        )
+        : <h2>Loading...</h2>}
     </div>
   );
 }
