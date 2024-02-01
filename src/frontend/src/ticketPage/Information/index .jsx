@@ -7,7 +7,7 @@ function Information({ ticketData }) {
       <div className="time">
         <div className="time-text">{ticketData.departureTime}</div>
         <div className="time-text small">{ticketData.travelTime}</div>
-        <div className="time-text-p">{ticketData.arrivalDate}</div>
+        <div className="time-text-p">{ticketData.arrivalTime}</div>
       </div>
       <div className="vertical-line" />
       <div className="location">
@@ -16,7 +16,7 @@ function Information({ ticketData }) {
           <div className="location-text small">{ticketData.placeFrom}</div>
         </div>
         <div className="location-text">{ticketData.arrivalCity}</div>
-        <div className="location-text small ">{ticketData.placeTo}</div>
+        <div className="location-text small ">{ticketData.placeAt}</div>
       </div>
     </div>
   );

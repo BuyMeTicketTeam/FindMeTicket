@@ -28,24 +28,18 @@
 }
 
 .price {
-  color: #F77F00;
   font-size: 20px;
- margin-right: 20px;
+  margin-right: 20px;
 }
 
-.discounted-price {
-  text-decoration: line-through;
-  color: grey;
-  font-size: 20px;
+.price-block .buy-button {
+  min-width: 0;
+  padding: 10px 20px;
+  text-decoration: none;
 }
 
-.buy-button {
-  background-color: var(--bright);
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  width: 120px;
-  transition: background-color 0.3s ease; 
+.price-block img {
+  max-width: 50px;
+  margin-right: 8px;
+  border-radius: 3px;
 }
