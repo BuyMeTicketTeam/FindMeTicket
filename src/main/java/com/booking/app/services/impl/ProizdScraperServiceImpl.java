@@ -168,6 +168,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
     private void selectCity(WebDriverWait wait, String city, String inputXpath) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         inputCity.click();
+        inputCity.click();
         inputCity.sendKeys(city);
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
     }
