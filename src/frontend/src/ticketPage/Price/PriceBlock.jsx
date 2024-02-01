@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.css';
+import './style.scss';
 import busforIcon from './busfor.png';
 import proizdIcon from './proizd.webp';
 import infobusIcon from './infobus.webp';
