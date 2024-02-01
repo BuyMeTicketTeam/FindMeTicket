@@ -1,5 +1,7 @@
+@import '../../styles/variables.scss';
+
 .information-block {
-  background-color: var(--dark);
+  background-color: $dark;
   padding: 20px;
   margin: 20px;
   width: 100%;
@@ -15,15 +17,17 @@
   margin: 5px 0;
   font-size: 20px;
   margin-bottom: 20px;
+
+  .small {
+    margin: 5px 0;
+    font-size: 15px;
+  }  
 }
+
 .time-text-p {
   margin: 5px 0;
   font-size: 20px;
   margin-top: 20px;
-}
-.time-text.small {
-  margin: 5px 0;
-  font-size: 15px;
 }
 
 .location-text.small {
@@ -38,7 +42,7 @@
 .vertical-line {
   height: 70%;
   width: 2px;
-  background-color: var(--bright);
+  background-color: $bright;
   margin-right: 20px;
   margin-left: 20px;
 }

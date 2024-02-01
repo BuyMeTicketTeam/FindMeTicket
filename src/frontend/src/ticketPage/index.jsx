@@ -9,7 +9,7 @@ import Information from './Information/index ';
 import Loader from '../Loader/index';
 import Error from '../Error';
 // import Maps from './Maps/index';
-import './style.css';
+import './style.scss';
 
 function TicketPage() {
   const { ticketId } = useParams();
@@ -18,13 +18,10 @@ function TicketPage() {
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
 
-  console.log('ticketId', ticketId);
-
   async function serverRequest() {
     function onMessage(event) {
       if (event.event === 'ticket info') {
         const parsedData = JSON.parse(event.data);
-        console.log(parsedData);
         setTicketData(parsedData);
       }
       setTicketUrl(...ticketUrl, { provider: event.event, url: event.data });

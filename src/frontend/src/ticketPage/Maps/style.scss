@@ -1,3 +1,5 @@
+@import '../../styles/variables.scss';
+
 .maps-block {
     background-color: #d6e5ff;
     margin: 20px;
@@ -26,11 +28,15 @@
     cursor: pointer;
     transition: color 0.3s ease, border-bottom 0.3s ease;
     border-bottom: 2px solid transparent;
-  }
-  
-  .category.active {
-    color: #ff7f50; 
-    border-bottom: 2px solid #ff7f50; 
+
+    .active {
+      color: $bright; 
+      border-bottom: 2px solid $bright; 
+    }
+
+    .hovered {
+      color: $bright; 
+    }
   }
   
   .horizontal-line {
@@ -38,8 +44,4 @@
     border: 1px solid #000;
     margin-top: 5px;
   }
-  .category.hovered {
-    color: #ff7f50; 
-  }
-  
   
