@@ -1,6 +1,6 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-async function eventSourceQuery2(address, onMessage, onError, method = 'GET') {
+async function eventSourceQuery2(address, onMessage, onError, onClose, method = 'GET') {
   try {
     await fetchEventSource(`http://localhost:8080/${address}`, {
       method,
@@ -24,6 +24,7 @@ async function eventSourceQuery2(address, onMessage, onError, method = 'GET') {
       },
       onclose() {
         console.log('Connection closed by the server');
+        onClose();
         throw new Error('Connection closed');
       },
       onerror(err) {

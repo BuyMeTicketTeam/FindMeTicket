@@ -6,6 +6,8 @@ import { useParams } from 'react-router-dom';
 import eventSourceQuery2 from '../helper/eventSourceQuery2';
 import Price from './Price/index';
 import Information from './Information/index ';
+import Loader from '../Loader/index';
+import Error from '../Error';
 // import Maps from './Maps/index';
 import './style.css';
 
@@ -14,6 +16,7 @@ function TicketPage() {
   const [ticketData, setTicketData] = useState(null);
   const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketError, setTicketError] = useState(false);
+  const [connection, setConnection] = useState(true);
 
   console.log('ticketId', ticketId);
 
@@ -30,7 +33,11 @@ function TicketPage() {
     function onError() {
       setTicketError(true);
     }
-    eventSourceQuery2(`get/ticket/${ticketId}`, onMessage, onError);
+
+    function onClose() {
+      setConnection(false);
+    }
+    eventSourceQuery2(`get/ticket/${ticketId}`, onMessage, onError, onClose);
   }
 
   const handleServerRequest = useCallback(() => serverRequest(), []);
@@ -39,20 +46,24 @@ function TicketPage() {
     handleServerRequest();
   }, []);
 
+  const ticketDataView = ticketData && (
+    <>
+      <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
+      <Information ticketData={ticketData} />
+      <div className="ticketPage-text">Ціни</div>
+      <Price ticketUrls={ticketUrl} price={ticketData.price} connection={connection} />
+      {/* <Maps /> */}
+      {/* <Maps /> */}
+    </>
+  );
+  const ticketErrorView = ticketError && <Error />;
+  const ticketLoadingView = (!ticketError && !ticketData) && <Loader />;
+
   return (
     <div className="ticket-page-container">
-      {ticketData
-        ? (
-          <>
-            <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
-            <Information ticketData={ticketData} />
-            <div className="ticketPage-text">Ціни</div>
-            <Price ticketUrl={ticketUrl} price={ticketData.price} />
-            {/* <Maps /> */}
-            {/* <Maps /> */}
-          </>
-        )
-        : <h2>{ticketError ? 'Error' : 'Loading...'}</h2>}
+      {ticketDataView}
+      {ticketErrorView}
+      {ticketLoadingView}
     </div>
   );
 }

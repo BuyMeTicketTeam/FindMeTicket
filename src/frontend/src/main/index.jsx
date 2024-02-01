@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
-import Loader from './Loader';
-import Error from './Error';
+import Loader from '../Loader';
+import Error from '../Error';
 import Transport from './Transport';
 import Tourist from './Tourist';
 import Ticket from './Ticket';
