@@ -6,13 +6,12 @@ import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.entity.enums.EnumRole;
+import com.booking.app.entity.UserCredentials;
 import com.booking.app.exception.exception.EmailExistsException;
 import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
@@ -27,7 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,7 +39,7 @@ class RegistrationServiceImplTest {
     private RegistrationServiceImpl registrationService;
 
     @Mock
-    private UserSecurityRepository userSecurityRepository;
+    private UserCredentialsRepository userCredentialsRepository;
 
     @Mock
     private RoleRepository roleRepository;
@@ -62,7 +60,7 @@ class RegistrationServiceImplTest {
     private TokenService tokenService;
 
 
-    private UserSecurity userSecurity;
+    private UserCredentials userCredentials;
     private ConfirmToken confirmToken;
     private User user;
     private RegistrationDTO registrationDTO;
@@ -80,7 +78,7 @@ class RegistrationServiceImplTest {
     @Test
     void testSuccessfullyRegistration() throws MessagingException {
         RegistrationServiceImpl temp = Mockito.spy(registrationService);
-        when(userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.empty());
         doReturn(new EmailDTO(registrationDTO.getEmail())).when(temp).performRegistration(registrationDTO);
         EmailDTO newUser = temp.register(registrationDTO);
         assertEquals(registrationDTO.getEmail(), newUser.getEmail());
@@ -88,16 +86,16 @@ class RegistrationServiceImplTest {
 
     @Test
     void testEmailExistsExceptionRegistration() throws MessagingException {
-        when(userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
-                .thenReturn(Optional.of(UserSecurity.builder().email(registrationDTO.getEmail()).username("Lalka228").enabled(true).build()));
+        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
+                .thenReturn(Optional.of(UserCredentials.builder().email(registrationDTO.getEmail()).username("Lalka228").enabled(true).build()));
 
         assertThrows(EmailExistsException.class, () -> registrationService.register(registrationDTO));
     }
 
     @Test
     void testUsernameExistsExceptionRegistration() throws MessagingException {
-        when(userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
-                .thenReturn(Optional.of(UserSecurity.builder().email("rafaello2@gmail.com").username(registrationDTO.getUsername()).enabled(true).build()));
+        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
+                .thenReturn(Optional.of(UserCredentials.builder().email("rafaello2@gmail.com").username(registrationDTO.getUsername()).enabled(true).build()));
 
         assertThrows(UsernameExistsException.class, () -> registrationService.register(registrationDTO));
     }
@@ -105,9 +103,9 @@ class RegistrationServiceImplTest {
     @Test
     void testDeletesUnconfirmedUserRegistration() throws MessagingException {
         RegistrationServiceImpl temp = Mockito.spy(registrationService);
-        UserSecurity userSecurity = UserSecurity.builder().email("hasbulla@gmail.com").username("hasbulla23").build();
-        when(userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.of(userSecurity));
-        doNothing().when(temp).deleteUserIfNotConfirmed(userSecurity);
+        UserCredentials userCredentials = UserCredentials.builder().email("hasbulla@gmail.com").username("hasbulla23").build();
+        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.of(userCredentials));
+        doNothing().when(temp).deleteUserIfNotConfirmed(userCredentials);
         doReturn(new EmailDTO(registrationDTO.getEmail())).when(temp).performRegistration(registrationDTO);
         EmailDTO newUser = temp.register(registrationDTO);
         assertEquals(registrationDTO.getEmail(), newUser.getEmail());
@@ -119,20 +117,20 @@ class RegistrationServiceImplTest {
         UUID id = new UUID(9583894, 34757);
         ConfirmToken token = ConfirmToken.builder().id(id).build();
         User user = User.builder().confirmToken(token).build();
-        UserSecurity userSecurity = UserSecurity.builder().id(id).email("javier_milei@gmail.com").username("Javier Milei").user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().id(id).email("javier_milei@gmail.com").username("Javier Milei").user(user).build();
 
         doNothing().when(verifyEmailRepository).deleteById(id);
-        assertDoesNotThrow(() -> registrationService.deleteUserIfNotConfirmed(userSecurity));
+        assertDoesNotThrow(() -> registrationService.deleteUserIfNotConfirmed(userCredentials));
     }
 
     @Test
     void testPerformRegistration() throws MessagingException {
         RegistrationServiceImpl temp = Mockito.spy(registrationService);
 
-        UserSecurity userSecurity = UserSecurity.builder().username(registrationDTO.getUsername()).email(registrationDTO.getEmail())
+        UserCredentials userCredentials = UserCredentials.builder().username(registrationDTO.getUsername()).email(registrationDTO.getEmail())
                 .password(registrationDTO.getPassword()).build();
 
-        when(mapper.toEntityRegistration(registrationDTO)).thenReturn(userSecurity);
+        when(mapper.toUserSecurity(registrationDTO)).thenReturn(userCredentials);
 
         Instant now = Instant.now();
         Instant later = now.minusSeconds(600);
@@ -142,12 +140,12 @@ class RegistrationServiceImplTest {
 
         User user = User.builder().confirmToken(token).build();
 
-        doReturn(user).when(temp).createNewRegisteredUser(userSecurity);
-        when(mapper.toEmail(userSecurity)).thenReturn(new EmailDTO(userSecurity.getEmail()));
+        doReturn(user).when(temp).createNewRegisteredUser(userCredentials);
+        when(mapper.toEmailDTO(userCredentials)).thenReturn(new EmailDTO(userCredentials.getEmail()));
 
         EmailDTO emailDTO = temp.performRegistration(registrationDTO);
 
-        assertEquals(userSecurity.getEmail(), emailDTO.getEmail());
+        assertEquals(userCredentials.getEmail(), emailDTO.getEmail());
     }
 
     @Test
@@ -155,11 +153,11 @@ class RegistrationServiceImplTest {
 
         TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(false).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(false).build();
 
         when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(true);
 
-        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
 
         assertTrue(registrationService.enableIfValid(dto));
     }
@@ -169,11 +167,11 @@ class RegistrationServiceImplTest {
 
         TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(false).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(false).build();
 
         when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(false);
 
-        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
 
         assertFalse(registrationService.enableIfValid(dto));
     }
@@ -183,7 +181,7 @@ class RegistrationServiceImplTest {
 
         TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
 
-        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
 
         assertFalse(registrationService.enableIfValid(dto));
     }
@@ -193,9 +191,9 @@ class RegistrationServiceImplTest {
 
         TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
 
-        UserSecurity userSecurity = UserSecurity.builder().enabled(true).build();
+        UserCredentials userCredentials = UserCredentials.builder().enabled(true).build();
 
-        when(userSecurityRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userSecurity));
+        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
 
         assertFalse(registrationService.enableIfValid(dto));
     }

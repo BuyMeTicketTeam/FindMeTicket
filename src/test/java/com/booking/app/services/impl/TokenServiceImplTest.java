@@ -2,8 +2,8 @@ package com.booking.app.services.impl;
 
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,18 +11,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
@@ -40,7 +31,7 @@ class TokenServiceImplTest {
 
 
     @Mock
-    private UserSecurityRepository userSecurityRepository;
+    private UserCredentialsRepository userCredentialsRepository;
 
     @Test
     void testVerifyTokenSuccessCase() {
@@ -53,11 +44,11 @@ class TokenServiceImplTest {
 
         ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
         User user = User.builder().confirmToken(token).build();
-        UserSecurity userSecurity = UserSecurity.builder().email("javiermilei@gmail.com").username("Javier Milei").user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().email("javiermilei@gmail.com").username("Javier Milei").user(user).build();
 
-        Optional<UserSecurity> userByEmaail = Optional.of(userSecurity);
+        Optional<UserCredentials> userByEmaail = Optional.of(userCredentials);
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(userByEmaail);
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(userByEmaail);
 
         Assertions.assertTrue(tokenService.verifyToken(email, givenToken));
     }
@@ -73,11 +64,11 @@ class TokenServiceImplTest {
 
         ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
         User user = User.builder().confirmToken(token).build();
-        UserSecurity userSecurity = UserSecurity.builder().email("javiermilei@gmail.com").username("Javier Milei").user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().email("javiermilei@gmail.com").username("Javier Milei").user(user).build();
 
-        Optional<UserSecurity> userByEmaail = Optional.of(userSecurity);
+        Optional<UserCredentials> userByEmaail = Optional.of(userCredentials);
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(userByEmaail);
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(userByEmaail);
 
         Assertions.assertFalse(tokenService.verifyToken(email, givenToken));
     }
@@ -93,11 +84,11 @@ class TokenServiceImplTest {
 
         ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
         User user = User.builder().confirmToken(token).build();
-        UserSecurity userSecurity = UserSecurity.builder().email("javiermilei@gmail.com").username("Javier Milei").user(user).build();
+        UserCredentials userCredentials = UserCredentials.builder().email("javiermilei@gmail.com").username("Javier Milei").user(user).build();
 
-        Optional<UserSecurity> userByEmaail = Optional.of(userSecurity);
+        Optional<UserCredentials> userByEmaail = Optional.of(userCredentials);
 
-        when(userSecurityRepository.findByEmail(email)).thenReturn(userByEmaail);
+        when(userCredentialsRepository.findByEmail(email)).thenReturn(userByEmaail);
 
         Assertions.assertFalse(tokenService.verifyToken(email, givenToken));
     }

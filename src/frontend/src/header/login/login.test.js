@@ -4,29 +4,28 @@ import {
   render, screen, fireEvent, act, waitFor,
 } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import App from '../../App';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Login from './index';
 
-test('open login', () => {
-  render(<App />);
-  const loginBtn = screen.getByTestId('login-btn');
-  expect(screen.queryByTestId('login')).toBeNull();
-  fireEvent.click(loginBtn);
+test('render login', () => {
+  render(
+    <Router>
+      <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+        <Login />
+      </GoogleOAuthProvider>
+    </Router>,
+  );
   expect(screen.queryByTestId('login')).toBeInTheDocument();
-});
-
-test('close login', () => {
-  render(<App />);
-  const loginBtn = screen.getByTestId('login-btn');
-  fireEvent.click(loginBtn);
-  const closeBtn = screen.getByTestId('close');
-  expect(screen.queryByTestId('login')).toBeInTheDocument();
-  fireEvent.click(closeBtn);
-  expect(screen.queryByTestId('login')).toBeNull();
 });
 
 test('login input event', () => {
-  render(<App />);
+  render(
+    <Router>
+      <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+        <Login />
+      </GoogleOAuthProvider>
+    </Router>,
+  );
   const loginBtn = screen.getByTestId('login-btn');
   fireEvent.click(loginBtn);
   const loginInput = screen.getByTestId('login-input');
@@ -37,7 +36,13 @@ test('login input event', () => {
 });
 
 test('password input event', () => {
-  render(<App />);
+  render(
+    <Router>
+      <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+        <Login />
+      </GoogleOAuthProvider>
+    </Router>,
+  );
   const loginBtn = screen.getByTestId('login-btn');
   fireEvent.click(loginBtn);
   const passwordInput = screen.getByTestId('password-login-input');
@@ -48,46 +53,54 @@ test('password input event', () => {
 });
 
 test('link to register', () => {
-  render(<App />);
-  const loginBtn = screen.getByTestId('login-btn');
-  fireEvent.click(loginBtn);
-  const toRegisterBtn = screen.getByTestId('to-register-btn');
-  fireEvent.click(toRegisterBtn);
-  expect(screen.queryByTestId('register')).toBeInTheDocument();
+  render(
+    <Router>
+      <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+        <Login />
+      </GoogleOAuthProvider>
+    </Router>,
+  );
+  expect(screen.queryByTestId('to-register-btn')).toBeInTheDocument();
 });
 
 describe('validation', () => {
   test('login error', () => {
     render(
       <Router>
-        <Login />
+        <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+          <Login />
+        </GoogleOAuthProvider>
       </Router>,
     );
-    const buttonLogin = screen.getByTestId('send-request');
+    const buttonLogin = screen.getByTestId('login-btn');
     fireEvent.click(buttonLogin);
-    expect(screen.queryByTestId('error').innerHTML).toBe('Поле email заповнено не вірно');
+    expect(screen.queryByTestId('error').innerHTML).toBe('login-error');
   });
   test('password error', () => {
     render(
       <Router>
-        <Login />
+        <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+          <Login />
+        </GoogleOAuthProvider>
       </Router>,
     );
-    const buttonLogin = screen.getByTestId('send-request');
+    const buttonLogin = screen.getByTestId('login-btn');
     const loginInput = screen.getByTestId('login-input');
     fireEvent.input(loginInput, {
       target: { value: 'stepan@gmail.com' },
     });
     fireEvent.click(buttonLogin);
-    expect(screen.queryByTestId('error').innerHTML).toBe('Поле паролю заповнено не вірно');
+    expect(screen.queryByTestId('error').innerHTML).toBe('password-error');
   });
   test('success validation', () => {
     render(
       <Router>
-        <Login />
+        <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+          <Login />
+        </GoogleOAuthProvider>
       </Router>,
     );
-    const buttonLogin = screen.getByTestId('send-request');
+    const buttonLogin = screen.getByTestId('login-btn');
     const loginInput = screen.getByTestId('login-input');
     const passwordInput = screen.getByTestId('password-login-input');
     fireEvent.input(loginInput, {
@@ -110,11 +123,15 @@ describe('server tests', () => {
     }
     const fetchMock = jest.spyOn(global, 'fetch').mockImplementation(mockFetch);
     await act(async () => {
-      render(<App />);
+      render(
+        <Router>
+          <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+            <Login />
+          </GoogleOAuthProvider>
+        </Router>,
+      );
     });
-    const loginBtn = screen.getByTestId('login-btn');
-    fireEvent.click(loginBtn);
-    const buttonLogin = screen.getByTestId('send-request');
+    const buttonLogin = screen.getByTestId('login-btn');
     const loginInput = screen.getByTestId('login-input');
     const passwordInput = screen.getByTestId('password-login-input');
     fireEvent.input(loginInput, {
@@ -125,15 +142,17 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonLogin);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/login', {
-      body: '{"login":"stepan@gmail.com","password":"stepan123132123"}',
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/login`, {
+      body: '{"email":"stepan@gmail.com","password":"stepan123132123","rememberMe":false}',
+      credentials: 'include',
       headers: {
+        Authorization: null,
         'Content-Type': 'application/json',
       },
       method: 'POST',
     });
     await waitFor(() => {
-      expect(screen.getByTestId('error').innerHTML).toBe('Логін або пароль хибні');
+      expect(screen.getByTestId('error').innerHTML).toBe('error-server2');
     });
   });
 });

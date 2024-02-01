@@ -2,13 +2,13 @@
 /* eslint-disable no-await-in-loop */
 export default async function eventSourceQuery(address, body, headers, method = 'POST') {
   const token = localStorage.getItem('JWTtoken');
-  const response = await fetch(`http://localhost:8080${address}`, {
+  const response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/${address}`, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: token || null,
       ...headers,
     },
-    mode: 'no-cors',
+    credentials: 'include',
     method,
     body,
   });
@@ -31,8 +31,6 @@ export default async function eventSourceQuery(address, body, headers, method = 
       return null;
     }
   }
-
-  console.log(response.body);
 
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
