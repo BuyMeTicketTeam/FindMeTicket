@@ -9,7 +9,7 @@ import Calendar from '../Calendar';
 import Passengers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
-import eventSourceQuery from '../../helper/eventSourceQuery';
+import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({ onLoading, setTicketsData, setRequestBody }) {
@@ -90,13 +90,26 @@ export default function SearchField({ onLoading, setTicketsData, setRequestBody 
     setRequestBody(body);
     onLoading(true);
     setTicketsData([]);
-    const dataStream = await eventSourceQuery('searchTickets', JSON.stringify(body));
-    onLoading(false);
-    for await (const chunk of dataStream) {
-      if (chunk) {
-        setTicketsData((prevTickets) => [...prevTickets, chunk]);
-      }
+    function onClose() {
+      onLoading(false);
+      console.log('close');
     }
+
+    function onMessage(event) {
+      console.log(event);
+      const parsedData = JSON.parse(event.data);
+      setTicketsData((prevTickets) => [...prevTickets, parsedData]);
+    }
+
+    function onError() {
+      onLoading(false);
+      // setTicketsData(null);
+      console.log('error');
+    }
+
+    eventSourceQuery2({
+      address: 'searchTickets', body: JSON.stringify(body), onClose, onMessage, onError, method: 'POST',
+    });
   }
 
   function changeCities() {

@@ -38,7 +38,7 @@ export default function Ticket({ data }) {
               <p className="price__ordinry">{`${data.price} ${t('uan')}`}</p>
               <p className="price__discond">{data.priceOld ? `${data.priceOld} ${t('uan')}` : null}</p>
             </div>
-            <a className="ticket__buy button" href={data.url} target="blank">{t('select')}</a>
+            <a className="ticket__buy button" href={`/ticket-page/${data.id}`} target="blank">{t('select')}</a>
           </div>
         </div>
       </div>

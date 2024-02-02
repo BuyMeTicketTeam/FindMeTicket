@@ -1,12 +1,15 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
-async function eventSourceQuery2(address, onMessage, onError, onClose, method = 'GET') {
+async function eventSourceQuery2({
+  address, body, onMessage, onError, onClose, method = 'GET',
+}) {
   try {
     await fetchEventSource(`http://localhost:8080/${address}`, {
       method,
       headers: {
-        Accept: 'text/event-stream',
+        'Content-Type': 'application/json',
       },
+      body,
       onopen(res) {
         if (res.ok && res.status === 200) {
           console.log('Connection made ', res);

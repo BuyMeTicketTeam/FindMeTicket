@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import eventSourceQuery2 from '../helper/eventSourceQuery2';
@@ -19,18 +20,23 @@ function TicketPage() {
       if (event.event === 'ticket info') {
         const parsedData = JSON.parse(event.data);
         setTicketData(parsedData);
+        return;
       }
-      setTicketUrl(...ticketUrl, { provider: event.event, url: event.data });
+      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: event.data }]);
     }
 
     function onError() {
-      setTicketError(true);
+      if (!ticketData) {
+        setTicketError(true);
+      }
     }
 
     function onClose() {
       setConnection(false);
     }
-    eventSourceQuery2(`get/ticket/${ticketId}`, onMessage, onError, onClose);
+    eventSourceQuery2({
+      address: `get/ticket/${ticketId}`, onMessage, onError, onClose,
+    });
   }
 
   const handleServerRequest = useCallback(() => serverRequest(), []);
