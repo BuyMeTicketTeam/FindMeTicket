@@ -1,0 +1,140 @@
+@import '../../styles/variables.scss';
+
+.popup {
+  position: fixed;
+  z-index: 3;
+  top: 20px;
+  right: 20px;
+  width: 400px;
+  background-color: $main;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 5);
+  display: none;
+  border-radius: 10px;
+}
+
+.popup.open {
+  display: flex;
+  align-items: left;
+  justify-content: left;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  padding: 20px;
+}
+
+.popup-content .avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.popup-content .avatar img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.popup-content input {
+  border: 2px solid $bright;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: $semi-dark;
+  color: #fff;
+  width: 230px;
+}
+
+.popup-content p {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.popup-content a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+.exit {
+  font-size: 18px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  margin-top: 20px;
+  margin-right: auto;
+}
+
+.popup-content .delete-account {
+  font-size: 10px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  margin-top: 40px;
+  margin-right: auto;
+}
+.popup-content button:hover {
+  color: $bright;
+}
+
+.popup-content .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #fff;
+  background: transparent;
+  border: none;
+}
+
+.popup-content .close-button:hover {
+  color: $bright;
+}
+
+.popup-content .change-password:hover {
+  color: $bright;
+}
+
+.popup-content .custom-input {
+  margin-bottom: 10px;
+  color: #fff;
+  width: 230px;
+  border-radius: 10px;
+  white-space: nowrap;
+  background-color: transparent;
+}
+
+.popup-content .custom-input input {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #fff;
+  width: 100%;
+}
+
+.popup-content .privacy-policy-link {
+  font-size: 16px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  margin-top: 10px; 
+  margin-right: auto; 
+}
+
+.popup-content .exit {
+  font-size: 18px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  margin-top: 20px;
+}

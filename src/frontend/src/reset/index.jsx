@@ -17,7 +17,7 @@ export default function Index() {
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        navigate('/change-password');
+        navigate('/reset-password');
         sessionStorage.setItem('email', email);
         break;
       case 404:

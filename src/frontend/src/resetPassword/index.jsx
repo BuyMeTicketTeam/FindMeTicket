@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import Field from '../utils/Field';
 import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
-import { passwordCheck } from '../helper/regExCheck';
+import { codeCheck, passwordCheck } from '../helper/regExCheck';
+import timeOut from '../helper/timer';
 
 export default function Index() {
   const [code, setCodeChange] = useState('');
@@ -14,13 +15,15 @@ export default function Index() {
   const [confirmPassword, setConfirmPasswordChange] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [minutes, setMinutes] = useState(1);
+  const [seconds, setSeconds] = useState(30);
+  const [success, setSucces] = useState(false);
   const [send, setSend] = useState(false);
   const [resend, setResend] = useState(false);
   const [show, setShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
   const sendButtonIsDisabled = send || success;
-  const resendButtonIsDisabled = resend || success;
+  const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || success;
 
   function handleCodeInput(value) {
     setCodeChange(value);
@@ -37,9 +40,20 @@ export default function Index() {
     setConfirmPasswordError(false);
   }
 
+  useEffect(() => {
+    if (minutes > 0 || seconds > 0) {
+      timeOut(seconds, minutes).then((time) => {
+        setSeconds(time.seconds);
+        setMinutes(time.minutes);
+      });
+    }
+  }, [seconds, minutes]);
+
   function checkResponseForResend(response) {
     switch (response.status) {
       case 200:
+        setMinutes(1);
+        setSeconds(30);
         break;
       case 419:
         setError(t('error-server'));
@@ -62,7 +76,7 @@ export default function Index() {
 
   function checkResponse(response) {
     if (response.status === 200) {
-      setSuccess(true);
+      setSucces(true);
     } else if (response.status === 400) {
       setError(t('error-code'));
     } else {
@@ -72,7 +86,7 @@ export default function Index() {
 
   function validation() {
     switch (true) {
-      case passwordCheck(code):
+      case codeCheck(code):
         setError(t('code-error'));
         setCodeError(true);
         return false;
@@ -125,30 +139,31 @@ export default function Index() {
       <div className="form-body">
         <h1 className="title">{t('title')}</h1>
         {success && (
-          <p className="confirm__success">
-            {t('success-message')}
-            {' '}
-            <p>
-              <Link
-                className="link-success"
-                data-testid=""
-                to="/"
-              >
-                {t('auth-link')}
-              </Link>
-            </p>
+        <p className="confirm__success">
+          {t('success-message')}
+          {' '}
+          <p>
+            <Link
+              className="link-success"
+              data-testid=""
+              to="/login"
+            >
+              {t('auth-link')}
+            </Link>
+
           </p>
+        </p>
         )}
+        <p className="confirm__text">{t('confirm-text1')}</p>
+        <p className="confirm__text"><b>{t('confirm-text2')}</b></p>
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           dataTestId="code-input"
           error={codeError}
           name={t('code-input-title')}
           value={code}
-          type="password"
+          type="text"
           onInputChange={(value) => handleCodeInput(value)}
-          show={show}
-          setShow={setShow}
         />
 
         <Field
@@ -188,7 +203,7 @@ export default function Index() {
           onClick={setResend}
           type="button"
         >
-          {resend ? t('processing') : ''}
+          {resend ? t('processing') : t('time', { minutes, seconds })}
         </button>
       </div>
     </div>
