@@ -1,9 +1,10 @@
 /* eslint-disable no-shadow */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import LoginBtn from './LoginBtn';
+import Popup from './profile';
 import './header.scss';
 import logo from './logo.svg';
 
@@ -11,6 +12,7 @@ export default function Header({
   authorization, updateAuthValue, language, setLanguage,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
+  const [isprofilePopup, setIsProfilePopup] = useState(false);
   const languages = [
     { value: 'UA', label: 'UA' },
     { value: 'ENG', label: 'ENG' },
@@ -70,9 +72,18 @@ export default function Header({
       />
 
       <LoginBtn
+        setIsProfilePopup={setIsProfilePopup}
         status={authorization}
         updateAuthValue={updateAuthValue}
       />
+
+      {isprofilePopup && (
+      <Popup
+        setIsProfilePopup={setIsProfilePopup}
+        updateAuthValue={updateAuthValue}
+        status={authorization}
+      />
+      )}
 
     </header>
   );

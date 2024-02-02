@@ -6,7 +6,7 @@
                   "tourist-places": "Tourist places",
                   "popular-places": "Popular places",
                   "login": "Login",
-                  "profile": "Log out"
+                  "profile": "Profile"
             },
             "change-password": {
                   "error-server": "Try again",

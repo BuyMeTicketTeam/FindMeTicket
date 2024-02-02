@@ -3,16 +3,17 @@ import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 
 function useAuthCheck() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(null);
   const cookies = new Cookies(null, { path: '/' });
   const authStoredValue = sessionStorage.getItem('auth');
+  const authValueCookie = cookies.get('rememberMe');
   useEffect(() => {
-    if (authStoredValue === 'true') {
+    if (authStoredValue) {
       setAuth(authStoredValue);
       return;
     }
-    if (cookies.get('rememberMe')) {
-      setAuth(true);
+    if (authValueCookie) {
+      setAuth(authValueCookie);
     }
   }, []);
   function updateAuthValue(value) {
