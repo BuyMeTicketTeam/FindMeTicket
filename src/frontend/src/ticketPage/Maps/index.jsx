@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './style.scss';
 import RestaurantMap from './image 7.png';
 import TouristPlaces from './image 8.png';
@@ -6,6 +7,7 @@ import TouristPlaces from './image 8.png';
 function Maps() {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   const handleCategoryClick = (index) => {
     setSelectedCategory(selectedCategory === index ? null : index);
@@ -21,7 +23,7 @@ function Maps() {
 
   const getCategoryClassName = (index) => `category ${selectedCategory === index ? 'active' : ''} ${hoveredCategory === index ? 'hovered' : ''}`;
 
-  const mapOptions = ['Готелі', 'Ресторани', 'Туристичні місця'];
+  const mapOptions = ['restaurants', 'hotels', 'tourist places'];
 
   return (
     <div className="maps-block">
@@ -34,7 +36,7 @@ function Maps() {
             onMouseEnter={() => handleCategoryHover(index)}
             onMouseLeave={handleCategoryLeave}
           >
-            {title}
+            {t(title)}
           </button>
         ))}
       </div>

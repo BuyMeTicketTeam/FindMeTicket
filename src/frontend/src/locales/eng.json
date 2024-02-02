@@ -189,6 +189,13 @@
             },
             "ad": {
                   "title": "Your ad can be here!"
+            },
+            "ticket-page": {
+                  "buy": "Buy",
+                  "price": "Price",
+                  "restaurants": "Restaurants",
+                  "hotels": "Hotels",
+                  "tourist places": "Tourist places"
             }
       }
 }

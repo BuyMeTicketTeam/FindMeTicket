@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import eventSourceQuery2 from '../helper/eventSourceQuery2';
 import Price from './Price/index';
 import Information from './Information/index ';
@@ -14,6 +15,7 @@ function TicketPage() {
   const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
+  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   async function serverRequest() {
     function onMessage(event) {
@@ -49,7 +51,7 @@ function TicketPage() {
     <>
       <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
-      <div className="ticketPage-text">Ціни</div>
+      <div className="ticketPage-text">{t('price')}</div>
       <Price ticketUrls={ticketUrl} price={ticketData.price} connection={connection} />
     </>
   );
