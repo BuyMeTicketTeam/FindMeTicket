@@ -1,5 +1,9 @@
 import React from 'react';
 import starIcon from './star.svg';
+import phoneIcon from './phone.svg';
+import addressIcon from './location.svg';
+import websiteIcon from './websiteIcon.svg';
+import arrowIcon from './arrowIcon.svg';
 
 export default function PlacePreviewItem({ placesInfo, placeId }) {
   const placeInfo = placesInfo.find((place) => place.place_id === placeId);
@@ -16,20 +20,30 @@ export default function PlacePreviewItem({ placesInfo, placeId }) {
   } = placeInfo;
   return (
     <div className="place-preview">
-      <button className="place-preview__close" type="button">Back</button>
+      <button className="place-preview__close" type="button">
+        <img src={arrowIcon} alt="Arrow" />
+        Back
+      </button>
       <h2 className="place-preview__title">{name}</h2>
       <div className="place-preview__rating">
         <img className="place-preview-rating__img" src={starIcon} alt="star" />
         <span className="place-preview-rating__text">{rating}</span>
-        <span className="place-preview-rating__number">{userRatingsTotal}</span>
+        <span className="place-preview-rating__number">
+          (
+          {userRatingsTotal}
+          ) reviews
+        </span>
       </div>
       <div className="place-preview__info">
-        <img src="" alt="" />
+        <img src={addressIcon} alt="Address" />
         {address}
       </div>
-      <div className="place-preview__info">{website}</div>
       <div className="place-preview__info">
-        <img src="" alt="" />
+        <img src={websiteIcon} alt="Website" />
+        {website}
+      </div>
+      <div className="place-preview__info">
+        <img src={phoneIcon} alt="Phone" />
         {phone}
       </div>
       <div className="place-preview__working-hours">
