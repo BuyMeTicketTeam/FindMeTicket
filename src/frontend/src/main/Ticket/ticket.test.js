@@ -4,6 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 import Ticket from './index';
 
 const mockData = {
+  id: 1,
   departureTime: '12:00',
   departureDate: '2023-01-01',
   travelTime: '2h 30m',
@@ -37,7 +38,7 @@ test('renders ticket component with correct data', () => {
 
   // Check if the link has the correct href
   const link = screen.getByText('select');
-  expect(link).toHaveAttribute('href', 'https://example.com');
+  expect(link).toHaveAttribute('href', '/ticket-page/1');
 });
 
 test('truncates long station names', () => {
