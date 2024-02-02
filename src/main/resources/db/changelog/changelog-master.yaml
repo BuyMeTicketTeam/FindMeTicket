@@ -365,4 +365,22 @@ databaseChangeLog:
             constraintName: FK_USER_CREDENTIALS_ON_USER
             referencedColumnNames: id
             referencedTableName: users
+  - changeSet:
+      id: insert_data_role
+      author: Mykhailo Marchuk
 
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO role (enum_role) VALUES
+                 ('USER'),
+                 ('ADMIN');
+  - changeSet:
+      id: 1705059591405-14
+      author: Mykhailo Marchuk
+
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - loadData:
+            tableName: ukrainian_places
+            file: places/ukr-places-common.csv
