@@ -21,8 +21,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 
+import static com.booking.app.constant.SiteConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,34 +57,39 @@ public class ScraperServiceImpl {
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
             try {
                 allOf.join();
-            } catch (Exception e) {
-                log.error("Error in Scraper service: " + e.getMessage());
+            } catch (CancellationException | CompletionException e) {
+                log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
                 emitter.complete();
                 return;
             }
-            routeRepository.save(newRoute);
+            if (completableFutureListBus.stream().anyMatch(t -> {
+                try {
+                    return t.get().equals(true);
+                } catch (ExecutionException | InterruptedException e) {
+                    return false;
+                }
+            })) routeRepository.save(newRoute);
+
 
         } else {
             for (Ticket ticket : route.getTickets()) {
                 emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
         }
-
         emitter.complete();
     }
 
     @Async
     public void getTicket(UUID id, SseEmitter emitter) throws IOException, ParseException {
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseGet(() -> {
-                    try {
-                        throw new ResourceNotFoundException(String.format("No ticket present by %s ID", id));
-                    } catch (ResourceNotFoundException e) {
-                        emitter.completeWithError(e);
-                        return null;
-                    }
-                });
-        if (ticket == null) return;
+        Ticket ticket;
+        try {
+            ticket = ticketRepository.findById(id)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(String.format("No ticket present by %s ID", id)));
+        } catch (ResourceNotFoundException e) {
+            emitter.completeWithError(e);
+            return;
+        }
 
         emitter.send(SseEmitter.event().name("ticket info").data(ticketMapper.toDto(ticket)));
 
@@ -95,17 +104,22 @@ public class ScraperServiceImpl {
                     infobus.getTicket(emitter, ticket),
                     proizd.getTicket(emitter, ticket)
             );
-            CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(new CompletableFuture[0]));
-            while (!allOf.isDone())
-
-                ticketRepository.save(ticket);
+            CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
+            try {
+                allOf.join();
+            } catch (CancellationException | CompletionException e) {
+                log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
+                emitter.complete();
+                return;
+            }
+            ticketRepository.save(ticket);
         } else {
             if (urls.getProizd() != null)
-                emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
+                emitter.send(SseEmitter.event().name(PROIZD_UA).data(ticket.getUrls().getProizd()));
             if (urls.getBusfor() != null)
-                emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
+                emitter.send(SseEmitter.event().name(BUSFOR_UA).data(ticket.getUrls().getBusfor()));
             if (urls.getInfobus() != null)
-                emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getInfobus()));
+                emitter.send(SseEmitter.event().name(INFOBUS).data(ticket.getUrls().getInfobus()));
         }
 
         emitter.complete();

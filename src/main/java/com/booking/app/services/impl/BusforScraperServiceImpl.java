@@ -1,6 +1,7 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
+import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
@@ -44,9 +45,20 @@ public class BusforScraperServiceImpl implements ScraperService {
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
         String url = String.format(linkProps.getBusfor(), requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
         driver.get(url);
+        String DIV_TICKET = "div.ticket";
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.Style__EmptyTitle-xljhz5-2.iBjiPF")), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+        } catch (Exception e) {
+            driver.quit();
+            log.info("BUSFOR TICKETS IN scrapeTickets(): NOT FOUND");
+            return CompletableFuture.completedFuture(false);
+        }
 
         try {
             synchronized (driver) {
@@ -55,16 +67,14 @@ public class BusforScraperServiceImpl implements ScraperService {
         } catch (InterruptedException e) {
         }
 
-        List<WebElement> products = driver.findElements(By.cssSelector("div.ticket"));
+        List<WebElement> products = driver.findElements(By.cssSelector(DIV_TICKET));
 
-        log.info("BUSFOR TICKETS: " + products.size());
+        log.info("BUSFOR TICKETS IN scrapeTickets(): " + products.size());
 
         for (int i = 0; i < products.size() && i < 150; i++) {
 
-            WebElement webTicket = driver.findElements(By.cssSelector("div.ticket")).get(i);
-
+            WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
             Ticket ticket = scrapeTicketInfo(webTicket, route);
-
             if (route.getTickets().add(ticket)) {
                 emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
@@ -103,7 +113,6 @@ public class BusforScraperServiceImpl implements ScraperService {
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
-
         String departureCity = ticket.getRoute().getDepartureCity();
         String arrivalCity = ticket.getRoute().getArrivalCity();
         String departureDate = ticket.getRoute().getDepartureDate();
@@ -120,7 +129,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         }
 
         List<WebElement> tickets = driver.findElements(By.cssSelector("div.ticket"));
-
+        log.info("BUSFOR TICKETS IN single getTicket(): " + tickets.size());
         for (WebElement element : tickets) {
 
             List<WebElement> ticketInfo = element.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
@@ -135,19 +144,18 @@ public class BusforScraperServiceImpl implements ScraperService {
                     ticket.getArrivalTime().equals(arrivalDateTime.substring(0, 5)) &&
                     ticket.getDepartureTime().equals(departureDateTime.substring(0, 5))) {
 
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
                 element.findElement(By.tagName("button")).findElement(By.tagName("span")).click();
                 wait.until(ExpectedConditions.urlContains("preorders"));
                 url = driver.getCurrentUrl();
                 ticket.getUrls().setBusfor(url);
+                log.info("BUSFOR URL: " + url);
                 break;
             }
         }
 
         if (ticket.getUrls().getBusfor() != null) {
-            emitter.send(SseEmitter.event().name("Busfor url:").data(ticket.getUrls().getBusfor()));
-        } else {
-            emitter.send(SseEmitter.event().name("Busfor url:").data("no such url"));
+            emitter.send(SseEmitter.event().name(SiteConstants.BUSFOR_UA).data(ticket.getUrls().getBusfor()));
         }
 
         driver.quit();
@@ -161,7 +169,8 @@ public class BusforScraperServiceImpl implements ScraperService {
         return date.format(formatter);
     }
 
-    private static Ticket createTicket(WebElement webTicket, Route route, WebElement departureInfo, WebElement arrivalInfo, String departureDateTime, String arrivalDateTime, int totalMinutes) {
+    private static Ticket createTicket(WebElement webTicket, Route route, WebElement departureInfo, WebElement
+            arrivalInfo, String departureDateTime, String arrivalDateTime, int totalMinutes) {
         return Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)

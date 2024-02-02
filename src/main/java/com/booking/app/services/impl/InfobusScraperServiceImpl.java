@@ -1,6 +1,7 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
+import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
@@ -47,7 +48,19 @@ public class InfobusScraperServiceImpl implements ScraperService {
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
         requestTickets(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate(), driver);
+
+        String DIV_TICKET = "div.main-detail-wrap";
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.col-sm-12.alert.alert-warning")), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+        } catch (Exception e) {
+            driver.quit();
+            log.info("INFOBUS TICKETS IN scrapeTickets(): NOT FOUND");
+            return CompletableFuture.completedFuture(false);
+        }
 
         try {
             synchronized (driver) {
@@ -56,13 +69,11 @@ public class InfobusScraperServiceImpl implements ScraperService {
         } catch (InterruptedException e) {
         }
 
-        List<WebElement> elements = driver.findElements(By.cssSelector("div.main-detail-wrap"));
-        log.info("INFOBUS TICKETS: " + elements.size());
+        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+        log.info("INFOBUS TICKETS IN scrapeTickets(): " + elements.size());
 
-        for (WebElement element : elements) {
-
-            Ticket ticket = scrapeTicketInfo(element, route);
-
+        for (int i = 0; i < elements.size() && i < 150; i++) {
+            Ticket ticket = scrapeTicketInfo(elements.get(i), route);
             if (route.getTickets().add(ticket)) {
                 emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
@@ -106,6 +117,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver);
 
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector("div.main-detail-wrap"), 1));
         try {
             synchronized (driver) {
                 driver.wait(5000);
@@ -113,8 +125,8 @@ public class InfobusScraperServiceImpl implements ScraperService {
         } catch (InterruptedException e) {
         }
 
-        List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
-
+        List<WebElement> elements = driver.findElements(By.cssSelector("div.main-detail-wrap"));
+        log.info("INFOBUS TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
 
             String priceString = element.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
@@ -131,15 +143,13 @@ public class InfobusScraperServiceImpl implements ScraperService {
                 element.findElement(By.cssSelector("button.btn")).click();
                 wait.until(ExpectedConditions.urlContains("deeplink"));
                 ticket.getUrls().setInfobus(driver.getCurrentUrl());
+                log.info("INFOBUS URL: " + driver.getCurrentUrl());
                 break;
             }
         }
 
         if (ticket.getUrls().getInfobus() != null) {
-            emitter.send(SseEmitter.event().name("Infobus url:").data(ticket.getUrls().getInfobus()));
-
-        } else {
-            emitter.send(SseEmitter.event().name("Infobus url:").data("no such url"));
+            emitter.send(SseEmitter.event().name(SiteConstants.INFOBUS).data(ticket.getUrls().getInfobus()));
         }
 
         driver.quit();
@@ -166,7 +176,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
         inputCity.click();
         inputCity.click();
         inputCity.sendKeys(city);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElement(By.cssSelector("li.parent.bus.ui-menu-item")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElements(By.tagName("li")).get(0).click();
     }
 
     private void selectDate(String departureDate, WebDriver driver, WebDriverWait wait) throws ParseException {

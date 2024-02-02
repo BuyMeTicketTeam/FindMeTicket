@@ -1,6 +1,7 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
+import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
@@ -50,7 +51,19 @@ public class ProizdScraperServiceImpl implements ScraperService {
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
         requestTickets(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate(), driver);
+
+        String TICKET_DIV = "trip-adaptive";
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.error.card.ng-tns-c135-4.ng-trigger.ng-trigger-appear.ng-star-inserted")), ExpectedConditions.presenceOfElementLocated(By.cssSelector(TICKET_DIV))));
+            driver.findElement(By.cssSelector(TICKET_DIV));
+        } catch (Exception e) {
+            driver.quit();
+            log.info("PROIZD TICKETS IN scrapeTickets(): NOT FOUND");
+            return CompletableFuture.completedFuture(false);
+        }
 
         try {
             synchronized (driver) {
@@ -59,13 +72,12 @@ public class ProizdScraperServiceImpl implements ScraperService {
         } catch (InterruptedException e) {
         }
 
-        List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
+        List<WebElement> elements = driver.findElements(By.cssSelector(TICKET_DIV));
 
-        log.info("PROIZD TICKETS: " + elements.size());
-        for (WebElement element : elements) {
+        log.info("PROIZD TICKETS IN scrapeTickets(): " + elements.size());
 
-            Ticket ticket = scrapeTicketInfo(element, route);
-
+        for (int i = 0; i < elements.size() && i < 150; i++) {
+            Ticket ticket = scrapeTicketInfo(elements.get(i), route);
             if (route.getTickets().add(ticket)) {
                 emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
             }
@@ -81,13 +93,11 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         DateTimeFormatter ticketDate = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk", "UA"));
 
-
         LocalDate date = LocalDate.parse(arrivalDate + " 2024", ticketDate);
 
         ticketDate = DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
 
         String formattedTime = date.format(ticketDate);
-
 
         String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
         price = price.substring(0, price.length() - 6);
@@ -100,7 +110,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-
         return createTicket(element, route, price, totalMinutes, formattedTime);
     }
 
@@ -111,10 +120,13 @@ public class ProizdScraperServiceImpl implements ScraperService {
         options.addArguments("--headless");
         ChromeDriver driver = new ChromeDriver(options);
 
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
         Route route = ticket.getRoute();
 
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver);
 
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector("div.trip"), 1));
         try {
             synchronized (driver) {
                 driver.wait(5000);
@@ -123,7 +135,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
         }
 
         List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
-
+        log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
 
             String priceString = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
@@ -136,15 +148,13 @@ public class ProizdScraperServiceImpl implements ScraperService {
                     ticket.getArrivalTime().equals(arrivalTime) &&
                     ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(priceString)))) {
                 ticket.getUrls().setProizd(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
+                log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 break;
             }
         }
 
         if (ticket.getUrls().getProizd() != null) {
-            emitter.send(SseEmitter.event().name("Proizd url:").data(ticket.getUrls().getProizd()));
-
-        } else {
-            emitter.send(SseEmitter.event().name("Proizd url:").data("no such url"));
+            emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(ticket.getUrls().getProizd()));
         }
 
         driver.quit();
