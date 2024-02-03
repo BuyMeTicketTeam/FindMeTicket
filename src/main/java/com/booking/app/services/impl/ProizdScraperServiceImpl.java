@@ -57,7 +57,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         String TICKET_DIV = "trip-adaptive";
         try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.error.card.ng-tns-c135-4.ng-trigger.ng-trigger-appear.ng-star-inserted")), ExpectedConditions.presenceOfElementLocated(By.cssSelector(TICKET_DIV))));
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.error.card")), ExpectedConditions.presenceOfElementLocated(By.cssSelector(TICKET_DIV))));
             driver.findElement(By.cssSelector(TICKET_DIV));
         } catch (Exception e) {
             driver.quit();
