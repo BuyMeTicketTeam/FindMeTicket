@@ -15,12 +15,13 @@ export default function Index() {
   const [ticketsData, setTicketsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
+  const [error, setError] = useState(null);
 
   function ticketsBody() {
     if (loading) {
       return <Loader />;
     }
-    if (ticketsData == null) {
+    if (error) {
       return <Error />;
     }
     if (ticketsData.length > 0) {
@@ -48,9 +49,11 @@ export default function Index() {
           <Ad />
           <Transport />
           <SearchField
+            loading={loading}
             onLoading={setLoading}
             setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
+            setError={setError}
           />
         </div>
         {ticketsBody()}

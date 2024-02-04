@@ -29,6 +29,7 @@ function TicketPage() {
 
     function onError() {
       if (!ticketData) {
+        console.log('ticket data in error message:', ticketData);
         setTicketError(true);
       }
     }

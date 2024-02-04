@@ -12,7 +12,9 @@ import arrowsImg from './arrows.svg';
 import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
-export default function SearchField({ onLoading, setTicketsData, setRequestBody }) {
+export default function SearchField({
+  loading, onLoading, setTicketsData, setRequestBody,
+}) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
@@ -91,7 +93,6 @@ export default function SearchField({ onLoading, setTicketsData, setRequestBody 
     onLoading(true);
     setTicketsData([]);
     function onClose() {
-      onLoading(false);
       console.log('close');
     }
 
@@ -99,11 +100,14 @@ export default function SearchField({ onLoading, setTicketsData, setRequestBody 
       console.log(event);
       const parsedData = JSON.parse(event.data);
       setTicketsData((prevTickets) => [...prevTickets, parsedData]);
+      if (loading) {
+        console.log('stop loading');
+        onLoading(false);
+      }
     }
 
     function onError() {
       onLoading(false);
-      // setTicketsData(null);
       console.log('error');
     }
 
