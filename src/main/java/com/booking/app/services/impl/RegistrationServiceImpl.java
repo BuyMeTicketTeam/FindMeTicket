@@ -1,9 +1,12 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.EmailDTO;
-import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.entity.*;
+import com.booking.app.dto.TokenConfirmationDTO;
+import com.booking.app.entity.ConfirmToken;
+import com.booking.app.entity.Role;
+import com.booking.app.entity.User;
+import com.booking.app.entity.UserCredentials;
 import com.booking.app.enums.EnumProvider;
 import com.booking.app.enums.EnumRole;
 import com.booking.app.exception.exception.EmailExistsException;
@@ -13,13 +16,14 @@ import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.TokenService;
 import com.booking.app.services.RegistrationService;
+import com.booking.app.services.TokenService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Optional;
 
 /**
@@ -75,7 +79,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     @Transactional
     public void deleteUserIfNotConfirmed(UserCredentials byEmail) {
-        verifyEmailRepository.deleteById(byEmail.getUser().getConfirmToken().getId());
+        userCredentialsRepository.deleteById(byEmail.getId());
     }
 
     /**
