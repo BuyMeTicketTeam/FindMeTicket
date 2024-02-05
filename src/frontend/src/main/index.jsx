@@ -22,7 +22,7 @@ export default function Index() {
       return <Loader />;
     }
     if (error) {
-      return <Error />;
+      return <Error error={error} />;
     }
     if (ticketsData.length > 0) {
       return (
@@ -54,6 +54,7 @@ export default function Index() {
             setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
             setError={setError}
+            ticketsData={ticketsData}
           />
         </div>
         {ticketsBody()}

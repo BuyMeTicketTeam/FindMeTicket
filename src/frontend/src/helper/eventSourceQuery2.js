@@ -1,13 +1,14 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
 async function eventSourceQuery2({
-  address, body, onMessage, onError, onClose, method = 'GET',
+  address, body, onMessage, onError, onClose, onOpen, method = 'GET', headers,
 }) {
   try {
     await fetchEventSource(`http://localhost:8080/${address}`, {
       method,
       headers: {
         'Content-Type': 'application/json',
+        ...headers,
       },
       body,
       onopen(res) {
@@ -20,6 +21,7 @@ async function eventSourceQuery2({
         ) {
           console.log('Client side error ', res);
         }
+        onOpen(res);
       },
       onmessage(event) {
         onMessage(event);

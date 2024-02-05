@@ -13,7 +13,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  loading, onLoading, setTicketsData, setRequestBody,
+  loading, onLoading, setTicketsData, setRequestBody, ticketsData, setError,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
@@ -92,8 +92,18 @@ export default function SearchField({
     setRequestBody(body);
     onLoading(true);
     setTicketsData([]);
-    function onClose() {
-      console.log('close');
+    function onOpen(res) {
+      switch (res.status) {
+        case 200:
+          console.log('open successfully');
+          break;
+        case 404:
+          setError('Нажаль квитків за цим маршрутом не знайдено');
+          break;
+        default:
+          setError(true);
+          break;
+      }
     }
 
     function onMessage(event) {
@@ -108,11 +118,20 @@ export default function SearchField({
 
     function onError() {
       onLoading(false);
+      if (ticketsData.length === 0) {
+        setError(true);
+      }
       console.log('error');
     }
 
     eventSourceQuery2({
-      address: 'searchTickets', body: JSON.stringify(body), onClose, onMessage, onError, method: 'POST',
+      address: 'searchTickets',
+      body: JSON.stringify(body),
+      onOpen,
+      onMessage,
+      onError,
+      method: 'POST',
+      headers: { 'Content-language': i18n.language.toLowerCase() },
     });
   }
 
