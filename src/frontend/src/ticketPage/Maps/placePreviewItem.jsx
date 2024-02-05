@@ -2,11 +2,11 @@ import React from 'react';
 import starIcon from './star.svg';
 
 export default function PlacePreviewItem({
-  name, img, openNow, rating,
+  name, img, openNow, rating, onClick,
 }) {
   const imgUrl = img.getUrl();
   return (
-    <div className="place__item">
+    <button className="place__item" type="button" onClick={() => onClick()}>
       <div className="place__info">
         <h3 className="place__name">{name}</h3>
         <div className="place__addInfo">
@@ -20,6 +20,6 @@ export default function PlacePreviewItem({
         </div>
       </div>
       <img src={imgUrl} alt={name} className="place__img" />
-    </div>
+    </button>
   );
 }

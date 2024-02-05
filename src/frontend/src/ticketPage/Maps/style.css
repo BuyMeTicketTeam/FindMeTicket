@@ -58,7 +58,12 @@
 .place__item {
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  color: var(--font-color);
   padding: 10px 6px;
+  background: transparent;
+  border: none;
+  text-align: left;
   border-bottom: 1px solid var(--main);
 }
 
@@ -128,8 +133,9 @@
 
 .place-preview-rating__img {
   width: 12px;
-  margin-right: 5px;
+  margin-right: 2px;
 }
+
 .place-preview-rating__text {
   margin-right: 10px;
 }
@@ -157,4 +163,48 @@
 
 .place-preview-working-hours__day:not(:last-child) {
   margin-bottom: 5px;
+}
+
+.place-preview__photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--main);
+  margin-top: 10px;
+}
+
+.place-preview__photo img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+}
+
+.place-preview__reviews {
+  padding-top: 10px;
+  border-top: 1px solid var(--main);
+  margin-top: 10px;
+}
+
+.place-preview-review__row-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.place-preview-review__row {
+  font-size: 14px;
+}
+
+.place-preview-review__img {
+  width: 40px;
+}
+
+.place-preview-review__text {
+  margin-top: 10px;
+}
+
+.place-preview-review {
+  margin-bottom: 15px;
 }

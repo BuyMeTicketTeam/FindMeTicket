@@ -16,6 +16,7 @@ function Maps() {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
+  const [currentMarker, setCurrentMarker] = useState(null);
 
   const handleCategoryClick = (index) => {
     setSelectedCategory(selectedCategory === index ? null : index);
@@ -53,16 +54,18 @@ function Maps() {
       position: place.geometry.location,
     });
 
-    console.log(place.name);
-
-    const infowindow = new window.google.maps.InfoWindow({
-      content: place.name,
-      ariaLabel: 'Uluru',
-    });
-
     window.google.maps.event.addListener(marker, 'click', () => {
-      console.log(place.place_id);
+      const infowindow = new window.google.maps.InfoWindow({
+        content: place.name,
+        ariaLabel: 'Uluru',
+      });
+      console.log(currentMarker);
+      if (currentMarker) {
+        currentMarker.setAnimation(null);
+      }
       setCurrentPlaceId(place.place_id);
+      marker.setAnimation(window.google.maps.Animation.BOUNCE);
+      setCurrentMarker(marker);
       infowindow.open({
         anchor: marker,
         map,
@@ -155,8 +158,8 @@ function Maps() {
             onLoad={onLoad}
             onUnmount={onUnmount}
           >
-            <PlacePreviewList placesInfo={placesInfo} />
-            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} />}
+            <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
           </GoogleMap>
         )
       )}
