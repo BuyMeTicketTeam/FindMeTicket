@@ -15,7 +15,7 @@ function TicketPage() {
   const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
-  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   async function serverRequest() {
     function onMessage(event) {
@@ -38,7 +38,11 @@ function TicketPage() {
       setConnection(false);
     }
     eventSourceQuery2({
-      address: `get/ticket/${ticketId}`, onMessage, onError, onClose,
+      address: `get/ticket/${ticketId}`,
+      onMessage,
+      onError,
+      onClose,
+      headers: { 'Content-language': i18n.language.toLowerCase() },
     });
   }
 

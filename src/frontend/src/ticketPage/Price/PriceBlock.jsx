@@ -28,7 +28,11 @@ export default function PriceBlock({ ticketUrl, price }) {
         :
       </span>
       <div className="price-container" data-testid="price-container">
-        <div className="price">{price}</div>
+        <div className="price">
+          {price}
+          {' '}
+          {t('uan')}
+        </div>
       </div>
       <a href={ticketUrl.url} className="button buy-button">{t('buy')}</a>
     </div>

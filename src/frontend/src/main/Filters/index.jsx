@@ -9,7 +9,7 @@ export default function Filters({ requestBody, setTicketsData }) {
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { t } = useTranslation('translation', { keyPrefix: 'filters' });
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
 
   const filtersBtn = ['price', 'travelTime', 'departureTime', 'arrivalTime'];
 
@@ -20,7 +20,7 @@ export default function Filters({ requestBody, setTicketsData }) {
       ascending: reverse,
     };
     setLoading(true);
-    const response = await makeQuerry('sortedBy', JSON.stringify(body));
+    const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-language': i18n.language.toLowerCase() });
     setLoading(false);
 
     const responseBody = response.status === 200 ? response.body : null;
