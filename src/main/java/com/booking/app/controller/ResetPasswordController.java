@@ -68,23 +68,22 @@ public class ResetPasswordController implements ResetPasswordAPI {
 
     /**
      * Handles the request to change a password for an authorized user.
-     *
+     * <p>
      * This endpoint allows an authenticated user to update their password based on the provided
      * {@link RequestUpdatePasswordDTO}. The authentication is performed using the user's credentials
      * obtained through the {@link AuthenticationPrincipal} annotation.
      *
      * @param updatePasswordDTO The data transfer object containing the new password information.
-     * @param userCredentials The authentication principal representing the current user's credentials.
+     * @param userCredentials   The authentication principal representing the current user's credentials.
      * @return A ResponseEntity indicating the success or failure of the password update operation.
-     *   - If the password is successfully updated, returns HTTP 200 OK with a success message.
-     *   - If the last password provided is incorrect, returns HTTP 400 Bad Request with an error message.
+     * - If the password is successfully updated, returns HTTP 200 OK with a success message.
+     * - If the last password provided is incorrect, returns HTTP 400 Bad Request with an error message.
      */
     @PostMapping("/update-password")
-    public ResponseEntity<String> updatePassword(RequestUpdatePasswordDTO updatePasswordDTO, @AuthenticationPrincipal UserCredentials userCredentials) {
-        if(resetPasswordService.changePassword(updatePasswordDTO, userCredentials)) {
+    public ResponseEntity<String> updatePassword(@RequestBody RequestUpdatePasswordDTO updatePasswordDTO, @AuthenticationPrincipal UserCredentials userCredentials) {
+        if (resetPasswordService.changePassword(updatePasswordDTO, userCredentials)) {
             return ResponseEntity.ok().body("Password has been successfully updated");
-        }
-        else return ResponseEntity.badRequest().body("Last password is not right");
+        } else return ResponseEntity.badRequest().body("Last password is not right");
     }
 
 }

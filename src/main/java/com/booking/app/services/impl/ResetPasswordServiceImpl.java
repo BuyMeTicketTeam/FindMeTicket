@@ -41,13 +41,11 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      */
     @Transactional
     public boolean hasEmailSent(String email) throws MessagingException {
-        // TODO: check naming methods when Boolean return type
-        Optional<UserCredentials> userFromDb = userCredentialsRepository.findByEmail(email);
+        UserCredentials userCredentials = userCredentialsRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("No such email"));
 
-        if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
+        if (!userCredentials.isEnabled()) {
             return false;
         } else {
-            UserCredentials userCredentials = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
             User user = userCredentials.getUser();
 
             verifyEmailRepository.delete(user.getConfirmToken());
@@ -56,7 +54,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             user.setConfirmToken(confirmToken);
 
             verifyEmailRepository.save(confirmToken);
-            mailSenderService.sendEmail("resetPasswordUa", "Reset password", confirmToken.getToken(), userFromDb.get());
+            mailSenderService.sendEmail("resetPasswordUa", "Reset password", confirmToken.getToken(), userCredentials);
             return true;
         }
 
@@ -87,20 +85,25 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     /**
      * Changes the password for the specified user based on the provided update information.
-     *
+     * <p>
      * This method checks if the provided last password matches the current password of the user.
      * If the match is successful, the user's password is updated with the new password, and the
      * method returns true. If the last password does not match, the password remains unchanged,
      * and the method returns false.
      *
      * @param updatePasswordDTO The data transfer object containing the last and new password information.
-     * @param userCredentials The credentials of the user for whom the password is to be changed.
+     * @param userCredentials   The credentials of the user for whom the password is to be changed.
      * @return {@code true} if the password is successfully changed, {@code false} otherwise.
      */
     @Override
     public boolean changePassword(RequestUpdatePasswordDTO updatePasswordDTO, UserCredentials userCredentials) {
-        if (updatePasswordDTO.getLastPassword().equals(passwordEncoder.encode(userCredentials.getPassword()))) {
-            userCredentials.setPassword(passwordEncoder.encode(updatePasswordDTO.getPassword()));
+        String currentPassword = userCredentials.getPassword();
+        String lastPassword = updatePasswordDTO.getLastPassword();
+
+        if (passwordEncoder.matches(lastPassword, currentPassword)) {
+            String newPassword = updatePasswordDTO.getPassword();
+            userCredentials.setPassword(passwordEncoder.encode(newPassword));
+            userCredentialsRepository.save(userCredentials);
             return true;
         }
         return false;
