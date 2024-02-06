@@ -8,10 +8,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @RequiredArgsConstructor
 @Getter
 public class LinkProps {
-    private final String busfor;
+    private final String busforUa;
+    private final String busforEng;
 
-    private final String infobus;
+    private final String infobusUa;
+    private final String infobusEng;
 
-    private final String proizd;
+    private final String proizdUa;
+    private final String proizdEng;
 
 }

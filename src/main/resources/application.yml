@@ -94,6 +94,9 @@ server:
   # Third-party ticket's services
   #-------------------------
 link:
-  busfor: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
-  infobus: 'https://infobus.eu/ua'
-  proizd: 'https://bus.proizd.ua/'
+  busfor-ua: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+  busfor-eng: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
+  proizd-ua: 'https://bus.proizd.ua/'
+  proizd-eng: 'https://bus.proizd.ua/en'
+  infobus-ua: 'https://infobus.eu/ua'
+  infobus-eng: 'https://infobus.eu/en'
