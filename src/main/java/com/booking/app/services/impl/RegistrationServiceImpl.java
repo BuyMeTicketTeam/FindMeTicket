@@ -18,13 +18,21 @@ import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import com.booking.app.services.TokenService;
+import com.talanlabs.avatargenerator.Avatar;
+import com.talanlabs.avatargenerator.GitHubAvatar;
+import com.talanlabs.avatargenerator.layers.backgrounds.ColorPaintBackgroundLayer;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Service class for user registration operations.
@@ -114,8 +122,12 @@ public class RegistrationServiceImpl implements RegistrationService {
     public User createNewRegisteredUser(UserCredentials userCredentials) {
         Role role = roleRepository.findRoleByEnumRole(EnumRole.USER);
 
+        Avatar avatar = GitHubAvatar.newAvatarBuilder().layers(new ColorPaintBackgroundLayer(Color.WHITE)).build();
+        byte[] asPngBytes = avatar.createAsPngBytes(new Random().nextLong());
+
         User user = User.builder()
                 .security(userCredentials)
+                .profilePicture(asPngBytes)
                 .role(role)
                 .build();
 
