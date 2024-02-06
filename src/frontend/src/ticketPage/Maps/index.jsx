@@ -16,7 +16,6 @@ function Maps() {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
-  const [currentMarker, setCurrentMarker] = useState(null);
 
   const handleCategoryClick = (index) => {
     setSelectedCategory(selectedCategory === index ? null : index);
@@ -45,6 +44,7 @@ function Maps() {
   });
 
   const mapRef = useRef(null);
+  const markerRef = useRef(null);
 
   function createMarker(place, map) {
     if (!place.geometry || !place.geometry.location) return;
@@ -55,21 +55,13 @@ function Maps() {
     });
 
     window.google.maps.event.addListener(marker, 'click', () => {
-      const infowindow = new window.google.maps.InfoWindow({
-        content: place.name,
-        ariaLabel: 'Uluru',
-      });
-      console.log(currentMarker);
-      if (currentMarker) {
-        currentMarker.setAnimation(null);
+      if (markerRef.current) {
+        markerRef.current.setAnimation(null);
       }
       setCurrentPlaceId(place.place_id);
       marker.setAnimation(window.google.maps.Animation.BOUNCE);
-      setCurrentMarker(marker);
-      infowindow.open({
-        anchor: marker,
-        map,
-      });
+      map.panTo(marker.getPosition());
+      markerRef.current = marker;
     });
   }
 
