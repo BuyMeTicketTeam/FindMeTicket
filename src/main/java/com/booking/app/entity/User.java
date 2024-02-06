@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -28,15 +29,13 @@ public class User {
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
-    @Lob
-    @Column(name = "profile_picture")
-    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profile_picture", columnDefinition = "BYTEA")
     private byte[] profilePicture;
 
     private String urlPicture;
 
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id",name = "role_id")
+    @JoinColumn(referencedColumnName = "id", name = "role_id")
     private Role role;
 
     @JoinColumn(referencedColumnName = "id", name = "token_id")
