@@ -8,6 +8,7 @@ async function eventSourceQuery2({
       method,
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
         ...headers,
       },
       body,
