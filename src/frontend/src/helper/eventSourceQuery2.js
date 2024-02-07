@@ -21,19 +21,27 @@ async function eventSourceQuery2({
         ) {
           console.log('Client side error ', res);
         }
-        onOpen(res);
+        if (onOpen) {
+          onOpen(res);
+        }
       },
       onmessage(event) {
-        onMessage(event);
+        if (onMessage) {
+          onMessage(event);
+        }
         console.log('event', event);
       },
       onclose() {
         console.log('Connection closed by the server');
-        onClose();
+        if (onClose) {
+          onClose();
+        }
         throw new Error('Connection closed');
       },
       onerror(err) {
-        onError(err);
+        if (onError) {
+          onError(err);
+        }
         throw err;
       },
     });

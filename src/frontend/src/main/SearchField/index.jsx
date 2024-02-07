@@ -97,7 +97,7 @@ export default function SearchField({
         case 200:
           console.log('open successfully');
           break;
-        case 404:
+        case 204:
           setError('Нажаль квитків за цим маршрутом не знайдено');
           break;
         default:

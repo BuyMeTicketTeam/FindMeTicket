@@ -18,19 +18,29 @@ function TicketPage() {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   async function serverRequest() {
+    function onOpen(res) {
+      switch (res.status) {
+        case 200:
+          console.log('open successfully');
+          break;
+        default:
+          setTicketError(true);
+          break;
+      }
+    }
+
     function onMessage(event) {
+      const parsedData = JSON.parse(event.data);
       if (event.event === 'ticket info') {
-        const parsedData = JSON.parse(event.data);
         setTicketData(parsedData);
         return;
       }
-      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: event.data }]);
+      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: parsedData.url, price: parsedData.price }]);
     }
 
     function onError() {
       if (!ticketData) {
         console.log('ticket data in error message:', ticketData);
-        setTicketError(true);
       }
     }
 
@@ -41,6 +51,7 @@ function TicketPage() {
       address: `get/ticket/${ticketId}`,
       onMessage,
       onError,
+      onOpen,
       onClose,
       headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
@@ -57,7 +68,7 @@ function TicketPage() {
       <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">{t('price')}</div>
-      <Price ticketUrls={ticketUrl} price={ticketData.price} connection={connection} />
+      <Price ticketUrls={ticketUrl} connection={connection} />
     </>
   );
   const ticketErrorView = ticketError && <Error />;

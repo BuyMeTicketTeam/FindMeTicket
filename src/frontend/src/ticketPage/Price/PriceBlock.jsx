@@ -18,7 +18,7 @@ function ResourceImage({ resource }) {
   }
 }
 
-export default function PriceBlock({ ticketUrl, price }) {
+export default function PriceBlock({ ticketUrl }) {
   const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
   return (
     <div className="price-block" data-testid="price-block">
@@ -29,7 +29,7 @@ export default function PriceBlock({ ticketUrl, price }) {
       </span>
       <div className="price-container" data-testid="price-container">
         <div className="price">
-          {price}
+          {ticketUrl.price}
           {' '}
           {t('uan')}
         </div>
