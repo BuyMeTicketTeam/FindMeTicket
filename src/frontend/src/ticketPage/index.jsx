@@ -42,7 +42,7 @@ function TicketPage() {
       onMessage,
       onError,
       onClose,
-      headers: { 'Content-language': i18n.language.toLowerCase() },
+      headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
   }
 

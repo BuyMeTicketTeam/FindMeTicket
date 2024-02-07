@@ -20,7 +20,7 @@ export default function Filters({ requestBody, setTicketsData }) {
       ascending: reverse,
     };
     setLoading(true);
-    const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-language': i18n.language.toLowerCase() });
+    const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
     setLoading(false);
 
     const responseBody = response.status === 200 ? response.body : null;
