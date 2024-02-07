@@ -4,10 +4,10 @@ import './ticket.scss';
 import scheduleIcon from './schedule.svg';
 
 export default function Ticket({ data }) {
-  const placeFrom = data.placeFrom.length > 25 ? `${data.placeFrom.slice(0, 25)}...` : data.placeFrom;
-  const placeAt = data.placeAt.length > 25 ? `${data.placeAt.slice(0, 25)}...` : data.placeAt;
+  const placeFrom = data.placeFrom.length > 25 ? `${data.placeFrom.slice(0, 20)}...` : data.placeFrom;
+  const placeAt = data.placeAt.length > 20 ? `${data.placeAt.slice(0, 20)}...` : data.placeAt;
   const placeFromTitle = data.placeFrom.length > 25 ? data.placeFrom : null;
-  const placeAtTitle = data.placeAt.length > 25 ? data.placeAt : null;
+  const placeAtTitle = data.placeAt.length > 20 ? data.placeAt : null;
   const { t } = useTranslation('translation', { keyPrefix: 'ticket' });
 
   return (
