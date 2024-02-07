@@ -12,7 +12,7 @@ export default function Header({
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const languages = [
-    { value: 'UA', label: 'UA' },
+    { value: 'UA', label: 'УКР' },
     { value: 'ENG', label: 'ENG' },
   ];
 
