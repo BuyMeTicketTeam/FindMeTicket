@@ -99,7 +99,7 @@ export default function SearchField({
           console.log('open successfully');
           break;
         case 204:
-          setError('Нажаль квитків за цим маршрутом не знайдено');
+          setError(t('ticket-not-found'));
           break;
         default:
           setError(true);
