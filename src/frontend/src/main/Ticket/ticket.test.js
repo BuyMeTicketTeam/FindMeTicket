@@ -51,8 +51,8 @@ test('truncates long station names', () => {
   render(<Ticket data={longStationData} />);
 
   // Check if long station names are truncated
-  expect(screen.getByText('This is a very long stati...')).toBeInTheDocument();
-  expect(screen.getByText('Another very long station...')).toBeInTheDocument();
+  expect(screen.getByText('This is a very long ...')).toBeInTheDocument();
+  expect(screen.getByText('Another very long st...')).toBeInTheDocument();
 });
 
 test('does not display old price if it is not available', () => {
