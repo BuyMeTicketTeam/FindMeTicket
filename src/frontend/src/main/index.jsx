@@ -50,7 +50,7 @@ export default function Index() {
           <Transport />
           <SearchField
             loading={loading}
-            onLoading={setLoading}
+            setLoading={setLoading}
             setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
             setError={setError}

@@ -13,7 +13,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  onLoading, setTicketsData, setRequestBody, setError,
+  setLoading, setTicketsData, setRequestBody, setError,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
@@ -90,7 +90,7 @@ export default function SearchField({
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     };
     setRequestBody(body);
-    onLoading(true);
+    setLoading(true);
     setTicketsData([]);
 
     function handleOpen(res) {
@@ -111,11 +111,11 @@ export default function SearchField({
       console.log(event);
       const parsedData = JSON.parse(event.data);
       setTicketsData((prevTickets) => [...prevTickets, parsedData]);
-      onLoading(false);
+      setLoading(false);
     }
 
     function handleError() {
-      onLoading(false);
+      setLoading(false);
     }
 
     eventSourceQuery2({
