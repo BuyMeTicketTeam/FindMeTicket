@@ -66,7 +66,7 @@ export default function Header({
         placeholder={null}
         value={language}
         isSearchable={false}
-        onChange={(lang) => displayLanguage(lang)}
+        onChange={(lang) => { displayLanguage(lang); window.location.reload(); }}
       />
 
       <LoginBtn
