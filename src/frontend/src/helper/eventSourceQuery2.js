@@ -1,7 +1,7 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
 async function eventSourceQuery2({
-  address, body, onMessage, onError, onClose, onOpen, method = 'GET', headers,
+  address, body, handleMessage, handleError, handleClose, handleOpen, method = 'GET', headers,
 }) {
   try {
     await fetchEventSource(`http://localhost:8080/${address}`, {
@@ -22,26 +22,26 @@ async function eventSourceQuery2({
         ) {
           console.log('Client side error ', res);
         }
-        if (onOpen) {
-          onOpen(res);
+        if (handleOpen) {
+          handleOpen(res);
         }
       },
       onmessage(event) {
-        if (onMessage) {
-          onMessage(event);
+        if (handleMessage) {
+          handleMessage(event);
         }
         console.log('event', event);
       },
       onclose() {
         console.log('Connection closed by the server');
-        if (onClose) {
-          onClose();
+        if (handleClose) {
+          handleClose();
         }
         throw new Error('Connection closed');
       },
       onerror(err) {
-        if (onError) {
-          onError(err);
+        if (handleError) {
+          handleError(err);
         }
         throw err;
       },

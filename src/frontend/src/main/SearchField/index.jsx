@@ -92,7 +92,8 @@ export default function SearchField({
     setRequestBody(body);
     onLoading(true);
     setTicketsData([]);
-    function onOpen(res) {
+
+    function handleOpen(res) {
       switch (res.status) {
         case 200:
           console.log('open successfully');
@@ -106,23 +107,23 @@ export default function SearchField({
       }
     }
 
-    function onMessage(event) {
+    function handleMessage(event) {
       console.log(event);
       const parsedData = JSON.parse(event.data);
       setTicketsData((prevTickets) => [...prevTickets, parsedData]);
       onLoading(false);
     }
 
-    function onError() {
+    function handleError() {
       onLoading(false);
     }
 
     eventSourceQuery2({
       address: 'searchTickets',
       body: JSON.stringify(body),
-      onOpen,
-      onMessage,
-      onError,
+      handleOpen,
+      handleMessage,
+      handleError,
       method: 'POST',
       headers: { 'Content-Language': i18n.language.toLowerCase() },
     });

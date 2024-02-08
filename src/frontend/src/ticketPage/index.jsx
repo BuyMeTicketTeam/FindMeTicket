@@ -18,7 +18,7 @@ function TicketPage() {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   async function serverRequest() {
-    function onOpen(res) {
+    function handleOpen(res) {
       switch (res.status) {
         case 200:
           console.log('open successfully');
@@ -29,7 +29,7 @@ function TicketPage() {
       }
     }
 
-    function onMessage(event) {
+    function handleMessage(event) {
       const parsedData = JSON.parse(event.data);
       if (event.event === 'ticket info') {
         setTicketData(parsedData);
@@ -38,21 +38,21 @@ function TicketPage() {
       setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: parsedData.url, price: parsedData.price }]);
     }
 
-    function onError() {
+    function handleError() {
       if (!ticketData) {
         console.log('ticket data in error message:', ticketData);
       }
     }
 
-    function onClose() {
+    function handleClose() {
       setConnection(false);
     }
     eventSourceQuery2({
       address: `get/ticket/${ticketId}`,
-      onMessage,
-      onError,
-      onOpen,
-      onClose,
+      handleMessage,
+      handleError,
+      handleOpen,
+      handleClose,
       headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
   }
