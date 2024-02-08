@@ -12,7 +12,7 @@ import Ad from '../Ad/index';
 import './main.scss';
 
 export default function Index() {
-  const [ticketsData, setTicketsData] = useState([]);
+  const [ticketsData, setTicketsData] = useState(sessionStorage.getItem('ticketsData') || []);
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);

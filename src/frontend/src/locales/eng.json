@@ -149,7 +149,8 @@
                   "where": "From",
                   "where-t": "To",
                   "error": "Nothing was found for your request",
-                  "error2": "The field must not be empty"
+                  "error2": "The field must not be empty",
+                  "ticket-not-found": "Sorry, no tickets found for this route"
             },
             "filters": {
                   "price": "Price",

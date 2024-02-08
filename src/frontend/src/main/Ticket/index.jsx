@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import './ticket.scss';
 import scheduleIcon from './schedule.svg';
 
@@ -35,10 +36,9 @@ export default function Ticket({ data }) {
         <div className="price-options">
           <div className="price-options__row">
             <div className="ticket__price">
-              <p className="price__ordinry">{`${data.price} ${t('uan')}`}</p>
-              <p className="price__discond">{data.priceOld ? `${data.priceOld} ${t('uan')}` : null}</p>
+              <p className="price__ordinry">{`${Number(data.price).toFixed(2)} ${t('uan')}`}</p>
             </div>
-            <a className="ticket__buy button" href={`/ticket-page/${data.id}`} target="blank">{t('select')}</a>
+            <Link className="ticket__buy button" to={`/ticket-page/${data.id}`}>{t('select')}</Link>
           </div>
         </div>
       </div>

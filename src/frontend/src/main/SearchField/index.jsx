@@ -89,16 +89,18 @@ export default function SearchField({
       arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     };
+    setError(null);
     setRequestBody(body);
     setLoading(true);
     setTicketsData([]);
 
     function handleOpen(res) {
+      sessionStorage.removeItem('ticketsData');
       switch (res.status) {
         case 200:
           console.log('open successfully');
           break;
-        case 204:
+        case 404:
           setError(t('ticket-not-found'));
           break;
         default:
@@ -107,10 +109,16 @@ export default function SearchField({
       }
     }
 
+    function updateTickets(prevTickets, newData) {
+      const result = [...prevTickets, newData];
+      sessionStorage.setItem('ticketsData', JSON.stringify(result));
+      return result;
+    }
+
     function handleMessage(event) {
       console.log(event);
       const parsedData = JSON.parse(event.data);
-      setTicketsData((prevTickets) => [...prevTickets, parsedData]);
+      setTicketsData((prevTickets) => updateTickets(prevTickets, parsedData));
       setLoading(false);
     }
 
