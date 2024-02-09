@@ -1,6 +1,7 @@
 package com.booking.app.controller;
 
 import com.booking.app.controller.api.LoginAPI;
+import com.booking.app.dto.AuthorizedUserDTO;
 import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.entity.UserCredentials;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Base64;
 import java.util.Optional;
 
 import static com.booking.app.constant.CustomHttpHeaders.REMEMBER_ME;
@@ -83,7 +85,12 @@ public class LoginController implements LoginAPI {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authenticationToken);
             SecurityContextHolder.setContext(context);
-            return ResponseEntity.ok().build();
+
+            AuthorizedUserDTO authorizedUserDTO = AuthorizedUserDTO.builder()
+                    .basicPicture(Base64.getEncoder().encodeToString(userCredentials.getUser().getProfilePicture()))
+                    .username(userCredentials.getUsername()).build();
+
+            return ResponseEntity.ok().body(authorizedUserDTO);
         }
         return ResponseEntity.status(401).build();
     }
@@ -123,6 +130,9 @@ public class LoginController implements LoginAPI {
                     }
                 }
         );
-        return ResponseEntity.ok().build();
+        AuthorizedUserDTO authorizedUserDTO = AuthorizedUserDTO.builder()
+                .username(user.get().getUsername())
+                .googlePictureUrl(user.get().getUser().getUrlPicture()).build();
+        return ResponseEntity.ok().body(authorizedUserDTO);
     }
 }
