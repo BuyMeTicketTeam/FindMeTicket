@@ -7,7 +7,7 @@ import makeQuerry from '../helper/querry';
 import { passwordCheck } from '../helper/regExCheck';
 
 export default function Index() {
-  const [code, setCodeChange] = useState('');
+  const [lastPassword, setCodeChange] = useState('');
   const [codeError, setCodeError] = useState(false);
   const [password, setPasswordChange] = useState('');
   const [passwordError, setPasswordError] = useState(false);
@@ -16,11 +16,9 @@ export default function Index() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [send, setSend] = useState(false);
-  const [resend, setResend] = useState(false);
   const [show, setShow] = useState(false);
-  const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
+  const { t } = useTranslation('translation', { keyPrefix: 'update-password' });
   const sendButtonIsDisabled = send || success;
-  const resendButtonIsDisabled = resend || success;
 
   function handleCodeInput(value) {
     setCodeChange(value);
@@ -37,29 +35,6 @@ export default function Index() {
     setConfirmPasswordError(false);
   }
 
-  function checkResponseForResend(response) {
-    switch (response.status) {
-      case 200:
-        break;
-      case 419:
-        setError(t('error-server'));
-        break;
-      default:
-        setError(t('error-server2'));
-        break;
-    }
-  }
-
-  function handleResendButton() {
-    setError('');
-    const body = { email: sessionStorage.getItem('email') };
-    makeQuerry('resend-confirm-token', JSON.stringify(body))
-      .then((response) => {
-        checkResponseForResend(response);
-        setResend(false);
-      });
-  }
-
   function checkResponse(response) {
     if (response.status === 200) {
       setSuccess(true);
@@ -72,7 +47,7 @@ export default function Index() {
 
   function validation() {
     switch (true) {
-      case passwordCheck(code):
+      case passwordCheck(lastPassword):
         setError(t('code-error'));
         setCodeError(true);
         return false;
@@ -95,13 +70,14 @@ export default function Index() {
       setSend(false);
       return;
     }
+
     const body = {
-      token: code,
+      lastPassword,
       password,
-      email: sessionStorage.getItem('email'),
       confirmPassword,
     };
-    makeQuerry('new-password', JSON.stringify(body))
+
+    makeQuerry('update-password', JSON.stringify(body))
       .then((response) => {
         setSend(false);
         checkResponse(response);
@@ -114,14 +90,8 @@ export default function Index() {
     }
   }, [send]);
 
-  useEffect(() => {
-    if (resend) {
-      handleResendButton();
-    }
-  }, [resend]);
-
   return (
-    <div className="confirm">
+    <div className="confirm main">
       <div className="form-body">
         <h1 className="title">{t('title')}</h1>
         {success && (
@@ -144,7 +114,7 @@ export default function Index() {
           dataTestId="code-input"
           error={codeError}
           name={t('code-input-title')}
-          value={code}
+          value={lastPassword}
           type="password"
           onInputChange={(value) => handleCodeInput(value)}
           show={show}
@@ -175,21 +145,11 @@ export default function Index() {
         />
         <Button
           name={send ? t('processing') : t('button-title')}
-          className="confirm__btn"
+          className="confirm__btn btn-full"
           onButton={setSend}
           disabled={sendButtonIsDisabled}
           dataTestId="change-password-btn"
         />
-
-        <button
-          data-testid="confirm-send-btn"
-          className="confirm__send-again"
-          disabled={resendButtonIsDisabled}
-          onClick={setResend}
-          type="button"
-        >
-          {resend ? t('processing') : ''}
-        </button>
       </div>
     </div>
   );

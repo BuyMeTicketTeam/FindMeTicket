@@ -9,6 +9,7 @@ import Index from '../main';
 import Login from '../header/login/index';
 import ResetPassword from '../resetPassword';
 import ChangePassword from '../changePassword';
+import PrivacyPolicy from '../privacyPolicy';
 
 export default function Routers({ updateAuthValue }) {
   return (
@@ -21,6 +22,7 @@ export default function Routers({ updateAuthValue }) {
       <Route path="/reset" element={<Reset />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
     </Routes>
   );
 }

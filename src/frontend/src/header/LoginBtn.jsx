@@ -16,7 +16,7 @@ export default function LoginBtn({ status, updateAuthValue, setIsProfilePopup })
     makeQuerry('logout').then((response) => {
       switch (response.status) {
         case 200:
-          updateAuthValue(false);
+          updateAuthValue(null);
           localStorage.removeItem('JWTtoken');
           cookies.remove('rememberMe');
           cookies.remove('USER_ID');

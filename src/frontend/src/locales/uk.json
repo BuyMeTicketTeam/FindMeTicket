@@ -8,7 +8,7 @@
                   "login": "Логін",
                   "profile": "Профіль"
             },
-            "change-password": {
+            "reset-password": {
                   "error-server": "Спробуйте ще раз",
                   "error-server2": "Помилка серверу. Спробуйте ще раз",
                   "error-code": "Код не правильний",
@@ -28,6 +28,23 @@
                   "auth-link": "Натисніть для того щоб авторизуватися",
                   "success-message": "Пароль змінено!!!"
             },
+            "update-password": {
+                  "error-server": "Спробуйте ще раз",
+                  "error-server2": "Помилка серверу. Спробуйте ще раз",
+                  "error-code": "Поточний пароль невірний",
+                  "title": "Змінити пароль",
+                  "code-input-title": "Поточний пароль",
+                  "password-input-title": "Новий пароль",
+                  "password-tip": "Пароль повинен мати хоча б 8 символів та містити числа та букви",
+                  "confirm-password-title": "Підтвердіть пароль",
+                  "button-title": "Відправити",
+                  "code-error": "Поточний пароль заповнено не вірно",
+                  "password-error": "Поле паролю заповнено не вірно",
+                  "confirm-password-error": " Нові паролі не збігаються",
+                  "processing": "Обробка...",
+                  "auth-link": "Натисніть для того щоб повернутися на сторінку",
+                  "success-message": "Пароль змінено!!!"
+            },
             "login": {
                   "login-error": "Поле email заповнено не вірно",
                   "error-lp": "Логін або пароль хибні",
@@ -45,6 +62,13 @@
                   "google": "Google",
                   "facebook": "Facebook",
                   "remember-me": "Запам'ятати мене"
+            },
+            "profile": {
+                  "change-password": "Змінити пароль",
+                  "exit": "Вийти",
+                  "privacy-policy": "Політика конфіденційності",
+                  "delete-account": "Видалити аккаунт",
+                  "hello": "Привіт,"
             },
             "register": {
                   "error-email": "Користувач з ціїю електронною адресою вже зареєстрований",

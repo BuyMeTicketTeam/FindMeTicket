@@ -21,7 +21,7 @@ export default function Index() {
   const [send, setSend] = useState(false);
   const [resend, setResend] = useState(false);
   const [show, setShow] = useState(false);
-  const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
+  const { t } = useTranslation('translation', { keyPrefix: 'reset-password' });
   const sendButtonIsDisabled = send || success;
   const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || success;
 
@@ -135,7 +135,7 @@ export default function Index() {
   }, [resend]);
 
   return (
-    <div className="confirm">
+    <div className="confirm main">
       <div className="form-body">
         <h1 className="title">{t('title')}</h1>
         {success && (

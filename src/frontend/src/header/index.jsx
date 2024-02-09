@@ -13,11 +13,11 @@ export default function Header({
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
   const [isprofilePopup, setIsProfilePopup] = useState(false);
+  const [userAvatar, setUserAvatar] = useState(null);
   const languages = [
     { value: 'UA', label: 'UA' },
     { value: 'ENG', label: 'ENG' },
   ];
-
   function getSystemLanguage() {
     const systemLanguage = navigator.language.split('-')[0];
     if (systemLanguage !== 'uk') {
@@ -50,8 +50,24 @@ export default function Header({
   }
 
   useEffect(() => {
+    if (authorization && authorization.status === 200) {
+      setIsProfilePopup(true);
+    } else {
+      setIsProfilePopup(false);
+    }
+  }, [authorization, setIsProfilePopup]);
+
+  useEffect(() => {
     displayLanguage();
   }, []);
+  useEffect(() => {
+    if (authorization && authorization.status === 200 && authorization.image) {
+      setUserAvatar(authorization.image);
+    } else {
+      setUserAvatar(null);
+    }
+  }, [authorization, setUserAvatar]);
+
   return (
     <header data-testid="header" className="header">
       <div className="logo"><Link to="/"><img src={logo} alt="logo" /></Link></div>
@@ -75,6 +91,7 @@ export default function Header({
         setIsProfilePopup={setIsProfilePopup}
         status={authorization}
         updateAuthValue={updateAuthValue}
+        username={authorization ? authorization.username : null}
       />
 
       {isprofilePopup && (
@@ -82,6 +99,9 @@ export default function Header({
         setIsProfilePopup={setIsProfilePopup}
         updateAuthValue={updateAuthValue}
         status={authorization}
+        username={authorization.username}
+        userAvatar={userAvatar}
+        setUserAvatar={setUserAvatar}
       />
       )}
 
