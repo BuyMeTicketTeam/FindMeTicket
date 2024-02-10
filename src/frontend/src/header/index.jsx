@@ -47,6 +47,12 @@ export default function Header({
     i18n.changeLanguage(language.value);
   }
 
+  function handleLanguageChange(lang) {
+    displayLanguage(lang);
+    window.location.reload();
+    sessionStorage.removeItem('ticketsData');
+  }
+
   useEffect(() => {
     displayLanguage();
   }, []);
@@ -66,7 +72,7 @@ export default function Header({
         placeholder={null}
         value={language}
         isSearchable={false}
-        onChange={(lang) => { displayLanguage(lang); window.location.reload(); }}
+        onChange={(lang) => handleLanguageChange(lang)}
       />
 
       <LoginBtn
