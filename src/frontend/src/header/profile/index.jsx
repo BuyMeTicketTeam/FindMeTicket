@@ -82,31 +82,33 @@ function Popup({
           role="button"
           onClick={handleAvatarClick}
           onKeyDown={handleAvatarKeyDown}
+          data-testid="avatar"
         >
           <img src={(status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : 'URL_ПО_УМОЛЧАНИЮ')} alt="Avatar" />
         </div>
-        <div className="custom-input">
+        <div className="custom-input" data-testid="custom-input">
           {t('hello')}
           {' '}
           {status.username}
         </div>
         <p>
-          <Link to="/change-password" className="change-password" onClick={() => setIsProfilePopup(false)}>{t('change-password')}</Link>
+          <Link to="/change-password" className="change-password" onClick={() => setIsProfilePopup(false)} data-testid="change-password-link">{t('change-password')}</Link>
         </p>
-        <a href="https://www.freeprivacypolicy.com/live/de2f7052-4f8d-42a4-ab02-0595dc2b02ac" className="privacy-policy-link" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.freeprivacypolicy.com/live/de2f7052-4f8d-42a4-ab02-0595dc2b02ac" className="privacy-policy-link" target="_blank" rel="noopener noreferrer" data-testd="privacy-policy-link">
           {t('privacy-policy')}
         </a>
 
-        <button type="button" className="delete-account" onClick={handleDeleteAccount}>
+        <button type="button" className="delete-account" onClick={handleDeleteAccount} data-testid="delete-account-button">
           {t('delete-account')}
         </button>
 
-        <button type="button" className="exit" onClick={() => { setIsProfilePopup(false); handleLogoutButton(); }}>{t('exit')}</button>
+        <button type="button" className="exit" onClick={() => { setIsProfilePopup(false); handleLogoutButton(); }} data-testid="exit-button">{t('exit')}</button>
 
         {showDeleteConfirmation && (
         <DeleteConfirmationPopup
           onCancel={handleCancelDelete}
           onConfirm={handleConfirmDelete}
+          data-testid="delete-confirmation-popup"
         />
         )}
 

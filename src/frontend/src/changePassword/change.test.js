@@ -13,6 +13,7 @@ test('code-event', () => {
   );
   const codeInput = screen.getByTestId('code-input');
   fireEvent.input(codeInput, {
+    target: { value: 'b123456789' },
   });
   expect(codeInput.value).toBe('b123456789');
 });
@@ -83,8 +84,8 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/new-password`, {
-      body: '{"token":"b123456789","password":"b12345678","email":null,"confirmPassword":"b12345678"}',
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/update-password`, {
+      body: '{"lastPassword":"b123456789","password":"b12345678","confirmPassword":"b12345678"}',
       credentials: 'include',
       headers: {
         Authorization: null,
