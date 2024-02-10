@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
