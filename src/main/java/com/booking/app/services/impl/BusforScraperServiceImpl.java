@@ -87,7 +87,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         for (int i = 0; i < tickets.size() && i < 150; i++) {
 
             WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
-            Ticket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language);
+            Ticket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
             if (route.getTickets().add(ticket)) {
                 emitter.send(SseEmitter.event().name("Busfor bus: ").data(ticketMapper.ticketToTicketDto(ticket, language)));
             }
@@ -183,7 +183,10 @@ public class BusforScraperServiceImpl implements ScraperService {
         };
     }
 
-    private static Ticket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language) {
+    private static Ticket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) {
+
+        String carrier = webTicket.findElement(By.cssSelector("div.Style__Information-sc-13gvs4g-6.jBuzam > div.Style__Carrier-sc-13gvs4g-3.gUvIjh > span:nth-child(2)")).getText().toUpperCase();
+
         List<WebElement> ticketInfo = webTicket.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
 
         WebElement departureInfo = ticketInfo.get(0);
@@ -208,12 +211,12 @@ public class BusforScraperServiceImpl implements ScraperService {
         if (language.equals("eng"))
             price = currentRate.multiply(price).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        return createTicket(route, departureInfo, arrivalInfo, departureDateTime, arrivalDateTime.substring(0, 5), arrivalDate, totalMinutes, price);
+        return createTicket(route, departureInfo, arrivalInfo, departureDateTime, arrivalDateTime.substring(0, 5), arrivalDate, totalMinutes, price, carrier);
     }
 
     private static String formatDate(String inputDate, String language) {
-        DateTimeFormatter formatter = null;
-        DateTimeFormatter resultFormatter = null;
+        DateTimeFormatter formatter;
+        DateTimeFormatter resultFormatter;
 
         return switch (language) {
             case "ua" -> {
@@ -238,7 +241,7 @@ public class BusforScraperServiceImpl implements ScraperService {
     }
 
     private static Ticket createTicket(Route route, WebElement departureInfo, WebElement
-            arrivalInfo, String departureDateTime, String arrivalDateTime, String arrivalDate, int totalMinutes, BigDecimal price) {
+            arrivalInfo, String departureDateTime, String arrivalDateTime, String arrivalDate, int totalMinutes, BigDecimal price, String carrier) {
         return Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
@@ -249,6 +252,7 @@ public class BusforScraperServiceImpl implements ScraperService {
                 .arrivalDate(arrivalDate)
                 .price(price)
                 .travelTime(BigDecimal.valueOf(totalMinutes))
+                .сarrier(carrier)
                 .type(TypeTransportEnum.BUS).build();
     }
 

@@ -165,8 +165,8 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
 
-        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"))
-                : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"));
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"))
+                : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
         String formattedDate = date.format(ticketDate);
 
         String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
@@ -180,7 +180,14 @@ public class ProizdScraperServiceImpl implements ScraperService {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        return createTicket(element, route, price, totalMinutes, formattedDate);
+        String carrier = "";
+        try {
+            carrier = element.findElement(By.cssSelector("div.bus-info__header > div.transporter > div.transporter__name")).getText().toUpperCase();
+        } catch (Exception e) {
+
+        }
+
+        return createTicket(element, route, price, totalMinutes, formattedDate, carrier);
     }
 
     private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
@@ -256,7 +263,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
         driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
     }
 
-    private static Ticket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime) {
+    private static Ticket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime, String carrier) {
         return Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
@@ -267,6 +274,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
                 .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
                 .arrivalDate(formattedTime)
+                .сarrier(carrier)
                 .type(TypeTransportEnum.BUS).build();
     }
 

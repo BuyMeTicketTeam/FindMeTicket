@@ -69,6 +69,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
         try {
             synchronized (driver) {
+                //cringe
                 driver.wait(5000);
             }
         } catch (InterruptedException e) {
@@ -250,6 +251,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
                 .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalDate(formattedTicketDate.format(date))
+                .сarrier(webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText().toUpperCase().replaceAll("\"", "").replace("ТОВ ", ""))
                 .type(TypeTransportEnum.BUS).build();
     }
 

@@ -43,8 +43,11 @@ public class Ticket {
     private BigDecimal travelTime;
 
     @Column(name = "price")
-    @EqualsAndHashCode.Include
     private BigDecimal price;
+
+    @Column(name = "carrier")
+    @EqualsAndHashCode.Include
+    private String сarrier;
 
     @Enumerated(EnumType.STRING)
     private TypeTransportEnum type;
