@@ -25,6 +25,9 @@
     &.active {
         background-color: $bright;
     }
+    &.disabled {
+        background-color: $grey;
+    }
 }
 
 .transportion {

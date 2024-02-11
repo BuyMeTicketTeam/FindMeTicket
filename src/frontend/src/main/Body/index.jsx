@@ -7,7 +7,7 @@ import Ticket from '../Ticket';
 import Ad from '../../Ad';
 
 export default function TicketsBody({
-  loading, error, ticketsData, setTicketsData, requestBody,
+  loading, error, ticketsData, setTicketsData, requestBody, selectedTransport,
 }) {
   if (loading) {
     return <Loader />;
@@ -16,7 +16,7 @@ export default function TicketsBody({
     return <Error error={error} />;
   }
   console.log({ ticketsData });
-  if (ticketsData.length > 0) {
+  if (ticketsData?.length > 0) {
     return (
       <>
         <Tourist
@@ -24,7 +24,11 @@ export default function TicketsBody({
           setTicketsData={setTicketsData}
           city={requestBody.arrivalCity}
         />
-        <Filters setTicketsData={setTicketsData} requestBody={requestBody} />
+        <Filters
+          setTicketsData={setTicketsData}
+          requestBody={requestBody}
+          selectedTransport={selectedTransport}
+        />
         <div className="tickets">
           {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
         </div>

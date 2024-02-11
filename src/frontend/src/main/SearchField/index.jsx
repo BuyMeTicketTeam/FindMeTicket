@@ -14,7 +14,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError,
+  setLoading, setTicketsData, setRequestBody, setError, selectedTransport,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
@@ -89,6 +89,8 @@ export default function SearchField({
       departureCity: cityFrom.value,
       arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      ...selectedTransport,
+
     };
     setError(null);
     setRequestBody(body);

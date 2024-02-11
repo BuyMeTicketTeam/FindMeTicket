@@ -5,7 +5,7 @@ import FiltersBtn from './FiltersBtn';
 import makeQuerry from '../../helper/querry';
 import './filters.scss';
 
-export default function Filters({ requestBody, setTicketsData }) {
+export default function Filters({ requestBody, setTicketsData, selectedTransport }) {
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,6 +18,7 @@ export default function Filters({ requestBody, setTicketsData }) {
       ...requestBody,
       sortingBy: sortArg,
       ascending: reverse,
+      ...selectedTransport,
     };
     setLoading(true);
     const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });

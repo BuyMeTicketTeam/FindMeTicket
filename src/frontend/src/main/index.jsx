@@ -12,11 +12,17 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);
+  const [selectedTransport, setSelectedTransport] = useState({
+    bus: true,
+    train: true,
+    airplane: false,
+    ferry: false,
+  });
 
   useEffect(() => {
     const storageTicketsData = JSON.parse(sessionStorage.getItem('ticketsData'));
-    console.log({ storageTicketsData });
     if (storageTicketsData) {
+      console.log({ storageTicketsData });
       setTicketsData(storageTicketsData);
     }
   }, []);
@@ -26,7 +32,13 @@ export default function Index() {
       <div className="container">
         <div className="search_index">
           <Ad />
-          <Transport />
+          <Transport
+            selectedTransport={selectedTransport}
+            setSelectedTransport={setSelectedTransport}
+            ticketsData={ticketsData}
+            setTicketsData={setTicketsData}
+            requestBody={requestBody}
+          />
           <SearchField
             loading={loading}
             setLoading={setLoading}
@@ -34,6 +46,7 @@ export default function Index() {
             setRequestBody={setRequestBody}
             setError={setError}
             ticketsData={ticketsData}
+            selectedTransport={selectedTransport}
           />
         </div>
         <TicketsBody
@@ -42,6 +55,7 @@ export default function Index() {
           requestBody={requestBody}
           setTicketsData={setTicketsData}
           ticketsData={ticketsData}
+          selectedTransport={selectedTransport}
         />
       </div>
       <Outlet />
