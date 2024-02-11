@@ -6,7 +6,9 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.impl.ScraperServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
@@ -31,13 +32,16 @@ public class ScraperController implements ScraperAPI {
     private final SortTicketsService sortTicketsService;
 
     @PostMapping("/searchTickets")
-    public ResponseEntity<ResponseBodyEmitter> findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request) throws IOException, ParseException, ExecutionException, InterruptedException {
+    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
         CompletableFuture<Boolean> isTicketsFound = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
 
-        return isTicketsFound.get() ? new ResponseEntity<>(emitter, HttpStatus.OK)
-                : new ResponseEntity<>(emitter, HttpStatus.NOT_FOUND);
+        isTicketsFound.thenAccept(isFound -> {
+            if (isFound) response.setStatus(HttpStatus.OK.value());
+            else response.setStatus(HttpStatus.NOT_FOUND.value());
+        });
+        return emitter;
     }
 
     @GetMapping("/get/ticket/{id}")

@@ -5,6 +5,7 @@ import com.booking.app.dto.RequestTicketsDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +19,9 @@ import java.util.concurrent.ExecutionException;
 public interface ScraperAPI {
 
     @Operation(summary = "Searching tickets", description = "Find tickets based by criteria")
-    @ApiResponse(responseCode = "200", description = "Returns a list of cities if found")
-    ResponseEntity<ResponseBodyEmitter> findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request) throws IOException, ParseException, InterruptedException, ExecutionException;
+    @ApiResponse(responseCode = "200", description = "Returns tickets")
+    @ApiResponse(responseCode = "404", description = "Tickets not found")
+    ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException;
 
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponse(responseCode = "200", description = "Returns ticket if found")
