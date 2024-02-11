@@ -6,5 +6,5 @@ import com.booking.app.dto.TicketDTO;
 import java.util.List;
 
 public interface SortTicketsService {
-    List<TicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO);
+    List<TicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, String request);
 }

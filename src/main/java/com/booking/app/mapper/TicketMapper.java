@@ -18,25 +18,42 @@ public interface TicketMapper {
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
-    TicketDTO toDto(Ticket ticket);
+    TicketDTO ticketToTicketDto(Ticket ticket, @Context String language);
 
     @Named("decimalToString")
-    static String decimalToString(BigDecimal travelTime) {
-
+    static String decimalToString(BigDecimal travelTime, @Context String language) {
         int hours = travelTime.intValue() / 60;
         int minutes = travelTime.intValue() % 60;
-
-        return String.format("%sгод %sхв", hours, minutes);
+        return switch (language) {
+            case ("ua") -> String.format("%sгод %sхв", hours, minutes);
+            case ("eng") -> String.format("%sh %smin", hours, minutes);
+            default -> String.format("%sгод %sхв", hours, minutes);
+        };
     }
 
     @Named("departureTimeMapping")
-    static String departureTimeMapping(String departureDate) {
+    static String departureTimeMapping(String departureDate, @Context String language) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
-        LocalDate date = LocalDate.parse(departureDate, formatter);
-        formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
-        return date.format(formatter);
+        return switch (language) {
+            case ("ua") -> {
+                LocalDate date = LocalDate.parse(departureDate, formatter);
+                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
+                yield date.format(formatter);
+            }
+            case ("eng") -> {
+                LocalDate date = LocalDate.parse(departureDate, formatter);
+                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("en"));
+                yield date.format(formatter);
+            }
+            default -> {
+                LocalDate date = LocalDate.parse(departureDate, formatter);
+                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
+                yield date.format(formatter);
+            }
+        };
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Ticket partialUpdate(TicketDTO ticketDTO, @MappingTarget Ticket ticket);
+
 }

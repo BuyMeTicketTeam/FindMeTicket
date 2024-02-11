@@ -21,7 +21,7 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
     private final TicketMapper ticketMapper;
 
-    public List<TicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO){
+    public List<TicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, String language) {
         List<Ticket> tickets = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestSortedTicketsDTO.getDepartureCity(), requestSortedTicketsDTO.getArrivalCity(), requestSortedTicketsDTO.getDepartureDate()).getTickets().stream().toList();
 
         tickets.sort((o1, o2) -> {
@@ -42,8 +42,8 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
         List<TicketDTO> result = new LinkedList<>();
 
-        for(int i = 0; i<30 && i < tickets.size(); i++){
-            result.add(ticketMapper.toDto(tickets.get(i)));
+        for (int i = 0; i < 30 && i < tickets.size(); i++) {
+            result.add(ticketMapper.ticketToTicketDto(tickets.get(i), language));
         }
 
         return result;

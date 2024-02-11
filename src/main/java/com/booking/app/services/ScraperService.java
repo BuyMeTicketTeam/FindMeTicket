@@ -10,7 +10,9 @@ import java.text.ParseException;
 import java.util.concurrent.CompletableFuture;
 
 public interface ScraperService {
-    CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws ParseException, IOException;
+    CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route, String language) throws ParseException, IOException;
 
-    CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException, ParseException;
+    CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket, String language) throws IOException, ParseException;
+
+    String determineBaseUrl(String language);
 }

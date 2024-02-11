@@ -15,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.scheduling.annotation.Async;
@@ -27,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
@@ -43,22 +45,24 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     private final TicketMapper ticketMapper;
 
-    @Async
-    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route) throws ParseException, IOException {
+    private final ChromeOptions options;
 
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--headless");
+    private static final String DIV_TICKET = "div.trip-adaptive";
+
+    private static final String DIV_TICKET_NOT_FOUND = "div.error.card";
+
+    @Async
+    @Override
+    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route, String language) throws ParseException, IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        String url = determineBaseUrl(language);
+        requestTickets(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate(), driver, url, language);
 
-        requestTickets(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate(), driver);
-
-        String TICKET_DIV = "trip-adaptive";
         try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector("div.error.card")), ExpectedConditions.presenceOfElementLocated(By.cssSelector(TICKET_DIV))));
-            driver.findElement(By.cssSelector(TICKET_DIV));
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
         } catch (Exception e) {
             driver.quit();
             log.info("PROIZD TICKETS IN scrapeTickets(): NOT FOUND");
@@ -72,14 +76,14 @@ public class ProizdScraperServiceImpl implements ScraperService {
         } catch (InterruptedException e) {
         }
 
-        List<WebElement> elements = driver.findElements(By.cssSelector(TICKET_DIV));
+        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
         log.info("PROIZD TICKETS IN scrapeTickets(): " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            Ticket ticket = scrapeTicketInfo(elements.get(i), route);
+            Ticket ticket = scrapeTicketInfo(elements.get(i), route, language);
             if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.toDto(ticket)));
+                emitter.send(SseEmitter.event().name("Proizd bus: ").data(ticketMapper.ticketToTicketDto(ticket, language)));
             }
         }
 
@@ -87,46 +91,25 @@ public class ProizdScraperServiceImpl implements ScraperService {
         return CompletableFuture.completedFuture(true);
     }
 
-    private Ticket scrapeTicketInfo(WebElement element, Route route) {
-        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
-        arrivalDate = arrivalDate.substring(4);
-
-        DateTimeFormatter ticketDate = DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk", "UA"));
-
-        LocalDate date = LocalDate.parse(arrivalDate + " 2024", ticketDate);
-
-        ticketDate = DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
-
-        String formattedTime = date.format(ticketDate);
-
-        String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
-        price = price.substring(0, price.length() - 6);
-
-        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
-        travelTime = travelTime.replaceFirst("г", "год.");
-
-        String[] parts = travelTime.split("[^\\d]+");
-        int hours = Integer.parseInt(parts[0]);
-        int minutes = Integer.parseInt(parts[1]);
-        int totalMinutes = hours * 60 + minutes;
-
-        return createTicket(element, route, price, totalMinutes, formattedTime);
-    }
-
     @Async
-    public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket) throws IOException, ParseException {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--headless");
+    @Override
+    public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket, String language) throws IOException, ParseException {
         ChromeDriver driver = new ChromeDriver(options);
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         Route route = ticket.getRoute();
+        String url = determineBaseUrl(language);
+        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver);
-
-        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector("div.trip"), 1));
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+        } catch (Exception e) {
+            driver.quit();
+            log.info("PROIZD TICKETS IN scrapeTickets(): NOT FOUND");
+            return CompletableFuture.completedFuture(false);
+        }
         try {
             synchronized (driver) {
                 driver.wait(5000);
@@ -134,19 +117,21 @@ public class ProizdScraperServiceImpl implements ScraperService {
         } catch (InterruptedException e) {
         }
 
-        List<WebElement> elements = driver.findElements(By.cssSelector("div.trip"));
+        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
         log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
 
-            String priceString = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
-            priceString = priceString.substring(0, priceString.length() - 6);
+            String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
+            if (language.equals("ua")) price = price.replace("ГРН", "");
+            else price = price.replace("UAH", "");
+
 
             String departureTime = element.findElements(By.cssSelector("div.trip__time")).get(0).getText();
             String arrivalTime = element.findElements(By.cssSelector("div.trip__time")).get(1).getText();
 
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
-                    ticket.getPrice().equals(BigDecimal.valueOf(Long.parseLong(priceString)))) {
+                    ticket.getPrice().equals(new BigDecimal(price))) {
                 ticket.getUrls().setProizd(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 break;
@@ -155,55 +140,94 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         if (ticket.getUrls().getProizd() != null) {
             emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(ticket.getUrls().getProizd()));
-        }
+        } else log.info("PROIZD URL NOT FOUND");
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
 
-    private void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver) throws ParseException {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    @Override
+    public String determineBaseUrl(String language) {
+        return switch (language) {
+            case ("ua") -> linkProps.getProizdUaBus();
+            case ("eng") -> linkProps.getProizdEngBus();
+            default -> linkProps.getProizdUaBus();
+        };
+    }
 
-        driver.get(linkProps.getProizd());
+    private static Ticket scrapeTicketInfo(WebElement element, Route route, String language) {
+        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
+        arrivalDate = arrivalDate.substring(4);
 
-        selectCity(wait, departureCity, "//input[@placeholder='Станція відправлення']");
-        selectCity(wait, arrivalCity, "//input[@placeholder='Станція прибуття']");
+        DateTimeFormatter ticketDate;
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("MMMM dd yyyy", new Locale("en"))
+                : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
 
+        LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
 
-        selectDate(departureDate, driver, wait);
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"))
+                : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"));
+        String formattedDate = date.format(ticketDate);
+
+        String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
+        price = language.equals("eng") ? price.replace("UAH", "")
+                : price.replace("ГРН", "");
+
+        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
+
+        String[] parts = travelTime.split("[^\\d]+");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int totalMinutes = hours * 60 + minutes;
+
+        return createTicket(element, route, price, totalMinutes, formattedDate);
+    }
+
+    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        driver.get(url);
+        if (language.equals("ua"))
+            selectCity(wait, departureCity, "//input[@placeholder='Станція відправлення']", driver);
+        else
+            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", driver);
+
+        if (language.equals("ua"))
+            selectCity(wait, arrivalCity, "//input[@placeholder='Станція прибуття']", driver);
+        else
+            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", driver);
+
+        selectDate(departureDate, driver, wait, language);
 
         driver.findElement(By.cssSelector("button.btn.search-form__btn")).click();
     }
 
-    private void selectCity(WebDriverWait wait, String city, String inputXpath) {
+    private static void selectCity(WebDriverWait wait, String city, String inputXpath, ChromeDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
-        inputCity.click();
-        inputCity.click();
+        Actions actions = new Actions(driver);
+        actions.moveToElement(inputCity).doubleClick().build().perform();
         inputCity.sendKeys(city);
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
     }
 
-    private void selectDate(String departureDate, WebDriver driver, WebDriverWait wait) throws ParseException {
-        while (true) {
-            WebElement dateFrom = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.search-form__field.search-form__date")));
-            dateFrom.click();
+    private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
+        WebElement dateFrom = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.search-form__field.search-form__date")));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(dateFrom).doubleClick().build().perform();
 
-            try {
-                synchronized (driver) {
-                    driver.wait(100);
-                }
-            } catch (InterruptedException e) {
-            }
-
-            String calendarMonth = driver.findElement(By.cssSelector("li.calmonth")).getText();
-
-            if (calendarMonth.length() != 0) break;
-        }
+        String calendarMonth = driver.findElement(By.cssSelector("li.calmonth")).getText();
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat outputMonthFormat = new SimpleDateFormat("MMMM", new Locale("uk"));
-        SimpleDateFormat outputYearFormat = new SimpleDateFormat("yyyy", new Locale("uk"));
-        SimpleDateFormat outputDayFormat = new SimpleDateFormat("d", new Locale("uk"));
+
+
+        SimpleDateFormat outputMonthFormat = language.equals("eng") ? new SimpleDateFormat("MMMM", new Locale("en"))
+                : new SimpleDateFormat("MMMM", new Locale("uk"));
+
+        SimpleDateFormat outputYearFormat = language.equals("eng") ? new SimpleDateFormat("yyyy", new Locale("en"))
+                : new SimpleDateFormat("yyyy", new Locale("uk"));
+
+        SimpleDateFormat outputDayFormat = language.equals("eng") ? new SimpleDateFormat("d", new Locale("en"))
+                : new SimpleDateFormat("d", new Locale("uk"));
 
         Date inputDate = inputFormat.parse(departureDate);
 
@@ -211,13 +235,12 @@ public class ProizdScraperServiceImpl implements ScraperService {
         String requestYear = outputYearFormat.format(inputDate);
         String requestDay = outputDayFormat.format(inputDate);
 
-        String calendarMonth = driver.findElement(By.cssSelector("li.calmonth")).getText();
         calendarMonth = calendarMonth.substring(0, calendarMonth.length() - 5);
 
         String calendarYear = driver.findElement(By.cssSelector("li.calmonth")).getText();
         calendarYear = calendarYear.substring(calendarYear.length() - 4);
 
-        while (!(calendarMonth.toLowerCase().equals(requestMonth) && calendarYear.equals(requestYear))) {
+        while (!(calendarMonth.equalsIgnoreCase(requestMonth) && calendarYear.equals(requestYear))) {
 
             wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.calnextmonth"))).click();
 
@@ -237,7 +260,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
         return Ticket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .price(BigDecimal.valueOf(Long.parseLong(price)))
+                .price(new BigDecimal(price))
                 .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
                 .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
                 .travelTime(BigDecimal.valueOf(totalMinutes))

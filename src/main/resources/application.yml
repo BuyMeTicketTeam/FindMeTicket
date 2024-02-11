@@ -1,3 +1,5 @@
+springdoc:
+  enable-kotlin: false
 management:
   endpoints:
     web:
@@ -64,19 +66,19 @@ spring:
 TOKEN_SYMBOLS: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
   ##-------------------------
   ## JWT Properties
-  ##-------------------------
+##-------------------------
 
 jwtSecret: fdsfsdgdryhgtrdfh45632542345fwdfsgdghfdhgdfh2FSDFGDFGffffa23
 accessTokenExpirationMs: '1440'
 refreshTokenExpirationMs: '43200'
   ##-------------------------
   ## Language detection file-configurations
-  ##-------------------------
+##-------------------------
 languages: eng.txt, ua.txt
 
   #-------------------------
   # OAuth 2.0 configuration
-  #-------------------------
+#-------------------------
 app:
   googleClientId: '827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com'
 
@@ -94,9 +96,13 @@ server:
   # Third-party ticket's services
   #-------------------------
 link:
-  busfor-ua: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
-  busfor-eng: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
-  proizd-ua: 'https://bus.proizd.ua/'
-  proizd-eng: 'https://bus.proizd.ua/en'
-  infobus-ua: 'https://infobus.eu/ua'
-  infobus-eng: 'https://infobus.eu/en'
+  busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+  busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
+  proizd-ua-bus: 'https://bus.proizd.ua/'
+  proizd-eng-bus: 'https://bus.proizd.ua/en'
+  infobus-ua-bus: 'https://infobus.eu/ua/bus'
+  infobus-eng-bus: 'https://infobus.eu/en/bus'
+  infobus-eng-train: 'https://infobus.eu/en/train'
+  infobus-ua-train: 'https://infobus.eu/ua/train'
+  proizd-eng-train: 'https://proizd.ua/'
+  proizd-ua-train: 'https://proizd.ua/en'
