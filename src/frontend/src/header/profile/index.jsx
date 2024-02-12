@@ -84,7 +84,7 @@ function Popup({
           onKeyDown={handleAvatarKeyDown}
           data-testid="avatar"
         >
-          <img src={(status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : 'URL_ПО_УМОЛЧАНИЮ')} alt="Avatar" />
+          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : 'DEFAULT_URL')} alt="Avatar" referrerPolicy="no-referrer" />
         </div>
         <div className="custom-input" data-testid="custom-input">
           {t('hello')}
