@@ -120,7 +120,7 @@ export default function Register() {
     }
   }, [send]);
   return (
-    <div data-testid="register" className="register">
+    <div data-testid="register" className="register main">
       <div className="form-body">
         <h1 className="title">{t('registration')}</h1>
         {error !== '' && <p data-testid="error" className="error">{error}</p>}

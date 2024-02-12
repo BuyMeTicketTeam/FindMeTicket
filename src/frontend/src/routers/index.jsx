@@ -8,7 +8,9 @@ import Confirm from '../confirm';
 import Index from '../main';
 import TicketPage from '../ticketPage';
 import Login from '../header/login/index';
+import ResetPassword from '../resetPassword';
 import ChangePassword from '../changePassword';
+import PrivacyPolicy from '../privacyPolicy';
 
 export default function Routers({ updateAuthValue, ticketsData, setTicketsData }) {
   return (
@@ -19,9 +21,11 @@ export default function Routers({ updateAuthValue, ticketsData, setTicketsData }
       <Route path="/register" element={<Register />} />
       <Route path="/confirm" element={<Confirm />} />
       <Route path="/reset" element={<Reset />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
       <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
     </Routes>
   );
 }

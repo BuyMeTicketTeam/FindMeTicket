@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import {
   render, screen, fireEvent, act, waitFor,
@@ -13,9 +14,35 @@ test('code-event', () => {
   );
   const codeInput = screen.getByTestId('code-input');
   fireEvent.input(codeInput, {
-    target: { value: 'b123456789' },
+    target: { value: '12345' },
   });
-  expect(codeInput.value).toBe('b123456789');
+  expect(codeInput.value).toBe('12345');
+});
+
+test('code input event', () => {
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
+  const passwordInput = screen.getByTestId('password-input');
+  fireEvent.input(passwordInput, {
+    target: { value: 'b12345678' },
+  });
+  expect(passwordInput.value).toBe('b12345678');
+});
+
+test('confirm-password input event', () => {
+  render(
+    <Router>
+      <Index />
+    </Router>,
+  );
+  const confirmPasswordInput = screen.getByTestId('confirm-password-input');
+  fireEvent.input(confirmPasswordInput, {
+    target: { value: '12345' },
+  });
+  expect(confirmPasswordInput.value).toBe('12345');
 });
 
 describe('validation', () => {
@@ -29,7 +56,38 @@ describe('validation', () => {
     fireEvent.click(buttonReg);
     expect(screen.queryByTestId('error').innerHTML).toBe('code-error');
   });
-
+  test('password error', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('change-password-btn');
+    const codeInput = screen.getByTestId('code-input');
+    fireEvent.input(codeInput, {
+      target: { value: '12345' },
+    });
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('password-error');
+  });
+  test('confirm password error', () => {
+    render(
+      <Router>
+        <Index />
+      </Router>,
+    );
+    const buttonReg = screen.getByTestId('change-password-btn');
+    const codeInput = screen.getByTestId('code-input');
+    const passwordInput = screen.getByTestId('password-input');
+    fireEvent.input(codeInput, {
+      target: { value: '12345' },
+    });
+    fireEvent.input(passwordInput, {
+      target: { value: 'b12345678' },
+    });
+    fireEvent.click(buttonReg);
+    expect(screen.queryByTestId('error').innerHTML).toBe('confirm-password-error');
+  });
   test('success validation', () => {
     render(
       <Router>
@@ -41,7 +99,7 @@ describe('validation', () => {
     const passwordInput = screen.getByTestId('password-input');
     const confirmPasswordInput = screen.getByTestId('confirm-password-input');
     fireEvent.input(codeInput, {
-      target: { value: 'b123456789' },
+      target: { value: '12345' },
     });
     fireEvent.input(passwordInput, {
       target: { value: 'b12345678' },
@@ -53,7 +111,6 @@ describe('validation', () => {
     expect(screen.queryByTestId('error')).toBeNull();
   });
 });
-
 describe('server tests', () => {
   test('wrong data from user', async () => {
     function mockFetch() {
@@ -74,7 +131,7 @@ describe('server tests', () => {
     const passwordInput = screen.getByTestId('password-input');
     const confirmPasswordInput = screen.getByTestId('confirm-password-input');
     fireEvent.input(codeInput, {
-      target: { value: 'b123456789' },
+      target: { value: '12345' },
     });
     fireEvent.input(passwordInput, {
       target: { value: 'b12345678' },
@@ -84,8 +141,8 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/update-password`, {
-      body: '{"lastPassword":"b123456789","password":"b12345678","confirmPassword":"b12345678"}',
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/new-password`, {
+      body: '{"token":"12345","password":"b12345678","email":null,"confirmPassword":"b12345678"}',
       credentials: 'include',
       headers: {
         Authorization: null,
