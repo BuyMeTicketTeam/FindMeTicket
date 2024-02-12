@@ -1,22 +1,23 @@
 package com.booking.app.entity;
 
-import com.booking.app.enums.TypeTransportEnum;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
 @Table(name = "ticket")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type")
 @Setter
 @Getter
 @ToString
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Ticket {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class Ticket {
 
     @Id
     private UUID id;
@@ -47,7 +48,7 @@ public class Ticket {
 
     @Column(name = "carrier")
     @EqualsAndHashCode.Include
-    private String сarrier;
+    private String carrier;
 
 //    @Enumerated(EnumType.STRING)
 //    private TypeTransportEnum type;
@@ -58,5 +59,9 @@ public class Ticket {
 
 //    @OneToOne(mappedBy = "ticket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    private TicketUrl urls;
+
+    protected void sad(){
+
+    }
 
 }

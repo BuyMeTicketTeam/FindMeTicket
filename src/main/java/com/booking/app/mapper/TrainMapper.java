@@ -1,24 +1,25 @@
 package com.booking.app.mapper;
 
-import com.booking.app.dto.BusTicketDTO;
-import com.booking.app.entity.Ticket;
+import com.booking.app.dto.TrainTicketDTO;
+import com.booking.app.entity.TrainComfortInfo;
+import com.booking.app.entity.TrainTicket;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface TicketMapper {
-
-  //  Ticket toEntity(BusTicketDTO ticketDTO);
-
+@Mapper( unmappedTargetPolicy = ReportingPolicy.IGNORE,componentModel = MappingConstants.ComponentModel.SPRING)
+public interface TrainMapper {
     @Mapping(source = "route.departureCity", target = "departureCity")
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
-    BusTicketDTO ticketToTicketDto(Ticket ticket, @Context String language);
+    @Mapping(source = "infoList", target = "priceMax", qualifiedByName = "maxPrice")
+    @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
+    TrainTicketDTO toTrainTicketDto(TrainTicket ticket, @Context String language);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {
@@ -51,6 +52,18 @@ public interface TicketMapper {
                 yield date.format(formatter);
             }
         };
+    }
+
+
+    @Named("maxPrice")
+    static BigDecimal maxPrice(List<TrainComfortInfo> list) {
+        return list.stream().map(TrainComfortInfo::getPrice).max(BigDecimal::compareTo).get();
+
+    }
+
+    @Named("minPrice")
+    static BigDecimal MinPrice(List<TrainComfortInfo> list) {
+        return list.stream().map(TrainComfortInfo::getPrice).min(BigDecimal::compareTo).get();
     }
 
 }

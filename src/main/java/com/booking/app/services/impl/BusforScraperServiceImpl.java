@@ -4,6 +4,7 @@ import com.booking.app.config.LinkProps;
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
 import com.booking.app.enums.TypeTransportEnum;
@@ -52,12 +53,12 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route route, String language) throws IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language) throws IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         String url = determineBaseUrl(language);
-        String fulfilledUrl = String.format(url, requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
+        String fulfilledUrl = String.format(url, route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate());
 
         driver.get(fulfilledUrl);
 
@@ -90,6 +91,8 @@ public class BusforScraperServiceImpl implements ScraperService {
             Ticket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
             if (route.getTickets().add(ticket)) {
                 emitter.send(SseEmitter.event().name("Busfor bus: ").data(ticketMapper.ticketToTicketDto(ticket, language)));
+            } else {
+                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setBusforPrice(((BusTicket) ticket).getBusforPrice());
             }
         }
 
@@ -99,7 +102,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getTicket(SseEmitter emitter, Ticket ticket, String language) throws IOException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -145,7 +148,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
             BigDecimal price = new BigDecimal(element.findElement(By.cssSelector("span.price")).getText().replace(",", ".").trim());
             if (language.equals("eng")) price = currentUAH.multiply(price);
-            BigDecimal difference = ticket.getPrice().subtract(price);
+            BigDecimal difference = ticket.getBusforPrice().subtract(price);
             Range<Integer> range = Range.between(-2, 2);
 
             if (range.contains(difference.intValue()) &&
@@ -157,16 +160,16 @@ public class BusforScraperServiceImpl implements ScraperService {
 
                 wait.until(ExpectedConditions.or(ExpectedConditions.urlContains("preorders"), (ExpectedConditions.urlContains("checkout"))));
 
-                ticket.getUrls().setBusfor(driver.getCurrentUrl());
+                ticket.setBusforLink(driver.getCurrentUrl());
                 log.info("BUSFOR URL: " + driver.getCurrentUrl());
                 break;
             }
         }
 
-        if (ticket.getUrls().getBusfor() != null) {
+        if (ticket.getBusforLink() != null) {
             emitter.send(SseEmitter.event().name(SiteConstants.BUSFOR_UA).data(UrlAndPriceDTO.builder()
-                    .price(ticket.getPrice())
-                    .url(ticket.getUrls().getBusfor())
+                    .price(ticket.getBusforPrice())
+                    .url(ticket.getBusforLink())
                     .build()));
         } else log.info("BUSFOR URL NOT FOUND");
 
@@ -242,7 +245,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     private static Ticket createTicket(Route route, WebElement departureInfo, WebElement
             arrivalInfo, String departureDateTime, String arrivalDateTime, String arrivalDate, int totalMinutes, BigDecimal price, String carrier) {
-        return Ticket.builder()
+        return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
                 .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
@@ -250,10 +253,9 @@ public class BusforScraperServiceImpl implements ScraperService {
                 .departureTime(departureDateTime.substring(0, 5))
                 .arrivalTime(arrivalDateTime)
                 .arrivalDate(arrivalDate)
-                .price(price)
+                .busforPrice(price)
                 .travelTime(BigDecimal.valueOf(totalMinutes))
-                .сarrier(carrier)
-                .type(TypeTransportEnum.BUS).build();
+                .carrier(carrier).build();
     }
 
 }

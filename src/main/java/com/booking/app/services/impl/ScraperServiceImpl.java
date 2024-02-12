@@ -8,7 +8,7 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
-import com.booking.app.repositories.TicketRepository;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CancellationException;
@@ -40,20 +41,23 @@ public class ScraperServiceImpl {
 
     private final ScraperService proizd;
 
+    private final ScraperService train;
+
     private final RouteRepository routeRepository;
 
-    private final TicketRepository ticketRepository;
+    private final BusTicketRepository busTicketRepository;
 
     private final TicketMapper ticketMapper;
 
     @Async
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException {
+
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
         Route newRoute = null;
         if (route == null) {
             newRoute = createRoute(requestTicketDTO);
 
-            List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(requestTicketDTO, emitter, newRoute, language);
+            List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(emitter, newRoute, language);
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
             try {
                 allOf.join();
@@ -87,9 +91,9 @@ public class ScraperServiceImpl {
 
     @Async
     public void getTicket(UUID id, SseEmitter emitter, String language) throws IOException, ParseException {
-        Ticket ticket = null;
+        BusTicket ticket;
         try {
-            ticket = ticketRepository.findById(id)
+            ticket = busTicketRepository.findById(id)
                     .orElseThrow(() ->
                             new ResourceNotFoundException(String.format("No ticket present by %s ID", id)));
         } catch (ResourceNotFoundException e) {
@@ -99,49 +103,47 @@ public class ScraperServiceImpl {
 
         emitter.send(SseEmitter.event().name("ticket info").data(ticketMapper.ticketToTicketDto(ticket, language)));
 
-        BusTicket urls = ticket.getUrls();
+        if (!ticket.linksAreScraped()) {
 
-        if (urls == null) {
+            List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
 
-            ticket.setUrls(new BusTicket());
-            ticket.getUrls().setTicket(ticket);
-            List<CompletableFuture<Boolean>> completableFutureListBus = Arrays.asList(
-                    busfor.getTicket(emitter, ticket, language),
-                    infobus.getTicket(emitter, ticket, language),
-                    proizd.getTicket(emitter, ticket, language)
-            );
+            if(ticket.getBusforPrice()!=null)completableFutureListBus.add(busfor.getBusTicket(emitter, ticket, language));
+            if(ticket.getInfobusPrice()!=null)completableFutureListBus.add(infobus.getBusTicket(emitter, ticket, language));
+            if(ticket.getProizdPrice()!=null)completableFutureListBus.add(proizd.getBusTicket(emitter, ticket, language));
+
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
+
             try {
                 allOf.join();
             } catch (CancellationException | CompletionException e) {
                 log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
-                emitter.complete();
+                emitter.completeWithError(e);
                 return;
             }
-            ticketRepository.save(ticket);
+
+            busTicketRepository.save(ticket);
         } else {
-            if (urls.getProizdLink() != null) {
+            if (ticket.getProizdLink() != null) {
                 emitter.send(SseEmitter.event().name(PROIZD_UA).data(UrlAndPriceDTO.builder()
-                        .price(ticket.getPrice())
-                        .url(ticket.getUrls().getProizd())
+                        .price(ticket.getProizdPrice())
+                        .url(ticket.getProizdLink())
                         .build()));
-                log.info("PROIZD URL IN single getTicket() INSTANTLY:" + ticket.getUrls().getProizd());
+                log.info("PROIZD URL IN single getTicket() INSTANTLY:" + ticket.getProizdLink());
             }
-            if (urls.getBusforLink() != null) {
+            if (ticket.getBusforLink() != null) {
                 emitter.send(SseEmitter.event().name(BUSFOR_UA).data(UrlAndPriceDTO.builder()
-                        .price(ticket.getPrice())
-                        .url(ticket.getUrls().getBusfor())
+                        .price(ticket.getBusforPrice())
+                        .url(ticket.getBusforLink())
                         .build()));
-                log.info("BUSFOR URL IN single getTicket() INSTANTLY: " + ticket.getUrls().getBusfor());
+                log.info("BUSFOR URL IN single getTicket() INSTANTLY: " + ticket.getBusforLink());
             }
-            if (urls.getInfobusLink() != null) {
+            if (ticket.getInfobusLink() != null) {
                 emitter.send(SseEmitter.event().name(INFOBUS).data(
                         UrlAndPriceDTO.builder()
-                                .price(ticket.getPrice())
-                                .url(ticket.getUrls().getInfobus())
+                                .price(ticket.getInfobusPrice())
+                                .url(ticket.getInfobusLink())
                                 .build()));
-
-                log.info("INFOBUS URL IN single getTicket() INSTANTLY:  " + ticket.getUrls().getInfobus());
+                log.info("INFOBUS URL IN single getTicket() INSTANTLY:  " + ticket.getInfobusLink());
             }
 
         }
@@ -158,11 +160,12 @@ public class ScraperServiceImpl {
                 .build();
     }
 
-    private List<CompletableFuture<Boolean>> completableFutureListBuses(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, Route newRoute, String language) throws ParseException, IOException {
+    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language) throws ParseException, IOException {
         return Arrays.asList(
-                infobus.scrapeTickets(requestTicketDTO, emitter, newRoute, language),
-                proizd.scrapeTickets(requestTicketDTO, emitter, newRoute, language),
-                busfor.scrapeTickets(requestTicketDTO, emitter, newRoute, language)
+                //infobus.scrapeTickets(emitter, newRoute, language),
+                //proizd.scrapeTickets(emitter, newRoute, language),
+                //busfor.scrapeTickets(emitter, newRoute, language),
+                train.scrapeTickets(emitter, newRoute, language)
         );
     }
 

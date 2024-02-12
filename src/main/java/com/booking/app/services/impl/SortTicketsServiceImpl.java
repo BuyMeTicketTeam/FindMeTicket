@@ -1,7 +1,7 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestSortedTicketsDTO;
-import com.booking.app.dto.TicketDTO;
+import com.booking.app.dto.BusTicketDTO;
 import com.booking.app.entity.Ticket;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
@@ -21,7 +21,7 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
     private final TicketMapper ticketMapper;
 
-    public List<TicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, String language) {
+    public List<BusTicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, String language) {
         List<Ticket> tickets = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestSortedTicketsDTO.getDepartureCity(), requestSortedTicketsDTO.getArrivalCity(), requestSortedTicketsDTO.getDepartureDate()).getTickets().stream().toList();
 
         tickets.sort((o1, o2) -> {
@@ -40,7 +40,7 @@ public class SortTicketsServiceImpl implements SortTicketsService {
             }
         });
 
-        List<TicketDTO> result = new LinkedList<>();
+        List<BusTicketDTO> result = new LinkedList<>();
 
         for (int i = 0; i < 30 && i < tickets.size(); i++) {
             result.add(ticketMapper.ticketToTicketDto(tickets.get(i), language));
