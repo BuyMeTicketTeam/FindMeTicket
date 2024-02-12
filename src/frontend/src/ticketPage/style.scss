@@ -1,26 +1,24 @@
 .ticket-page-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    max-width: 800px;
-    min-width: 600px;
-    margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  max-width: 800px;
+  min-width: 600px;
+  margin: 0 auto;
 }
-  
+
 .ticketPage-header {
   margin-top: 30px;
-  font-size: 24px; 
+  font-size: 24px;
 }
 
 .ticketPage-text {
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 15px;
-    margin-bottom: 10px;
-    margin-left: 10px;
-   align-self: flex-start;
-  }
-  
-  
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+  align-self: flex-start;
+}

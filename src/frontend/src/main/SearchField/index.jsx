@@ -110,7 +110,6 @@ export default function SearchField({
     }
 
     function handleMessage(event) {
-      console.log(event);
       const parsedData = JSON.parse(event.data);
       setTicketsData((prevTickets) => [...prevTickets, parsedData]);
       setLoading(false);
