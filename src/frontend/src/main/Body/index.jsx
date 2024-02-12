@@ -15,7 +15,6 @@ export default function TicketsBody({
   if (error) {
     return <Error error={error} />;
   }
-  console.log({ ticketsData });
   if (ticketsData.length > 0) {
     return (
       <>

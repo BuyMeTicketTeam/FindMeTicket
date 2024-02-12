@@ -32,38 +32,7 @@ export default function Index({ ticketsData, setTicketsData }) {
           error={error}
           requestBody={requestBody}
           setTicketsData={setTicketsData}
-          ticketsData={[{
-            id: 6,
-            departureTime: '6:40',
-            departureDate: '30.11, вт',
-            travelTime: '9 год 5 хв',
-            arrivalTime: '15:30',
-            arrivalDate: '29.11, вт',
-            departureCity: 'Одеса',
-            arrivalCity: 'Київ',
-            placeFrom: 'Автовокзал "Центральний"',
-            placeAt: 'Южный автовокзал',
-            price: '1000',
-            carrier: 'nikkaBus',
-            url: 'https://google.com',
-            type: 'BUS',
-          },
-          {
-            id: 6,
-            departureTime: '6:40',
-            departureDate: '30.11, вт',
-            travelTime: '9 год 5 хв',
-            arrivalTime: '15:30',
-            arrivalDate: '29.11, вт',
-            departureCity: 'Одеса',
-            arrivalCity: 'Київ',
-            placeFrom: 'Автовокзал "Центральний"',
-            placeAt: 'Южный автовокзал',
-            price: '1000',
-            carrier: 'nikkaBus',
-            url: 'https://google.com',
-            type: 'TRAIN',
-          }]}
+          ticketsData={ticketsData}
         />
       </div>
       <Outlet />
