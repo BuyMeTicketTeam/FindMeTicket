@@ -10,10 +10,10 @@ import TicketPage from '../ticketPage';
 import Login from '../header/login/index';
 import ChangePassword from '../changePassword';
 
-export default function Routers({ updateAuthValue }) {
+export default function Routers({ updateAuthValue, ticketsData, setTicketsData }) {
   return (
     <Routes>
-      <Route path="/*" element={<Index />}>
+      <Route path="/*" element={<Index ticketsData={ticketsData} setTicketsData={setTicketsData} />}>
         <Route path="login" element={<Login updateAuthValue={updateAuthValue} />} />
       </Route>
       <Route path="/register" element={<Register />} />

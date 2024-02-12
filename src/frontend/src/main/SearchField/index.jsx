@@ -96,7 +96,6 @@ export default function SearchField({
     setTicketsData([]);
 
     function handleOpen(res) {
-      sessionStorage.removeItem('ticketsData');
       switch (res.status) {
         case 200:
           console.log('open successfully');
@@ -110,16 +109,10 @@ export default function SearchField({
       }
     }
 
-    function updateTickets(prevTickets, newData) {
-      const result = [...prevTickets, newData];
-      sessionStorage.setItem('ticketsData', JSON.stringify(result));
-      return result;
-    }
-
     function handleMessage(event) {
       console.log(event);
       const parsedData = JSON.parse(event.data);
-      setTicketsData((prevTickets) => updateTickets(prevTickets, parsedData));
+      setTicketsData((prevTickets) => [...prevTickets, parsedData]);
       setLoading(false);
     }
 

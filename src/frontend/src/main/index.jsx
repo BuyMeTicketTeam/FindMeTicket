@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
 import Transport from './Transport';
@@ -7,19 +7,10 @@ import Ad from '../Ad/index';
 import './main.scss';
 import TicketsBody from './Body';
 
-export default function Index() {
-  const [ticketsData, setTicketsData] = useState([]);
+export default function Index({ ticketsData, setTicketsData }) {
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const storageTicketsData = JSON.parse(sessionStorage.getItem('ticketsData'));
-    console.log({ storageTicketsData });
-    if (storageTicketsData) {
-      setTicketsData(storageTicketsData);
-    }
-  }, []);
 
   return (
     <div className="main-block main">

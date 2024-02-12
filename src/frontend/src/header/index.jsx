@@ -50,7 +50,6 @@ export default function Header({
   function handleLanguageChange(lang) {
     displayLanguage(lang);
     window.location.reload();
-    sessionStorage.removeItem('ticketsData');
   }
 
   useEffect(() => {
