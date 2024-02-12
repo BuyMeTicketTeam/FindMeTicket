@@ -56,7 +56,7 @@ export default function PlacePreviewItem({ placesInfo, placeId, setCurrentPlaceI
       {website && (
         <div className="place-preview__info">
           <img src={websiteIcon} alt="Website" />
-          {website}
+          <a href={website} target="blank">{website}</a>
         </div>
       )}
       {phone && (
@@ -88,7 +88,7 @@ export default function PlacePreviewItem({ placesInfo, placeId, setCurrentPlaceI
         {reviews && reviews.map((review) => (
           <div className="place-preview-review">
             <div className="place-preview-review__row-flex">
-              <img src={review.profile_photo_url} alt={review.author_name} className="place-preview-review__img" />
+              <img src={review.profile_photo_url} alt={review.author_name} className="place-preview-review__img" referrerPolicy="no-referrer" />
               <h4 className="place-preview-review-name">{review.author_name}</h4>
             </div>
             <div className="place-preview-review__row">

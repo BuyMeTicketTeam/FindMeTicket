@@ -27,8 +27,6 @@ function TicketPage() {
   //   }
   // }
 
-  console.log('ticketId', ticketId);
-
   async function serverRequest() {
     try {
       await fetchEventSource(`http://localhost:8080/get/ticket/${ticketId}`, {
@@ -38,23 +36,23 @@ function TicketPage() {
         },
         onopen(res) {
           if (res.ok && res.status === 200) {
-            console.log('Connection made ', res);
+            // console.log('Connection made ', res);
           } else if (
             res.status >= 400
           && res.status < 500
           && res.status !== 429
           ) {
-            console.log('Client side error ', res);
+            // console.log('Client side error ', res);
           }
         },
-        onmessage(event) {
-          console.log('event', event);
-          console.log('event data:', event.data);
-          const parsedData = JSON.parse(event.data);
-          console.log(parsedData);
-        },
+        // onmessage(event) {
+        //   // console.log('event', event);
+        //   // console.log('event data:', event.data);
+        //   // const parsedData = JSON.parse(event.data);
+        //   // console.log(parsedData);
+        // },
         onclose() {
-          console.log('Connection closed by the server');
+          // console.log('Connection closed by the server');
           throw new Error('Connection closed');
         },
         onerror(err) {
@@ -62,7 +60,7 @@ function TicketPage() {
         },
       });
     } catch (error) {
-      console.log('There was an error or connection was closed', error);
+      // console.log('There was an error or connection was closed', error);
     }
   }
 

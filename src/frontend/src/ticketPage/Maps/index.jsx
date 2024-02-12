@@ -46,8 +46,28 @@ function Maps() {
   const mapRef = useRef(null);
   const markerRef = useRef(null);
 
+  function updateMarker(place) {
+    // console.log(place);
+    const svgMarker = {
+      path: 'M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
+      fillColor: 'blue',
+      fillOpacity: 1,
+      strokeWeight: 0,
+      rotation: 0,
+      scale: 2,
+      anchor: new window.google.maps.Point(0, 20),
+    };
+    if (markerRef.current) {
+      markerRef.current.setIcon();
+    }
+    place.marker.setIcon(svgMarker);
+    mapRef.current.panTo(place.marker.getPosition());
+    markerRef.current = place.marker;
+    console.log(markerRef.current);
+  }
+
   function createMarker(place, map) {
-    if (!place.geometry || !place.geometry.location) return;
+    if (!place.geometry || !place.geometry.location) return false;
 
     const marker = new window.google.maps.Marker({
       map,
@@ -55,22 +75,19 @@ function Maps() {
     });
 
     window.google.maps.event.addListener(marker, 'click', () => {
-      if (markerRef.current) {
-        markerRef.current.setAnimation(null);
-      }
       setCurrentPlaceId(place.place_id);
-      marker.setAnimation(window.google.maps.Animation.BOUNCE);
-      map.panTo(marker.getPosition());
-      markerRef.current = marker;
+      updateMarker({ marker });
     });
+
+    return marker;
   }
 
-  function getPlaceDetails(service, place) {
+  function getPlaceDetails(service, place, marker) {
     const request = {
       placeId: place.place_id,
     };
     service.getDetails(request, (result) => {
-      setPlacesInfo((prevPlacesInfo) => [...prevPlacesInfo, result]);
+      setPlacesInfo((prevPlacesInfo) => [...prevPlacesInfo, { ...result, marker }]);
     });
   }
 
@@ -84,8 +101,8 @@ function Maps() {
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
         results.forEach((result) => {
-          getPlaceDetails(service, result);
-          createMarker(result, map);
+          const placeMarker = createMarker(result, map);
+          getPlaceDetails(service, result, placeMarker);
         });
       }
     });
@@ -144,15 +161,16 @@ function Maps() {
       <hr className="horizontal-line" data-testid="horizontal-line" />
       {selectedCategory === 0 && (
         isLoaded && (
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            zoom={16}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-          >
-            <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />
+          <div className="map-container">
+            <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} updateMarker={(place) => updateMarker(place)} />
             {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
-          </GoogleMap>
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              zoom={16}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+            />
+          </div>
         )
       )}
       {selectedCategory === 1 && <img src={RestaurantMap} alt="RestaurantMap" />}
