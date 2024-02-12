@@ -4,7 +4,7 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
-import com.booking.app.entity.TicketUrl;
+import com.booking.app.entity.BusTicket;
 import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.mapper.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
@@ -99,11 +99,11 @@ public class ScraperServiceImpl {
 
         emitter.send(SseEmitter.event().name("ticket info").data(ticketMapper.ticketToTicketDto(ticket, language)));
 
-        TicketUrl urls = ticket.getUrls();
+        BusTicket urls = ticket.getUrls();
 
         if (urls == null) {
 
-            ticket.setUrls(new TicketUrl());
+            ticket.setUrls(new BusTicket());
             ticket.getUrls().setTicket(ticket);
             List<CompletableFuture<Boolean>> completableFutureListBus = Arrays.asList(
                     busfor.getTicket(emitter, ticket, language),
@@ -120,21 +120,21 @@ public class ScraperServiceImpl {
             }
             ticketRepository.save(ticket);
         } else {
-            if (urls.getProizd() != null) {
+            if (urls.getProizdLink() != null) {
                 emitter.send(SseEmitter.event().name(PROIZD_UA).data(UrlAndPriceDTO.builder()
                         .price(ticket.getPrice())
                         .url(ticket.getUrls().getProizd())
                         .build()));
                 log.info("PROIZD URL IN single getTicket() INSTANTLY:" + ticket.getUrls().getProizd());
             }
-            if (urls.getBusfor() != null) {
+            if (urls.getBusforLink() != null) {
                 emitter.send(SseEmitter.event().name(BUSFOR_UA).data(UrlAndPriceDTO.builder()
                         .price(ticket.getPrice())
                         .url(ticket.getUrls().getBusfor())
                         .build()));
                 log.info("BUSFOR URL IN single getTicket() INSTANTLY: " + ticket.getUrls().getBusfor());
             }
-            if (urls.getInfobus() != null) {
+            if (urls.getInfobusLink() != null) {
                 emitter.send(SseEmitter.event().name(INFOBUS).data(
                         UrlAndPriceDTO.builder()
                                 .price(ticket.getPrice())

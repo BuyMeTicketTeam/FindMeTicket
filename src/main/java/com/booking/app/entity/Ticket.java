@@ -42,21 +42,21 @@ public class Ticket {
     @Column(name = "travel_time")
     private BigDecimal travelTime;
 
-    @Column(name = "price")
-    private BigDecimal price;
+//    @Column(name = "price")
+//    private BigDecimal price;
 
     @Column(name = "carrier")
     @EqualsAndHashCode.Include
     private String сarrier;
 
-    @Enumerated(EnumType.STRING)
-    private TypeTransportEnum type;
+//    @Enumerated(EnumType.STRING)
+//    private TypeTransportEnum type;
 
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
 
-    @OneToOne(mappedBy = "ticket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private TicketUrl urls;
+//    @OneToOne(mappedBy = "ticket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private TicketUrl urls;
 
 }
