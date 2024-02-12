@@ -106,7 +106,7 @@ export default function Confirm() {
     }
   }, [resend]);
   return (
-    <div data-testid="confirm" className="confirm">
+    <div data-testid="confirm" className="confirm main">
       <div className="form-body">
         <h1 className="title">{t('confirm-email')}</h1>
         {success && (
