@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.booking.app.constant.CustomHttpHeaders.REMEMBER_ME;
 import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
@@ -106,33 +106,35 @@ public class LoginController implements LoginAPI {
      * @throws IOException              If an I/O error occurs during ID token verification.
      */
     @PostMapping("/oauth2/authorize/*")
-    public ResponseEntity<?> loginOAuth2(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws IOException, GeneralSecurityException {
-        Optional<UserCredentials> user = googleAccountServiceImpl.loginOAuthGoogle(tokenDTO);
+    public ResponseEntity<?> loginOAuth2(@RequestBody OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) {
+        AtomicReference<AuthorizedUserDTO> authorizedUserDTO = new AtomicReference<>();
+        googleAccountServiceImpl.loginOAuthGoogle(tokenDTO).
 
-        user.ifPresentOrElse(
-                userCredentials -> {
-                    String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
-                    String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
+                ifPresentOrElse(
+                        userCredentials -> {
+                            String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
+                            String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
 
-                    CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-                    response.setHeader(USER_ID, userCredentials.getId().toString());
-                    response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
+                            CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+                            response.setHeader(USER_ID, userCredentials.getId().toString());
+                            response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
-                    SecurityContext context = SecurityContextHolder.createEmptyContext();
-                    context.setAuthentication(new UsernamePasswordAuthenticationToken(userCredentials.getEmail(), userCredentials.getUsername(), userCredentials.getAuthorities()));
-                    SecurityContextHolder.setContext(context);
-                },
-                () -> {
-                    try {
-                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "ID client is not right");
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
-        AuthorizedUserDTO authorizedUserDTO = AuthorizedUserDTO.builder()
-                .username(user.get().getUsername())
-                .googlePictureUrl(user.get().getUser().getUrlPicture()).build();
+                            SecurityContext context = SecurityContextHolder.createEmptyContext();
+                            context.setAuthentication(new UsernamePasswordAuthenticationToken(userCredentials.getEmail(), userCredentials.getUsername(), userCredentials.getAuthorities()));
+                            SecurityContextHolder.setContext(context);
+                            authorizedUserDTO.set(AuthorizedUserDTO.builder()
+                                    .username(userCredentials.getUsername())
+                                    .googlePicture(userCredentials.getUser().getUrlPicture()).build());
+
+                        },
+                        () -> {
+                            try {
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Client ID is not right");
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                );
         return ResponseEntity.ok().body(authorizedUserDTO);
     }
 }

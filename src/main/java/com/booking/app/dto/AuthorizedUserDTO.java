@@ -14,5 +14,5 @@ public class AuthorizedUserDTO {
 
     private String basicPicture;
 
-    private String googlePictureUrl;
+    private String googlePicture;
 }
