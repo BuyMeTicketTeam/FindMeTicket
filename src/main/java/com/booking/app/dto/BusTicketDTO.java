@@ -1,12 +1,12 @@
 package com.booking.app.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -14,34 +14,38 @@ import java.math.BigDecimal;
 @Builder
 public class BusTicketDTO {
 
-   private String type;
+    private UUID id;
 
-   private String placeFrom;
-   private String placeAt;
+    private String type;
 
-   private String departureCity;
-   private String arrivalCity;
+    private String carrier;
 
-   private String departureTime;
-   private String departureDate;
+    private String placeFrom;
+    private String placeAt;
 
-   private String arrivalTime;
-   private String arrivalDate;
+    private String departureCity;
+    private String arrivalCity;
 
-   private String travelTime;
+    private String departureTime;
+    private String departureDate;
 
-   private BigDecimal price;
+    private String arrivalTime;
+    private String arrivalDate;
 
-   private String busforLink;
+    private String travelTime;
 
-   private BigDecimal busforPrice;
+    private BigDecimal price;
 
-   private String infobusLink;
+    private String busforLink;
 
-   private BigDecimal infobusPrice;
+    private BigDecimal busforPrice;
 
-   private String proizdLink;
+    private String infobusLink;
 
-   private BigDecimal proizdPrice;
+    private BigDecimal infobusPrice;
+
+    private String proizdLink;
+
+    private BigDecimal proizdPrice;
 
 }

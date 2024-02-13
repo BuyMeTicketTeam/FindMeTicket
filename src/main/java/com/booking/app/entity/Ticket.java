@@ -14,7 +14,7 @@ import java.util.UUID;
 @Setter
 @Getter
 @ToString
-@SuperBuilder(toBuilder = true)
+@SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Ticket {
@@ -43,25 +43,12 @@ public abstract class Ticket {
     @Column(name = "travel_time")
     private BigDecimal travelTime;
 
-//    @Column(name = "price")
-//    private BigDecimal price;
-
     @Column(name = "carrier")
     @EqualsAndHashCode.Include
     private String carrier;
 
-//    @Enumerated(EnumType.STRING)
-//    private TypeTransportEnum type;
-
     @ManyToOne
     @JoinColumn(name = "route_id")
     private Route route;
-
-//    @OneToOne(mappedBy = "ticket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-//    private TicketUrl urls;
-
-    protected void sad(){
-
-    }
 
 }

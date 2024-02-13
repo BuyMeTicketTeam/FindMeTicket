@@ -15,7 +15,12 @@ import java.math.BigDecimal;
 public class TrainComfortInfo {
 
         private String link;
+
         private String comfort;
+
+        // might be removed later
+        private String placesLeft;
+
         private BigDecimal price;
 
 }

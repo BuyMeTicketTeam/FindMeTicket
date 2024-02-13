@@ -2,13 +2,10 @@ package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
 import com.booking.app.constant.SiteConstants;
-import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
-import com.booking.app.entity.Ticket;
-import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.BusMapper;
-import com.booking.app.mapper.TicketMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -145,13 +142,15 @@ public class ProizdScraperServiceImpl implements ScraperService {
         }
 
         if (ticket.getProizdLink() != null) {
-            emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(ticket.getProizdLink()));
+            emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(UrlAndPriceDTO.builder()
+                    .price(ticket.getProizdPrice())
+                    .url(ticket.getProizdLink())
+                    .build()));
         } else log.info("PROIZD URL NOT FOUND");
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
-
 
 
     @Override
@@ -195,7 +194,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
         } catch (Exception e) {
 
         }
-
+        if (carrier.isEmpty()) carrier = "LIKEBUS";
         return createTicket(element, route, price, totalMinutes, formattedDate, carrier);
     }
 

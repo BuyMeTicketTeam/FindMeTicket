@@ -13,7 +13,7 @@ public class RequestSortedTicketsDTO {
     private String departureCity;
     private String arrivalCity;
     private String departureDate;
-    private String sortingBy;//price, departureTime, arrivalTime, travelTime
+    private String sortingBy;
     private boolean ascending;
     private Boolean bus;
     private Boolean train;

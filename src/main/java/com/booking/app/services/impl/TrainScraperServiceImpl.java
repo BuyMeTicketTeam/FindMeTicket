@@ -1,7 +1,10 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
-import com.booking.app.entity.*;
+import com.booking.app.entity.BusTicket;
+import com.booking.app.entity.Route;
+import com.booking.app.entity.TrainComfortInfo;
+import com.booking.app.entity.TrainTicket;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +35,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("train")
 @RequiredArgsConstructor
 @Log4j2
-public class TrainScrapeServiceImpl implements ScraperService {
+public class TrainScraperServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
     private final ChromeOptions options;
@@ -57,7 +60,7 @@ public class TrainScrapeServiceImpl implements ScraperService {
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
             TrainTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
-            if(route.getTickets().add(ticket)){
+            if (route.getTickets().add(ticket)) {
                 emitter.send(SseEmitter.event().name("Proizd bus: ").data(trainMapper.toTrainTicketDto(ticket, language)));
             }
         }
@@ -81,7 +84,7 @@ public class TrainScrapeServiceImpl implements ScraperService {
         return null;
     }
 
-    private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language){
+    private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language) {
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
         arrivalDate = arrivalDate.substring(4);
 
@@ -102,8 +105,7 @@ public class TrainScrapeServiceImpl implements ScraperService {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        String carrier = language.equals("eng") ? "":"Укрзалізниця";
-
+        String carrier = language.equals("eng") ? "" : "Укрзалізниця";
 
 
         List<WebElement> elements = element.findElements(By.cssSelector("div.trip__carriage-types"));
@@ -124,7 +126,7 @@ public class TrainScrapeServiceImpl implements ScraperService {
 
     }
 
-    private static TrainTicket createTicket (WebElement element, Route route, int totalMinutes, String formattedTime, String carrier, List<TrainComfortInfo> list){
+    private static TrainTicket createTicket(WebElement element, Route route, int totalMinutes, String formattedTime, String carrier, List<TrainComfortInfo> list) {
         return TrainTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
@@ -138,9 +140,6 @@ public class TrainScrapeServiceImpl implements ScraperService {
                 .infoList(list)
                 .build();
     }
-
-
-
 
 
     private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {

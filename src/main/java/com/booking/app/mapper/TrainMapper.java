@@ -11,14 +11,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-@Mapper( unmappedTargetPolicy = ReportingPolicy.IGNORE,componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface TrainMapper {
+
     @Mapping(source = "route.departureCity", target = "departureCity")
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(source = "infoList", target = "priceMax", qualifiedByName = "maxPrice")
     @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
+    @Mapping(target = "type", constant = "TRAIN")
     TrainTicketDTO toTrainTicketDto(TrainTicket ticket, @Context String language);
 
     @Named("decimalToString")
@@ -62,7 +64,7 @@ public interface TrainMapper {
     }
 
     @Named("minPrice")
-    static BigDecimal MinPrice(List<TrainComfortInfo> list) {
+    static BigDecimal minPrice(List<TrainComfortInfo> list) {
         return list.stream().map(TrainComfortInfo::getPrice).min(BigDecimal::compareTo).get();
     }
 

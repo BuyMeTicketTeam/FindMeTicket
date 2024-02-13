@@ -1,19 +1,22 @@
 package com.booking.app.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity
 @DiscriminatorValue("BUS")
 @Setter
 @Getter
 @NoArgsConstructor
-@SuperBuilder(toBuilder = true)
-//@EqualsAndHashCode(callSuper = true) --> not working)))))))
+@SuperBuilder
+//@EqualsAndHashCode(callSuper = true) --> doesn't work
 public class BusTicket extends Ticket {
 
     @Column(columnDefinition = "varchar(1000)")
@@ -30,10 +33,6 @@ public class BusTicket extends Ticket {
     private String proizdLink;
 
     private BigDecimal proizdPrice;
-
-//    @OneToOne
-//    @JoinColumn(name = "ticket_id")
-//    private Ticket ticket;
 
     public boolean linksAreScraped() {
         return busforLink != null || proizdLink != null || infobusLink != null;

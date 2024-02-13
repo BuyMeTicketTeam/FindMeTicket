@@ -2,13 +2,15 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
-import com.booking.app.entity.BusTicket;
+import com.booking.app.entity.TrainTicket;
 import com.booking.app.exception.exception.ResourceNotFoundException;
-import com.booking.app.mapper.TicketMapper;
-import com.booking.app.repositories.RouteRepository;
+import com.booking.app.mapper.BusMapper;
+import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
+import com.booking.app.repositories.RouteRepository;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -47,7 +49,9 @@ public class ScraperServiceImpl {
 
     private final BusTicketRepository busTicketRepository;
 
-    private final TicketMapper ticketMapper;
+    private final BusMapper busMapper;
+
+    private final TrainMapper trainMapper;
 
     @Async
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException {
@@ -82,11 +86,19 @@ public class ScraperServiceImpl {
 
         } else {
             for (Ticket ticket : route.getTickets()) {
-                emitter.send(SseEmitter.event().name("ticket data: ").data(ticketMapper.ticketToTicketDto(ticket, language)));
+                if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
+                    emitter.send(SseEmitter.event().name("ticket data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
+                }
+                if (ticket instanceof TrainTicket && requestTicketDTO.getTrain()) {
+                    emitter.send(SseEmitter.event().name("ticket data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
+                }
             }
-            emitter.complete();
         }
-        return route == null && newRoute.getTickets().isEmpty() ? CompletableFuture.completedFuture(false) : CompletableFuture.completedFuture(true);
+
+        emitter.complete();
+
+        return route == null && newRoute.getTickets().isEmpty() ?
+                CompletableFuture.completedFuture(false) : CompletableFuture.completedFuture(true);
     }
 
     @Async
@@ -101,15 +113,18 @@ public class ScraperServiceImpl {
             return;
         }
 
-        emitter.send(SseEmitter.event().name("ticket info").data(ticketMapper.ticketToTicketDto(ticket, language)));
+        emitter.send(SseEmitter.event().name("ticket info").data(busMapper.ticketToTicketDto(ticket, language)));
 
         if (!ticket.linksAreScraped()) {
 
             List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
 
-            if(ticket.getBusforPrice()!=null)completableFutureListBus.add(busfor.getBusTicket(emitter, ticket, language));
-            if(ticket.getInfobusPrice()!=null)completableFutureListBus.add(infobus.getBusTicket(emitter, ticket, language));
-            if(ticket.getProizdPrice()!=null)completableFutureListBus.add(proizd.getBusTicket(emitter, ticket, language));
+            if (ticket.getBusforPrice() != null)
+                completableFutureListBus.add(busfor.getBusTicket(emitter, ticket, language));
+            if (ticket.getInfobusPrice() != null)
+                completableFutureListBus.add(infobus.getBusTicket(emitter, ticket, language));
+            if (ticket.getProizdPrice() != null)
+                completableFutureListBus.add(proizd.getBusTicket(emitter, ticket, language));
 
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
 
@@ -162,10 +177,10 @@ public class ScraperServiceImpl {
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language) throws ParseException, IOException {
         return Arrays.asList(
-                //infobus.scrapeTickets(emitter, newRoute, language),
-                //proizd.scrapeTickets(emitter, newRoute, language),
-                //busfor.scrapeTickets(emitter, newRoute, language),
-                train.scrapeTickets(emitter, newRoute, language)
+                infobus.scrapeTickets(emitter, newRoute, language),
+                proizd.scrapeTickets(emitter, newRoute, language),
+                busfor.scrapeTickets(emitter, newRoute, language)
+//                train.scrapeTickets(emitter, newRoute, language)
         );
     }
 

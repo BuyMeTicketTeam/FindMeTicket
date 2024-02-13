@@ -2,13 +2,10 @@ package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
 import com.booking.app.constant.SiteConstants;
-import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
-import com.booking.app.entity.Ticket;
-import com.booking.app.enums.TypeTransportEnum;
-import com.booking.app.mapper.TicketMapper;
+import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -43,7 +40,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
-    private final TicketMapper ticketMapper;
+    private final BusMapper busMapper;
 
     private final ChromeOptions options;
 
@@ -81,9 +78,9 @@ public class InfobusScraperServiceImpl implements ScraperService {
         log.info("INFOBUS TICKETS IN scrapeTickets(): " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            Ticket ticket = scrapeTicketInfo(elements.get(i), route);
+            BusTicket ticket = scrapeTicketInfo(elements.get(i), route);
             if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("Infobus bus: ").data(ticketMapper.ticketToTicketDto(ticket, language)));
+                emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
                 ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setInfobusPrice(((BusTicket) ticket).getInfobusPrice());
             }
@@ -167,7 +164,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
         };
     }
 
-    private static Ticket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
+    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
         SimpleDateFormat ticketDate = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat formattedTicketDate = new SimpleDateFormat("dd.MM, E", new Locale("uk"));
 
@@ -243,7 +240,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
         actions.moveToElement(element).click().build().perform();
     }
 
-    private static Ticket createTicket(WebElement webTicket, Route route, String price, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
+    private static BusTicket createTicket(WebElement webTicket, Route route, String price, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)

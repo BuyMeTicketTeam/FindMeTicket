@@ -2,13 +2,10 @@ package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
 import com.booking.app.constant.SiteConstants;
-import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
-import com.booking.app.entity.Ticket;
-import com.booking.app.enums.TypeTransportEnum;
-import com.booking.app.mapper.TicketMapper;
+import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.ExchangeRateUtils;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +40,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
-    private final TicketMapper ticketMapper;
+    private final BusMapper busMapper;
 
     private final ChromeOptions options;
 
@@ -88,9 +85,9 @@ public class BusforScraperServiceImpl implements ScraperService {
         for (int i = 0; i < tickets.size() && i < 150; i++) {
 
             WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
-            Ticket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
+            BusTicket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
             if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("Busfor bus: ").data(ticketMapper.ticketToTicketDto(ticket, language)));
+                emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
                 ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setBusforPrice(((BusTicket) ticket).getBusforPrice());
             }
@@ -186,7 +183,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         };
     }
 
-    private static Ticket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) {
+    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) {
 
         String carrier = webTicket.findElement(By.cssSelector("div.Style__Information-sc-13gvs4g-6.jBuzam > div.Style__Carrier-sc-13gvs4g-3.gUvIjh > span:nth-child(2)")).getText().toUpperCase();
 
@@ -243,7 +240,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         };
     }
 
-    private static Ticket createTicket(Route route, WebElement departureInfo, WebElement
+    private static BusTicket createTicket(Route route, WebElement departureInfo, WebElement
             arrivalInfo, String departureDateTime, String arrivalDateTime, String arrivalDate, int totalMinutes, BigDecimal price, String carrier) {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
