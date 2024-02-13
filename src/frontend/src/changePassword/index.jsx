@@ -20,7 +20,7 @@ export default function Index() {
   const [success, setSucces] = useState(false);
   const [send, setSend] = useState(false);
   const [resend, setResend] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show, onShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'change-password' });
   const sendButtonIsDisabled = send || success;
   const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || success;
@@ -175,7 +175,7 @@ export default function Index() {
           onInputChange={(value) => handlePasswordInput(value)}
           tip={t('password-tip')}
           show={show}
-          setShow={setShow}
+          onShow={onShow}
         />
 
         <Field
@@ -186,7 +186,7 @@ export default function Index() {
           type="password"
           onInputChange={(value) => handleConfirmPasswordInput(value)}
           show={show}
-          setShow={setShow}
+          onShow={onShow}
         />
         <Button
           name={send ? t('processing') : t('button-title')}

@@ -21,7 +21,7 @@ export default function Popup({ updateAuthValue }) {
   const [error, setError] = useState('');
   const [send, setSend] = useState(false);
   const [remember, rememberMe] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show, onShow] = useState(false);
   const navigate = useNavigate();
 
   function statusChecks(response) {
@@ -135,7 +135,7 @@ export default function Popup({ updateAuthValue }) {
           type="password"
           onInputChange={(value) => handlePasswordChange(value)}
           show={show}
-          setShow={setShow}
+          onShow={onShow}
         />
 
         <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>

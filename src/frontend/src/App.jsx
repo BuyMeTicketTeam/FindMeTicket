@@ -7,14 +7,14 @@ import Header from './header/index';
 import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
-// import './testServer';
+import './testServer';
 import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
-  const [language, setLanguage] = useState({ value: 'UA', label: 'UA' });
+  const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
 
   return (
     <Router>

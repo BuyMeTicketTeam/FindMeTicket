@@ -51,6 +51,7 @@ export default function Index() {
             onLoading={setLoading}
             setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
+            loading={loading}
           />
         </div>
         {ticketsBody()}

@@ -12,7 +12,9 @@ import arrowsImg from './arrows.svg';
 import eventSourceQuery from '../../helper/eventSourceQuery';
 import './searchField.scss';
 
-export default function SearchField({ onLoading, setTicketsData, setRequestBody }) {
+export default function SearchField({
+  onLoading, setTicketsData, setRequestBody, loading,
+}) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
   const [childrenValue, onChildrenValue] = useState(0);
@@ -196,7 +198,7 @@ export default function SearchField({ onLoading, setTicketsData, setRequestBody 
 )}
         onClick={() => showPassengersDrop()}
       />
-      <Button name={t('find')} onButton={sendRequest} />
+      <Button name={t('find')} onButton={sendRequest} disabled={loading} />
     </div>
   );
 }
