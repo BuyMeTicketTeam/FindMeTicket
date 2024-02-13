@@ -15,7 +15,7 @@ export default function Header({
   const [isprofilePopup, setIsProfilePopup] = useState(false);
   const [userAvatar, setUserAvatar] = useState(null);
   const languages = [
-    { value: 'UA', label: 'UA' },
+    { value: 'UA', label: 'УКР' },
     { value: 'ENG', label: 'ENG' },
   ];
   function getSystemLanguage() {

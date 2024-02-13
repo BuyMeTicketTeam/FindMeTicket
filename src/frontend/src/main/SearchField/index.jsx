@@ -14,7 +14,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError,
+  setLoading, setTicketsData, setRequestBody, setError, loading,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
@@ -227,7 +227,7 @@ export default function SearchField({
 )}
         onClick={() => showPassengersDrop()}
       />
-      <Button name={t('find')} onButton={sendRequest} />
+      <Button name={t('find')} onButton={sendRequest} disabled={loading} />
     </div>
   );
 }

@@ -73,7 +73,7 @@ function Footer() {
             onClick={toggleDetailedInfo}
             onKeyDown={handleKeyDown}
           >
-            <span>2023 FindMeTicket</span>
+            <span>© 2023 FindMeTicket</span>
           </div>
         </footer>
       </div>

@@ -16,7 +16,7 @@ export default function Index() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [send, setSend] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show, onShow] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'update-password' });
   const sendButtonIsDisabled = send || success;
 
@@ -118,7 +118,7 @@ export default function Index() {
           type="password"
           onInputChange={(value) => handleCodeInput(value)}
           show={show}
-          setShow={setShow}
+          onShow={onShow}
         />
 
         <Field
@@ -130,7 +130,7 @@ export default function Index() {
           onInputChange={(value) => handlePasswordInput(value)}
           tip={t('password-tip')}
           show={show}
-          setShow={setShow}
+          onShow={onShow}
         />
 
         <Field
@@ -141,7 +141,7 @@ export default function Index() {
           type="password"
           onInputChange={(value) => handleConfirmPasswordInput(value)}
           show={show}
-          setShow={setShow}
+          onShow={onShow}
         />
         <Button
           name={send ? t('processing') : t('button-title')}
