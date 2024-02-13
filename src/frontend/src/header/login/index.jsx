@@ -28,7 +28,7 @@ export default function Popup({ updateAuthValue }) {
     switch (response.status) {
       case 200:
         navigate('/');
-        updateAuthValue(true);
+        updateAuthValue(response.body);
         break;
       case 401:
         setError(t('error-lp'));
@@ -77,7 +77,7 @@ export default function Popup({ updateAuthValue }) {
     switch (response.status) {
       case 200:
         navigate('/');
-        updateAuthValue(true);
+        updateAuthValue(response.body);
         break;
       case 401:
         setError('Помилка. Спробуйте ще раз');

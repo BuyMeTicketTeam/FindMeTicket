@@ -2,44 +2,15 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
-import Loader from './Loader';
-import Error from './Error';
 import Transport from './Transport';
-import Tourist from './Tourist';
-import Ticket from './Ticket';
-import Filters from './Filters';
 import Ad from '../Ad/index';
 import './main.scss';
+import TicketsBody from './Body';
 
-export default function Index() {
-  const [ticketsData, setTicketsData] = useState([]);
+export default function Index({ ticketsData, setTicketsData }) {
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
-
-  function ticketsBody() {
-    if (loading) {
-      return <Loader />;
-    }
-    if (ticketsData == null) {
-      return <Error />;
-    }
-    if (ticketsData.length > 0) {
-      return (
-        <>
-          <Tourist
-            ticketsData={ticketsData}
-            setTicketsData={setTicketsData}
-            city={requestBody.arrivalCity}
-          />
-          <Filters setTicketsData={setTicketsData} requestBody={requestBody} />
-          <div className="tickets">
-            {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
-          </div>
-        </>
-      );
-    }
-    return <Ad isBig />;
-  }
+  const [error, setError] = useState(null);
 
   return (
     <div className="main-block main">
@@ -48,13 +19,21 @@ export default function Index() {
           <Ad />
           <Transport />
           <SearchField
-            onLoading={setLoading}
+            loading={loading}
+            setLoading={setLoading}
             setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
-            loading={loading}
+            setError={setError}
+            ticketsData={ticketsData}
           />
         </div>
-        {ticketsBody()}
+        <TicketsBody
+          loading={loading}
+          error={error}
+          requestBody={requestBody}
+          setTicketsData={setTicketsData}
+          ticketsData={ticketsData}
+        />
       </div>
       <Outlet />
     </div>

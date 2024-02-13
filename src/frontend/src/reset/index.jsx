@@ -17,7 +17,7 @@ export default function Index() {
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        navigate('/change-password');
+        navigate('/reset-password');
         sessionStorage.setItem('email', email);
         break;
       case 404:
@@ -60,7 +60,7 @@ export default function Index() {
     }
   }, [send]);
   return (
-    <div className="reset">
+    <div className="reset main">
       <div className="form-body reset__body">
         <h1 className="title">{t('password-reset')}</h1>
         <p className="reset__text">{t('email')}</p>

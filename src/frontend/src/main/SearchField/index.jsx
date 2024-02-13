@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
@@ -9,11 +10,11 @@ import Calendar from '../Calendar';
 import Passengers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
-import eventSourceQuery from '../../helper/eventSourceQuery';
+import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  onLoading, setTicketsData, setRequestBody, loading,
+  setLoading, setTicketsData, setRequestBody, setError, loading,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
@@ -89,16 +90,44 @@ export default function SearchField({
       arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
     };
+    setError(null);
     setRequestBody(body);
-    onLoading(true);
+    setLoading(true);
     setTicketsData([]);
-    const dataStream = await eventSourceQuery('searchTickets', JSON.stringify(body));
-    onLoading(false);
-    for await (const chunk of dataStream) {
-      if (chunk) {
-        setTicketsData((prevTickets) => [...prevTickets, chunk]);
+
+    function handleOpen(res) {
+      switch (res.status) {
+        case 200:
+          console.log('open successfully');
+          break;
+        case 404:
+          setError(t('ticket-not-found'));
+          break;
+        default:
+          setError(true);
+          break;
       }
     }
+
+    function handleMessage(event) {
+      const parsedData = JSON.parse(event.data);
+      setTicketsData((prevTickets) => [...prevTickets, parsedData]);
+      setLoading(false);
+    }
+
+    function handleError() {
+      setLoading(false);
+    }
+
+    eventSourceQuery2({
+      address: 'searchTickets',
+      body: JSON.stringify(body),
+      handleOpen,
+      handleMessage,
+      handleError,
+      method: 'POST',
+      headers: { 'Content-Language': i18n.language.toLowerCase() },
+    });
   }
 
   function changeCities() {

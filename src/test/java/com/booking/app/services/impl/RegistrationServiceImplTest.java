@@ -119,7 +119,7 @@ class RegistrationServiceImplTest {
         User user = User.builder().confirmToken(token).build();
         UserCredentials userCredentials = UserCredentials.builder().id(id).email("javier_milei@gmail.com").username("Javier Milei").user(user).build();
 
-        doNothing().when(verifyEmailRepository).deleteById(id);
+        doNothing().when(userCredentialsRepository).deleteById(id);
         assertDoesNotThrow(() -> registrationService.deleteUserIfNotConfirmed(userCredentials));
     }
 

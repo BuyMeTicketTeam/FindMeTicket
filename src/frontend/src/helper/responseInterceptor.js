@@ -1,6 +1,6 @@
 import Cookies from 'universal-cookie';
 
-export default function responseInterceptor(response) {
+export default function responseInterceptor(response, bodyResponse) {
   const cookies = new Cookies(null, { path: '/' });
   if (response.status === 200) {
     response.headers.forEach((value, key) => {
@@ -9,10 +9,10 @@ export default function responseInterceptor(response) {
       }
 
       if (key === 'rememberme') {
-        cookies.set('rememberMe', 'true', { maxAge: 260000 * 60 * 1000 });
+        cookies.set('rememberMe', bodyResponse, { maxAge: 260000 * 60 * 1000 });
       }
 
-      if (key === 'userid') {
+      if (key === 'user_id') {
         cookies.set('USER_ID', value);
       }
     });

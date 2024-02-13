@@ -9,11 +9,13 @@ import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
 import jakarta.mail.MessagingException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
@@ -69,9 +71,9 @@ class ResetPasswordServiceImplTest {
     void testSendEmailResetPasswordNoSuchEmail() throws MessagingException {
         String email = "dkfshkf@gmail.com";
 
-        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userCredentialsRepository.findByEmail(email)).thenThrow(new UsernameNotFoundException("No such email"));
 
-        assertFalse(resetPasswordService.hasEmailSent(email));
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> resetPasswordService.hasEmailSent(email));
     }
 
     @Test
