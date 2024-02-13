@@ -1,0 +1,60 @@
+@import '../../styles/variables.scss';
+
+.price-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  background: $semi-dark;
+  border-radius: 20px;
+  padding:  25px;
+}
+
+.ticket-price{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  border-radius: 10px;
+  background-color: $dark;
+  padding: 15px;
+
+}
+
+.price-block{
+  width: 100%;
+  span {
+    display: block;
+    font-weight: bold;
+    color: $font-color;
+    flex: auto;
+    font-size: 20px;
+   
+  }
+
+  .buy-button {
+    min-width: 0;
+    padding: 10px 20px;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 50px;
+    margin-right: 8px;
+    border-radius: 3px;
+  }
+
+}
+
+.price {
+  font-size: 20px;
+  margin-right: 20px;
+}
+
+.ticket-price__loading {
+  width: 50px;
+}

@@ -49,6 +49,11 @@ export default function Header({
     i18n.changeLanguage(language.value);
   }
 
+  function handleLanguageChange(lang) {
+    displayLanguage(lang);
+    window.location.reload();
+  }
+
   useEffect(() => {
     if (authorization && authorization.status === 200) {
       setIsProfilePopup(true);
@@ -84,7 +89,7 @@ export default function Header({
         placeholder={null}
         value={language}
         isSearchable={false}
-        onChange={(lang) => displayLanguage(lang)}
+        onChange={(lang) => handleLanguageChange(lang)}
       />
 
       <LoginBtn

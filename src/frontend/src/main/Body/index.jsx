@@ -1,35 +1,34 @@
-/* eslint-disable max-len */
-import React, { useCallback } from 'react';
+import React from 'react';
+import Loader from '../../Loader';
+import Error from '../../Error';
+import Tourist from '../Tourist';
 import Filters from '../Filters';
 import Ticket from '../Ticket';
-import makeQuerry from '../../helper/querry';
-// TODO: Ticket upload button
-// import loaderIcon from './loading.svg';
-// import Button from '../../utils/Button';
+import Ad from '../../Ad';
 
-export default function Body({
-  ticketsData, requestBody, setTicketsData,
+export default function TicketsBody({
+  loading, error, ticketsData, setTicketsData, requestBody,
 }) {
-  async function sendRequest(sortArg) {
-    const body = {
-      ...requestBody,
-      sortingBy: sortArg,
-    };
-    const response = await makeQuerry('sortedby', JSON.stringify(body));
-    const responseBody = response.status === 200 ? response.body : null;
-    setTicketsData(responseBody);
+  if (loading) {
+    return <Loader />;
   }
-
-  const handleSort = useCallback((sortArg) => sendRequest(sortArg), [requestBody]);
-
-  return (
-    <>
-      <Filters handleSort={handleSort} />
-      <div className="tickets">
-        {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
-        {/* TODO: Ticket upload button */}
-        {/* {ticketsData.length !== 0 ? <Button className="tickets__more" name={loading ? <img className="tickets__loading-img" src="../img/loading.svg" alt="Loading..." /> : checkResponse()} onButton={handleSend} /> : null} */}
-      </div>
-    </>
-  );
+  if (error) {
+    return <Error error={error} />;
+  }
+  if (ticketsData.length > 0) {
+    return (
+      <>
+        <Tourist
+          ticketsData={ticketsData}
+          setTicketsData={setTicketsData}
+          city={requestBody.arrivalCity}
+        />
+        <Filters setTicketsData={setTicketsData} requestBody={requestBody} />
+        <div className="tickets">
+          {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
+        </div>
+      </>
+    );
+  }
+  return <Ad isBig />;
 }
