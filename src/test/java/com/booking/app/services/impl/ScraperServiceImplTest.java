@@ -6,10 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ScrapingServiceImplTest {
+class ScraperServiceImplTest {
 
     @InjectMocks
-    ScrapingServiceImpl scrapingService;
+    ScraperServiceImpl scrapingService;
 
 //    @Test
 //    void scrapFromBusfor() {

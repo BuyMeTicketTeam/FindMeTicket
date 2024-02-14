@@ -1,12 +1,11 @@
 package com.booking.app.entity;
 
+import com.google.common.collect.Sets;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +15,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
 public class Route {
 
     @Id
@@ -35,7 +33,8 @@ public class Route {
     @Column(name = "adding_time")
     private LocalDateTime addingTime;
 
-    @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Ticket> ticketList;
+    @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @Builder.Default
+    private Set<Ticket> tickets = Sets.newConcurrentHashSet();
 
 }

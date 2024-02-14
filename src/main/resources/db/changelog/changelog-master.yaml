@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 1705398670644-1
-      author: misha (generated)
+      id: 1707776537003-1
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -19,8 +19,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1705398670644-2
-      author: misha (generated)
+      id: 1707776537003-2
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -46,8 +46,8 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1705398670644-3
-      author: misha (generated)
+      id: 1707776537003-3
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -59,6 +59,9 @@ databaseChangeLog:
                     primaryKeyName: pk_ticket
                   name: id
                   type: UUID
+              - column:
+                  name: type
+                  type: VARCHAR(31)
               - column:
                   name: place_from
                   type: VARCHAR(255)
@@ -76,47 +79,35 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: travel_time
-                  type: VARCHAR(255)
+                  type: DECIMAL
               - column:
-                  name: price
-                  type: VARCHAR(255)
-              - column:
-                  name: url
+                  name: carrier
                   type: VARCHAR(255)
               - column:
                   name: route_id
                   type: UUID
+              - column:
+                  name: busfor_link
+                  type: varchar(1000)
+              - column:
+                  name: busfor_price
+                  type: DECIMAL
+              - column:
+                  name: infobus_link
+                  type: varchar(1000)
+              - column:
+                  name: infobus_price
+                  type: DECIMAL
+              - column:
+                  name: proizd_link
+                  type: varchar(1000)
+              - column:
+                  name: proizd_price
+                  type: DECIMAL
             tableName: ticket
   - changeSet:
-      id: 1705398670644-4
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_ticket_urls
-                  name: id
-                  type: UUID
-              - column:
-                  name: busfor
-                  type: VARCHAR(255)
-              - column:
-                  name: infobus
-                  type: VARCHAR(255)
-              - column:
-                  name: proizd
-                  type: VARCHAR(255)
-              - column:
-                  name: ticket_id
-                  type: UUID
-            tableName: ticket_urls
-  - changeSet:
-      id: 1705398670644-5
-      author: misha (generated)
+      id: 1707776537003-4
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -140,8 +131,30 @@ databaseChangeLog:
                   type: DATETIME
             tableName: token
   - changeSet:
-      id: 1705398670644-6
-      author: misha (generated)
+      id: 1707776537003-5
+      author: User (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: train_ticket_id
+                  type: UUID
+              - column:
+                  name: link
+                  type: VARCHAR(255)
+              - column:
+                  name: comfort
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL
+            tableName: train_ticket_info_list
+  - changeSet:
+      id: 1707776537003-6
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -174,8 +187,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_places
   - changeSet:
-      id: 1705398670644-7
-      author: misha (generated)
+      id: 1707776537003-7
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -224,8 +237,8 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: user_credentials
   - changeSet:
-      id: 1705398670644-8
-      author: misha (generated)
+      id: 1707776537003-8
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -257,8 +270,8 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1705398670644-9
-      author: misha (generated)
+      id: 1707776537003-9
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -266,8 +279,8 @@ databaseChangeLog:
             constraintName: uc_user_credentials_email
             tableName: user_credentials
   - changeSet:
-      id: 1705398670644-10
-      author: misha (generated)
+      id: 1707776537003-10
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -275,8 +288,8 @@ databaseChangeLog:
             constraintName: uc_user_credentials_user
             tableName: user_credentials
   - changeSet:
-      id: 1705398670644-11
-      author: misha (generated)
+      id: 1707776537003-11
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -284,8 +297,8 @@ databaseChangeLog:
             constraintName: uc_user_credentials_username
             tableName: user_credentials
   - changeSet:
-      id: 1705398670644-12
-      author: misha (generated)
+      id: 1707776537003-12
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -293,8 +306,8 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1705398670644-13
-      author: misha (generated)
+      id: 1707776537003-13
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -302,8 +315,8 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1705398670644-14
-      author: misha (generated)
+      id: 1707776537003-14
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -313,19 +326,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1705398670644-15
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: ticket_id
-            baseTableName: ticket_urls
-            constraintName: FK_TICKET_URLS_ON_TICKET
-            referencedColumnNames: id
-            referencedTableName: ticket
-  - changeSet:
-      id: 1705398670644-16
-      author: misha (generated)
+      id: 1707776537003-15
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -335,8 +337,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1705398670644-17
-      author: misha (generated)
+      id: 1707776537003-16
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -346,8 +348,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: token
   - changeSet:
-      id: 1705398670644-18
-      author: misha (generated)
+      id: 1707776537003-17
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -357,21 +359,14 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: insert_data_role
-      author: Mykhailo Marchuk
-
-      changes:
-        - sql:
-            sql: |
-              INSERT INTO role (enum_role) VALUES
-                 ('USER'),
-                 ('ADMIN');
-  - changeSet:
-      id: 1705059591405-14
-      author: Mykhailo Marchuk
-
+      id: 1707776537003-18
+      author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
-        - loadData:
-            tableName: ukrainian_places
-            file: places/ukr-places-common.csv
+        - addForeignKeyConstraint:
+            baseColumnNames: train_ticket_id
+            baseTableName: train_ticket_info_list
+            constraintName: fk_trainticket_infolist_on_train_ticket
+            referencedColumnNames: id
+            referencedTableName: ticket
+

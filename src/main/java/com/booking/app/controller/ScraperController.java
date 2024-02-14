@@ -1,65 +1,62 @@
 package com.booking.app.controller;
 
+import com.booking.app.controller.api.ScraperAPI;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.entity.Ticket;
-import com.booking.app.services.impl.ScrapingServiceImpl;
-import com.booking.app.services.impl.SortedTicketsServiceImpl;
+import com.booking.app.services.SortTicketsService;
+import com.booking.app.services.impl.ScraperServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping
-@AllArgsConstructor
-// TODO: Describe API's for controller in interfaces
-public class ScraperController {
+@RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequiredArgsConstructor
+public class ScraperController implements ScraperAPI {
 
-    private ScrapingServiceImpl scrapingService;
-    private SortedTicketsServiceImpl sortedTicketsService;
+    private final ScraperServiceImpl scrapingService;
+
+    private final SortTicketsService sortTicketsService;
 
     @PostMapping("/searchTickets")
-    public SseEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO) throws IOException, ParseException, InterruptedException {
-
+    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
+        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+        CompletableFuture<Boolean> isTicketsFound = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
 
-        scrapingService.scrapeTickets(ticketsDTO, emitter);
-
+        isTicketsFound.thenAccept(isFound -> {
+            if (isFound) response.setStatus(HttpStatus.OK.value());
+            else response.setStatus(HttpStatus.NOT_FOUND.value());
+        });
         return emitter;
     }
 
     @GetMapping("/get/ticket/{id}")
-    public SseEmitter getTicket(@PathVariable UUID id) throws IOException {
+    public ResponseEntity<ResponseBodyEmitter> getTicket(@PathVariable UUID id, HttpServletRequest request) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
+        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+        scrapingService.getTicket(id, emitter, siteLanguage);
 
-        //scrapingService.getTicket(id, emitter);
-
-        return emitter;
+        return new ResponseEntity<>(emitter, HttpStatus.OK);
     }
 
     @PostMapping("/sortedBy")
-    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO){
-        return ResponseEntity.ok().body(sortedTicketsService.getSortedTickets(requestSortedTicketsDTO));
+    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
+        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+        return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 
 }

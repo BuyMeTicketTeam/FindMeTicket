@@ -1,7 +1,7 @@
 package com.booking.app.mapper;
 
 import com.booking.app.dto.BusTicketDTO;
-import com.booking.app.entity.Ticket;
+import com.booking.app.entity.BusTicket;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
@@ -9,16 +9,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface TicketMapper {
-
-  //  Ticket toEntity(BusTicketDTO ticketDTO);
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @Builder(disableBuilder = true))
+public interface BusMapper {
 
     @Mapping(source = "route.departureCity", target = "departureCity")
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
-    BusTicketDTO ticketToTicketDto(Ticket ticket, @Context String language);
+    @Mapping(target = "type", constant = "BUS")
+    BusTicketDTO ticketToTicketDto(BusTicket ticket, @Context String language);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {
@@ -51,6 +50,14 @@ public interface TicketMapper {
                 yield date.format(formatter);
             }
         };
+    }
+
+    @AfterMapping
+    default void getPrice(BusTicket ticket, @MappingTarget BusTicketDTO ticketDTO) {
+        BigDecimal price = ticket.getBusforPrice() != null ? ticket.getBusforPrice() :
+                (ticket.getInfobusPrice() != null ? ticket.getInfobusPrice() :
+                        (ticket.getProizdPrice() != null ? ticket.getProizdPrice() : null));
+        ticketDTO.setPrice(price);
     }
 
 }
