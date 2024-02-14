@@ -6,9 +6,9 @@
                   "tourist-places": "Tourist places",
                   "popular-places": "Popular places",
                   "login": "Login",
-                  "profile": "Log out"
+                  "profile": "Profile"
             },
-            "change-password": {
+            "reset-password": {
                   "error-server": "Try again",
                   "error-server2": "Server error. Try again",
                   "error-code": "The code is incorrect",
@@ -23,9 +23,26 @@
                   "code-error": "The field with the code is filled in incorrectly",
                   "password-error": "The password field is incorrect",
                   "confirm-password-error": "Passwords do not match",
-                  "processing": "Обробка...",
+                  "processing": "Processing...",
                   "time": "Send the letter again: {{minutes}}:{{seconds}}",
                   "auth-link": "Click to log in",
+                  "success-message": "The password has been changed!!!"
+            },
+            "update-password": {
+                  "error-server": "Try again",
+                  "error-server2": "Server error. Try again",
+                  "error-code": "The current password is incorrect",
+                  "title": "Create a new password",
+                  "code-input-title": "Current password",
+                  "password-input-title": "New password",
+                  "password-tip": "Password must be at least 8 characters long and contain numbers and letters",
+                  "confirm-password-title": "Repeat the password",
+                  "button-title": "Send",
+                  "code-error": "The current password is incorrect",
+                  "password-error": "The password field is incorrect",
+                  "confirm-password-error": "The new passwords do not match",
+                  "processing": "Processing...",
+                  "auth-link": "Click to return to the page",
                   "success-message": "The password has been changed!!!"
             },
             "login": {
@@ -44,6 +61,13 @@
                   "or": "Or",
                   "google": "Google",
                   "remember-me": "Remember me"
+            },
+            "profile": {
+                  "change-password": "Change password",
+                  "exit": "Log out",
+                  "privacy-policy": "Privacy Policy",
+                  "delete-account": "Delete account",
+                  "hello": "Hi,"
             },
             "register": {
                   "error-email": "The user with this email address is already registered",
@@ -149,20 +173,21 @@
                   "where": "From",
                   "where-t": "To",
                   "error": "Nothing was found for your request",
-                  "error2": "The field must not be empty"
+                  "error2": "The field must not be empty",
+                  "ticket-not-found": "Sorry, no tickets found for this route"
             },
             "filters": {
                   "price": "Price",
-                  "travel-time": "Travel time",
-                  "departure-time": "Departure time",
-                  "arrival-time": "Arrival time"
+                  "travelTime": "Travel time",
+                  "departureTime": "Departure time",
+                  "arrivalTime": "Arrival time"
             },
             "passengers": {
                   "adults": "Adults:",
                   "children": "Children under 14 years old:"
             },
             "banner": {
-                  "banner-text": "We have a number of places that you can find locally",
+                  "banner-text": "We have a number of places that you can find locally in",
                   "banner-btn": "More information"
             },
             "ticket": {
@@ -188,7 +213,16 @@
                   "text": "We apologize for the inconvenience, please try again"
             },
             "ad": {
-                  "title": "Your ad can be here!"
+                  "title": "Your ad can be here!",
+                  "email":"findmeticketweb@gmail.com"
+            },
+            "ticket-page": {
+                  "uan": "UAN",
+                  "buy": "Buy",
+                  "price": "Price",
+                  "restaurants": "Restaurants",
+                  "hotels": "Hotels",
+                  "tourist places": "Tourist places"
             }
       }
 }

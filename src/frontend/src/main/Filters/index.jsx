@@ -1,49 +1,61 @@
-import React from 'react';
+/* eslint-disable react/no-array-index-key */
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import FiltersBtn from './FiltersBtn';
+import makeQuerry from '../../helper/querry';
 import './filters.scss';
 
-export default function Filters({ onSort, prevSort }) {
-  const { t } = useTranslation('translation', { keyPrefix: 'filters' });
+export default function Filters({ requestBody, setTicketsData }) {
+  const [sort, setSort] = useState('');
+  const [ascending, setAscending] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
+
+  const filtersBtn = ['price', 'travelTime', 'departureTime', 'arrivalTime'];
+
+  async function sendRequest(sortArg, reverse) {
+    const body = {
+      ...requestBody,
+      sortingBy: sortArg,
+      ascending: reverse,
+    };
+    setLoading(true);
+    const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
+    setLoading(false);
+
+    const responseBody = response.status === 200 ? response.body : null;
+    setTicketsData(responseBody);
+  }
+
+  function handleSort(sortType) {
+    if (sortType === sort) {
+      setAscending((prevAscending) => !prevAscending);
+      return;
+    }
+    setSort(sortType);
+    setAscending(false);
+  }
+
+  useEffect(() => {
+    if (sort !== '') {
+      sendRequest(sort, ascending);
+    }
+  }, [sort, ascending]);
 
   return (
-    <div className="main-filters">
-      <FiltersBtn
-        onClick={onSort}
-        sortType="price-low"
-        reverse="price-up"
-        isDown={prevSort === 'price-low'}
-        isUp={prevSort === 'price-up'}
-      >
-        {t('price')}
-      </FiltersBtn>
-      <FiltersBtn
-        onClick={onSort}
-        sortType="time-travel-low"
-        reverse="time-travel-up"
-        isDown={prevSort === 'time-travel-low'}
-        isUp={prevSort === 'time-travel-up'}
-      >
-        {t('travel-time')}
-      </FiltersBtn>
-      <FiltersBtn
-        onClick={onSort}
-        sortType="time-departure-low"
-        reverse="time-departure-up"
-        isDown={prevSort === 'time-departure-low'}
-        isUp={prevSort === 'time-departure-up'}
-      >
-        {t('departure-time')}
-      </FiltersBtn>
-      <FiltersBtn
-        onClick={onSort}
-        sortType="time-arrival-low"
-        reverse="time-arrival-up"
-        isDown={prevSort === 'time-arrival-low'}
-        isUp={prevSort === 'time-arrival-up'}
-      >
-        {t('arrival-time')}
-      </FiltersBtn>
+    <div data-testid="filters" className="main-filters">
+      {filtersBtn.map((filter, index) => (
+        <FiltersBtn
+          key={index}
+          dataTestId={filter}
+          onClick={() => handleSort(filter)}
+          loading={loading}
+          isDown={sort === filter}
+          isUp={sort === filter && ascending}
+        >
+          {t(filter)}
+        </FiltersBtn>
+      ))}
     </div>
   );
 }

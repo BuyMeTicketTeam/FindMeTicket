@@ -7,6 +7,7 @@ export default function Index({ isBig }) {
   return (
     <div className={`ad-container ${isBig ? 'ad_big' : ''}`}>
       <div className="ad-text">{t('title')}</div>
+      <div className="contact-email">{t('email')}</div>
     </div>
   );
 }

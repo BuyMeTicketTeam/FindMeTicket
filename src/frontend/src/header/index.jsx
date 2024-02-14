@@ -4,20 +4,20 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import LoginBtn from './LoginBtn';
-import Login from './login/index';
+import Popup from './profile';
 import './header.scss';
 import logo from './logo.svg';
 
 export default function Header({
-  authorization, onAuthorization, changePopup, popupLogin,
+  authorization, updateAuthValue, language, setLanguage,
 }) {
-  const [language, changeLanguage] = useState({ value: 'UA', label: 'UA' });
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
+  const [isprofilePopup, setIsProfilePopup] = useState(false);
+  const [userAvatar, setUserAvatar] = useState(null);
   const languages = [
-    { value: 'UA', label: 'UA' },
+    { value: 'UA', label: 'УКР' },
     { value: 'ENG', label: 'ENG' },
   ];
-
   function getSystemLanguage() {
     const systemLanguage = navigator.language.split('-')[0];
     if (systemLanguage !== 'uk') {
@@ -31,14 +31,10 @@ export default function Header({
   }
 
   function getLanguageFromStorage() {
-    localStorage.getItem('lang');
+    return JSON.parse(localStorage.getItem('lang'));
   }
 
-  function getLanguage(languageParam) {
-    if (languageParam) {
-      setLanguageToStorage(languageParam);
-      return languageParam;
-    }
+  function getLanguage() {
     const savedLanguage = getLanguageFromStorage();
     if (savedLanguage) {
       return savedLanguage;
@@ -47,14 +43,36 @@ export default function Header({
   }
 
   function displayLanguage(languageParam) {
-    const language = getLanguage(languageParam);
-    changeLanguage(language);
+    const language = languageParam || getLanguage();
+    setLanguage(language);
+    setLanguageToStorage(language);
     i18n.changeLanguage(language.value);
   }
+
+  function handleLanguageChange(lang) {
+    displayLanguage(lang);
+    window.location.reload();
+  }
+
+  useEffect(() => {
+    if (authorization && authorization.status === 200) {
+      setIsProfilePopup(true);
+    } else {
+      setIsProfilePopup(false);
+    }
+  }, [authorization, setIsProfilePopup]);
 
   useEffect(() => {
     displayLanguage();
   }, []);
+  useEffect(() => {
+    if (authorization && authorization.status === 200 && authorization.image) {
+      setUserAvatar(authorization.image);
+    } else {
+      setUserAvatar(null);
+    }
+  }, [authorization, setUserAvatar]);
+
   return (
     <header data-testid="header" className="header">
       <div className="logo"><Link to="/"><img src={logo} alt="logo" /></Link></div>
@@ -71,16 +89,27 @@ export default function Header({
         placeholder={null}
         value={language}
         isSearchable={false}
-        onChange={(lang) => displayLanguage(lang)}
+        onChange={(lang) => handleLanguageChange(lang)}
       />
 
       <LoginBtn
+        setIsProfilePopup={setIsProfilePopup}
         status={authorization}
-        onAuthorization={onAuthorization}
-        changePopup={changePopup}
+        updateAuthValue={updateAuthValue}
+        username={authorization ? authorization.username : null}
       />
 
-      {popupLogin && <Login changePopup={changePopup} onAuthorization={onAuthorization} />}
+      {isprofilePopup && (
+      <Popup
+        setIsProfilePopup={setIsProfilePopup}
+        updateAuthValue={updateAuthValue}
+        status={authorization}
+        username={authorization.username}
+        userAvatar={userAvatar}
+        setUserAvatar={setUserAvatar}
+      />
+      )}
+
     </header>
   );
 }

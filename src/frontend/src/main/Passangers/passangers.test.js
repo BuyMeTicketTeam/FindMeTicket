@@ -8,7 +8,7 @@ test('renders Passengers component with initial values', () => {
     <Passengers
       status
       adultsValue={2}
-      onAdultsValue={() => {}}
+      setAdultsValue={() => {}}
       childrenValue={1}
       onChildrenValue={() => {}}
     />,
@@ -22,23 +22,23 @@ test('renders Passengers component with initial values', () => {
 });
 
 // test('increments and decrements adults value when buttons are clicked', () => {
-//   const onAdultsValueMock = jest.fn();
+//   const setAdultsValueMock = jest.fn();
 
 //   render(
 //     <Passengers
 //       status
 //       adultsValue={2}
-//       onAdultsValue={onAdultsValueMock}
+//       setAdultsValue={setAdultsValueMock}
 //       childrenValue={1}
 //       onChildrenValue={() => {}}
 //     />,
 //   );
 
 //   fireEvent.click(screen.getByText('+', { selector: 'button' }));
-//   expect(onAdultsValueMock).toHaveBeenCalledWith(3);
+//   expect(setAdultsValueMock).toHaveBeenCalledWith(3);
 
 //   fireEvent.click(screen.getByText('-', { selector: 'button' }));
-//   expect(onAdultsValueMock).toHaveBeenCalledWith(2);
+//   expect(setAdultsValueMock).toHaveBeenCalledWith(2);
 // });
 
 // test('increments and decrements children value when buttons are clicked', () => {
@@ -48,7 +48,7 @@ test('renders Passengers component with initial values', () => {
 //     <Passengers
 //       status
 //       adultsValue={2}
-//       onAdultsValue={() => {}}
+//       setAdultsValue={() => {}}
 //       childrenValue={1}
 //       onChildrenValue={onChildrenValueMock}
 //     />,

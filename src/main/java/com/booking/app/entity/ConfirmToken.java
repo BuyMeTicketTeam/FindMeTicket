@@ -21,7 +21,6 @@ public class ConfirmToken {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-//    @OneToOne(mappedBy = "confirmToken", cascade = CascadeType.ALL)
     @OneToOne(mappedBy = "confirmToken")
     private User user;
 

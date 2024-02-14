@@ -16,12 +16,10 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Collections;
+import java.util.Optional;
 
 /**
  * Service implementation for Google Account-related operations.
@@ -52,16 +50,14 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
      *
      * @param requestBody DTO containing the Google OAuth2 ID Token.
      * @return UserCredentials for the logged-in user.
-     * @throws GeneralSecurityException If an issue occurs during security-related operations.
-     * @throws IOException              If an I/O error occurs during ID Token verification.
      */
-    public UserCredentials loginOAuthGoogle(OAuth2IdTokenDTO requestBody) throws GeneralSecurityException, IOException {
-        GoogleIdToken account = verifyIDToken(requestBody.getIdToken());
-        if (account == null) {
-            throw new BadCredentialsException("ID Token is wrong");
+    public Optional<UserCredentials> loginOAuthGoogle(OAuth2IdTokenDTO requestBody) {
+        try {
+            GoogleIdToken account = verifier.verify(requestBody.getIdToken());
+            return Optional.of(createOrUpdateUser(account));
+        } catch (Exception e) {
+            return Optional.empty();
         }
-        return createOrUpdateUser(account);
-
     }
 
     /**
@@ -99,16 +95,4 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
         return existingAccount;
     }
 
-    /**
-     * Verify the provided Google ID Token.
-     *
-     * @param idToken Google OAuth2 ID Token to be verified.
-     * @return Verified GoogleIdToken or null if verification fails.
-     */
-    private GoogleIdToken verifyIDToken(String idToken) throws GeneralSecurityException, IOException {
-        return verifier.verify(idToken);
-    }
-
 }
-
-

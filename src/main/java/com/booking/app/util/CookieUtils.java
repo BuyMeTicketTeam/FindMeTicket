@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
 
-public final class CookieUtils {
+public class CookieUtils {
     private CookieUtils() {
     }
 

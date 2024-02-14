@@ -1,6 +1,8 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.RequestUpdatePasswordDTO;
 import com.booking.app.dto.ResetPasswordDTO;
+import com.booking.app.entity.UserCredentials;
 import jakarta.mail.MessagingException;
 
 /**
@@ -24,4 +26,6 @@ public interface ResetPasswordService {
       * @return Returns true if the password was successfully changed; otherwise, returns false.
       */
      boolean resetPassword(ResetPasswordDTO dto);
+
+     boolean changePassword(RequestUpdatePasswordDTO updatePasswordDTO, UserCredentials userCredentials);
 }

@@ -13,5 +13,5 @@ public interface TypeAheadService {
      * @param letters DTO containing the start letters for city search.
      * @return List of CitiesDTO matching the provided start letters.
      */
-    List<CitiesDTO> findMatchesUA(StartLettersDTO letters, String urlLanguage) throws IOException;
+    List<CitiesDTO> findMatches(StartLettersDTO letters, String urlLanguage) throws IOException;
 }

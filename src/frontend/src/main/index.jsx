@@ -1,61 +1,41 @@
 /* eslint-disable max-len */
 import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
-import Loader from './Loader';
-import Body from './Body';
-import Error from './Error';
 import Transport from './Transport';
-import Tourist from './Tourist';
 import Ad from '../Ad/index';
 import './main.scss';
+import TicketsBody from './Body';
 
-export default function Index() {
-  const [ticketsData, onTicketsData] = useState([]);
-  const [loading, onLoading] = useState(false);
+export default function Index({ ticketsData, setTicketsData }) {
+  const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
-
-  function showTickets() {
-    if (loading) {
-      return <Loader />;
-    }
-    if (ticketsData == null) {
-      return <Error />;
-    }
-    if (ticketsData.length > 0) {
-      return (
-        <>
-          <Tourist
-            ticketsData={ticketsData}
-            onTicketsData={onTicketsData}
-            city={requestBody.arrivalCity}
-          />
-          <Body
-            ticketsData={ticketsData}
-            onTicketsData={onTicketsData}
-            onLoading={onLoading}
-            setRequestBody={setRequestBody}
-            requestBody={requestBody}
-          />
-        </>
-      );
-    }
-    return <Ad isBig />;
-  }
+  const [error, setError] = useState(null);
 
   return (
-    <div className="main-block">
+    <div className="main-block main">
       <div className="container">
         <div className="search_index">
           <Ad />
           <Transport />
           <SearchField
-            onLoading={onLoading}
-            onTicketsData={onTicketsData}
+            loading={loading}
+            setLoading={setLoading}
+            setTicketsData={setTicketsData}
             setRequestBody={setRequestBody}
+            setError={setError}
+            ticketsData={ticketsData}
           />
         </div>
-        {showTickets()}
+        <TicketsBody
+          loading={loading}
+          error={error}
+          requestBody={requestBody}
+          setTicketsData={setTicketsData}
+          ticketsData={ticketsData}
+        />
       </div>
+      <Outlet />
     </div>
   );
 }

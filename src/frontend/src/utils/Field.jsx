@@ -3,7 +3,7 @@ import React, { forwardRef } from 'react';
 import Input from './Input';
 
 // eslint-disable-next-line object-curly-newline
-export default forwardRef(({ name, value, onInputChange, type, tip, dataTestId, tipDataTestId, placeholder, error, show, onShow, className, onClick, space }, ref) => (
+export default forwardRef(({ name, value, onInputChange, type, tip, dataTestId, tipDataTestId, placeholder, error, show, setShow, className, onClick, space }, ref) => (
   <div ref={ref} className={`field ${className}`}>
     <div className="field__name">{name}</div>
     <Input
@@ -14,7 +14,7 @@ export default forwardRef(({ name, value, onInputChange, type, tip, dataTestId, 
       placeholder={placeholder}
       error={error}
       show={show}
-      onShow={onShow}
+      onShow={setShow}
       tip={tip}
       tipDataTestId={tipDataTestId}
       onClick={onClick}

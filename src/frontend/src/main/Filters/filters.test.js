@@ -1,19 +1,22 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Filters from './index';
+import makeQuerry from '../../helper/querry'; // Adjust the path if needed
 
-test('renders filters component', () => {
-  const onSortMock = jest.fn();
+jest.mock('../../helper/querry'); // Mock the makeQuerry function
 
-  render(<Filters onSort={onSortMock} prevSort="price-low" />);
+describe('Filters component', () => {
+  const requestBody = {};
+  const setTicketsData = jest.fn();
 
-  const priceBtn = screen.getByText('price');
-  const travelTimeBtn = screen.getByText('travel-time');
-  const departureTimeBtn = screen.getByText('departure-time');
-  const arrivalTimeBtn = screen.getByText('arrival-time');
+  beforeEach(() => {
+    makeQuerry.mockResolvedValue({ status: 200, body: {} }); // Mock a successful response
+  });
 
-  expect(priceBtn).toBeInTheDocument();
-  expect(travelTimeBtn).toBeInTheDocument();
-  expect(departureTimeBtn).toBeInTheDocument();
-  expect(arrivalTimeBtn).toBeInTheDocument();
+  it('renders the FiltersBtn components', () => {
+    render(<Filters requestBody={requestBody} setTicketsData={setTicketsData} />);
+
+    const filtersBtns = screen.getAllByRole('button', { name: /price|travelTime|departureTime|arrivalTime/i });
+    expect(filtersBtns).toHaveLength(4);
+  });
 });

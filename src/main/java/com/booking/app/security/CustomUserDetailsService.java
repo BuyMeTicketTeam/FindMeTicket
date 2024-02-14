@@ -20,15 +20,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        log.debug("Entering in loadUserByUsername Method...");
-
-        Optional<UserCredentials> userSecurity = userCredentialsRepository.findByEmail(email);
-        if(userSecurity.isEmpty()){
-            log.error("Email not found: " + email);
+        Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmail(email);
+        if(userCredentials.isEmpty()){
             throw new UsernameNotFoundException(String.format("User %s not found", email));
         }
-        log.info(String.format("User has been loaded by %s",email));
-        return userSecurity.get();
+        return userCredentials.get();
     }
 
 }
