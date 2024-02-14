@@ -1,0 +1,375 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1707920942856-1
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_role
+                  name: id
+                  type: INT
+              - column:
+                  name: enum_role
+                  type: VARCHAR(255)
+            tableName: role
+  - changeSet:
+      id: 1707920942856-2
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_route
+                  name: id
+                  type: UUID
+              - column:
+                  name: departure_city
+                  type: VARCHAR(255)
+              - column:
+                  name: arrival_city
+                  type: VARCHAR(255)
+              - column:
+                  name: departure_date
+                  type: VARCHAR(255)
+              - column:
+                  name: adding_time
+                  type: DATETIME
+            tableName: route
+  - changeSet:
+      id: 1707920942856-3
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ticket
+                  name: id
+                  type: UUID
+              - column:
+                  name: type
+                  type: VARCHAR(31)
+              - column:
+                  name: place_from
+                  type: VARCHAR(255)
+              - column:
+                  name: place_at
+                  type: VARCHAR(255)
+              - column:
+                  name: departure_time
+                  type: VARCHAR(255)
+              - column:
+                  name: arrival_time
+                  type: VARCHAR(255)
+              - column:
+                  name: arrival_date
+                  type: VARCHAR(255)
+              - column:
+                  name: travel_time
+                  type: DECIMAL
+              - column:
+                  name: carrier
+                  type: VARCHAR(255)
+              - column:
+                  name: route_id
+                  type: UUID
+              - column:
+                  name: busfor_link
+                  type: varchar(1000)
+              - column:
+                  name: busfor_price
+                  type: DECIMAL
+              - column:
+                  name: infobus_link
+                  type: varchar(1000)
+              - column:
+                  name: infobus_price
+                  type: DECIMAL
+              - column:
+                  name: proizd_link
+                  type: varchar(1000)
+              - column:
+                  name: proizd_price
+                  type: DECIMAL
+            tableName: ticket
+  - changeSet:
+      id: 1707920942856-4
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_token
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: token
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: expiry_time
+                  type: DATETIME
+            tableName: token
+  - changeSet:
+      id: 1707920942856-5
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: train_ticket_id
+                  type: UUID
+              - column:
+                  name: link
+                  type: VARCHAR(255)
+              - column:
+                  name: comfort
+                  type: VARCHAR(255)
+              - column:
+                  name: places_left
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL
+            tableName: train_ticket_info_list
+  - changeSet:
+      id: 1707920942856-6
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_ukrainianplaces
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: name_eng
+                  type: VARCHAR(255)
+              - column:
+                  name: country
+                  type: VARCHAR(255)
+              - column:
+                  name: lon
+                  type: DOUBLE
+              - column:
+                  name: lat
+                  type: DOUBLE
+              - column:
+                  name: name_ua
+                  type: VARCHAR(255)
+              - column:
+                  name: name_ru
+                  type: VARCHAR(255)
+            tableName: ukrainian_places
+  - changeSet:
+      id: 1707920942856-7
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user_credentials
+                  name: id
+                  type: UUID
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+              - column:
+                  name: user_id
+                  type: UUID
+              - column:
+                  name: provider
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_non_expired
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: account_non_locked
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: credentials_non_expired
+                  type: BOOLEAN
+              - column:
+                  constraints:
+                    nullable: false
+                  name: enabled
+                  type: BOOLEAN
+            tableName: user_credentials
+  - changeSet:
+      id: 1707920942856-8
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                  name: id
+                  type: UUID
+              - column:
+                  name: registration_date
+                  type: DATE
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
+              - column:
+                  name: profile_picture
+                  type: BYTEA
+              - column:
+                  name: url_picture
+                  type: VARCHAR(255)
+              - column:
+                  name: role_id
+                  type: INT
+              - column:
+                  name: token_id
+                  type: UUID
+            tableName: users
+  - changeSet:
+      id: 1707920942856-9
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uc_user_credentials_email
+            tableName: user_credentials
+  - changeSet:
+      id: 1707920942856-10
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: user_id
+            constraintName: uc_user_credentials_user
+            tableName: user_credentials
+  - changeSet:
+      id: 1707920942856-11
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: username
+            constraintName: uc_user_credentials_username
+            tableName: user_credentials
+  - changeSet:
+      id: 1707920942856-12
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: phone_number
+            constraintName: uc_users_phone_number
+            tableName: users
+  - changeSet:
+      id: 1707920942856-13
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: token_id
+            constraintName: uc_users_token
+            tableName: users
+  - changeSet:
+      id: 1707920942856-14
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: route_id
+            baseTableName: ticket
+            constraintName: FK_TICKET_ON_ROUTE
+            referencedColumnNames: id
+            referencedTableName: route
+  - changeSet:
+      id: 1707920942856-15
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: users
+            constraintName: FK_USERS_ON_ROLE
+            referencedColumnNames: id
+            referencedTableName: role
+  - changeSet:
+      id: 1707920942856-16
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: token_id
+            baseTableName: users
+            constraintName: FK_USERS_ON_TOKEN
+            referencedColumnNames: id
+            referencedTableName: token
+  - changeSet:
+      id: 1707920942856-17
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_credentials
+            constraintName: FK_USER_CREDENTIALS_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1707920942856-18
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: train_ticket_id
+            baseTableName: train_ticket_info_list
+            constraintName: fk_trainticket_infolist_on_train_ticket
+            referencedColumnNames: id
+            referencedTableName: ticket
+
