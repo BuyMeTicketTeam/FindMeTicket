@@ -9,6 +9,7 @@ import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -52,7 +53,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -68,11 +69,11 @@ public class ProizdScraperServiceImpl implements ScraperService {
             return CompletableFuture.completedFuture(false);
         }
 
-        try {
+ try {
             synchronized (driver) {
                 driver.wait(5000);
             }
-        } catch (InterruptedException e) {
+   } catch (InterruptedException e) {
         }
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
@@ -84,9 +85,10 @@ public class ProizdScraperServiceImpl implements ScraperService {
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
             if (route.getTickets().add(ticket)) {
+                if(BooleanUtils.isTrue(doShow))
                 emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setProizdPrice(((BusTicket) ticket).getProizdPrice());
+                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setProizdPrice((ticket).getProizdPrice());
             }
         }
 

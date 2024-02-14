@@ -9,6 +9,7 @@ import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -49,7 +50,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
     private static final String DIV_TICKET_NOT_FOUND = "div.col-sm-12.alert.alert-warning";
 
     @Async
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -80,9 +81,10 @@ public class InfobusScraperServiceImpl implements ScraperService {
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket ticket = scrapeTicketInfo(elements.get(i), route);
             if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setInfobusPrice(((BusTicket) ticket).getInfobusPrice());
+                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setInfobusPrice((ticket).getInfobusPrice());
             }
         }
 

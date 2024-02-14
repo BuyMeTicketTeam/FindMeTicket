@@ -25,7 +25,7 @@ public interface ScraperAPI {
 
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponse(responseCode = "200", description = "Returns ticket if found")
-    ResponseEntity<ResponseBodyEmitter> getTicket(@PathVariable UUID id, HttpServletRequest request) throws IOException, ParseException;
+    ResponseBodyEmitter getTicket(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException;
 
     @Operation(summary = "Sorting", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Returns sorted tickets")
