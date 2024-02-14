@@ -1,5 +1,6 @@
 import React from 'react';
 import PlacePreviewItem from './placePreviewItem';
+import noImage from './no-image.jpg';
 
 export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, updateMarker }) {
   return (
@@ -8,8 +9,8 @@ export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, update
         <PlacePreviewItem
           key={placeInfo.place_id}
           name={placeInfo.name}
-          img={placeInfo.photos[0]}
-          openNow={placeInfo.opening_hours.isOpen()}
+          img={placeInfo.photos ? placeInfo.photos[0].getUrl() : noImage}
+          openNow={placeInfo?.opening_hours?.isOpen() ?? false}
           rating={placeInfo.rating}
           onClick={() => {
             // console.log(placeInfo);

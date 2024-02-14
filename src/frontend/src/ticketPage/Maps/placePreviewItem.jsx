@@ -4,7 +4,6 @@ import starIcon from './star.svg';
 export default function PlacePreviewItem({
   name, img, openNow, rating, onClick,
 }) {
-  const imgUrl = img.getUrl();
   return (
     <button className="place__item" type="button" onClick={() => onClick()}>
       <div className="place__info">
@@ -19,7 +18,7 @@ export default function PlacePreviewItem({
           <p className="place__status">{openNow ? 'Відчинено' : 'Зачинено'}</p>
         </div>
       </div>
-      <img src={imgUrl} alt={name} className="place__img" />
+      <img src={img} alt={name} className="place__img" />
     </button>
   );
 }

@@ -6,7 +6,6 @@ import './style.css';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 // import HotelsMap from './image 6.png';
 // import './googleMap';
-import RestaurantMap from './image 7.png';
 import TouristPlaces from './image 8.png';
 import PlacePreviewList from './placePreviewList';
 import PlacePreview from './placePreview';
@@ -38,7 +37,7 @@ function Maps() {
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyDEZtKdK2xPWTbf6ydCsVm4ryehF1ph5A0',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
     libraries,
     language: 'uk',
   });
@@ -47,7 +46,6 @@ function Maps() {
   const markerRef = useRef(null);
 
   function updateMarker(place) {
-    // console.log(place);
     const svgMarker = {
       path: 'M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
       fillColor: 'blue',
@@ -95,9 +93,10 @@ function Maps() {
     const request = {
       location: stationLocation,
       radius: '500',
-      type: ['restaurant'],
+      type: selectedCategory === 1 ? ['lodging'] : ['restaurant'],
     };
     const service = new window.google.maps.places.PlacesService(map);
+    setPlacesInfo([]);
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
         results.forEach((result) => {
@@ -122,7 +121,7 @@ function Maps() {
         console.error(`Geocode was not successful for the following reason: ${status}`);
       }
     });
-  }, []);
+  }, [selectedCategory]);
 
   const onUnmount = useCallback(() => {
     mapRef.current = null;
@@ -169,11 +168,30 @@ function Maps() {
               zoom={16}
               onLoad={onLoad}
               onUnmount={onUnmount}
+              options={{
+                streetViewControl: false,
+              }}
             />
           </div>
         )
       )}
-      {selectedCategory === 1 && <img src={RestaurantMap} alt="RestaurantMap" />}
+      {selectedCategory === 1 && (
+        isLoaded && (
+          <div className="map-container">
+            <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} updateMarker={(place) => updateMarker(place)} />
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              zoom={16}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              options={{
+                streetViewControl: false,
+              }}
+            />
+          </div>
+        )
+      )}
       {selectedCategory === 2 && <img src={TouristPlaces} alt="TouristPlaces" />}
     </div>
   );
