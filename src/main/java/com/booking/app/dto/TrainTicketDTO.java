@@ -30,7 +30,5 @@ public class TrainTicketDTO {
     private String travelTime;
 
     private BigDecimal priceMin;
-
-    private BigDecimal priceMax;
-
+    
 }
