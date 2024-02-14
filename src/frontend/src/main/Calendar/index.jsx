@@ -21,7 +21,7 @@ export default function Calendar({ date, onDate }) {
   };
 
   return (
-    <div className="field">
+    <div data-testid="datepicker" className="field">
       <div className="field__name">{t('title')}</div>
       <DatePicker
         minDate={new Date()}

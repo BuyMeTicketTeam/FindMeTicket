@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import '../styles/variables.scss';
 .truck-wrapper {
     margin-top: 100px;
     height: 200px;
@@ -8,7 +8,6 @@
     transform: translateX(-50%) translateY(-50%) scale(0.8);
     //animation: bg 5s linear infinite;
     overflow: hidden;
-    z-index: 2;
 
     &:after {
         content: '';
