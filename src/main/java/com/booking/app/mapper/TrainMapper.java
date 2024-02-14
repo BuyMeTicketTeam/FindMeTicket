@@ -17,6 +17,7 @@ public interface TrainMapper {
 
     @Mapping(source = "route.departureCity", target = "departureCity")
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
+    @Mapping(source = "id",target = "id")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
