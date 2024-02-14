@@ -18,9 +18,5 @@ public class TrainComfortInfo {
 
         private String comfort;
 
-        // might be removed later
-        private String placesLeft;
-
         private BigDecimal price;
-
 }

@@ -18,7 +18,6 @@ public interface TrainMapper {
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
-    @Mapping(source = "infoList", target = "priceMax", qualifiedByName = "maxPrice")
     @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
     @Mapping(target = "type", constant = "TRAIN")
     TrainTicketDTO toTrainTicketDto(TrainTicket ticket, @Context String language);
@@ -54,13 +53,6 @@ public interface TrainMapper {
                 yield date.format(formatter);
             }
         };
-    }
-
-
-    @Named("maxPrice")
-    static BigDecimal maxPrice(List<TrainComfortInfo> list) {
-        return list.stream().map(TrainComfortInfo::getPrice).max(BigDecimal::compareTo).get();
-
     }
 
     @Named("minPrice")
