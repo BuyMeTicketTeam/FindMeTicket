@@ -69,11 +69,11 @@ public class ProizdScraperServiceImpl implements ScraperService {
             return CompletableFuture.completedFuture(false);
         }
 
- try {
+        try {
             synchronized (driver) {
                 driver.wait(5000);
             }
-   } catch (InterruptedException e) {
+        } catch (InterruptedException e) {
         }
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
@@ -85,8 +85,8 @@ public class ProizdScraperServiceImpl implements ScraperService {
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
             if (route.getTickets().add(ticket)) {
-                if(BooleanUtils.isTrue(doShow))
-                emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
                 ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setProizdPrice((ticket).getProizdPrice());
             }
