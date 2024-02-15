@@ -125,7 +125,7 @@ public class ScraperServiceImpl {
                 .orElseThrow(() ->
                         new ResourceNotFoundException(String.format("No present by %s ID", id)));
 
-        emitter.send(SseEmitter.event().name("Ticket info").data(trainMapper.toTrainTicketDto(trainTicket, language)));
+        emitter.send(SseEmitter.event().name("ticket info").data(trainMapper.toTrainTicketDto(trainTicket, language)));
 
         trainTicket.getInfoList().forEach(t -> {
             try {
