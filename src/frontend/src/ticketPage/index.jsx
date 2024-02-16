@@ -17,6 +17,7 @@ function TicketPage() {
     travelTime: 'dafsdf',
     arrivalTime: 'asdasd',
     departureCity: 'asdasd',
+    placeAt: 'Вокзальна площа, 1, Київ',
   });
   const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketError, setTicketError] = useState(false);
@@ -69,13 +70,15 @@ function TicketPage() {
     handleServerRequest();
   }, []);
 
+  const mapView = ticketData.placeAt ? <Maps address={`${ticketData.placeAt},${ticketData.arrivalCity}`} /> : <Error />;
+
   const ticketDataView = ticketData && (
     <>
       <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">{t('price')}</div>
       <Price ticketUrls={ticketUrl} connection={connection} />
-      <Maps />
+      {mapView}
     </>
   );
   const ticketErrorView = ticketError && <Error />;

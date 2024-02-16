@@ -9,7 +9,7 @@ import TouristPlaces from './image 8.png';
 import PlacePreviewList from './placePreviewList';
 import PlacePreview from './placePreview';
 
-function Maps() {
+function Maps({ address }) {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [placesInfo, setPlacesInfo] = useState([]);
@@ -111,7 +111,6 @@ function Maps() {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
     mapRef.current = map;
     const geocoder = new window.google.maps.Geocoder();
-    const address = 'пл. Вокзальная Днепр';
     geocoder.geocode({ address }, (results, status) => {
       if (status === 'OK') {
         map.setCenter(results[0].geometry.location);
