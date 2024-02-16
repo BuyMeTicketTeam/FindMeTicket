@@ -4,11 +4,10 @@ import com.booking.app.controller.api.ScraperAPI;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.services.SortTicketsService;
-import com.booking.app.services.impl.ScraperServiceImpl;
+import com.booking.app.services.impl.ScraperManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class ScraperController implements ScraperAPI {
 
-    private final ScraperServiceImpl scrapingService;
+    private final ScraperManager scrapingService;
 
     private final SortTicketsService sortTicketsService;
 

@@ -15,6 +15,8 @@ import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -34,19 +36,23 @@ import java.util.concurrent.ExecutionException;
 import static com.booking.app.constant.SiteConstants.*;
 
 @Service
-@RequiredArgsConstructor
 @Log4j2
-public class ScraperServiceImpl {
+@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
+public class ScraperManager {
 
     private final TrainTicketRepository trainTicketRepository;
 
-    private final ScraperService busfor;
+    @Qualifier("busfor")
+    private final ScraperService busforService;
 
-    private final ScraperService infobus;
+    @Qualifier("infobus")
+    private final ScraperService infobusService;
 
-    private final ScraperService proizd;
+    @Qualifier("proizd")
+    private final ScraperService proizdService;
 
-    private final ScraperService train;
+    @Qualifier("train")
+    private final ScraperService trainService;
 
     private final RouteRepository routeRepository;
 
@@ -151,11 +157,11 @@ public class ScraperServiceImpl {
             List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
 
             if (busTicket.getBusforPrice() != null)
-                completableFutureListBus.add(busfor.getBusTicket(emitter, busTicket, language));
+                completableFutureListBus.add(busforService.getBusTicket(emitter, busTicket, language));
             if (busTicket.getInfobusPrice() != null)
-                completableFutureListBus.add(infobus.getBusTicket(emitter, busTicket, language));
+                completableFutureListBus.add(infobusService.getBusTicket(emitter, busTicket, language));
             if (busTicket.getProizdPrice() != null)
-                completableFutureListBus.add(proizd.getBusTicket(emitter, busTicket, language));
+                completableFutureListBus.add(proizdService.getBusTicket(emitter, busTicket, language));
 
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
 
@@ -207,10 +213,10 @@ public class ScraperServiceImpl {
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doBus, Boolean doTrain) throws ParseException, IOException {
         return Arrays.asList(
-                infobus.scrapeTickets(emitter, newRoute, language, doBus),
-                proizd.scrapeTickets(emitter, newRoute, language, doBus),
-                busfor.scrapeTickets(emitter, newRoute, language, doBus),
-                train.scrapeTickets(emitter, newRoute, language, doTrain)
+                infobusService.scrapeTickets(emitter, newRoute, language, doBus),
+                proizdService.scrapeTickets(emitter, newRoute, language, doBus),
+                busforService.scrapeTickets(emitter, newRoute, language, doBus),
+                trainService.scrapeTickets(emitter, newRoute, language, doTrain)
         );
     }
 
