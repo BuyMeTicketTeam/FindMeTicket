@@ -1,0 +1,36 @@
+@import '../../styles/variables.scss';
+.delete-confirmation-popup {
+    position: fixed;
+    z-index: 4;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: $main;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  
+    p {
+      margin-bottom: 20px;
+      color: #fff;
+    }
+  
+    .confirmation-buttons {
+      button {
+        margin: 0 10px;
+        padding: 8px 12px;
+        font-size: 16px;
+        color: #fff;
+        background-color: $semi-dark;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+  
+        &:hover {
+          background-color: $bright;
+        }
+      }
+    }
+  }
+  

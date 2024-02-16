@@ -1,10 +1,11 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.dto.RequestUpdatePasswordDTO;
 import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.ResetPasswordService;
@@ -15,7 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.IOException;
+
 import java.util.Optional;
 
 /**
@@ -26,7 +27,7 @@ import java.util.Optional;
 public class ResetPasswordServiceImpl implements ResetPasswordService {
 
     private final MailSenderService mailSenderService;
-    private final UserSecurityRepository userSecurityRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
@@ -38,17 +39,14 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @return Returns true if the email with the reset password link was sent successfully; otherwise, returns false.
      * @throws MessagingException If there is an issue with sending the email.
      */
-    @Override
     @Transactional
-    public boolean sendEmailResetPassword(String email) throws MessagingException {
+    public boolean hasEmailSent(String email) throws MessagingException {
+        UserCredentials userCredentials = userCredentialsRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("No such email"));
 
-        Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(email);
-
-        if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
+        if (!userCredentials.isEnabled()) {
             return false;
         } else {
-            UserSecurity userSecurity = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
-            User user = userSecurity.getUser();
+            User user = userCredentials.getUser();
 
             verifyEmailRepository.delete(user.getConfirmToken());
 
@@ -56,7 +54,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
             user.setConfirmToken(confirmToken);
 
             verifyEmailRepository.save(confirmToken);
-            mailSenderService.sendEmail("resetPasswordUa", "Reset password", confirmToken.getToken(), userFromDb.get());
+            mailSenderService.sendEmail("resetPasswordUa", "Reset password", confirmToken.getToken(), userCredentials);
             return true;
         }
 
@@ -71,19 +69,44 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordDTO dto) {
-
-        Optional<UserSecurity> userFromDb = userSecurityRepository.findByEmail(dto.getEmail());
+        Optional<UserCredentials> userFromDb = userCredentialsRepository.findByEmail(dto.getEmail());
 
         if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
             return false;
         } else {
-            UserSecurity userSecurity = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
+            UserCredentials userCredentials = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
             if (!tokenService.verifyToken(dto.getEmail(), dto.getToken())) return false;
 
-            userSecurity.setPassword(passwordEncoder.encode(dto.getPassword()));
-            userSecurityRepository.save(userSecurity);
+            userCredentials.setPassword(passwordEncoder.encode(dto.getPassword()));
+            userCredentialsRepository.save(userCredentials);
             return true;
         }
+    }
+
+    /**
+     * Changes the password for the specified user based on the provided update information.
+     * <p>
+     * This method checks if the provided last password matches the current password of the user.
+     * If the match is successful, the user's password is updated with the new password, and the
+     * method returns true. If the last password does not match, the password remains unchanged,
+     * and the method returns false.
+     *
+     * @param updatePasswordDTO The data transfer object containing the last and new password information.
+     * @param userCredentials   The credentials of the user for whom the password is to be changed.
+     * @return {@code true} if the password is successfully changed, {@code false} otherwise.
+     */
+    @Override
+    public boolean changePassword(RequestUpdatePasswordDTO updatePasswordDTO, UserCredentials userCredentials) {
+        String currentPassword = userCredentials.getPassword();
+        String lastPassword = updatePasswordDTO.getLastPassword();
+
+        if (passwordEncoder.matches(lastPassword, currentPassword)) {
+            String newPassword = updatePasswordDTO.getPassword();
+            userCredentials.setPassword(passwordEncoder.encode(newPassword));
+            userCredentialsRepository.save(userCredentials);
+            return true;
+        }
+        return false;
     }
 
 }

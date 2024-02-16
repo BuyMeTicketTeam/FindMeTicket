@@ -1,11 +1,15 @@
 import React from 'react';
-import './style.css';
+import './style.scss';
 import PriceBlock from './PriceBlock';
+import spinningLoaderIcon from './spinning-loading.svg';
 
-function Price({ ticketsUrl }) {
+function Price({ ticketUrls, connection }) {
   return (
     <div className="ticket-price">
-      {ticketsUrl.map((ticketUrl) => <PriceBlock ticketUrl={ticketUrl} />)}
+      {ticketUrls.length > 0
+      && ticketUrls.map((ticketUrl) => <PriceBlock ticketUrl={ticketUrl} />)}
+      {connection && <img className="ticket-price__loading" src={spinningLoaderIcon} alt="loader" />}
+      {(ticketUrls === 0 && !connection) && <p>Error...</p>}
     </div>
   );
 }

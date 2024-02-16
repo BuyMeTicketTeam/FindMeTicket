@@ -12,14 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 @Validated
 public interface LoginAPI {
 
-    @Operation(summary = "Authentication User")
+    @Operation(summary = "Basic authentication via username and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been authenticated"),
-            @ApiResponse(responseCode = "403", description = "Invalid credentials or such user doesn't exist")
+            @ApiResponse(responseCode = "401", description = "Invalid credentials or such user doesn't exist")
     })
-     ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDTO dto , HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<?> login(@RequestBody @Valid @NotNull LoginDTO dto, HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+    @Operation(summary = "OAuth 2.0 authentication")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User has been authenticated"),
+            @ApiResponse(responseCode = "401", description = "ID token is invalid")
+    })
+    ResponseEntity<?> loginOAuth2(@RequestBody @Valid @NotNull OAuth2IdTokenDTO tokenDTO, HttpServletResponse response) throws java.io.IOException, GeneralSecurityException;
 
 }

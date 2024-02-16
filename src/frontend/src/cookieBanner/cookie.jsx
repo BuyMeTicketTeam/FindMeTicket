@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import './cookie.css';
+import cookieIcon from './cookie.png';
+import './cookie.scss';
 
 function CookieBanner() {
   const [acceptedCookies, setAcceptedCookies] = useState(
@@ -24,7 +25,7 @@ function CookieBanner() {
   return (
     <div className="cookie-banner">
       <div className="cookie-img">
-        <img src="../img/cookie.png" alt="cookie" />
+        <img src={cookieIcon} alt="cookie" />
       </div>
       <p data-testid="cookie-text">{t('aboutCookieText')}</p>
       <button data-testid="cookie-accept-btn" onClick={acceptCookies} type="button">

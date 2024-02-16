@@ -4,8 +4,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import './style.css';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-// import HotelsMap from './image 6.png';
-// import './googleMap';
+import { useTranslation } from 'react-i18next';
 import TouristPlaces from './image 8.png';
 import PlacePreviewList from './placePreviewList';
 import PlacePreview from './placePreview';
@@ -15,6 +14,7 @@ function Maps() {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
+  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   const handleCategoryClick = (index) => {
     setSelectedCategory(selectedCategory === index ? null : index);
@@ -128,34 +128,22 @@ function Maps() {
   }, []);
 
   const getCategoryClassName = (index) => `category ${selectedCategory === index ? 'active' : ''} ${hoveredCategory === index ? 'hovered' : ''}`;
+  const mapOptions = ['restaurants', 'hotels', 'tourist places'];
 
   return (
     <div className="maps-block">
       <div className="categories">
-        <div
-          className={getCategoryClassName(0)}
-          onClick={() => handleCategoryClick(0)}
-          onMouseEnter={() => handleCategoryHover(0)}
-          onMouseLeave={handleCategoryLeave}
-        >
-          Готелі
-        </div>
-        <div
-          className={getCategoryClassName(1)}
-          onClick={() => handleCategoryClick(1)}
-          onMouseEnter={() => handleCategoryHover(1)}
-          onMouseLeave={handleCategoryLeave}
-        >
-          Ресторани
-        </div>
-        <div
-          className={getCategoryClassName(2)}
-          onClick={() => handleCategoryClick(2)}
-          onMouseEnter={() => handleCategoryHover(2)}
-          onMouseLeave={handleCategoryLeave}
-        >
-          Туристичні місця
-        </div>
+        {mapOptions.map((title, index) => (
+          <button
+            type="button"
+            className={getCategoryClassName(index)}
+            onClick={() => handleCategoryClick(index)}
+            onMouseEnter={() => handleCategoryHover(index)}
+            onMouseLeave={handleCategoryLeave}
+          >
+            {t(title)}
+          </button>
+        ))}
       </div>
       <hr className="horizontal-line" data-testid="horizontal-line" />
       {selectedCategory === 0 && (

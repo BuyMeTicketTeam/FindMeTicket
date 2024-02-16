@@ -1,32 +1,38 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.EmailDTO;
-import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.TokenConfirmationDTO;
+import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserSecurity;
-import com.booking.app.entity.ConfirmToken;
-import com.booking.app.entity.enums.EnumRole;
+import com.booking.app.entity.UserCredentials;
+import com.booking.app.enums.EnumProvider;
+import com.booking.app.enums.EnumRole;
 import com.booking.app.exception.exception.EmailExistsException;
 import com.booking.app.exception.exception.UsernameExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
-import com.booking.app.repositories.UserSecurityRepository;
+import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.TokenService;
 import com.booking.app.services.RegistrationService;
+import com.booking.app.services.TokenService;
+import com.talanlabs.avatargenerator.Avatar;
+import com.talanlabs.avatargenerator.GitHubAvatar;
+import com.talanlabs.avatargenerator.layers.backgrounds.ColorPaintBackgroundLayer;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
+
+import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Service class for user registration operations.
@@ -35,7 +41,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
-    private final UserSecurityRepository userSecurityRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
     private final RoleRepository roleRepository;
     private final VerifyEmailRepository verifyEmailRepository;
     private final PasswordEncoder passwordEncoder;
@@ -48,27 +54,27 @@ public class RegistrationServiceImpl implements RegistrationService {
      *
      * @param registrationDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO Returns an EmailDTO containing information about the registration confirmation email.
-     * @throws EmailExistsException If a user with the provided email already exists.
+     * @throws EmailExistsException    If a user with the provided email already exists.
      * @throws UsernameExistsException If a user with the provided username already exists.
-     * @throws MessagingException If there is an issue with sending the confirmation email.
+     * @throws MessagingException      If there is an issue with sending the confirmation email.
      */
     @Override
-    public EmailDTO register(RegistrationDTO registrationDTO ) throws EmailExistsException, MessagingException, UsernameExistsException {
-        Optional<UserSecurity> userByEmailOrUsernameFromDB = userSecurityRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername());
+    public EmailDTO register(RegistrationDTO registrationDTO) throws EmailExistsException, MessagingException, UsernameExistsException {
+        Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername());
+        if (userCredentials.isPresent()
+                && userCredentials.get().getEmail().equals(registrationDTO.getEmail())
+                && userCredentials.get().isEnabled()) {
 
-        if (userByEmailOrUsernameFromDB.isPresent()
-                && userByEmailOrUsernameFromDB.get().getEmail().equals(registrationDTO.getEmail())
-                && userByEmailOrUsernameFromDB.get().isEnabled()) {
             throw new EmailExistsException("We’re sorry. This email already exists");
         }
 
-        if (userByEmailOrUsernameFromDB.isPresent()
-                && userByEmailOrUsernameFromDB.get().getUsername().equals(registrationDTO.getUsername())
-                && userByEmailOrUsernameFromDB.get().isEnabled()) {
+        if (userCredentials.isPresent()
+                && userCredentials.get().getUsername().equals(registrationDTO.getUsername())
+                && userCredentials.get().isEnabled()) {
             throw new UsernameExistsException("We’re sorry. This username already exists");
         }
-        if (userByEmailOrUsernameFromDB.isPresent() ) {
-            deleteUserIfNotConfirmed(userByEmailOrUsernameFromDB.get());
+        if (userCredentials.isPresent()) {
+            deleteUserIfNotConfirmed(userCredentials.get());
         }
 
         return performRegistration(registrationDTO);
@@ -77,11 +83,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     /**
      * Deletes user
      *
-     * @param byEmail UserSecurity that must be deleted
+     * @param byEmail UserCredentials that must be deleted
      */
     @Transactional
-    public void deleteUserIfNotConfirmed(UserSecurity byEmail) {
-        verifyEmailRepository.deleteById(byEmail.getUser().getConfirmToken().getId());
+    public void deleteUserIfNotConfirmed(UserCredentials byEmail) {
+        userCredentialsRepository.deleteById(byEmail.getId());
     }
 
     /**
@@ -95,37 +101,42 @@ public class RegistrationServiceImpl implements RegistrationService {
      */
     //    @Transactional
     public EmailDTO performRegistration(RegistrationDTO securityDTO) throws MessagingException {
-        UserSecurity securityEntity = mapper.toEntityRegistration(securityDTO);
+        UserCredentials securityEntity = mapper.toUserSecurity(securityDTO);
+        securityEntity.setProvider(EnumProvider.LOCAL);
         securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
 
         User user = createNewRegisteredUser(securityEntity);
-        user.setSecurity(securityEntity);
-        user.getSecurity().setUser(user);
 
         mailService.sendEmail("confirmMailUa", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
 
-        return mapper.toEmail(securityEntity);
+        return mapper.toEmailDTO(securityEntity);
     }
 
     /**
      * Generates a token, saves user to the Database
      *
-     * @param userSecurity UserSecurity that must be saved
+     * @param userCredentials UserSecurity that must be saved
      * @return User that was saved
      */
     @Transactional
-    public User createNewRegisteredUser(UserSecurity userSecurity) {
-        Role role = roleRepository.findByEnumRole(EnumRole.USER);
+    public User createNewRegisteredUser(UserCredentials userCredentials) {
+        Role role = roleRepository.findRoleByEnumRole(EnumRole.USER);
+
+        Avatar avatar = GitHubAvatar.newAvatarBuilder().layers(new ColorPaintBackgroundLayer(Color.WHITE)).build();
+        byte[] asPngBytes = avatar.createAsPngBytes(new Random().nextLong());
+
         User user = User.builder()
-                .registrationDate(LocalDate.now())
-                .security(userSecurity)
+                .security(userCredentials)
+                .profilePicture(asPngBytes)
                 .role(role)
                 .build();
 
         ConfirmToken confirmToken = tokenService.createConfirmToken(user);
 
-        verifyEmailRepository.save(confirmToken);
+        userCredentials.setUser(user);
         user.setConfirmToken(confirmToken);
+
+        userCredentialsRepository.save(userCredentials);
 
         return user;
     }
@@ -139,10 +150,10 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Transactional
     @Override
     public boolean enableIfValid(TokenConfirmationDTO dto) {
-        Optional<UserSecurity> userByEmail = userSecurityRepository.findByEmail(dto.getEmail());
+        Optional<UserCredentials> userByEmail = userCredentialsRepository.findByEmail(dto.getEmail());
 
         if (userByEmail.isPresent() && !userByEmail.get().isEnabled() && tokenService.verifyToken(dto.getEmail(), dto.getToken())) {
-            userSecurityRepository.enableAllBooleansForUser(userByEmail.get().getId());
+            userCredentialsRepository.enableUser(userByEmail.get().getId());
             return true;
 
         }

@@ -1,8 +1,9 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.RequestUpdatePasswordDTO;
 import com.booking.app.dto.ResetPasswordDTO;
+import com.booking.app.entity.UserCredentials;
 import jakarta.mail.MessagingException;
-import java.io.IOException;
 
 /**
  * Service interface for resetting passwords.
@@ -16,7 +17,7 @@ public interface ResetPasswordService {
       * @return Returns true if the email with the reset password link was sent successfully; otherwise, returns false.
       * @throws MessagingException If there is an issue with sending the email.
       */
-     boolean sendEmailResetPassword(String email) throws MessagingException;
+     boolean hasEmailSent(String email) throws MessagingException;
 
      /**
       * Resets the password to a new one using the information provided in the ResetPasswordDTO.
@@ -25,4 +26,6 @@ public interface ResetPasswordService {
       * @return Returns true if the password was successfully changed; otherwise, returns false.
       */
      boolean resetPassword(ResetPasswordDTO dto);
+
+     boolean changePassword(RequestUpdatePasswordDTO updatePasswordDTO, UserCredentials userCredentials);
 }

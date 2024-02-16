@@ -1,10 +1,10 @@
 package com.booking.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -19,7 +19,6 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
@@ -30,15 +29,20 @@ public class User {
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
+    @Column(name = "profile_picture", columnDefinition = "BYTEA")
+    private byte[] profilePicture;
+
+    private String urlPicture;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id",name = "role_id")
+    @JoinColumn(referencedColumnName = "id", name = "role_id")
     private Role role;
 
-    @JoinColumn(referencedColumnName = "id", name = "confirm_id")
-    @OneToOne
+    @JoinColumn(referencedColumnName = "id", name = "token_id")
+    @OneToOne(cascade = CascadeType.ALL)
     private ConfirmToken confirmToken;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
-    private UserSecurity security;
+    @OneToOne(mappedBy = "user")
+    private UserCredentials security;
 
 }

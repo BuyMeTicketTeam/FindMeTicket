@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Input from '../utils/Input';
 import Button from '../utils/Button';
 import makeQuerry from '../helper/querry';
-import './reset.css';
+import './reset.scss';
 import { emailCheck } from '../helper/regExCheck';
 
 export default function Index() {
@@ -15,13 +15,17 @@ export default function Index() {
   const [send, onSend] = useState(false);
   const navigate = useNavigate();
   function statusChecks(response) {
-    if (response.status === 200) {
-      navigate('/change-password');
-      sessionStorage.setItem('email', email.trim());
-    } else if (response.status === 404) {
-      onError(t('error-user-not-found'));
-    } else {
-      onError(t('error-server2'));
+    switch (response.status) {
+      case 200:
+        navigate('/reset-password');
+        sessionStorage.setItem('email', email);
+        break;
+      case 404:
+        onError(t('error-user-not-found'));
+        break;
+      default:
+        onError(t('error-server2'));
+        break;
     }
   }
 
@@ -35,12 +39,11 @@ export default function Index() {
   }
 
   function handleButton() {
-    onEmailError(false);
     if (!validation()) {
       onSend(false);
       return;
     }
-    makeQuerry('reset', JSON.stringify({ email: email.trim() }))
+    makeQuerry('reset', JSON.stringify({ email }))
       .then((response) => {
         onSend(false);
         statusChecks(response);
@@ -57,13 +60,28 @@ export default function Index() {
     }
   }, [send]);
   return (
-    <div className="reset">
+    <div className="reset main">
       <div className="form-body reset__body">
         <h1 className="title">{t('password-reset')}</h1>
         <p className="reset__text">{t('email')}</p>
-        <Input error={emailError} value={email} onInputChange={(value) => handleEmailChange(value)} type="text" placeholder="mail@mail.com" dataTestId="reset-input" />
+        <Input
+          error={emailError}
+          value={email}
+          onInputChange={(value) => handleEmailChange(value)}
+          type="text"
+          placeholder="mail@mail.com"
+          dataTestId="reset-input"
+        />
+
         {error !== '' && <p data-testid="error" className="reset__error">{error}</p>}
-        <Button name={send ? t('processing') : t('send')} disabled={send} className="reset__btn" onButton={onSend} dataTestId="reset-btn" />
+        <Button
+          name={send ? t('processing') : t('send')}
+          disabled={send}
+          className="reset__btn"
+          onButton={onSend}
+          dataTestId="reset-btn"
+        />
+
       </div>
     </div>
   );

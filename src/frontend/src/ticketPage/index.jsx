@@ -1,67 +1,60 @@
 /* eslint-disable max-len */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-restricted-syntax */
-import React, { useCallback, useEffect } from 'react';
-import { fetchEventSource } from '@microsoft/fetch-event-source';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// import Price from './Price/index';
-// import Information from './Information/index ';
-import Maps from './Maps/index';
-// import eventSourceQuery from '../helper/eventSourceQuery';
-import './style.css';
+import { useTranslation } from 'react-i18next';
+import eventSourceQuery2 from '../helper/eventSourceQuery2';
+import Price from './Price/index';
+import Information from './Information/index ';
+import Loader from '../Loader/index';
+import Error from '../Error';
+import './style.scss';
 
 function TicketPage() {
   const { ticketId } = useParams();
-  // const [ticketData, setTicketData] = useState(null);
-  // const [ticketUrl, setTicketUrl] = useState([]);
-
-  // async function serverRequest() {
-  //   const dataStream = await eventSourceQuery(`/get/ticket/${ticketId}`, undefined, undefined, 'GET');
-  //   for await (const chunk of dataStream) {
-  //     console.log(chunk);
-  //     // if (Object.prototype.hasOwnProperty.call(chunk, 'ticketname')) {
-  //     //   setTicketData(chunk);
-  //     // } else {
-  //     //   setTicketUrl(((prevLinks) => [...prevLinks, chunk]));
-  //     // }
-  //   }
-  // }
+  const [ticketData, setTicketData] = useState(null);
+  const [ticketUrl, setTicketUrl] = useState([]);
+  const [ticketError, setTicketError] = useState(false);
+  const [connection, setConnection] = useState(true);
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   async function serverRequest() {
-    try {
-      await fetchEventSource(`http://localhost:8080/get/ticket/${ticketId}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'text/event-stream',
-        },
-        onopen(res) {
-          if (res.ok && res.status === 200) {
-            // console.log('Connection made ', res);
-          } else if (
-            res.status >= 400
-          && res.status < 500
-          && res.status !== 429
-          ) {
-            // console.log('Client side error ', res);
-          }
-        },
-        // onmessage(event) {
-        //   // console.log('event', event);
-        //   // console.log('event data:', event.data);
-        //   // const parsedData = JSON.parse(event.data);
-        //   // console.log(parsedData);
-        // },
-        onclose() {
-          // console.log('Connection closed by the server');
-          throw new Error('Connection closed');
-        },
-        onerror(err) {
-          throw err;
-        },
-      });
-    } catch (error) {
-      // console.log('There was an error or connection was closed', error);
+    function handleOpen(res) {
+      switch (res.status) {
+        case 200:
+          console.log('open successfully');
+          break;
+        default:
+          setTicketError(true);
+          break;
+      }
     }
+
+    function handleMessage(event) {
+      const parsedData = JSON.parse(event.data);
+      if (event.event === 'ticket info') {
+        setTicketData(parsedData);
+        return;
+      }
+      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: parsedData.url, price: parsedData.price }]);
+    }
+
+    function handleError() {
+      if (!ticketData) {
+        console.log('ticket data in error message:', ticketData);
+      }
+    }
+
+    function handleClose() {
+      setConnection(false);
+    }
+    eventSourceQuery2({
+      address: `get/ticket/${ticketId}`,
+      handleMessage,
+      handleError,
+      handleOpen,
+      handleClose,
+      headers: { 'Content-Language': i18n.language.toLowerCase() },
+    });
   }
 
   const handleServerRequest = useCallback(() => serverRequest(), []);
@@ -70,15 +63,22 @@ function TicketPage() {
     handleServerRequest();
   }, []);
 
+  const ticketDataView = ticketData && (
+    <>
+      <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
+      <Information ticketData={ticketData} />
+      <div className="ticketPage-text">{t('price')}</div>
+      <Price ticketUrls={ticketUrl} connection={connection} />
+    </>
+  );
+  const ticketErrorView = ticketError && <Error />;
+  const ticketLoadingView = (!ticketError && !ticketData) && <Loader />;
+
   return (
     <div className="ticket-page-container">
-      {/* <div className="ticketPage-header">{ticketData.date}</div>
-      <Information ticketData={ticketData} />
-      <div className="ticketPage-text">Ціни</div>
-      <Price ticketUrl={ticketUrl} />
-      <Maps /> */}
-      <Maps />
-      <h2>testing</h2>
+      {ticketDataView}
+      {ticketErrorView}
+      {ticketLoadingView}
     </div>
   );
 }

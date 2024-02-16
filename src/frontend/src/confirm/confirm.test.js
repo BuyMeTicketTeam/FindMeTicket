@@ -23,7 +23,7 @@ describe('validation', () => {
     );
     const buttonReg = screen.getByTestId('confirm-btn');
     fireEvent.click(buttonReg);
-    expect(screen.queryByTestId('error').innerHTML).toBe('confirm-error');
+    expect(screen.queryByTestId('error').innerHTML).toBe('error-code');
   });
   test('success validation', () => {
     render(
@@ -63,9 +63,11 @@ describe('server tests', () => {
     });
     fireEvent.click(buttonReg);
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/confirm-email', {
+    expect(fetchMock).toHaveBeenCalledWith(`http://localhost:${process.env.REACT_APP_PORT}/confirm-email`, {
       body: '{"email":null,"token":"12342"}',
+      credentials: 'include',
       headers: {
+        Authorization: null,
         'Content-Type': 'application/json',
       },
       method: 'POST',
