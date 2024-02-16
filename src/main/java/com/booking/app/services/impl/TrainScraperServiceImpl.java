@@ -97,8 +97,7 @@ public class TrainScraperServiceImpl implements ScraperService {
 
     @Override
     public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) {
-        //implementation is not needed
-        return null;
+        throw new java.lang.UnsupportedOperationException();
     }
 
     private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language) {
