@@ -46,14 +46,13 @@ public class ScraperController implements ScraperAPI {
 
     @GetMapping("/get/ticket/{id}")
     @Override
-    public ResponseBodyEmitter getTicket(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    public ResponseBodyEmitter getTicketById(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
         CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
         isTicketFound.thenAccept(isFound -> {
-            if (isFound) response.setStatus(HttpStatus.OK.value());
-            else response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setStatus(isFound ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value());
         });
         return emitter;
     }

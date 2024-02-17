@@ -16,8 +16,8 @@ import java.util.UUID;
 @ToString
 @SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Ticket {
+@NoArgsConstructor
+public class Ticket {
 
     @Id
     private UUID id;

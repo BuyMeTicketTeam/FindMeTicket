@@ -11,6 +11,7 @@ import com.booking.app.mapper.BusMapper;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.repositories.RouteRepository;
+import com.booking.app.repositories.TicketRepository;
 import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -37,7 +39,7 @@ import static com.booking.app.constant.SiteConstants.*;
 
 @Service
 @Log4j2
-@RequiredArgsConstructor(onConstructor = @__({@Autowired}))
+@RequiredArgsConstructor
 public class ScraperManager {
 
     private final TrainTicketRepository trainTicketRepository;
@@ -58,12 +60,15 @@ public class ScraperManager {
 
     private final BusTicketRepository busTicketRepository;
 
+    private final TicketRepository ticketRepository;
+
     private final BusMapper busMapper;
 
     private final TrainMapper trainMapper;
 
     @Async
     public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException {
+
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
         Route newRoute = null;
@@ -91,8 +96,6 @@ public class ScraperManager {
             })) {
                 routeRepository.save(newRoute);
             }
-            emitter.complete();
-
         } else {
             for (Ticket ticket : route.getTickets()) {
                 if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
@@ -112,24 +115,20 @@ public class ScraperManager {
 
     @Async
     public CompletableFuture<Boolean> getTicket(UUID id, SseEmitter emitter, String language) throws IOException, ParseException {
-        try {
-            tryBus(id, emitter, language);
-            return CompletableFuture.completedFuture(true);
-        } catch (ResourceNotFoundException busEx) {
-            try {
-                tryTrain(id, emitter, language);
-                return CompletableFuture.completedFuture(true);
-            } catch (ResourceNotFoundException e) {
-                emitter.completeWithError(e);
-                return CompletableFuture.completedFuture(false);
-            }
-        }
+
+        Ticket ticket = ticketRepository.findById(id).orElseGet(Ticket::new);
+
+        return switch (ticket) {
+            case BusTicket e -> sendBus(e, emitter, language);
+            case TrainTicket e -> sendTrain(e, emitter, language);
+            default -> {
+                emitter.complete();
+                yield CompletableFuture.completedFuture(false);}
+        };
+
     }
 
-    private void tryTrain(UUID id, SseEmitter emitter, String language) throws IOException {
-        TrainTicket trainTicket = trainTicketRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format("No present by %s ID", id)));
+    private CompletableFuture<Boolean> sendTrain(TrainTicket trainTicket, SseEmitter emitter, String language) throws IOException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(trainMapper.toTrainTicketDto(trainTicket, language)));
 
@@ -141,14 +140,10 @@ public class ScraperManager {
             }
         });
         emitter.complete();
+        return CompletableFuture.completedFuture(true);
     }
 
-    private void tryBus(UUID id, SseEmitter emitter, String language) throws IOException, ParseException {
-
-        BusTicket busTicket;
-        busTicket = busTicketRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(String.format("No BUS busTicket present by %s ID", id)));
+    private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws IOException, ParseException {
 
         emitter.send(SseEmitter.event().name("busTicket info").data(busMapper.ticketToTicketDto(busTicket, language)));
 
@@ -170,7 +165,7 @@ public class ScraperManager {
             } catch (CancellationException | CompletionException e) {
                 log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
                 emitter.completeWithError(e);
-                return;
+                return CompletableFuture.completedFuture(false);
             }
 
             busTicketRepository.save(busTicket);
@@ -200,6 +195,7 @@ public class ScraperManager {
 
         }
         emitter.complete();
+        return CompletableFuture.completedFuture(true);
     }
 
     private static Route createRoute(RequestTicketsDTO requestTicketDTO) {
