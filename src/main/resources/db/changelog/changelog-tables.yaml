@@ -154,6 +154,14 @@ databaseChangeLog:
             tableName: train_info
   - changeSet:
       id: 1708181601879-6
+                  name: places_left
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL
+            tableName: train_ticket_info_list
+  - changeSet:
+      id: 1707920942856-6
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -367,6 +375,7 @@ databaseChangeLog:
             baseColumnNames: train_ticket_id
             baseTableName: train_info
             constraintName: fk_train_info_on_train_ticket
+            baseTableName: train_ticket_info_list
+            constraintName: fk_trainticket_infolist_on_train_ticket
             referencedColumnNames: id
             referencedTableName: ticket
-
