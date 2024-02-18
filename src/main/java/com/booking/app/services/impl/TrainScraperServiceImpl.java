@@ -8,9 +8,11 @@ import com.booking.app.entity.TrainTicket;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -82,6 +84,7 @@ public class TrainScraperServiceImpl implements ScraperService {
             }
         }
 
+        driver.quit();
         return CompletableFuture.completedFuture(true);
     }
 
@@ -142,12 +145,13 @@ public class TrainScraperServiceImpl implements ScraperService {
     }
 
     private static TrainTicket createTicket(WebElement element, Route route, int totalMinutes, String formattedTime, String carrier, List<TrainComfortInfo> list) {
+        String[] places = element.findElement(By.cssSelector("div.trip-item__route")).getText().split(" — ");
         return TrainTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
                 .arrivalDate(formattedTime)
-                .placeFrom(element.findElement(By.cssSelector("div.trip-item__route")).getText().replace(" —.+", ""))
-                .placeAt(element.findElement(By.cssSelector("div.trip-item__route")).getText().replace(".+— ", ""))
+                .placeFrom(places[0])
+                .placeAt(places[1])
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .departureTime(element.findElements(By.cssSelector("div.trip__time ")).get(0).getText())
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time ")).get(1).getText())
@@ -161,26 +165,43 @@ public class TrainScraperServiceImpl implements ScraperService {
 
         driver.get(url);
         if (language.equals("ua"))
-            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "//li[@class='station-item active ng-star-inserted']", driver);
         else
-            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "//li[@class='station-item active ng-star-inserted']", driver);
 
         if (language.equals("ua"))
-            selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", driver);
+            selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
         else
-            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", driver);
+            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
 
         selectDate(departureDate, driver, wait, language);
 
         driver.findElement(By.cssSelector("button.search-btn")).click();
     }
 
-    private static void selectCity(WebDriverWait wait, String city, String inputXpath, ChromeDriver driver) {
+    @SneakyThrows
+    private static void selectCity(WebDriverWait wait, String city, String inputXpath, String cityXpath, ChromeDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         Actions actions = new Actions(driver);
-        actions.moveToElement(inputCity).doubleClick().build().perform();
+        actions.moveToElement(inputCity).click().build().perform();
         inputCity.clear();
         inputCity.sendKeys(city);
+
+        synchronized (driver){
+            driver.wait(1000);
+        }
+
+        WebElement proposedCity = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
+
+        synchronized (driver){
+            driver.wait(1000);
+        }
+
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
+        } catch (StaleElementReferenceException e) {
+            wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
+        }
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {

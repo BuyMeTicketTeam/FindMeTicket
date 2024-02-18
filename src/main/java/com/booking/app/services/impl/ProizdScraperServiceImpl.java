@@ -202,7 +202,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
+        Actions actions = new Actions(driver);
         driver.get(url);
         if (language.equals("ua"))
             selectCity(wait, departureCity, "//input[@placeholder='Станція відправлення']", driver);
@@ -216,15 +216,18 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         selectDate(departureDate, driver, wait, language);
 
-        driver.findElement(By.cssSelector("button.btn.search-form__btn")).click();
+        WebElement element = driver.findElement(By.cssSelector("button.btn.search-form__btn"));
+        actions.moveToElement(element).click().build().perform();
     }
 
     private static void selectCity(WebDriverWait wait, String city, String inputXpath, ChromeDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         Actions actions = new Actions(driver);
-        actions.moveToElement(inputCity).doubleClick().build().perform();
+        actions.moveToElement(inputCity).click().build().perform();
+        inputCity.clear();
         inputCity.sendKeys(city);
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
+        WebElement proposedCity = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//li[@class='station-item active ng-star-inserted']")));
+        wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
