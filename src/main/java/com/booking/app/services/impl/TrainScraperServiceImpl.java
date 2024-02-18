@@ -79,6 +79,9 @@ public class TrainScraperServiceImpl implements ScraperService {
             TrainTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
             if (route.getTickets().add(ticket) && BooleanUtils.isTrue(doShow)) {
                 emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(ticket, language)));
+            }else{
+                List infolist = ((TrainTicket)route.getTickets().stream().filter(t->t.equals(ticket)).findFirst().get()).getInfoList();
+                ticket.getInfoList().forEach(infolist::add);
             }
         }
 
