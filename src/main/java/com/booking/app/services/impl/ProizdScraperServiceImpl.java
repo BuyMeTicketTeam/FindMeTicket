@@ -91,7 +91,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
                 route.getTickets().stream()
                         .filter(t -> t.equals(ticket))
                         .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setInfobusPrice(ticket.getInfobusPrice()));
+                        .ifPresent(t -> ((BusTicket) t).setProizdPrice(ticket.getProizdPrice()));
             }
         }
 
