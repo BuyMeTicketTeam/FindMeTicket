@@ -81,8 +81,8 @@ public class TrainScraperServiceImpl implements ScraperService {
             TrainTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
             if (route.getTickets().add(ticket) && BooleanUtils.isTrue(doShow)) {
                 emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(ticket, language)));
-            }else{
-                List infolist = ((TrainTicket)route.getTickets().stream().filter(t->t.equals(ticket)).findFirst().get()).getInfoList();
+            } else {
+                List infolist = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(ticket)).findFirst().get()).getInfoList();
                 ticket.getInfoList().forEach(infolist::add);
             }
         }
@@ -190,13 +190,13 @@ public class TrainScraperServiceImpl implements ScraperService {
         inputCity.clear();
         inputCity.sendKeys(city);
 
-        synchronized (driver){
+        synchronized (driver) {
             driver.wait(1000);
         }
 
         WebElement proposedCity = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
 
-        synchronized (driver){
+        synchronized (driver) {
             driver.wait(1000);
         }
 
@@ -249,7 +249,11 @@ public class TrainScraperServiceImpl implements ScraperService {
 
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.calbody")));
 
-        driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
+        List<WebElement> dates = driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li"));
+        int indexOfFirstDay = dates.indexOf(dates.stream().filter(el -> el.getText().equals("1")).findFirst().orElse(null));
+        List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
+        WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
+        actions.moveToElement(liDate).doubleClick().build().perform();
     }
 
 }

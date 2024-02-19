@@ -84,7 +84,10 @@ public class InfobusScraperServiceImpl implements ScraperService {
                 if (BooleanUtils.isTrue(doShow))
                     emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setInfobusPrice((ticket).getInfobusPrice());
+                route.getTickets().stream()
+                        .filter(t -> t.equals(ticket))
+                        .findFirst()
+                        .ifPresent(t -> ((BusTicket) t).setInfobusPrice(ticket.getInfobusPrice()));
             }
         }
 
@@ -204,7 +207,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
         Actions actions = new Actions(driver);
         actions.moveToElement(inputCity).doubleClick().build().perform();
         inputCity.sendKeys(city);
-        wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElements(By.tagName("li")).get(0).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElements(By.tagName("li")).getFirst().click();
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {

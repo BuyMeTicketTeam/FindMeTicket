@@ -88,7 +88,10 @@ public class ProizdScraperServiceImpl implements ScraperService {
                 if (BooleanUtils.isTrue(doShow))
                     emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setProizdPrice((ticket).getProizdPrice());
+                route.getTickets().stream()
+                        .filter(t -> t.equals(ticket))
+                        .findFirst()
+                        .ifPresent(t -> ((BusTicket) t).setInfobusPrice(ticket.getInfobusPrice()));
             }
         }
 
@@ -273,7 +276,12 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.calbody")));
 
-        driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
+        List<WebElement> dates = driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li"));
+        int indexOfFirstDay = dates.indexOf(dates.stream().filter(el -> el.getText().equals("1")).findFirst().orElse(null));
+        List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
+        WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
+        actions.moveToElement(liDate).doubleClick().build().perform();
+
     }
 
     private static BusTicket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime, String carrier) {

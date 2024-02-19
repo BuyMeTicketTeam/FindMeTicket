@@ -91,7 +91,10 @@ public class BusforScraperServiceImpl implements ScraperService {
                 if (BooleanUtils.isTrue(doShow))
                     emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setBusforPrice((ticket).getBusforPrice());
+                route.getTickets().stream()
+                        .filter(t -> t.equals(ticket))
+                        .findFirst()
+                        .ifPresent(t -> ((BusTicket) t).setInfobusPrice(ticket.getInfobusPrice()));
             }
         }
 
