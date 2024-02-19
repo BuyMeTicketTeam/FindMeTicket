@@ -8,7 +8,8 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ticket")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames =
+        {"place_from", "place_at", "departure_time", "arrival_time", "carrier", "route_id"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type")
 @Setter
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class Ticket {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "place_from")
