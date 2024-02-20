@@ -1,5 +1,6 @@
 package com.booking.app.mapper;
 
+import com.booking.app.dto.TrainComfortInfoDTO;
 import com.booking.app.dto.TrainTicketDTO;
 import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
@@ -16,11 +17,15 @@ public interface TrainMapper {
 
     @Mapping(source = "route.departureCity", target = "departureCity")
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
+    @Mapping(source = "id",target = "id")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
     @Mapping(target = "type", constant = "TRAIN")
     TrainTicketDTO toTrainTicketDto(TrainTicket ticket, @Context String language);
+
+
+    TrainComfortInfoDTO toTrainComfortInfoDTO(TrainComfortInfo ticket);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {

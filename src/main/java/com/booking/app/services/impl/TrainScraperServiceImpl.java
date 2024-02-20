@@ -8,8 +8,11 @@ import com.booking.app.entity.TrainTicket;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -38,33 +41,53 @@ import java.util.concurrent.CompletableFuture;
 public class TrainScraperServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
+
     private final ChromeOptions options;
-    private static final String DIV_TICKET = "div.trip-adaptive";
+
     private final TrainMapper trainMapper;
+
+    private static final String DIV_TICKET = "div.trip-adaptive";
+
+    private static final String DIV_TICKET_NOT_FOUND = "div.error.card";
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         ChromeDriver driver = new ChromeDriver(options);
-
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
 
         try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+        } catch (Exception e) {
+            driver.quit();
+            log.info("PROIZD TRAIN TICKETS IN scrapeTickets(): NOT FOUND");
+            return CompletableFuture.completedFuture(false);
+        }
+
+        try {
             synchronized (driver) {
-                driver.wait(10000);
+                driver.wait(5000);
             }
         } catch (InterruptedException e) {
         }
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
+        log.info("PROIZD TRAIN TICKETS IN scrapeTickets(): " + elements.size());
+
         for (int i = 0; i < elements.size() && i < 150; i++) {
             TrainTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
-            if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("Proizd bus: ").data(trainMapper.toTrainTicketDto(ticket, language)));
+            if (route.getTickets().add(ticket) && BooleanUtils.isTrue(doShow)) {
+                emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(ticket, language)));
+            } else {
+                List infolist = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(ticket)).findFirst().get()).getInfoList();
+                ticket.getInfoList().forEach(infolist::add);
             }
         }
 
+        driver.quit();
         return CompletableFuture.completedFuture(true);
     }
 
@@ -80,8 +103,7 @@ public class TrainScraperServiceImpl implements ScraperService {
 
     @Override
     public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) {
-        //implementation is not needed
-        return null;
+        throw new java.lang.UnsupportedOperationException();
     }
 
     private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language) {
@@ -108,7 +130,7 @@ public class TrainScraperServiceImpl implements ScraperService {
         String carrier = language.equals("eng") ? "" : "Укрзалізниця";
 
 
-        List<WebElement> elements = element.findElements(By.cssSelector("div.trip__carriage-types"));
+        List<WebElement> elements = element.findElements(By.cssSelector("div.carriage"));
 
         List<TrainComfortInfo> list = new LinkedList<>();
 
@@ -123,16 +145,16 @@ public class TrainScraperServiceImpl implements ScraperService {
         }
 
         return createTicket(element, route, totalMinutes, formattedDate, carrier, list);
-
     }
 
     private static TrainTicket createTicket(WebElement element, Route route, int totalMinutes, String formattedTime, String carrier, List<TrainComfortInfo> list) {
+        String[] places = element.findElement(By.cssSelector("div.trip-item__route")).getText().split(" — ");
         return TrainTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
                 .arrivalDate(formattedTime)
-                .placeFrom(element.findElement(By.cssSelector("div.trip-item__route")).getText().replace(" —.+", ""))
-                .placeAt(element.findElement(By.cssSelector("div.trip-item__route")).getText().replace(".+— ", ""))
+                .placeFrom(places[0])
+                .placeAt(places[1])
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .departureTime(element.findElements(By.cssSelector("div.trip__time ")).get(0).getText())
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time ")).get(1).getText())
@@ -141,34 +163,48 @@ public class TrainScraperServiceImpl implements ScraperService {
                 .build();
     }
 
-
     private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(url);
         if (language.equals("ua"))
-            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "//li[@class='station-item active ng-star-inserted']", driver);
         else
-            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "//li[@class='station-item active ng-star-inserted']", driver);
 
         if (language.equals("ua"))
-            selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", driver);
+            selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
         else
-            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", driver);
+            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
 
         selectDate(departureDate, driver, wait, language);
 
         driver.findElement(By.cssSelector("button.search-btn")).click();
     }
 
-    private static void selectCity(WebDriverWait wait, String city, String inputXpath, ChromeDriver driver) {
+    @SneakyThrows
+    private static void selectCity(WebDriverWait wait, String city, String inputXpath, String cityXpath, ChromeDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         Actions actions = new Actions(driver);
-        actions.moveToElement(inputCity).doubleClick().build().perform();
+        actions.moveToElement(inputCity).click().build().perform();
         inputCity.clear();
-        actions.moveToElement(inputCity).doubleClick().build().perform();
         inputCity.sendKeys(city);
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
+
+        synchronized (driver) {
+            driver.wait(1000);
+        }
+
+        WebElement proposedCity = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
+
+        synchronized (driver) {
+            driver.wait(1000);
+        }
+
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
+        } catch (StaleElementReferenceException e) {
+            wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
+        }
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
@@ -179,7 +215,6 @@ public class TrainScraperServiceImpl implements ScraperService {
         String calendarMonth = driver.findElement(By.cssSelector("li.calmonth")).getText();
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-
 
         SimpleDateFormat outputMonthFormat = language.equals("eng") ? new SimpleDateFormat("MMMM", new Locale("en"))
                 : new SimpleDateFormat("MMMM", new Locale("uk"));
@@ -214,7 +249,11 @@ public class TrainScraperServiceImpl implements ScraperService {
 
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.calbody")));
 
-        driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
+        List<WebElement> dates = driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li"));
+        int indexOfFirstDay = dates.indexOf(dates.stream().filter(el -> el.getText().equals("1")).findFirst().orElse(null));
+        List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
+        WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
+        actions.moveToElement(liDate).doubleClick().build().perform();
     }
 
 }
