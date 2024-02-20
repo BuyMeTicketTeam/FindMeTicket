@@ -17,9 +17,10 @@ function TicketPage() {
     travelTime: 'dafsdf',
     arrivalTime: 'asdasd',
     departureCity: 'asdasd',
-    placeAt: 'Вокзальна площа, 1, Київ',
+    placeAt: 'Вокзальна площа, 1',
+    arrivalCity: 'Київ',
   });
-  const [ticketUrl, setTicketUrl] = useState([]);
+  const [ticketUrl, setTicketUrl] = useState([{ comfort: 'купе', price: 100 }, { comfort: 'купе', price: 200 }]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });

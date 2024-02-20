@@ -13,7 +13,6 @@ export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, update
           openNow={placeInfo?.opening_hours?.isOpen() ?? false}
           rating={placeInfo.rating}
           onClick={() => {
-            // console.log(placeInfo);
             setCurrentPlaceId(placeInfo.place_id);
             updateMarker(placeInfo);
           }}

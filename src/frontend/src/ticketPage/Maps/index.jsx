@@ -5,28 +5,14 @@ import React, { useRef, useState, useCallback } from 'react';
 import './style.scss';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { useTranslation } from 'react-i18next';
-import TouristPlaces from './image 8.png';
 import PlacePreviewList from './placePreviewList';
 import PlacePreview from './placePreview';
 
 function Maps({ address }) {
   const [selectedCategory, setSelectedCategory] = useState(0);
-  const [hoveredCategory, setHoveredCategory] = useState(null);
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
-
-  const handleCategoryClick = (index) => {
-    setSelectedCategory(selectedCategory === index ? null : index);
-  };
-
-  const handleCategoryHover = (index) => {
-    setHoveredCategory(index);
-  };
-
-  const handleCategoryLeave = () => {
-    setHoveredCategory(null);
-  };
 
   const containerStyle = {
     width: '100%',
@@ -61,7 +47,6 @@ function Maps({ address }) {
     place.marker.setIcon(svgMarker);
     mapRef.current.panTo(place.marker.getPosition());
     markerRef.current = place.marker;
-    console.log(markerRef.current);
   }
 
   function createMarker(place, map) {
@@ -89,11 +74,22 @@ function Maps({ address }) {
     });
   }
 
+  function types() {
+    switch (selectedCategory) {
+      case 0:
+        return ['restaurant'];
+      case 1:
+        return ['lodging'];
+      default:
+        return ['tourist_attraction'];
+    }
+  }
+
   function nearbySearch(stationLocation, map) {
     const request = {
       location: stationLocation,
-      radius: '500',
-      type: selectedCategory === 1 ? ['lodging'] : ['restaurant'],
+      radius: '1000',
+      type: types(),
     };
     const service = new window.google.maps.places.PlacesService(map);
     setPlacesInfo([]);
@@ -126,7 +122,6 @@ function Maps({ address }) {
     mapRef.current = null;
   }, []);
 
-  const getCategoryClassName = (index) => `category ${selectedCategory === index ? 'active' : ''} ${hoveredCategory === index ? 'hovered' : ''}`;
   const mapOptions = ['restaurants', 'hotels', 'tourist places'];
 
   return (
@@ -135,10 +130,8 @@ function Maps({ address }) {
         {mapOptions.map((title, index) => (
           <button
             type="button"
-            className={getCategoryClassName(index)}
-            onClick={() => handleCategoryClick(index)}
-            onMouseEnter={() => handleCategoryHover(index)}
-            onMouseLeave={handleCategoryLeave}
+            className={`category ${index === selectedCategory ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(index)}
           >
             {t(title)}
           </button>
@@ -152,7 +145,7 @@ function Maps({ address }) {
             {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
             <GoogleMap
               mapContainerStyle={containerStyle}
-              zoom={16}
+              zoom={14}
               onLoad={onLoad}
               onUnmount={onUnmount}
               options={{
@@ -169,6 +162,23 @@ function Maps({ address }) {
             {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
             <GoogleMap
               mapContainerStyle={containerStyle}
+              zoom={14}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              options={{
+                streetViewControl: false,
+              }}
+            />
+          </div>
+        )
+      )}
+      {selectedCategory === 2 && (
+        isLoaded && (
+          <div className="map-container">
+            <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} updateMarker={(place) => updateMarker(place)} />
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
+            <GoogleMap
+              mapContainerStyle={containerStyle}
               zoom={16}
               onLoad={onLoad}
               onUnmount={onUnmount}
@@ -179,7 +189,6 @@ function Maps({ address }) {
           </div>
         )
       )}
-      {selectedCategory === 2 && <img src={TouristPlaces} alt="TouristPlaces" />}
     </div>
   );
 }

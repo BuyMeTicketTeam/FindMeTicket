@@ -37,8 +37,9 @@
     border-bottom: 2px solid #ff7f50;
   }
 
-  &.hovered {
+  &:hover {
     color: #ff7f50;
+    border-bottom: 2px solid #ff7f50;
   }
 }
 

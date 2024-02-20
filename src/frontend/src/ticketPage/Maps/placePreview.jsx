@@ -6,9 +6,8 @@ import addressIcon from './location.svg';
 import websiteIcon from './websiteIcon.svg';
 import arrowIcon from './arrowIcon.svg';
 
-export default function PlacePreviewItem({ placesInfo, placeId, setCurrentPlaceId }) {
+export default function PlacePreview({ placesInfo, placeId, setCurrentPlaceId }) {
   const placeInfo = placesInfo.find((place) => place.place_id === placeId);
-  console.log(placeInfo);
   const {
     name,
     website,
