@@ -53,7 +53,8 @@ public class WebSecurityConfiguration {
             "/oauth2/authorize/**",
             "/sortedBy",
             "/searchTickets",
-            "/get/ticket/**"
+            "/get/ticket/**",
+            "/selectedTransport"
     };
 
     @Bean

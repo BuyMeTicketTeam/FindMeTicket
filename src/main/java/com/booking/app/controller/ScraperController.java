@@ -1,14 +1,15 @@
 package com.booking.app.controller;
 
 import com.booking.app.controller.api.ScraperAPI;
+import com.booking.app.dto.BusTicketDTO;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.services.SortTicketsService;
+import com.booking.app.services.TicketService;
 import com.booking.app.services.impl.ScraperServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +32,8 @@ public class ScraperController implements ScraperAPI {
     private final ScraperServiceImpl scrapingService;
 
     private final SortTicketsService sortTicketsService;
+
+    private final TicketService ticketService;
 
     @PostMapping("/searchTickets")
     public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
@@ -57,6 +61,11 @@ public class ScraperController implements ScraperAPI {
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
+    }
+
+    @PostMapping("/selectedTransport")
+    public ResponseEntity<List<BusTicketDTO>> getSelectedTransportTicket(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
+        return ResponseEntity.ok(ticketService.getBusTickets(requestSortedTicketsDTO));
     }
 
 }
