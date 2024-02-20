@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping
 @RequiredArgsConstructor
 public class ScraperController implements ScraperAPI {
 
@@ -35,7 +35,7 @@ public class ScraperController implements ScraperAPI {
 
     private final TicketService ticketService;
 
-    @PostMapping("/searchTickets")
+    @PostMapping(value = "/searchTickets", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
@@ -48,7 +48,7 @@ public class ScraperController implements ScraperAPI {
         return emitter;
     }
 
-    @GetMapping("/get/ticket/{id}")
+    @GetMapping(value = "/get/ticket/{id}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<ResponseBodyEmitter> getTicket(@PathVariable UUID id, HttpServletRequest request) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
@@ -57,13 +57,13 @@ public class ScraperController implements ScraperAPI {
         return new ResponseEntity<>(emitter, HttpStatus.OK);
     }
 
-    @PostMapping("/sortedBy")
+    @PostMapping(value = "/sortedBy", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 
-    @PostMapping("/selectedTransport")
+    @PostMapping(value = "/selectedTransport", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BusTicketDTO>> getSelectedTransportTicket(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
         return ResponseEntity.ok(ticketService.getBusTickets(requestSortedTicketsDTO));
     }
