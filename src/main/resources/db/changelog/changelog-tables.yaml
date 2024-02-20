@@ -2,6 +2,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-1
       author: User (generated)
+      id: 1708181601879-1
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -21,6 +23,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-2
       author: User (generated)
+      id: 1708181601879-2
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -48,6 +52,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-3
       author: User (generated)
+      id: 1708181601879-3
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -108,6 +114,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-4
       author: User (generated)
+      id: 1708181601879-4
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -133,6 +141,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-5
       author: User (generated)
+      id: 1708181601879-5
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -147,6 +157,14 @@ databaseChangeLog:
                   type: varchar(1000)
               - column:
                   name: comfort
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL
+            tableName: train_info
+  - changeSet:
+      id: 1708181601879-6
+                  name: places_left
                   type: VARCHAR(255)
               - column:
                   name: price
@@ -189,6 +207,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-7
       author: User (generated)
+      id: 1708181601879-7
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -239,6 +259,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-8
       author: User (generated)
+      id: 1708181601879-8
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -272,6 +294,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-9
       author: User (generated)
+      id: 1708181601879-9
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -281,6 +305,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-10
       author: User (generated)
+      id: 1708181601879-10
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -290,6 +316,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-11
       author: User (generated)
+      id: 1708181601879-11
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -299,6 +327,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-12
       author: User (generated)
+      id: 1708181601879-12
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -308,6 +338,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-13
       author: User (generated)
+      id: 1708181601879-13
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -317,6 +349,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-14
       author: User (generated)
+      id: 1708181601879-14
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -328,6 +362,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-15
       author: User (generated)
+      id: 1708181601879-15
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -339,6 +375,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-16
       author: User (generated)
+      id: 1708181601879-16
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -350,6 +388,8 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-17
       author: User (generated)
+      id: 1708181601879-17
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -361,12 +401,15 @@ databaseChangeLog:
   - changeSet:
       id: 1707936476061-18
       author: User (generated)
+      id: 1708181601879-18
+      author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: train_ticket_id
             baseTableName: train_info
             constraintName: fk_train_info_on_train_ticket
+            baseTableName: train_ticket_info_list
+            constraintName: fk_trainticket_infolist_on_train_ticket
             referencedColumnNames: id
             referencedTableName: ticket
-
