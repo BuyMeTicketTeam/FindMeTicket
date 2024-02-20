@@ -10,6 +10,7 @@ import com.booking.app.services.ScraperService;
 import com.booking.app.util.ExchangeRateUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.Range;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -50,7 +51,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language) throws IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -87,9 +88,13 @@ public class BusforScraperServiceImpl implements ScraperService {
             WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
             BusTicket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
             if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setBusforPrice(((BusTicket) ticket).getBusforPrice());
+                route.getTickets().stream()
+                        .filter(t -> t.equals(ticket))
+                        .findFirst()
+                        .ifPresent(t -> ((BusTicket) t).setBusforPrice(ticket.getBusforPrice()));
             }
         }
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,8 +19,9 @@ import java.util.List;
 @SuperBuilder
 public class TrainTicket extends Ticket {
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "train_info", joinColumns = @JoinColumn(name = "train_ticket_id"))
     @Column(name = "train_info")
-    List<TrainComfortInfo> infoList;
+    List<TrainComfortInfo> infoList = new ArrayList<>();
 
 }

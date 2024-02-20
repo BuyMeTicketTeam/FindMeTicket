@@ -4,11 +4,10 @@ import com.booking.app.controller.api.ScraperAPI;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.services.SortTicketsService;
-import com.booking.app.services.impl.ScraperServiceImpl;
+import com.booking.app.services.impl.ScraperManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,17 +26,18 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class ScraperController implements ScraperAPI {
 
-    private final ScraperServiceImpl scrapingService;
+    private final ScraperManager scrapingService;
 
     private final SortTicketsService sortTicketsService;
 
     @PostMapping("/searchTickets")
+    @Override
     public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
-        CompletableFuture<Boolean> isTicketsFound = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
+        CompletableFuture<Boolean> isTicketScraped = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
 
-        isTicketsFound.thenAccept(isFound -> {
+        isTicketScraped.thenAccept(isFound -> {
             if (isFound) response.setStatus(HttpStatus.OK.value());
             else response.setStatus(HttpStatus.NOT_FOUND.value());
         });
@@ -45,15 +45,20 @@ public class ScraperController implements ScraperAPI {
     }
 
     @GetMapping("/get/ticket/{id}")
-    public ResponseEntity<ResponseBodyEmitter> getTicket(@PathVariable UUID id, HttpServletRequest request) throws IOException, ParseException {
+    @Override
+    public ResponseBodyEmitter getTicketById(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
-        scrapingService.getTicket(id, emitter, siteLanguage);
+        CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
-        return new ResponseEntity<>(emitter, HttpStatus.OK);
+        isTicketFound.thenAccept(isFound -> {
+            response.setStatus(isFound ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value());
+        });
+        return emitter;
     }
 
     @PostMapping("/sortedBy")
+    @Override
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));

@@ -1,12 +1,15 @@
 package com.booking.app.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
 @Embeddable
 @Builder
 @NoArgsConstructor
@@ -14,9 +17,10 @@ import java.math.BigDecimal;
 @Data
 public class TrainComfortInfo {
 
-        private String link;
+    @Column(columnDefinition = "varchar(1000)")
+    private String link;
 
-        private String comfort;
+    private String comfort;
 
-        private BigDecimal price;
+    private BigDecimal price;
 }

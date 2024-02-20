@@ -9,6 +9,7 @@ import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -52,7 +53,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         ChromeDriver driver = new ChromeDriver(options);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -84,9 +85,13 @@ public class ProizdScraperServiceImpl implements ScraperService {
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
             if (route.getTickets().add(ticket)) {
-                emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
             } else {
-                ((BusTicket) route.getTickets().stream().filter((t) -> t.equals(ticket)).findFirst().get()).setProizdPrice(((BusTicket) ticket).getProizdPrice());
+                route.getTickets().stream()
+                        .filter(t -> t.equals(ticket))
+                        .findFirst()
+                        .ifPresent(t -> ((BusTicket) t).setProizdPrice(ticket.getProizdPrice()));
             }
         }
 
@@ -200,7 +205,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
+        Actions actions = new Actions(driver);
         driver.get(url);
         if (language.equals("ua"))
             selectCity(wait, departureCity, "//input[@placeholder='Станція відправлення']", driver);
@@ -214,15 +219,18 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         selectDate(departureDate, driver, wait, language);
 
-        driver.findElement(By.cssSelector("button.btn.search-form__btn")).click();
+        WebElement element = driver.findElement(By.cssSelector("button.btn.search-form__btn"));
+        actions.moveToElement(element).click().build().perform();
     }
 
     private static void selectCity(WebDriverWait wait, String city, String inputXpath, ChromeDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         Actions actions = new Actions(driver);
-        actions.moveToElement(inputCity).doubleClick().build().perform();
+        actions.moveToElement(inputCity).click().build().perform();
+        inputCity.clear();
         inputCity.sendKeys(city);
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("li.station-item.active.ng-star-inserted"))).click();
+        WebElement proposedCity = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//li[@class='station-item active ng-star-inserted']")));
+        wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
@@ -268,7 +276,12 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.calbody")));
 
-        driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li")).stream().filter(element -> element.getText().equals(requestDay)).findFirst().get().click();
+        List<WebElement> dates = driver.findElement(By.cssSelector("div.calbody")).findElements(By.tagName("li"));
+        int indexOfFirstDay = dates.indexOf(dates.stream().filter(el -> el.getText().equals("1")).findFirst().orElse(null));
+        List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
+        WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
+        actions.moveToElement(liDate).doubleClick().build().perform();
+
     }
 
     private static BusTicket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime, String carrier) {
