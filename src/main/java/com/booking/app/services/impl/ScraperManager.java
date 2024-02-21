@@ -144,7 +144,7 @@ public class ScraperManager {
 
     private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws IOException, ParseException, UndefinedLanguageException {
 
-        emitter.send(SseEmitter.event().name("busTicket info").data(busMapper.ticketToTicketDto(busTicket, language)));
+        emitter.send(SseEmitter.event().name("ticket info").data(busMapper.ticketToTicketDto(busTicket, language)));
 
         if (!busTicket.linksAreScraped()) {
 
