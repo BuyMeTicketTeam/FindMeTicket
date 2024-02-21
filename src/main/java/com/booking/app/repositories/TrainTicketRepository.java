@@ -5,9 +5,10 @@ import com.booking.app.entity.TrainTicket;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TrainTicketRepository extends JpaRepository<TrainTicket, UUID> {
-    List<TrainTicket> findByRoute(Route route);
+    Optional<List<TrainTicket>> findByRoute(Route route);
 
 }

@@ -41,5 +41,5 @@ public interface ScraperAPI {
             @ApiResponse(responseCode = "200", description = "Chosen ticket's type returned to the client"),
             @ApiResponse(responseCode = "404", description = "No tickets of the requested type were found")
     })
-    ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@NotNull RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request);
+    ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@NotNull RequestSortedTicketsDTO requestSortedTicketsDTO) throws IOException;
 }
