@@ -4,6 +4,7 @@ import com.booking.app.controller.api.ScraperAPI;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
 import com.booking.app.services.impl.ScraperManager;
@@ -37,9 +38,9 @@ public class ScraperController implements ScraperAPI {
 
     @PostMapping("/searchTickets")
     @Override
-    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException {
         SseEmitter emitter = new SseEmitter();
-        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+
         CompletableFuture<Boolean> isTicketScraped = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
 
         isTicketScraped.thenAccept(isFound -> {
@@ -51,14 +52,11 @@ public class ScraperController implements ScraperAPI {
 
     @GetMapping("/get/ticket/{id}")
     @Override
-    public ResponseBodyEmitter getTicketById(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+    public ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException {
         SseEmitter emitter = new SseEmitter();
-        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
         CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
-        isTicketFound.thenAccept(isFound -> {
-            response.setStatus(isFound ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value());
-        });
+        isTicketFound.thenAccept(isFound -> response.setStatus(isFound ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value()));
         return emitter;
     }
 

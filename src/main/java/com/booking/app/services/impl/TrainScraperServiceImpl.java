@@ -5,6 +5,7 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -52,7 +54,7 @@ public class TrainScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
         ChromeDriver driver = new ChromeDriver(options);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
@@ -92,11 +94,12 @@ public class TrainScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public String determineBaseUrl(String language) {
+    public String determineBaseUrl(String language) throws UndefinedLanguageException {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaTrain();
             case ("eng") -> linkProps.getProizdEngTrain();
-            default -> linkProps.getProizdUaTrain();
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
     }
 

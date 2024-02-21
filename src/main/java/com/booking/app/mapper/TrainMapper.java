@@ -4,7 +4,9 @@ import com.booking.app.dto.TrainComfortInfoDTO;
 import com.booking.app.dto.TrainTicketDTO;
 import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import org.mapstruct.*;
+import org.springframework.http.HttpHeaders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,7 +19,7 @@ public interface TrainMapper {
 
     @Mapping(source = "route.departureCity", target = "departureCity")
     @Mapping(source = "route.arrivalCity", target = "arrivalCity")
-    @Mapping(source = "id",target = "id")
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
@@ -39,7 +41,7 @@ public interface TrainMapper {
     }
 
     @Named("departureTimeMapping")
-    static String departureTimeMapping(String departureDate, @Context String language) {
+    static String departureTimeMapping(String departureDate, @Context String language) throws UndefinedLanguageException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         return switch (language) {
             case ("ua") -> {
@@ -52,11 +54,8 @@ public interface TrainMapper {
                 formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("en"));
                 yield date.format(formatter);
             }
-            default -> {
-                LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
-                yield date.format(formatter);
-            }
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
     }
 

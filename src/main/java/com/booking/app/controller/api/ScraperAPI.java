@@ -3,14 +3,17 @@ package com.booking.app.controller.api;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import java.io.IOException;
@@ -23,11 +26,11 @@ public interface ScraperAPI {
     @Operation(summary = "Searching tickets", description = "Find tickets based by criteria")
     @ApiResponse(responseCode = "200", description = "Returns tickets")
     @ApiResponse(responseCode = "404", description = "Tickets not found")
-    ResponseBodyEmitter findTickets(RequestTicketsDTO ticketsDTO, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException;
+    ResponseBodyEmitter findTickets(RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException;
 
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponse(responseCode = "200", description = "Returns ticket if found")
-    ResponseBodyEmitter getTicketById(@PathVariable UUID id, HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException;
+    ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException;
 
     @Operation(summary = "Sorting", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Returns sorted tickets")
