@@ -1,12 +1,15 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.BusTicketDTO;
 import com.booking.app.dto.RequestSortedTicketsDTO;
+import com.booking.app.dto.TicketDto;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.TrainTicket;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.repositories.RouteRepository;
+import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.TicketService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -26,17 +30,32 @@ public class TicketServiceImpl implements TicketService {
 
     BusTicketRepository busTicketRepository;
 
+    TrainTicketRepository trainTicketRepository;
+
     BusMapper busMapper;
 
-    public List<BusTicketDTO> getBusTickets(RequestSortedTicketsDTO dto) {
-        Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate());
-        List<BusTicketDTO> busTicketDTO = new ArrayList<>();
-        if (Objects.nonNull(route)) {
-            List<BusTicket> busTickets = busTicketRepository.findByRoute(route);
+    TrainMapper trainMapper;
 
-            busTickets.forEach(busTicket -> busTicketDTO.add(busMapper.ticketToTicketDto(busTicket, "ua")));
+    public <T extends TicketDto> Optional<List<T>> getBusTickets(RequestSortedTicketsDTO dto) {
+        Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate());
+
+        if (Objects.nonNull(route)) {
+            List<T> ticketDTOs = new ArrayList<>();
+
+            if (dto.getBus()) {
+                List<BusTicket> busTickets = busTicketRepository.findByRoute(route);
+                busTickets.forEach(bus -> ticketDTOs.add((T) busMapper.ticketToTicketDto(bus, "ua")));
+            }
+
+            if (dto.getTrain()) {
+                List<TrainTicket> trainTickets = trainTicketRepository.findByRoute(route);
+                trainTickets.forEach(train -> ticketDTOs.add((T) trainMapper.toTrainTicketDto(train, "ua")));
+            }
+
+            return Optional.of(ticketDTOs);
         }
-        return busTicketDTO;
+
+        return Optional.empty();
     }
 
 }

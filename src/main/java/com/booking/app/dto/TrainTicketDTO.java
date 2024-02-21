@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TrainTicketDTO {
+public class TrainTicketDTO extends TicketDto{
 
     private UUID id;
 
