@@ -92,8 +92,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
-    @ExceptionHandler(UsernameExistsException.class)
-    public ResponseEntity<ErrorDetails> usernameExists(UsernameExistsException exception, WebRequest webRequest) {
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetails> usernameExists(UsernameAlreadyExistsException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),
