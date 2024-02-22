@@ -5,18 +5,22 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.ExchangeRateUtils;
+import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.Range;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -49,7 +53,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException, UndefinedLanguageException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -102,7 +106,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, UndefinedLanguageException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -187,7 +191,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         };
     }
 
-    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) {
+    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) throws UndefinedLanguageException {
 
         String carrier = webTicket.findElement(By.cssSelector("div.Style__Information-sc-13gvs4g-6.jBuzam > div.Style__Carrier-sc-13gvs4g-3.gUvIjh > span:nth-child(2)")).getText().toUpperCase();
 
@@ -218,7 +222,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         return createTicket(route, departureInfo, arrivalInfo, departureDateTime, arrivalDateTime.substring(0, 5), arrivalDate, totalMinutes, price, carrier);
     }
 
-    private static String formatDate(String inputDate, String language) {
+    private static String formatDate(String inputDate, String language) throws UndefinedLanguageException {
         DateTimeFormatter formatter;
         DateTimeFormatter resultFormatter;
 
@@ -235,12 +239,8 @@ public class BusforScraperServiceImpl implements ScraperService {
                 LocalDate date = LocalDate.parse(inputDate + " " + Year.now().getValue(), formatter);
                 yield date.format(resultFormatter);
             }
-            default -> {
-                formatter = DateTimeFormatter.ofPattern("d MMM u", new Locale("uk"));
-                resultFormatter = DateTimeFormatter.ofPattern("d.MM, EEE", new Locale("uk"));
-                LocalDate date = LocalDate.parse(inputDate + " " + Year.now().getValue(), formatter);
-                yield date.format(resultFormatter);
-            }
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
     }
 
