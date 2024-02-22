@@ -10,17 +10,18 @@ public class ChromeOptionsConfiguration {
     @Bean
     ChromeOptions chromeOptions() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        options.addArguments("--window-size=1920,1080");
+        options.addArguments("--headless");
+        options.addArguments("--window-size=800,1000");
         options.addArguments("--disable-extensions");
         options.addArguments("--proxy-server='direct://'");
         options.addArguments("--proxy-bypass-list=*");
         options.addArguments("--start-maximized");
-        options.addArguments("--headless");
         options.addArguments("--disable-gpu");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--no-sandbox");
         options.addArguments("--ignore-certificate-errors");
+        options.addArguments("--log-level=3");
+        options.addArguments("--blink-settings=imagesEnabled=false");
         return options;
     }
 

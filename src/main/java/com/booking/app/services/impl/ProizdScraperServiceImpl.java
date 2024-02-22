@@ -5,7 +5,6 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
-import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -47,7 +45,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     private final BusMapper busMapper;
 
-    private final ChromeOptions options;
+    private final WebDriverFactory webDriverFactory;
 
     private static final String DIV_TICKET = "div.trip-adaptive";
 
@@ -55,8 +53,8 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
-        ChromeDriver driver = new ChromeDriver(options);
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+        WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         String url = determineBaseUrl(language);
@@ -103,8 +101,8 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException, UndefinedLanguageException {
-        ChromeDriver driver = new ChromeDriver(options);
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+        WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
@@ -206,7 +204,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
         return createTicket(element, route, price, totalMinutes, formattedDate, carrier);
     }
 
-    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
+    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         Actions actions = new Actions(driver);
         driver.get(url);
@@ -226,7 +224,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
         actions.moveToElement(element).click().build().perform();
     }
 
-    private static void selectCity(WebDriverWait wait, String city, String inputXpath, ChromeDriver driver) {
+    private static void selectCity(WebDriverWait wait, String city, String inputXpath, WebDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         Actions actions = new Actions(driver);
         actions.moveToElement(inputCity).click().build().perform();
