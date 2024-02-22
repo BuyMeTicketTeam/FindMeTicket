@@ -8,15 +8,15 @@ import com.booking.app.entity.Route;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.ExchangeRateUtils;
+import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.Range;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.scheduling.annotation.Async;
@@ -43,7 +43,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     private final BusMapper busMapper;
 
-    private final ChromeOptions options;
+    private final WebDriverFactory webDriverFactory;
 
     private static final String DIV_TICKET = "div.ticket";
 
@@ -52,7 +52,7 @@ public class BusforScraperServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException {
-        ChromeDriver driver = new ChromeDriver(options);
+        WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         String url = determineBaseUrl(language);
@@ -105,7 +105,7 @@ public class BusforScraperServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException {
-        ChromeDriver driver = new ChromeDriver(options);
+        WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
