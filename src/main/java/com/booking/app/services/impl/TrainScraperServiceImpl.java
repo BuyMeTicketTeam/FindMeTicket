@@ -5,6 +5,7 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
@@ -13,12 +14,12 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -51,7 +52,7 @@ public class TrainScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
         WebDriver driver = webDriverFactory.createInstance();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
@@ -91,11 +92,12 @@ public class TrainScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public String determineBaseUrl(String language) {
+    public String determineBaseUrl(String language) throws UndefinedLanguageException {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaTrain();
             case ("eng") -> linkProps.getProizdEngTrain();
-            default -> linkProps.getProizdUaTrain();
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
     }
 
@@ -136,10 +138,10 @@ public class TrainScraperServiceImpl implements ScraperService {
         for (WebElement webElement : elements) {
 
             String price = webElement.findElement(By.cssSelector("div.carriage__price ")).getText().replaceAll("[^\\d\\.]+", "");
-
+            String cleanedPrice = reformatPrice(price);
             list.add(TrainComfortInfo.builder()
                     .comfort(webElement.findElement(By.cssSelector("span.carriage__type")).getText())
-                    .price(new BigDecimal(price))
+                    .price(new BigDecimal(cleanedPrice))
                     .link(webElement.findElement(By.cssSelector("a.btn")).getAttribute("href")).build());
         }
 
@@ -193,17 +195,7 @@ public class TrainScraperServiceImpl implements ScraperService {
             driver.wait(1000);
         }
 
-        WebElement proposedCity = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
-
-        synchronized (driver) {
-            driver.wait(1000);
-        }
-
-        try {
-            wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
-        } catch (StaleElementReferenceException e) {
-            wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
-        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
@@ -253,6 +245,22 @@ public class TrainScraperServiceImpl implements ScraperService {
         List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
         WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
         actions.moveToElement(liDate).doubleClick().build().perform();
+    }
+
+    private static String reformatPrice(String price) {
+        int indexOfDecimal = price.indexOf('.');
+        if (indexOfDecimal != -1) {
+            // If there is a decimal point
+            String integerPart = price.substring(0, indexOfDecimal);
+            String fractionalPart = price.substring(indexOfDecimal + 1);
+            if (fractionalPart.length() > 2) {
+                // If the fractional part is longer than 2 characters, truncate it
+                fractionalPart = fractionalPart.substring(0, 2);
+            }
+            return integerPart + "." + fractionalPart;
+        }
+        // If there is no decimal point or the string is empty, return as is
+        return price;
     }
 
 }
