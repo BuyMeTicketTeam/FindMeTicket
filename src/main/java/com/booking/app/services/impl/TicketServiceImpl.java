@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.RequestSortedTicketsDTO;
+import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
 import com.booking.app.entity.Route;
 import com.booking.app.mapper.BusMapper;
@@ -38,8 +38,16 @@ public class TicketServiceImpl implements TicketService {
 
     TrainMapper trainMapper;
 
+    /**
+     * Retrieves bus OR/AND train tickets based on the provided request.
+     *
+     * @param dto the request containing filtering criteria
+     * @param <T> the type of ticket DTO
+     * @return a list of tickets or an empty optional if no tickets are found
+     * @throws IOException if an I/O error occurs while determining the language
+     */
     @Override
-    public <T extends TicketDto> Optional<List<T>> getBusTickets(RequestSortedTicketsDTO dto) throws IOException {
+    public <T extends TicketDto> Optional<List<T>> getBusTickets(RequestTicketsDTO dto) throws IOException {
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate());
 
         if (Objects.nonNull(route)) {

@@ -68,8 +68,8 @@ public class ScraperController implements ScraperAPI {
     }
 
     @PostMapping(value = "/selectedTransport", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO) throws IOException {
-        return ticketService.getBusTickets(requestSortedTicketsDTO)
+    public ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@RequestBody RequestTicketsDTO requestTicketsDTO) throws IOException {
+        return ticketService.getBusTickets(requestTicketsDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
 
