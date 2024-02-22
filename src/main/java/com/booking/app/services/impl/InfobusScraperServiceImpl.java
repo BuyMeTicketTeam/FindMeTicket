@@ -7,14 +7,13 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.services.ScraperService;
+import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -43,7 +42,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
     private final BusMapper busMapper;
 
-    private final ChromeOptions options;
+    private final WebDriverFactory webDriverFactory;
 
     private static final String DIV_TICKET = "div.main-detail-wrap";
 
@@ -51,7 +50,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
     @Async
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
-        ChromeDriver driver = new ChromeDriver(options);
+        WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         String url = determineBaseUrl(language);
@@ -98,7 +97,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
-        ChromeDriver driver = new ChromeDriver(options);
+        WebDriver driver = webDriverFactory.createInstance();
 
         Route route = ticket.getRoute();
 
@@ -189,7 +188,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
     }
 
 
-    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
+    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(url);

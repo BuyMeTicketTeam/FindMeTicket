@@ -7,6 +7,7 @@ import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.services.ScraperService;
+import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -15,8 +16,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -42,7 +41,7 @@ public class TrainScraperServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
-    private final ChromeOptions options;
+    private final WebDriverFactory webDriverFactory;
 
     private final TrainMapper trainMapper;
 
@@ -53,7 +52,7 @@ public class TrainScraperServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
-        ChromeDriver driver = new ChromeDriver(options);
+        WebDriver driver = webDriverFactory.createInstance();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
 
@@ -163,7 +162,7 @@ public class TrainScraperServiceImpl implements ScraperService {
                 .build();
     }
 
-    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, ChromeDriver driver, String url, String language) throws ParseException {
+    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(url);
@@ -183,7 +182,7 @@ public class TrainScraperServiceImpl implements ScraperService {
     }
 
     @SneakyThrows
-    private static void selectCity(WebDriverWait wait, String city, String inputXpath, String cityXpath, ChromeDriver driver) {
+    private static void selectCity(WebDriverWait wait, String city, String inputXpath, String cityXpath, WebDriver driver) {
         WebElement inputCity = wait.until(ExpectedConditions.elementToBeClickable(By.xpath(inputXpath)));
         Actions actions = new Actions(driver);
         actions.moveToElement(inputCity).click().build().perform();
