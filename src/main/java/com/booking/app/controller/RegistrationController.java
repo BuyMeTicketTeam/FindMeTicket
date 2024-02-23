@@ -1,10 +1,9 @@
 package com.booking.app.controller;
 
-import com.booking.app.constant.CorsConfigConstants;
 import com.booking.app.controller.api.RegisterAPI;
 import com.booking.app.dto.*;
 import com.booking.app.exception.exception.EmailExistsException;
-import com.booking.app.exception.exception.UsernameExistsException;
+import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
@@ -43,7 +42,7 @@ public class RegistrationController implements RegisterAPI {
     //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/register")
     @Override
-    public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameExistsException {
+    public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameAlreadyExistsException {
         EmailDTO register = registrationService.register(dto);
         log.info(String.format("User %s has successfully registered!",dto.getEmail()));
         return ResponseEntity.ok().body(register);

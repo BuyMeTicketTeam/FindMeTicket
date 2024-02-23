@@ -2,7 +2,7 @@
 .ticket {
     background: $semi-dark;
     border-radius: 20px;
-    padding: 25px;
+    padding: 20px 20px 20px 15px;
     margin-bottom: 20px;
     width: 100%;
 }
@@ -13,10 +13,19 @@
     align-items: center;
 }
 
+.type {
+    margin-right: 10px;
+}
+
+.type__img img {
+    width: 37px;
+}
+
 .information {
     flex: auto;
-    padding-right: 15px;
-    border-right: 2px solid $dark;
+    padding: 0 15px;
+    border-right: 2px solid $font-color;
+    border-left: 2px solid $font-color;
 }
 
 .information__row {
@@ -162,4 +171,8 @@
     &:not(:last-child) {
         margin-right: 10px;
     }
+}
+
+.ticket__carrier {
+    margin-top: 15px;
 }

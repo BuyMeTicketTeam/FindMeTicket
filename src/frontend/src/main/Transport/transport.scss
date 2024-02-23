@@ -17,6 +17,10 @@
     height: 50px; 
 
 
+    img {
+        max-height: 22px;
+    }
+
     &:last-child {
         margin-right: 0;
     }

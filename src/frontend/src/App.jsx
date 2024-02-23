@@ -14,7 +14,8 @@ import './locales/i18n';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
-  const [language, setLanguage] = useState({ value: 'UA', label: 'UA' });
+  const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
+  const [ticketsData, setTicketsData] = useState([]);
 
   return (
     <Router>
@@ -26,7 +27,7 @@ function App() {
             authorization={auth}
             updateAuthValue={updateAuthValue}
           />
-          <Routers updateAuthValue={updateAuthValue} language={language} />
+          <Routers updateAuthValue={updateAuthValue} language={language} ticketsData={ticketsData} setTicketsData={setTicketsData} />
           <CookieBanner />
           <Footer />
         </GoogleOAuthProvider>

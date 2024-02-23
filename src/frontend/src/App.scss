@@ -15,7 +15,8 @@ body {
   font-family: 'Roboto';
   color: $font-color;
   background: url('./Frame 4.1.jpg');
-  min-width: 800px;
+  overflow-y: auto;
+  min-width: 1200px;
 }
 .body{
   display: flex;
@@ -35,6 +36,7 @@ img {
 .container {
   max-width: 1300px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .field__name {
@@ -257,6 +259,7 @@ input[type='number'] {
   padding: 35px;
   min-width: 450px;
   max-width: 30%;
+  
 }
 
 .row {

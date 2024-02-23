@@ -7,8 +7,7 @@ import Ad from '../Ad/index';
 import './main.scss';
 import TicketsBody from './Body';
 
-export default function Index() {
-  const [ticketsData, setTicketsData] = useState([]);
+export default function Index({ ticketsData, setTicketsData }) {
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);

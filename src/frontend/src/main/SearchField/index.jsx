@@ -14,7 +14,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError, selectedTransport,
+  setLoading, setTicketsData, setRequestBody, setError, selectedTransport,loading,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
@@ -98,7 +98,6 @@ export default function SearchField({
     setTicketsData([]);
 
     function handleOpen(res) {
-      sessionStorage.removeItem('ticketsData');
       switch (res.status) {
         case 200:
           console.log('open successfully');
@@ -112,16 +111,9 @@ export default function SearchField({
       }
     }
 
-    function updateTickets(prevTickets, newData) {
-      const result = [...prevTickets, newData];
-      sessionStorage.setItem('ticketsData', JSON.stringify(result));
-      return result;
-    }
-
     function handleMessage(event) {
-      console.log(event);
       const parsedData = JSON.parse(event.data);
-      setTicketsData((prevTickets) => updateTickets(prevTickets, parsedData));
+      setTicketsData((prevTickets) => [...prevTickets, parsedData]);
       setLoading(false);
     }
 
@@ -237,7 +229,7 @@ export default function SearchField({
 )}
         onClick={() => showPassengersDrop()}
       />
-      <Button name={t('find')} onButton={sendRequest} />
+      <Button name={t('find')} onButton={sendRequest} disabled={loading} />
     </div>
   );
 }

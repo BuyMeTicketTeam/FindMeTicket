@@ -4,7 +4,7 @@ import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.exception.exception.EmailExistsException;
-import com.booking.app.exception.exception.UsernameExistsException;
+import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import jakarta.mail.MessagingException;
 import org.springframework.validation.annotation.Validated;
 import java.io.IOException;
@@ -23,7 +23,7 @@ public interface RegistrationService {
      * @throws EmailExistsException If a user with the provided email already exists.
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
-    EmailDTO register(RegistrationDTO securityDTO) throws EmailExistsException, MessagingException, IOException, UsernameExistsException;
+    EmailDTO register(RegistrationDTO securityDTO) throws EmailExistsException, MessagingException, IOException, UsernameAlreadyExistsException;
 
     /**
      * Enables a user if the provided token confirmation details are valid.

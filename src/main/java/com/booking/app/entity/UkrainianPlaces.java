@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigInteger;
 
 @Entity
 @Table
@@ -17,7 +16,7 @@ public class UkrainianPlaces {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
+    private Long id;
 
     @Column(name = "name_eng")
     private String nameEng;
@@ -33,5 +32,4 @@ public class UkrainianPlaces {
 
     @Column(name = "name_ru")
     private String nameRu;
-
 }

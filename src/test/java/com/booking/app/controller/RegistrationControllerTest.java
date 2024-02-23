@@ -4,7 +4,7 @@ import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.exception.exception.EmailExistsException;
-import com.booking.app.exception.exception.UsernameExistsException;
+import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
@@ -64,8 +64,8 @@ class RegistrationControllerTest {
                 .username("Michael123")
                 .password("qwerty123")
                 .confirmPassword("qwerty123").build();
-        when(registrationService.register(registrationDTO)).thenThrow(UsernameExistsException.class);
-        Assertions.assertThrows(UsernameExistsException.class, () -> registrationController.signUp(registrationDTO));
+        when(registrationService.register(registrationDTO)).thenThrow(UsernameAlreadyExistsException.class);
+        Assertions.assertThrows(UsernameAlreadyExistsException.class, () -> registrationController.signUp(registrationDTO));
     }
 
     @Test

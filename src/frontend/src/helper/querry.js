@@ -24,6 +24,6 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
   } catch {
     bodyResponse = null;
   }
-  responseInterceptor(response);
+  responseInterceptor(response, bodyResponse);
   return { status: response.status, headers: response.headers, body: bodyResponse };
 }

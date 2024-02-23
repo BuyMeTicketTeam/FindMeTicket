@@ -11,42 +11,40 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-}
 
-.time-text {
-  margin: 5px 0;
-  font-size: 20px;
-  margin-bottom: 20px;
+  .time {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 73%;
+  }
 
-  .small {
+  .time-text {
+    font-size: 20px;
+  
+    &.small {
+      font-size: 15px;
+    }
+  }
+
+  .location-text.small {
     margin: 5px 0;
     font-size: 15px;
-  }  
-}
+  }
+  
+  .location-text {
+    font-size: 20px;
+  }
+  
+  .vertical-line {
+    height: 70%;
+    width: 2px;
+    background-color: $bright;
+    margin-right: 20px;
+    margin-left: 20px;
+  }
 
-.time-text-p {
-  margin: 5px 0;
-  font-size: 20px;
-  margin-top: 20px;
-}
-
-.location-text.small {
-  margin: 5px 0;
-  font-size: 15px;
-}
-
-.location-text {
-  font-size: 20px;
-}
-
-.vertical-line {
-  height: 70%;
-  width: 2px;
-  background-color: $bright;
-  margin-right: 20px;
-  margin-left: 20px;
-}
-
-.city-above{
-margin-bottom: 40px;
+  .city-above{
+    margin-bottom: 40px;
+  }
 }
