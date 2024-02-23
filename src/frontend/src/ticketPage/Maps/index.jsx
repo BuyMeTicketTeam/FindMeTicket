@@ -20,6 +20,8 @@ function Maps({ address }) {
   };
 
   const libraries = ['places', 'marker'];
+  const radius = '2000';
+  const zoom = 14;
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -65,15 +67,6 @@ function Maps({ address }) {
     return marker;
   }
 
-  function getPlaceDetails(service, place, marker) {
-    const request = {
-      placeId: place.place_id,
-    };
-    service.getDetails(request, (result) => {
-      setPlacesInfo((prevPlacesInfo) => [...prevPlacesInfo, { ...result, marker }]);
-    });
-  }
-
   function types() {
     switch (selectedCategory) {
       case 0:
@@ -88,23 +81,25 @@ function Maps({ address }) {
   function nearbySearch(stationLocation, map) {
     const request = {
       location: stationLocation,
-      radius: '1000',
+      radius,
       type: types(),
     };
     const service = new window.google.maps.places.PlacesService(map);
     setPlacesInfo([]);
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        results.forEach((result) => {
+        console.log(results);
+        const resultsWithMarker = results.map((result) => {
           const placeMarker = createMarker(result, map);
-          getPlaceDetails(service, result, placeMarker);
+          return ({ ...result, marker: placeMarker });
+          // getPlaceDetails(service, result, placeMarker);
         });
+        setPlacesInfo(resultsWithMarker);
       }
     });
   }
 
   const onLoad = useCallback((map) => {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
     mapRef.current = map;
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ address }, (results, status) => {
@@ -142,10 +137,10 @@ function Maps({ address }) {
         isLoaded && (
           <div className="map-container">
             <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} updateMarker={(place) => updateMarker(place)} />
-            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} map={mapRef.current} />}
             <GoogleMap
               mapContainerStyle={containerStyle}
-              zoom={14}
+              zoom={zoom}
               onLoad={onLoad}
               onUnmount={onUnmount}
               options={{
@@ -162,7 +157,7 @@ function Maps({ address }) {
             {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
             <GoogleMap
               mapContainerStyle={containerStyle}
-              zoom={14}
+              zoom={zoom}
               onLoad={onLoad}
               onUnmount={onUnmount}
               options={{
@@ -176,10 +171,10 @@ function Maps({ address }) {
         isLoaded && (
           <div className="map-container">
             <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} updateMarker={(place) => updateMarker(place)} />
-            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} map={mapRef.current} />}
             <GoogleMap
               mapContainerStyle={containerStyle}
-              zoom={16}
+              zoom={zoom}
               onLoad={onLoad}
               onUnmount={onUnmount}
               options={{

@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.scss';
 import PriceBlock from './PriceBlock';
-import spinningLoaderIcon from './spinning-loading.svg';
+import spinningLoaderIcon from '../spinning-loading.svg';
 
 function Price({ ticketUrls, connection }) {
   return (

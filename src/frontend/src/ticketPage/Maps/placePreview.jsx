@@ -1,13 +1,13 @@
 /* eslint-disable no-plusplus */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import starIcon from './star.svg';
 import phoneIcon from './phone.svg';
 import addressIcon from './location.svg';
 import websiteIcon from './websiteIcon.svg';
 import arrowIcon from './arrowIcon.svg';
+import loadingIcon from '../spinning-loading.svg';
 
-export default function PlacePreview({ placesInfo, placeId, setCurrentPlaceId }) {
-  const placeInfo = placesInfo.find((place) => place.place_id === placeId);
+function View({ placeData, renderStars }) {
   const {
     name,
     website,
@@ -18,22 +18,10 @@ export default function PlacePreview({ placesInfo, placeId, setCurrentPlaceId })
     reviews,
     user_ratings_total: userRatingsTotal,
     opening_hours: openingHours,
-  } = placeInfo;
-
-  const renderStars = (count) => {
-    const stars = [];
-    for (let i = 0; i < count; i++) {
-      stars.push(<img className="place-preview-rating__img" src={starIcon} alt="star" />);
-    }
-    return stars;
-  };
+  } = placeData;
 
   return (
-    <div className="place-preview">
-      <button className="place-preview__close" type="button" onClick={() => setCurrentPlaceId(null)}>
-        <img src={arrowIcon} alt="Arrow" />
-        Back
-      </button>
+    <>
       <h2 className="place-preview__title">{name}</h2>
       {rating && (
       <div className="place-preview__rating">
@@ -99,6 +87,42 @@ export default function PlacePreview({ placesInfo, placeId, setCurrentPlaceId })
           </div>
         ))}
       </div>
+    </>
+  );
+}
+
+export default function PlacePreview({ placeId, setCurrentPlaceId, map }) {
+  const [placeData, setPlaceData] = useState(null);
+
+  function getPlaceDetails() {
+    const service = new window.google.maps.places.PlacesService(map);
+    const request = {
+      placeId,
+    };
+    service.getDetails(request, (result) => {
+      setPlaceData(result);
+    });
+  }
+
+  useEffect(() => {
+    getPlaceDetails();
+  }, []);
+
+  const renderStars = (count) => {
+    const stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push(<img className="place-preview-rating__img" src={starIcon} alt="star" />);
+    }
+    return stars;
+  };
+
+  return (
+    <div className="place-preview">
+      <button className="place-preview__close" type="button" onClick={() => setCurrentPlaceId(null)}>
+        <img src={arrowIcon} alt="Arrow" />
+        Back
+      </button>
+      {placeData ? <View placeData={placeData} renderStars={() => renderStars()} /> : <img className="place-preview__loading-img" src={loadingIcon} alt="Loading..." />}
     </div>
   );
 }
