@@ -6,6 +6,7 @@ import eventSourceQuery2 from '../helper/eventSourceQuery2';
 import Price from './Price/index';
 import Information from './Information/index ';
 import Loader from '../Loader/index';
+import PriceTrain from './PriceTrain/index';
 import Error from '../Error';
 import './style.scss';
 
@@ -35,7 +36,9 @@ function TicketPage() {
         setTicketData(parsedData);
         return;
       }
-      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: parsedData.url, price: parsedData.price }]);
+      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, {
+        resource: event.event, url: parsedData.url, price: parsedData.price, comfort: parsedData.comfort,
+      }]);
     }
 
     function handleError() {
@@ -62,13 +65,13 @@ function TicketPage() {
   useEffect(() => {
     handleServerRequest();
   }, []);
-
+  const PriceView = ticketData?.type === 'TRAIN' ? <PriceTrain ticketUrls={ticketUrl} connection={connection} /> : <Price ticketUrls={ticketUrl} connection={connection} />;
   const ticketDataView = ticketData && (
     <>
       <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">{t('price')}</div>
-      <Price ticketUrls={ticketUrl} connection={connection} />
+      {PriceView}
     </>
   );
   const ticketErrorView = ticketError && <Error />;

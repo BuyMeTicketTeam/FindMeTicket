@@ -17,7 +17,7 @@ function TransportButton({
       onClick={onClick}
     >
       <img
-        className="transportion"
+        className="transportation"
         src={img}
         alt={label}
       />
@@ -30,7 +30,7 @@ function Transport({
   setTicketsData, selectedTransport, setSelectedTransport, requestBody, ticketsData,
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation('translation', { keyPrefix: 'transport' });
+  const { t, i18n } = useTranslation('translation', { keyPrefix: 'transport' });
 
   const handleButtonClick = (button) => {
     setSelectedTransport((prevSelectedTransport) => {
@@ -57,12 +57,12 @@ function Transport({
 
   useEffect(() => {
     const selectedCount = Object.values(selectedTransport).filter((value) => value).length;
-    if (selectedCount > 0 && ticketsData > 0) {
+    if (selectedCount > 0 && ticketsData.length > 0) {
       const body = {
         ...requestBody,
         ...selectedTransport,
       };
-      makeQuerry('selectedTransport', body)
+      makeQuerry('selectedTransport', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() })
         .then((response) => {
           setTicketsData(response.body);
         })
@@ -84,13 +84,13 @@ function Transport({
       />
       <TransportButton
         label={t('bus')}
-        isActive={selectedTransport.bus}
+        isActive={selectedTransport.bus && !selectedTransport.train}
         onClick={() => handleButtonClick('bus')}
         img={busIcon}
       />
       <TransportButton
         label={t('train')}
-        isActive={selectedTransport.train}
+        isActive={selectedTransport.train && !selectedTransport.bus}
         onClick={() => handleButtonClick('train')}
         img={trainIcon}
       />
