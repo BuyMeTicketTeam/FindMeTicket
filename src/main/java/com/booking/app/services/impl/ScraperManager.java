@@ -31,7 +31,6 @@ import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
 
 import static com.booking.app.constant.SiteConstants.*;
 
@@ -72,9 +71,12 @@ public class ScraperManager {
         Route newRoute = null;
         if (route == null) {
             newRoute = createRoute(requestTicketDTO);
+            routeRepository.save(newRoute);
 
             List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(emitter, newRoute, language, requestTicketDTO.getBus(), requestTicketDTO.getTrain());
+
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
+
             try {
                 allOf.join();
             } catch (CancellationException | CompletionException e) {
@@ -82,25 +84,13 @@ public class ScraperManager {
                 emitter.completeWithError(e);
                 return CompletableFuture.completedFuture(false);
             }
-            if (completableFutureListBus.stream().anyMatch(t -> {
-                try {
-                    return t.get().equals(true);
-                } catch (ExecutionException | InterruptedException e) {
-                    log.warn("Interrupted while waiting for CompletableFuture result.", e);
-                    /* Clean up whatever needs to be handled before interrupting  */
-                    Thread.currentThread().interrupt();
-                    return false;
-                }
-            })) {
-                routeRepository.save(newRoute);
-            }
         } else {
             for (Ticket ticket : route.getTickets()) {
                 if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
-                    emitter.send(SseEmitter.event().name("ticket data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
+                    emitter.send(SseEmitter.event().name("Ticket bus data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
                 }
                 if (ticket instanceof TrainTicket && requestTicketDTO.getTrain()) {
-                    emitter.send(SseEmitter.event().name("ticket data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
+                    emitter.send(SseEmitter.event().name("Ticket train data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
                 }
             }
         }
@@ -206,11 +196,11 @@ public class ScraperManager {
                 .build();
     }
 
-    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doBus, Boolean doTrain) throws ParseException, IOException, UndefinedLanguageException {
+    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException, UndefinedLanguageException {
         return Arrays.asList(
-                infobusService.scrapeTickets(emitter, newRoute, language, doBus),
-                proizdService.scrapeTickets(emitter, newRoute, language, doBus),
-                busforService.scrapeTickets(emitter, newRoute, language, doBus),
+                infobusService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                proizdService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                busforService.scrapeTickets(emitter, newRoute, language, doDisplay),
                 trainService.scrapeTickets(emitter, newRoute, language, doTrain)
         );
     }

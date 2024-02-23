@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
+@DynamicUpdate
 //@EqualsAndHashCode(callSuper = true) --> doesn't work
 public class BusTicket extends Ticket {
 
@@ -46,6 +48,24 @@ public class BusTicket extends Ticket {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    public void updateProizdPrice(BigDecimal newProizdPrice) {
+        if (newProizdPrice != null) {
+            this.proizdPrice = newProizdPrice;
+        }
+    }
+
+    public void updateInfobusPrice(BigDecimal newInfobusPrice) {
+        if (newInfobusPrice != null) {
+            this.infobusPrice = newInfobusPrice;
+        }
+    }
+
+    public void updateBusforPrice(BigDecimal newBusforPrice) {
+        if (newBusforPrice != null) {
+            this.busforPrice = newBusforPrice;
+        }
     }
 
 }

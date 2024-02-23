@@ -7,6 +7,7 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +32,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("proizd")
@@ -47,6 +45,8 @@ public class ProizdScraperServiceImpl implements ScraperService {
     private final BusMapper busMapper;
 
     private final WebDriverFactory webDriverFactory;
+
+    private final BusTicketRepository repository;
 
     private static final String DIV_TICKET = "div.trip-adaptive";
 
@@ -84,16 +84,11 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setProizdPrice(ticket.getProizdPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+            saveTicketOrUpdate(emitter, route, language, doShow, busTicket, scrapedTicket);
         }
 
         driver.quit();
@@ -158,7 +153,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
         return CompletableFuture.completedFuture(true);
     }
 
-
     @Override
     public String determineBaseUrl(String language) throws UndefinedLanguageException {
         return switch (language) {
@@ -169,6 +163,20 @@ public class ProizdScraperServiceImpl implements ScraperService {
         };
     }
 
+    private void saveTicketOrUpdate(SseEmitter emitter, Route route, String language, Boolean doShow, Optional<BusTicket> busTicket, BusTicket scrapedTicket) throws IOException {
+        // saves new ticket
+        if (busTicket.isEmpty()) {
+            scrapedTicket.setRoute(route);
+            repository.save(scrapedTicket);
+            if (BooleanUtils.isTrue(doShow))
+                emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
+        }
+        // updates price on already existing ticket
+        if (busTicket.isPresent() && Objects.isNull(busTicket.get().getProizdPrice())) {
+            busTicket.get().updateProizdPrice(scrapedTicket.getProizdPrice());
+            repository.save(busTicket.get());
+        }
+    }
 
     private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();

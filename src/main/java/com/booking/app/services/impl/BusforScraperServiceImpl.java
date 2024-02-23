@@ -7,6 +7,7 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.ExchangeRateUtils;
 import com.booking.app.util.WebDriverFactory;
@@ -31,9 +32,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("busfor")
@@ -46,6 +45,8 @@ public class BusforScraperServiceImpl implements ScraperService {
     private final BusMapper busMapper;
 
     private final WebDriverFactory webDriverFactory;
+
+    private final BusTicketRepository repository;
 
     private static final String DIV_TICKET = "div.ticket";
 
@@ -86,18 +87,13 @@ public class BusforScraperServiceImpl implements ScraperService {
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
 
         for (int i = 0; i < tickets.size() && i < 150; i++) {
-
             WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
-            BusTicket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setBusforPrice(ticket.getBusforPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+            saveTicketOrUpdate(emitter, route, language, doShow, busTicket, scrapedTicket);
+
         }
 
         driver.quit();
@@ -189,6 +185,19 @@ public class BusforScraperServiceImpl implements ScraperService {
             default ->
                     throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
+    }
+
+    private void saveTicketOrUpdate(SseEmitter emitter, Route route, String language, Boolean doShow, Optional<BusTicket> busTicket, BusTicket scrapedTicket) throws IOException {
+        if (busTicket.isPresent() && Objects.isNull(busTicket.get().getBusforPrice())) {
+            busTicket.get().updateBusforPrice(scrapedTicket.getBusforPrice());
+            repository.save(busTicket.get());
+        }
+        if (busTicket.isEmpty()) {
+            scrapedTicket.setRoute(route);
+            repository.save(scrapedTicket);
+            if (BooleanUtils.isTrue(doShow))
+                emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
+        }
     }
 
     private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) throws UndefinedLanguageException {
