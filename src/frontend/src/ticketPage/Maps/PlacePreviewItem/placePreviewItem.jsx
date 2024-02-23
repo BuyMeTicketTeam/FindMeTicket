@@ -1,5 +1,6 @@
 import React from 'react';
-import starIcon from './star.svg';
+import starIcon from '../star.svg';
+import './placePreviewItem.scss';
 
 export default function PlacePreviewItem({
   name, img, openNow, rating, onClick,

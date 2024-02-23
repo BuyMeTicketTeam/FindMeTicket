@@ -5,8 +5,8 @@ import React, { useRef, useState, useCallback } from 'react';
 import './style.scss';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { useTranslation } from 'react-i18next';
-import PlacePreviewList from './placePreviewList';
-import PlacePreview from './placePreview';
+import PlacePreviewList from './PlacePreviewList/placePreviewList';
+import PlacePreview from './PlacePreview/placePreview';
 
 function Maps({ address }) {
   const [selectedCategory, setSelectedCategory] = useState(0);

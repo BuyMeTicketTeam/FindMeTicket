@@ -1,11 +1,12 @@
 /* eslint-disable no-plusplus */
 import React, { useEffect, useState } from 'react';
-import starIcon from './star.svg';
+import starIcon from '../star.svg';
 import phoneIcon from './phone.svg';
 import addressIcon from './location.svg';
 import websiteIcon from './websiteIcon.svg';
 import arrowIcon from './arrowIcon.svg';
-import loadingIcon from '../spinning-loading.svg';
+import loadingIcon from '../../spinning-loading.svg';
+import './placePreview.scss';
 
 function View({ placeData, renderStars }) {
   const {

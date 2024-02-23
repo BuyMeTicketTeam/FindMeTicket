@@ -1,5 +1,6 @@
 import React from 'react';
-import PlacePreviewItem from './placePreviewItem';
+import PlacePreviewItem from '../PlacePreviewItem/placePreviewItem';
+import './placePreviewList.scss';
 
 export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, updateMarker }) {
   return (

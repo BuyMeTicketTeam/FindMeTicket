@@ -1,0 +1,7 @@
+.placeList {
+    max-height: 100%;
+    overflow-y: scroll;
+    flex: 0 0 250px;
+    z-index: 2;
+    background: $dark;
+}
