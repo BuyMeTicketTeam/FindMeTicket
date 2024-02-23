@@ -223,7 +223,12 @@
                   "price": "Ціна",
                   "restaurants": "Ресторани",
                   "hotels": "Готелі",
-                  "tourist places": "Туристичні місця"
+                  "tourist places": "Туристичні місця",
+                  "reviews": "відгуків",
+                  "working-hours": "Робочий час:",
+                  "back-btn": "Назад",
+                  "status-open": "Відкрито",
+                  "status-close": "Закрито"
             }
       }
 }

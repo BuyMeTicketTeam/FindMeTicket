@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import starIcon from '../star.svg';
 import phoneIcon from './phone.svg';
 import addressIcon from './location.svg';
@@ -9,6 +10,7 @@ import loadingIcon from '../../spinning-loading.svg';
 import './placePreview.scss';
 
 function View({ placeData, renderStars }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
   const {
     name,
     website,
@@ -31,7 +33,9 @@ function View({ placeData, renderStars }) {
         <span className="place-preview-rating__number">
           (
           {userRatingsTotal}
-          ) reviews
+          )
+          {' '}
+          {t('rating')}
         </span>
       </div>
       )}
@@ -55,7 +59,7 @@ function View({ placeData, renderStars }) {
       )}
       {openingHours && (
         <div className="place-preview__working-hours">
-          <h3 className="place-preview-working-hours__title">Робочий час:</h3>
+          <h3 className="place-preview-working-hours__title">{t('working-hours')}</h3>
           <ul>
             {openingHours.weekday_text.map((day) => (
               <li className="place-preview-working-hours__day">{day}</li>
@@ -94,6 +98,7 @@ function View({ placeData, renderStars }) {
 
 export default function PlacePreview({ placeId, setCurrentPlaceId, map }) {
   const [placeData, setPlaceData] = useState(null);
+  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   function getPlaceDetails() {
     const service = new window.google.maps.places.PlacesService(map);
@@ -121,7 +126,7 @@ export default function PlacePreview({ placeId, setCurrentPlaceId, map }) {
     <div className="place-preview">
       <button className="place-preview__close" type="button" onClick={() => setCurrentPlaceId(null)}>
         <img src={arrowIcon} alt="Arrow" />
-        Back
+        {t('back-btn')}
       </button>
       {placeData ? <View placeData={placeData} renderStars={(rating) => renderStars(rating)} /> : <img className="place-preview__loading-img" src={loadingIcon} alt="Loading..." />}
     </div>

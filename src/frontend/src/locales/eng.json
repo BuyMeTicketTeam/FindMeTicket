@@ -222,7 +222,12 @@
                   "price": "Price",
                   "restaurants": "Restaurants",
                   "hotels": "Hotels",
-                  "tourist places": "Tourist places"
+                  "tourist places": "Tourist places",
+                  "reviews": "reviews",
+                  "working-hours": "Working hours:",
+                  "back-btn": "Back",
+                  "status-open": "Open",
+                  "status-close": "Closed"
             }
       }
 }
