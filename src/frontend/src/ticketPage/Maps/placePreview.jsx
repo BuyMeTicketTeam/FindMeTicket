@@ -106,7 +106,7 @@ export default function PlacePreview({ placeId, setCurrentPlaceId, map }) {
 
   useEffect(() => {
     getPlaceDetails();
-  }, []);
+  }, [placeId]);
 
   const renderStars = (count) => {
     const stars = [];
@@ -122,7 +122,7 @@ export default function PlacePreview({ placeId, setCurrentPlaceId, map }) {
         <img src={arrowIcon} alt="Arrow" />
         Back
       </button>
-      {placeData ? <View placeData={placeData} renderStars={() => renderStars()} /> : <img className="place-preview__loading-img" src={loadingIcon} alt="Loading..." />}
+      {placeData ? <View placeData={placeData} renderStars={(rating) => renderStars(rating)} /> : <img className="place-preview__loading-img" src={loadingIcon} alt="Loading..." />}
     </div>
   );
 }

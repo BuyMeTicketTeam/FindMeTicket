@@ -88,11 +88,10 @@ function Maps({ address }) {
     setPlacesInfo([]);
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        console.log(results);
-        const resultsWithMarker = results.map((result) => {
+        const sortedResults = results.filter((place) => (place.opening_hours?.isOpen && place.photos && place.rating) || false).sort((placeA, placeB) => placeB.rating - placeA.rating);
+        const resultsWithMarker = sortedResults.map((result) => {
           const placeMarker = createMarker(result, map);
           return ({ ...result, marker: placeMarker });
-          // getPlaceDetails(service, result, placeMarker);
         });
         setPlacesInfo(resultsWithMarker);
       }
