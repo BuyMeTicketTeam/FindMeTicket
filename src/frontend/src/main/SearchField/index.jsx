@@ -14,7 +14,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError, selectedTransport,loading,
+  setLoading, setTicketsData, setRequestBody, setError, selectedTransport, loading,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [adultsValue, setAdultsValue] = useState(1);
