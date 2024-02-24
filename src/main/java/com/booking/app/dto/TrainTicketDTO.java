@@ -12,7 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TrainTicketDTO extends TicketDto{
+public class TrainTicketDTO extends TicketDto {
 
     private UUID id;
 
@@ -32,6 +32,8 @@ public class TrainTicketDTO extends TicketDto{
 
     private String travelTime;
 
+    private String carrier;
+
     private BigDecimal priceMin;
-    
+
 }

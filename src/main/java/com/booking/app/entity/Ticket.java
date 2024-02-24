@@ -3,7 +3,6 @@ package com.booking.app.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -17,7 +16,6 @@ import java.util.UUID;
 @ToString
 @SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@DynamicUpdate
 @NoArgsConstructor
 public class Ticket {
 
