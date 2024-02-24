@@ -8,12 +8,20 @@ import Information from './Information/index ';
 import Loader from '../Loader/index';
 import PriceTrain from './PriceTrain/index';
 import Error from '../Error';
+import Maps from './Maps';
 import './style.scss';
 
 function TicketPage() {
   const { ticketId } = useParams();
-  const [ticketData, setTicketData] = useState(null);
-  const [ticketUrl, setTicketUrl] = useState([]);
+  const [ticketData, setTicketData] = useState({
+    departureTime: 'asdads',
+    travelTime: 'dafsdf',
+    arrivalTime: 'asdasd',
+    departureCity: 'asdasd',
+    placeAt: 'Привокзальная пл., 2',
+    arrivalCity: 'Одеса',
+  });
+  const [ticketUrl, setTicketUrl] = useState([{ comfort: 'купе', price: 100 }, { comfort: 'купе', price: 200 }]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
@@ -65,13 +73,17 @@ function TicketPage() {
   useEffect(() => {
     handleServerRequest();
   }, []);
+
   const PriceView = ticketData?.type === 'TRAIN' ? <PriceTrain ticketUrls={ticketUrl} connection={connection} /> : <Price ticketUrls={ticketUrl} connection={connection} />;
+  const mapView = ticketData?.placeAt ? <Maps address={`${ticketData.placeAt},${ticketData.arrivalCity}`} /> : <Error />;
+
   const ticketDataView = ticketData && (
     <>
       <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">{t('price')}</div>
       {PriceView}
+      {mapView}
     </>
   );
   const ticketErrorView = ticketError && <Error />;
