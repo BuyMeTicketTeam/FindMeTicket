@@ -5,10 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,7 +38,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("infobus")
 @RequiredArgsConstructor
 @Log4j2
-public class InfobusScraperServiceImpl implements ScraperService {
+public class InfobusScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
@@ -69,7 +71,6 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
         try {
             synchronized (driver) {
-                //cringe
                 driver.wait(5000);
             }
         } catch (InterruptedException e) {
@@ -84,7 +85,11 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
             Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
 
-            saveTicketOrUpdate(emitter, route, language, doShow, busTicket, scrapedTicket);
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getInfobusPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
         }
 
         driver.quit();
@@ -166,17 +171,18 @@ public class InfobusScraperServiceImpl implements ScraperService {
         };
     }
 
-    private void saveTicketOrUpdate(SseEmitter emitter, Route route, String language, Boolean doShow, Optional<BusTicket> busTicket, BusTicket scrapedTicket) throws IOException {
-        if (busTicket.isPresent() && Objects.isNull(busTicket.get().getInfobusPrice())) {
-            busTicket.get().updateInfobusPrice(scrapedTicket.getInfobusPrice());
-            repository.save(busTicket.get());
-        }
-        if (busTicket.isEmpty()) {
-            scrapedTicket.setRoute(route);
-            repository.save(scrapedTicket);
-            if (BooleanUtils.isTrue(doShow))
-                emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
-        }
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateInfobusPrice(((BusTicket) scrapedTicket).getInfobusPrice());
+        repository.save((BusTicket) ticket);
     }
 
     private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {

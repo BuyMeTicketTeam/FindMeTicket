@@ -5,10 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,7 +40,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("proizd")
 @RequiredArgsConstructor
 @Log4j2
-public class ProizdScraperServiceImpl implements ScraperService {
+public class ProizdScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
@@ -79,16 +81,18 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
-
         log.info("PROIZD TICKETS IN scrapeTickets(): " + elements.size());
-
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
 
             Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
 
-            saveTicketOrUpdate(emitter, route, language, doShow, busTicket, scrapedTicket);
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getProizdPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
         }
 
         driver.quit();
@@ -163,19 +167,18 @@ public class ProizdScraperServiceImpl implements ScraperService {
         };
     }
 
-    private void saveTicketOrUpdate(SseEmitter emitter, Route route, String language, Boolean doShow, Optional<BusTicket> busTicket, BusTicket scrapedTicket) throws IOException {
-        // saves new ticket
-        if (busTicket.isEmpty()) {
-            scrapedTicket.setRoute(route);
-            repository.save(scrapedTicket);
-            if (BooleanUtils.isTrue(doShow))
-                emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
-        }
-        // updates price on already existing ticket
-        if (busTicket.isPresent() && Objects.isNull(busTicket.get().getProizdPrice())) {
-            busTicket.get().updateProizdPrice(scrapedTicket.getProizdPrice());
-            repository.save(busTicket.get());
-        }
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateProizdPrice(((BusTicket) scrapedTicket).getProizdPrice());
+        repository.save((BusTicket) ticket);
     }
 
     private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
@@ -252,7 +255,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-
         SimpleDateFormat outputMonthFormat = language.equals("eng") ? new SimpleDateFormat("MMMM", new Locale("en"))
                 : new SimpleDateFormat("MMMM", new Locale("uk"));
 
@@ -291,7 +293,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
         List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
         WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
         actions.moveToElement(liDate).doubleClick().build().perform();
-
     }
 
     private static BusTicket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime, String carrier) {
