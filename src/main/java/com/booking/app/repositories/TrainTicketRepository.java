@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface TrainTicketRepository extends JpaRepository<TrainTicket, UUID> {
     Optional<List<TrainTicket>> findByRoute(Route route);
 
+    Optional<TrainTicket> findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(String departureTime, String arrivalTime, String arrivalDate, String carrier);
 }

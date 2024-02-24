@@ -5,9 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.ExchangeRateUtils;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
@@ -31,21 +34,21 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("busfor")
 @RequiredArgsConstructor
 @Log4j2
-public class BusforScraperServiceImpl implements ScraperService {
+public class BusforScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
     private final BusMapper busMapper;
 
     private final WebDriverFactory webDriverFactory;
+
+    private final BusTicketRepository repository;
 
     private static final String DIV_TICKET = "div.ticket";
 
@@ -86,18 +89,17 @@ public class BusforScraperServiceImpl implements ScraperService {
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
 
         for (int i = 0; i < tickets.size() && i < 150; i++) {
-
             WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
-            BusTicket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setBusforPrice(ticket.getBusforPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getBusforPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
+
         }
 
         driver.quit();
@@ -179,6 +181,20 @@ public class BusforScraperServiceImpl implements ScraperService {
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
+    }
+
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateBusforPrice(((BusTicket) scrapedTicket).getBusforPrice());
+        repository.save((BusTicket) ticket);
     }
 
     @Override

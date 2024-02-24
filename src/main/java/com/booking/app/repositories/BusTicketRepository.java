@@ -10,5 +10,8 @@ import java.util.UUID;
 
 public interface BusTicketRepository extends JpaRepository<BusTicket, UUID> {
 
+    Optional<BusTicket> findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(String departureTime, String arrivalTime, String arrivalDate, String carrier);
+
     Optional<List<BusTicket>> findByRoute(Route route);
+
 }

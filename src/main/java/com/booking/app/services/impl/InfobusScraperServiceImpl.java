@@ -5,9 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,22 +32,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Year;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("infobus")
 @RequiredArgsConstructor
 @Log4j2
-public class InfobusScraperServiceImpl implements ScraperService {
+public class InfobusScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
     private final BusMapper busMapper;
 
     private final WebDriverFactory webDriverFactory;
+
+    private final BusTicketRepository repository;
 
     private static final String DIV_TICKET = "div.main-detail-wrap";
 
@@ -69,7 +71,6 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
         try {
             synchronized (driver) {
-                //cringe
                 driver.wait(5000);
             }
         } catch (InterruptedException e) {
@@ -80,16 +81,15 @@ public class InfobusScraperServiceImpl implements ScraperService {
         log.info("INFOBUS TICKETS IN scrapeTickets(): " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket ticket = scrapeTicketInfo(elements.get(i), route);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setInfobusPrice(ticket.getInfobusPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getInfobusPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
         }
 
         driver.quit();
@@ -169,6 +169,20 @@ public class InfobusScraperServiceImpl implements ScraperService {
             default ->
                     throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
+    }
+
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateInfobusPrice(((BusTicket) scrapedTicket).getInfobusPrice());
+        repository.save((BusTicket) ticket);
     }
 
     private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
