@@ -13,6 +13,9 @@
     color: $font-color;
     transition: background-color 0.3s, color 0.3s;
     margin-right: 10px;
+    width: 100px;
+    height: 50px; 
+
 
     img {
         max-height: 22px;
@@ -29,8 +32,13 @@
     &.active {
         background-color: $bright;
     }
+    &.disabled {
+        background-color: $grey;
+    }
 }
-
+img {
+    margin-right: 5px; 
+}
 .transportion {
     padding-right: 5px;
 }

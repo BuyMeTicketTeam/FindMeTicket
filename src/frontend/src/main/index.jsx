@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import SearchField from './SearchField';
 import Transport from './Transport';
@@ -11,13 +11,33 @@ export default function Index({ ticketsData, setTicketsData }) {
   const [loading, setLoading] = useState(false);
   const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);
+  const [selectedTransport, setSelectedTransport] = useState({
+    bus: true,
+    train: true,
+    airplane: false,
+    ferry: false,
+  });
+
+  useEffect(() => {
+    const storageTicketsData = JSON.parse(sessionStorage.getItem('ticketsData'));
+    if (storageTicketsData) {
+      console.log({ storageTicketsData });
+      setTicketsData(storageTicketsData);
+    }
+  }, []);
 
   return (
     <div className="main-block main">
       <div className="container">
         <div className="search_index">
           <Ad />
-          <Transport />
+          <Transport
+            selectedTransport={selectedTransport}
+            setSelectedTransport={setSelectedTransport}
+            ticketsData={ticketsData}
+            setTicketsData={setTicketsData}
+            requestBody={requestBody}
+          />
           <SearchField
             loading={loading}
             setLoading={setLoading}
@@ -25,6 +45,7 @@ export default function Index({ ticketsData, setTicketsData }) {
             setRequestBody={setRequestBody}
             setError={setError}
             ticketsData={ticketsData}
+            selectedTransport={selectedTransport}
           />
         </div>
         <TicketsBody
@@ -33,6 +54,7 @@ export default function Index({ ticketsData, setTicketsData }) {
           requestBody={requestBody}
           setTicketsData={setTicketsData}
           ticketsData={ticketsData}
+          selectedTransport={selectedTransport}
         />
       </div>
       <Outlet />
