@@ -19,6 +19,7 @@
 
     img {
         max-height: 22px;
+        margin-right: 5px; 
     }
 
     &:last-child {
@@ -35,9 +36,6 @@
     &.disabled {
         background-color: $grey;
     }
-}
-img {
-    margin-right: 5px; 
 }
 .transportion {
     padding-right: 5px;
