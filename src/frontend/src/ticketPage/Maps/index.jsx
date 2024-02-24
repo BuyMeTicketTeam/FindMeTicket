@@ -125,7 +125,7 @@ function Maps({ address }) {
           <button
             type="button"
             className={`category ${index === selectedCategory ? 'active' : ''}`}
-            onClick={() => setSelectedCategory(index)}
+            onClick={() => { setSelectedCategory(index); setCurrentPlaceId(null); }}
           >
             {t(title)}
           </button>
@@ -153,7 +153,7 @@ function Maps({ address }) {
         isLoaded && (
           <div className="map-container">
             <PlacePreviewList placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} updateMarker={(place) => updateMarker(place)} />
-            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} />}
+            {currentPlaceId && <PlacePreview placeId={currentPlaceId} placesInfo={placesInfo} setCurrentPlaceId={setCurrentPlaceId} map={mapRef.current} />}
             <GoogleMap
               mapContainerStyle={containerStyle}
               zoom={zoom}
