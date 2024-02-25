@@ -228,7 +228,8 @@
                   "working-hours": "Робочий час:",
                   "back-btn": "Назад",
                   "status-open": "Відкрито",
-                  "status-close": "Закрито"
+                  "status-close": "Закрито",
+                  "station-marker-title": "Місце прибуття"
             }
       }
 }

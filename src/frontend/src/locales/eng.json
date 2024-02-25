@@ -227,7 +227,8 @@
                   "working-hours": "Working hours:",
                   "back-btn": "Back",
                   "status-open": "Open",
-                  "status-close": "Closed"
+                  "status-close": "Closed",
+                  "station-marker-title": "Place of arrival"
             }
       }
 }
