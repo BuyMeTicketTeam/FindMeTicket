@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Header from './header/index';
@@ -16,6 +16,17 @@ function App() {
   const { auth, updateAuthValue } = useAuthCheck();
   const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
   const [ticketsData, setTicketsData] = useState([]);
+  const [selectedTransport, setSelectedTransport] = useState({
+    bus: true,
+    train: true,
+    airplane: false,
+    ferry: false,
+  });
+  const [requestBody, setRequestBody] = useState({});
+
+  useEffect(() => {
+    console.log({ effect: ticketsData });
+  }, [ticketsData]);
 
   return (
     <Router>
@@ -27,7 +38,16 @@ function App() {
             authorization={auth}
             updateAuthValue={updateAuthValue}
           />
-          <Routers updateAuthValue={updateAuthValue} language={language} ticketsData={ticketsData} setTicketsData={setTicketsData} />
+          <Routers
+            updateAuthValue={updateAuthValue}
+            language={language}
+            ticketsData={ticketsData}
+            setTicketsData={setTicketsData}
+            selectedTransport={selectedTransport}
+            setSelectedTransport={setSelectedTransport}
+            requestBody={requestBody}
+            setRequestBody={setRequestBody}
+          />
           <CookieBanner />
           <Footer />
         </GoogleOAuthProvider>

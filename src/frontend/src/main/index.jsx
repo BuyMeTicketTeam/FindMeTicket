@@ -7,16 +7,13 @@ import Ad from '../Ad/index';
 import './main.scss';
 import TicketsBody from './Body';
 
-export default function Index({ ticketsData, setTicketsData }) {
+export default function Index({
+  ticketsData, setTicketsData, selectedTransport, setSelectedTransport, requestBody, setRequestBody,
+}) {
   const [loading, setLoading] = useState(false);
-  const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);
-  const [selectedTransport, setSelectedTransport] = useState({
-    bus: true,
-    train: true,
-    airplane: false,
-    ferry: false,
-  });
+
+  console.log({ ticketsDataMain: ticketsData });
 
   return (
     <div className="main-block main">
@@ -24,6 +21,7 @@ export default function Index({ ticketsData, setTicketsData }) {
         <div className="search_index">
           <Ad />
           <Transport
+            loading={loading}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
             ticketsData={ticketsData}
