@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Header from './header/index';
@@ -23,10 +23,6 @@ function App() {
     ferry: false,
   });
   const [requestBody, setRequestBody] = useState({});
-
-  useEffect(() => {
-    console.log({ effect: ticketsData });
-  }, [ticketsData]);
 
   return (
     <Router>

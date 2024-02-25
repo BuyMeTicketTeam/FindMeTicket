@@ -66,7 +66,6 @@ function Popup({
 
   const handleConfirmDelete = () => {
     handleDeleteButton();
-    console.log('Deleting account...');
     setShowDeleteConfirmation(false);
   };
 

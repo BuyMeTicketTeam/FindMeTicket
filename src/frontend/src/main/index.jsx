@@ -13,8 +13,6 @@ export default function Index({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  console.log({ ticketsDataMain: ticketsData });
-
   return (
     <div className="main-block main">
       <div className="container">
