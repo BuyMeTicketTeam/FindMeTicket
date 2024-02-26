@@ -26,7 +26,7 @@
                   "processing": "Processing...",
                   "time": "Send the letter again: {{minutes}}:{{seconds}}",
                   "auth-link": "Click to log in",
-                  "success-message": "The password has been changed!!!"
+                  "success-message": "The password has been changed!"
             },
             "update-password": {
                   "error-server": "Try again",
@@ -43,7 +43,7 @@
                   "confirm-password-error": "The new passwords do not match",
                   "processing": "Processing...",
                   "auth-link": "Click to return to the page",
-                  "success-message": "The password has been changed!!!"
+                  "success-message": "The password has been changed!"
             },
             "login": {
                   "login-error": "The email field is not filled in correctly",
@@ -110,7 +110,7 @@
                   "processing": "Processing...",
                   "time": "Send the email again: {{minutes}}:{{seconds}}",
                   "auth-link": "Click to log in",
-                  "success-message": "Mail is confirmed!!!"
+                  "success-message": "Mail is confirmed!"
             },
             "reset": {
                   "error-server": "There is no user using this mail",
