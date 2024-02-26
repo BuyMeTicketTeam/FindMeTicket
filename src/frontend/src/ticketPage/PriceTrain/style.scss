@@ -1,0 +1,38 @@
+@import '../../styles/variables.scss';
+@import '../Price/style.scss';
+
+.ticket-header {
+    display: flex;
+    align-items: center;
+    margin-right: 450px;
+    background: #d6e5ff;
+    background-size: cover;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer; 
+    border: none; 
+    outline: none; 
+    transition: background-color 0.3s;
+  }
+  
+  .ticket-header:hover,
+  .ticket-header.clicked {
+    color: $bright; 
+  }
+  
+  .horizontal-line-train {
+    width: 100%;
+    border: 1px solid black;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .ticket-price {
+    background-color: #d6e5ff;
+  }
+  
+  
+  .ticket-header:active {
+    color: $bright; 
+}
+ 

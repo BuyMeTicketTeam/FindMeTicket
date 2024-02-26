@@ -6,13 +6,22 @@ import eventSourceQuery2 from '../helper/eventSourceQuery2';
 import Price from './Price/index';
 import Information from './Information/index ';
 import Loader from '../Loader/index';
+import PriceTrain from './PriceTrain/index';
 import Error from '../Error';
+import Maps from './Maps';
 import './style.scss';
 
 function TicketPage() {
   const { ticketId } = useParams();
-  const [ticketData, setTicketData] = useState(null);
-  const [ticketUrl, setTicketUrl] = useState([]);
+  const [ticketData, setTicketData] = useState({
+    departureTime: 'asdads',
+    travelTime: 'dafsdf',
+    arrivalTime: 'asdasd',
+    departureCity: 'asdasd',
+    placeAt: 'Вокзальна площа, 1, Київ',
+    type: 'TRAIN',
+  });
+  const [ticketUrl, setTicketUrl] = useState([{ comfort: 'купе', price: 100 }, { comfort: 'купе', price: 200 }]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
@@ -35,7 +44,9 @@ function TicketPage() {
         setTicketData(parsedData);
         return;
       }
-      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, { resource: event.event, url: parsedData.url, price: parsedData.price }]);
+      setTicketUrl((prevTicketUrl) => [...prevTicketUrl, {
+        resource: event.event, url: parsedData.url, price: parsedData.price, comfort: parsedData.comfort,
+      }]);
     }
 
     function handleError() {
@@ -63,12 +74,16 @@ function TicketPage() {
     handleServerRequest();
   }, []);
 
+  const PriceView = ticketData?.type === 'TRAIN' ? <PriceTrain ticketUrls={ticketUrl} connection={connection} /> : <Price ticketUrls={ticketUrl} connection={connection} />;
+  const mapView = ticketData?.placeAt ? <Maps address={`${ticketData.placeAt},${ticketData.arrivalCity}`} /> : <Error />;
+
   const ticketDataView = ticketData && (
     <>
       <div className="ticketPage-header">{`${ticketData.departureDate} - ${ticketData.arrivalDate}`}</div>
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">{t('price')}</div>
-      <Price ticketUrls={ticketUrl} connection={connection} />
+      {PriceView}
+      {mapView}
     </>
   );
   const ticketErrorView = ticketError && <Error />;
