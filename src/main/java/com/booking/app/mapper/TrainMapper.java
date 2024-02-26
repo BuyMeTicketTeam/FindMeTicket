@@ -23,9 +23,9 @@ public interface TrainMapper {
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
+    @Mapping(source = "carrier", target = "carrier")
     @Mapping(target = "type", constant = "TRAIN")
     TrainTicketDTO toTrainTicketDto(TrainTicket ticket, @Context String language);
-
 
     TrainComfortInfoDTO toTrainComfortInfoDTO(TrainComfortInfo ticket);
 
