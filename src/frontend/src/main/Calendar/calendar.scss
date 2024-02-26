@@ -1,6 +1,14 @@
 //calendar
 @import '../../styles/variables.scss';
 
+.datepicker {
+    flex: auto; 
+} 
+
+.react-datepicker-wrapper {
+    width: 100%
+} 
+
 .calendar {
 
     .react-datepicker__header,

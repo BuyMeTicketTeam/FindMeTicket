@@ -27,26 +27,6 @@ test('displays error message when city is not selected', async () => {
   });
 });
 
-test('renders passenger field', () => {
-  render(<SearchField />);
-
-  const passengersField = screen.getByTestId('passengers');
-
-  expect(passengersField).toBeInTheDocument();
-});
-
-test('displays passenger dropdown when clicked', () => {
-  render(<SearchField />);
-
-  const passengersField = screen.getByTestId('passengers');
-
-  userEvent.click(passengersField);
-
-  const passengersDropdown = screen.getByTestId('passengers-dropdown'); // Assuming a test ID for the dropdown
-
-  expect(passengersDropdown).toBeInTheDocument();
-});
-
 test('renders date picker', () => {
   render(<SearchField />);
 

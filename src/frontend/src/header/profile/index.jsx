@@ -31,9 +31,10 @@ function Popup({
   }
 
   function handleDeleteButton() {
-    makeQuerry('delete-user', null, null, 'DELETE').then((response) => {
+    makeQuerry('delete-user', undefined, undefined, 'DELETE').then((response) => {
       switch (response.status) {
         case 200:
+          setIsProfilePopup(false);
           updateAuthValue(null);
           localStorage.removeItem('JWTtoken');
           cookies.remove('rememberMe');
@@ -45,17 +46,6 @@ function Popup({
     });
   }
 
-  const handleAvatarClick = () => {
-    const fileInput = document.getElementById('avatarInput');
-    fileInput.click();
-  };
-
-  const handleAvatarKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      handleAvatarClick();
-    }
-  };
-
   const handleDeleteAccount = () => {
     setShowDeleteConfirmation(true);
   };
@@ -66,7 +56,6 @@ function Popup({
 
   const handleConfirmDelete = () => {
     handleDeleteButton();
-    console.log('Deleting account...');
     setShowDeleteConfirmation(false);
   };
 
@@ -78,10 +67,6 @@ function Popup({
         </button>
         <div
           className="avatar"
-          tabIndex="0"
-          role="button"
-          onClick={handleAvatarClick}
-          onKeyDown={handleAvatarKeyDown}
           data-testid="avatar"
         >
           <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : 'DEFAULT_URL')} alt="Avatar" referrerPolicy="no-referrer" />

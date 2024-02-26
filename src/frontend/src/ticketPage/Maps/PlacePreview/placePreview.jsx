@@ -35,7 +35,7 @@ function View({ placeData, renderStars }) {
           {userRatingsTotal}
           )
           {' '}
-          {t('rating')}
+          {t('reviews')}
         </span>
       </div>
       )}

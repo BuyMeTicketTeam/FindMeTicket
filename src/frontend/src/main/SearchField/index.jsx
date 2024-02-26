@@ -4,10 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
-import Field from '../../utils/Field';
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
-import Passengers from '../Passangers';
 import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
 import eventSourceQuery2 from '../../helper/eventSourceQuery2';
@@ -17,21 +15,14 @@ export default function SearchField({
   setLoading, setTicketsData, setRequestBody, setError, selectedTransport, loading,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
-  const [adultsValue, setAdultsValue] = useState(1);
-  const [childrenValue, onChildrenValue] = useState(0);
   const [cityFrom, onCityFrom] = useState('');
   const [cityTo, onCityTo] = useState('');
   const [errorCityFrom, onErrorCityFrom] = useState(false);
   const [errorCityTo, onErrorCityTo] = useState(false);
   const [date, onDate] = useState(new Date());
-  const [passanger, onPassengers] = useState(`1 ${t('adults')}, 0 ${t('child')}`);
   const [showPassengers, onShowPassengers] = useState(false);
   const fieldRef = React.createRef();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
-
-  function showPassengersDrop() {
-    onShowPassengers(!showPassengers);
-  }
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
@@ -45,24 +36,6 @@ export default function SearchField({
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
   }, [showPassengers, fieldRef]);
-
-  function updatePassangerText() {
-    let adults = (t('adult'));
-    let kids = (t('child'));
-    if (adultsValue > 1) {
-      adults = (t('adults'));
-    }
-    if (childrenValue > 1 && childrenValue <= 4) {
-      kids = (t('children'));
-    } else if (childrenValue > 4) {
-      kids = (t('childrens'));
-    }
-    onPassengers(`${adultsValue} ${adults}, ${childrenValue} ${kids}`);
-  }
-
-  useEffect(() => {
-    updatePassangerText();
-  }, [childrenValue, adultsValue, t]);
 
   function validation() {
     if (!cityFrom && !cityTo) {
@@ -211,24 +184,6 @@ export default function SearchField({
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
-      <Field
-        dataTestId="passengers"
-        ref={fieldRef}
-        className="search-field__tip-long"
-        name={t('passengers')}
-        value={passanger}
-        type="text"
-        tip={(
-          <Passengers
-            status={showPassengers}
-            adultsValue={adultsValue}
-            setAdultsValue={setAdultsValue}
-            childrenValue={childrenValue}
-            onChildrenValue={onChildrenValue}
-          />
-)}
-        onClick={() => showPassengersDrop()}
-      />
       <Button name={t('find')} onButton={sendRequest} disabled={loading} />
     </div>
   );

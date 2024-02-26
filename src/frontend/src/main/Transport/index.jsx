@@ -8,13 +8,14 @@ import {
 } from './transport-img/img';
 
 function TransportButton({
-  label, isActive, onClick, img, disabled,
+  label, isActive, onClick, img, disabled, loading,
 }) {
   return (
     <button
       type="button"
-      className={`transport-btn ${isActive ? 'active' : ''} ${disabled ? 'disabled' : ''}`}
+      className={`transport-btn ${isActive ? 'active' : ''} ${(disabled || loading) ? 'disabled' : ''}`}
       onClick={onClick}
+      disabled={disabled || loading}
     >
       <img
         className="transportation"
@@ -27,9 +28,10 @@ function TransportButton({
 }
 
 function Transport({
-  setTicketsData, selectedTransport, setSelectedTransport, requestBody, ticketsData,
+  setTicketsData, selectedTransport, setSelectedTransport, requestBody, ticketsData, loading,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'transport' });
 
   const handleButtonClick = (button) => {
@@ -56,8 +58,9 @@ function Transport({
   };
 
   useEffect(() => {
-    const selectedCount = Object.values(selectedTransport).filter((value) => value).length;
-    if (selectedCount > 0 && ticketsData.length > 0) {
+    if ((ticketsData.length || Object.keys(requestBody).length !== 0) > 0 && buttonClicked) {
+      console.log(ticketsData);
+      setButtonClicked(false);
       const body = {
         ...requestBody,
         ...selectedTransport,
@@ -69,36 +72,38 @@ function Transport({
         .catch((error) => {
           console.error('Error fetching data:', error);
         });
-    } else if (selectedCount === 0) {
-      handleButtonClick('all');
     }
-  }, [selectedTransport]);
+  }, [selectedTransport, buttonClicked]);
 
   return (
     <div>
       <TransportButton
         label={t('everything')}
         isActive={selectedTransport.bus && selectedTransport.train}
-        onClick={() => handleButtonClick('all')}
+        onClick={() => { handleButtonClick('all'); setButtonClicked(true); }}
         img={everythingIcon}
+        loading={loading}
       />
       <TransportButton
         label={t('bus')}
         isActive={selectedTransport.bus && !selectedTransport.train}
-        onClick={() => handleButtonClick('bus')}
+        onClick={() => { handleButtonClick('bus'); setButtonClicked(true); }}
         img={busIcon}
+        loading={loading}
       />
       <TransportButton
         label={t('train')}
         isActive={selectedTransport.train && !selectedTransport.bus}
-        onClick={() => handleButtonClick('train')}
+        onClick={() => { handleButtonClick('train'); setButtonClicked(true); }}
         img={trainIcon}
+        loading={loading}
       />
       <TransportButton
         label={t('plane')}
         isActive={selectedTransport.airplane}
         onClick={() => setIsOpen(true)}
         img={planeIcon}
+        loading={loading}
         disabled
       />
       <TransportButton
@@ -106,6 +111,7 @@ function Transport({
         isActive={selectedTransport.ferry}
         onClick={() => setIsOpen(true)}
         img={boatIcon}
+        loading={loading}
         disabled
       />
       {isOpen && <InProgress title={t('message-title')} text={t('message-text')} setIsOpen={setIsOpen} />}

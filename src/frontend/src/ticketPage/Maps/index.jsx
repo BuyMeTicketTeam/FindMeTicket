@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -8,20 +9,20 @@ import { useTranslation } from 'react-i18next';
 import PlacePreviewList from './PlacePreviewList/placePreviewList';
 import PlacePreview from './PlacePreview/placePreview';
 
+const containerStyle = {
+  width: '100%',
+  height: '400px',
+};
+
+const libraries = ['places', 'marker'];
+const radius = '2000';
+const zoom = 14;
+
 function Maps({ address }) {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
-
-  const containerStyle = {
-    width: '100%',
-    height: '400px',
-  };
-
-  const libraries = ['places', 'marker'];
-  const radius = '2000';
-  const zoom = 14;
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -104,6 +105,23 @@ function Maps({ address }) {
     geocoder.geocode({ address }, (results, status) => {
       if (status === 'OK') {
         map.setCenter(results[0].geometry.location);
+        const marker = new window.google.maps.Marker({
+          map,
+          position: results[0].geometry.location,
+          icon: {
+            path: 'M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z',
+            fillColor: '#D0781B',
+            fillOpacity: 1,
+            strokeWeight: 0,
+            rotation: 0,
+            scale: 3,
+            anchor: new window.google.maps.Point(0, 20),
+          },
+        });
+        new window.google.maps.InfoWindow({
+          content: t('station-marker-title'),
+          anchor: marker,
+        });
         const stationLocation = new window.google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
         nearbySearch(stationLocation, map);
       } else {
