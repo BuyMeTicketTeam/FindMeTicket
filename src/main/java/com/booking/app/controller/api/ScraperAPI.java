@@ -7,11 +7,14 @@ import com.booking.app.exception.exception.UndefinedLanguageException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
@@ -20,7 +23,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
-
+@Validated
+@Tag(name = "Scraping info",description = "Endpoints for scraping tickets' info etc")
 public interface ScraperAPI {
 
     @Operation(summary = "Searching tickets", description = "Find tickets based by criteria")
@@ -41,5 +45,5 @@ public interface ScraperAPI {
             @ApiResponse(responseCode = "200", description = "Chosen ticket's type returned to the client"),
             @ApiResponse(responseCode = "404", description = "No tickets of the requested type were found")
     })
-    ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@NotNull RequestTicketsDTO requestSortedTicketsDTO) throws IOException;
+    ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@NotNull @Valid RequestTicketsDTO requestSortedTicketsDTO) throws IOException;
 }

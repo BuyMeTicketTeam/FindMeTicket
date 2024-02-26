@@ -6,6 +6,7 @@ import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.io.IOException;
 
 @Validated
+@Tag(name = "Registering user",description = "Endpoints for registration and confirmation")
 public interface RegisterAPI {
 
     @Operation(summary = "Register User")
