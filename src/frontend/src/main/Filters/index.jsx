@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +10,6 @@ import './filters.scss';
 export default function Filters({ requestBody, setTicketsData, selectedTransport }) {
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
 
   const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
@@ -20,9 +21,7 @@ export default function Filters({ requestBody, setTicketsData, selectedTransport
       ascending: reverse,
       ...selectedTransport,
     };
-    setLoading(true);
     const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
-    setLoading(false);
 
     const responseBody = response.status === 200 ? response.body : null;
     setTicketsData(responseBody);
@@ -50,7 +49,6 @@ export default function Filters({ requestBody, setTicketsData, selectedTransport
           key={index}
           dataTestId={filter}
           onClick={() => handleSort(filter)}
-          loading={loading}
           isDown={sort === filter}
           isUp={sort === filter && ascending}
         >
