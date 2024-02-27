@@ -11,7 +11,7 @@ export default function Filters({ requestBody, setTicketsData, selectedTransport
   const [loading, setLoading] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
 
-  const filtersBtn = ['price', 'travelTime', 'departureTime', 'arrivalTime'];
+  const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
 
   async function sendRequest(sortArg, reverse) {
     const body = {

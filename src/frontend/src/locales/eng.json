@@ -177,10 +177,10 @@
                   "ticket-not-found": "Sorry, no tickets found for this route"
             },
             "filters": {
-                  "price": "Price",
-                  "travelTime": "Travel time",
-                  "departureTime": "Departure time",
-                  "arrivalTime": "Arrival time"
+                  "Price": "Price",
+                  "TravelTime": "Travel time",
+                  "DepartureTime": "Departure time",
+                  "ArrivalTime": "Arrival time"
             },
             "passengers": {
                   "adults": "Adults:",

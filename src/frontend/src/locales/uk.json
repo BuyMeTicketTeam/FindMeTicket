@@ -178,10 +178,10 @@
                   "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено"
             },
             "filters": {
-                  "price": "Ціна",
-                  "travelTime": "Тривалість поїздки",
-                  "departureTime": "Час відправлення",
-                  "arrivalTime": "Час прибуття"
+                  "Price": "Ціна",
+                  "TravelTime": "Тривалість поїздки",
+                  "DepartureTime": "Час відправлення",
+                  "ArrivalTime": "Час прибуття"
             },
             "passengers": {
                   "adults": "Дорослі:",
