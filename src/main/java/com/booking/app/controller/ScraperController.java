@@ -62,8 +62,7 @@ public class ScraperController implements ScraperAPI {
 
     @PostMapping(value = "/sortedBy", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
-        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request) {
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 

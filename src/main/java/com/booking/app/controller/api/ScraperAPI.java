@@ -23,8 +23,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
+
 @Validated
-@Tag(name = "Scraping info",description = "Endpoints for scraping tickets' info etc")
+@Tag(name = "Scraping info", description = "Endpoints for scraping tickets' info etc")
 public interface ScraperAPI {
 
     @Operation(summary = "Searching tickets", description = "Find tickets based by criteria")
@@ -38,7 +39,7 @@ public interface ScraperAPI {
 
     @Operation(summary = "Sorting", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Returns sorted tickets")
-    ResponseEntity<?> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request);
+    ResponseEntity<?> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request);
 
     @Operation(summary = "Tickets", description = "After tickets are uploaded, there's a need to switch between all transport types instantly without waiting")
     @ApiResponses(value = {
