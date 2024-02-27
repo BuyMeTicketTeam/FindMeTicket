@@ -3,6 +3,7 @@ package com.booking.app.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -51,4 +52,8 @@ public class Ticket {
     @JoinColumn(name = "route_id")
     private Route route;
 
+
+    public BigDecimal getPrice(){
+        return BigDecimal.valueOf(0);
+    }
 }

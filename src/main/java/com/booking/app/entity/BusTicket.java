@@ -9,6 +9,8 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @Entity
 @DiscriminatorValue("BUS")
@@ -48,4 +50,8 @@ public class BusTicket extends Ticket {
         return super.hashCode();
     }
 
+    @Override
+    public BigDecimal getPrice(){
+        return Stream.of(proizdPrice, infobusPrice, busforPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
+    }
 }
