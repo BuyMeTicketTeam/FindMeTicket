@@ -69,8 +69,8 @@ public class LoginController implements LoginAPI {
             return ResponseEntity.ok().build();
 
         if (authentication.isAuthenticated()) {
-            if (loginDTO.getRememberMe()) {
-                response.addHeader(REMEMBER_ME, loginDTO.getRememberMe().toString());
+            if (Boolean.TRUE.equals(loginDTO.getRememberMe())) {
+                CookieUtils.addCookie(response, REMEMBER_ME, loginDTO.getRememberMe().toString(), jwtProvider.getRefreshTokenExpirationMs(), true, true);
             }
 
             UserCredentials userCredentials = (UserCredentials) authentication.getPrincipal();
@@ -79,8 +79,12 @@ public class LoginController implements LoginAPI {
             String accessToken = jwtProvider.generateAccessToken(loginDTO.getEmail());
 
             CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-            response.setHeader(USER_ID, userCredentials.getId().toString());
+            CookieUtils.addCookie(response, USER_ID, userCredentials.getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
             response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
+
+
+//            response.setHeader(USER_ID, userCredentials.getId().toString());
+//            response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authenticationToken);
@@ -116,7 +120,7 @@ public class LoginController implements LoginAPI {
                             String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
 
                             CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-                            response.setHeader(USER_ID, userCredentials.getId().toString());
+                            CookieUtils.addCookie(response, USER_ID, userCredentials.getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
                             response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
                             SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -135,6 +139,7 @@ public class LoginController implements LoginAPI {
                             }
                         }
                 );
+
         return ResponseEntity.ok().body(authorizedUserDTO);
     }
 }
