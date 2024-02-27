@@ -7,9 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 @Entity
 @DiscriminatorValue("BUS")
@@ -17,7 +18,6 @@ import java.math.BigDecimal;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-@DynamicUpdate
 //@EqualsAndHashCode(callSuper = true) --> doesn't work
 public class BusTicket extends Ticket {
 
@@ -66,6 +66,11 @@ public class BusTicket extends Ticket {
         if (newBusforPrice != null) {
             this.busforPrice = newBusforPrice;
         }
+    }
+
+    @Override
+    public BigDecimal getPrice() {
+        return Stream.of(proizdPrice, infobusPrice, busforPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
     }
 
 }
