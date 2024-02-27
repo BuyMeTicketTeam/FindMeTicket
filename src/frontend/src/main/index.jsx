@@ -20,7 +20,6 @@ export default function Index({
           <Ad />
           <Transport
             loading={loading}
-            setLoading={setLoading}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
             ticketsData={ticketsData}

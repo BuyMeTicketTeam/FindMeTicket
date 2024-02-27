@@ -30,7 +30,7 @@ function TransportButton({
 function Transport({
   setTicketsData, selectedTransport,
   setSelectedTransport, requestBody,
-  ticketsData, loading, setLoading,
+  ticketsData, loading,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -67,10 +67,8 @@ function Transport({
         ...requestBody,
         ...selectedTransport,
       };
-      setLoading(true);
       makeQuerry('selectedTransport', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() })
         .then((response) => {
-          setLoading(false);
           setTicketsData(response.body);
         })
         .catch((error) => {
