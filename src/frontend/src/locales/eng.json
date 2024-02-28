@@ -229,6 +229,9 @@
                   "status-open": "Open",
                   "status-close": "Closed",
                   "station-marker-title": "Place of arrival"
-            }
+            },
+            "partners": {
+                  "partners": "Our information partners"
+             }
       }
 }

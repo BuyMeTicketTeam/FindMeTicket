@@ -230,6 +230,9 @@
                   "status-open": "Відкрито",
                   "status-close": "Закрито",
                   "station-marker-title": "Місце прибуття"
+            },
+            "partners": {
+                 "partners": "Наші інформаційні партнери"
             }
       }
 }
