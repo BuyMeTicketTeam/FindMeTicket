@@ -9,11 +9,11 @@ import Ad from '../../Ad';
 export default function TicketsBody({
   loading, error, ticketsData, setTicketsData, requestBody, selectedTransport,
 }) {
-  if (loading) {
-    return <Loader />;
-  }
   if (error) {
     return <Error error={error} />;
+  }
+  if (loading && ticketsData?.length === 0) {
+    return <Loader />;
   }
   if (ticketsData?.length > 0) {
     return (
@@ -24,6 +24,7 @@ export default function TicketsBody({
           city={requestBody.arrivalCity}
         />
         <Filters
+          loading={loading}
           setTicketsData={setTicketsData}
           requestBody={requestBody}
           selectedTransport={selectedTransport}

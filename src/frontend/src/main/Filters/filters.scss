@@ -30,6 +30,11 @@
         background: url('./arrow-more.svg');
     }
 
+    &:hover {
+        background: $bright;
+        cursor: pointer;
+    }
+
     &.active {
         background: $bright;
     }
@@ -42,6 +47,9 @@
 
     &:not(:last-child) {
         margin-right: 15px;
+    }
+    &:disabled {
+        background: $grey;
     }
 }
 

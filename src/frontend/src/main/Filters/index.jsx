@@ -7,7 +7,9 @@ import FiltersBtn from './FiltersBtn';
 import makeQuerry from '../../helper/querry';
 import './filters.scss';
 
-export default function Filters({ requestBody, setTicketsData, selectedTransport }) {
+export default function Filters({
+  requestBody, setTicketsData, selectedTransport, loading,
+}) {
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
@@ -51,6 +53,7 @@ export default function Filters({ requestBody, setTicketsData, selectedTransport
           onClick={() => handleSort(filter)}
           isDown={sort === filter}
           isUp={sort === filter && ascending}
+          loading={loading}
         >
           {t(filter)}
         </FiltersBtn>
