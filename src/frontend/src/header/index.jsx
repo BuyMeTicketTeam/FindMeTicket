@@ -20,10 +20,11 @@ export default function Header({
   ];
   function getSystemLanguage() {
     const systemLanguage = navigator.language.split('-')[0];
+    console.log({ systemLanguage });
     if (systemLanguage !== 'uk') {
       return ({ value: 'ENG', label: 'ENG' });
     }
-    return null;
+    return ({ value: 'UA', label: 'УКР' });
   }
 
   function setLanguageToStorage(language) {
@@ -39,7 +40,7 @@ export default function Header({
     if (savedLanguage) {
       return savedLanguage;
     }
-    return getSystemLanguage();
+    return getSystemLanguage() ?? ({ value: 'ENG', label: 'ENG' });
   }
 
   function displayLanguage(languageParam) {
