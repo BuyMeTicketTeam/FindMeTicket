@@ -9,10 +9,14 @@ import com.booking.app.mapper.BusMapper;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.services.SortTicketsService;
+import jakarta.el.MethodNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.pool.TypePool;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,49 +30,36 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
     private final TrainMapper trainMapper;
 
-    public List<TicketDto> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, String language) {
-        List<Ticket> tickets = new java.util.ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestSortedTicketsDTO.getDepartureCity(), requestSortedTicketsDTO.getArrivalCity(), requestSortedTicketsDTO.getDepartureDate()).getTickets().stream().toList());
-
-        tickets.sort((o1, o2) -> {
-            try {
-
-                Method getter1 = switch (o1) {
-                    case BusTicket t -> BusTicket.class.getMethod("get" + requestSortedTicketsDTO.getSortingBy());
-                    case TrainTicket t -> TrainTicket.class.getMethod("get" + requestSortedTicketsDTO.getSortingBy());
-                    default -> null;
-                };
-
-                Method getter2 = switch (o2) {
-                    case BusTicket t -> BusTicket.class.getMethod("get" + requestSortedTicketsDTO.getSortingBy());
-                    case TrainTicket t -> TrainTicket.class.getMethod("get" + requestSortedTicketsDTO.getSortingBy());
-                    default -> null;
-                };
-
-                Comparable fieldValue1 = (Comparable) getter1.invoke(o1);
-                Comparable fieldValue2 = (Comparable) getter2.invoke(o2);
-
-                int ascending = requestSortedTicketsDTO.isAscending() ? 1 : -1;
-
-                return ascending * fieldValue1.compareTo(fieldValue2);
-            } catch (Exception e) {
-                return 0;
-            }
-
-
-        });
+    public List<TicketDto> getSortedTickets(RequestSortedTicketsDTO dto, String language) {
+        List<Ticket> tickets = new ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate()).getTickets().stream().toList());
 
         List<TicketDto> result = new LinkedList<>();
 
-        for (int i = 0; i < 30 && i < tickets.size(); i++) {
+        for (Ticket ticket : tickets) {
+            switch (ticket) {
+                case BusTicket t -> {
+                    if (dto.getBus())
+                        result.add(busMapper.ticketToTicketDto(t, language));
+                }
+                case TrainTicket t -> {
+                    if (dto.getTrain())
+                        result.add(trainMapper.toTrainTicketDto(t, language));
+                }
+                default ->
+                        throw new UnsupportedOperationException("Unsupported ticket type: " + ticket.getClass().getSimpleName());
+            }
 
-            TicketDto ticketDto = switch (tickets.get(i)) {
-                case BusTicket t -> busMapper.ticketToTicketDto(t, language);
-                case TrainTicket t -> trainMapper.toTrainTicketDto(t, language);
-                default -> null;
-            };
-
-            result.add(ticketDto);
         }
+
+        Comparator<TicketDto> comparator = switch (dto.getSortingBy()) {
+            case "Price" -> Comparator.comparing(TicketDto::getPrice);
+            case "DepartureTime" -> Comparator.comparing(TicketDto::getDepartureTime);
+            case "ArrivalTime" -> Comparator.comparing(TicketDto::formatArrivalDateTime);
+            case "TravelTime" -> Comparator.comparing(TicketDto::getTravelTime);
+            default -> throw new UnsupportedOperationException();
+        };
+
+        result.sort(comparator);
 
         return result;
     }
