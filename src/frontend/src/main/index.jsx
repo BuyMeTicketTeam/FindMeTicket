@@ -6,6 +6,7 @@ import Transport from './Transport';
 import Ad from '../Ad/index';
 import './main.scss';
 import TicketsBody from './Body';
+import Partner from './Partner';
 
 export default function Index({
   ticketsData, setTicketsData, selectedTransport, setSelectedTransport, requestBody, setRequestBody,
@@ -44,6 +45,7 @@ export default function Index({
           ticketsData={ticketsData}
           selectedTransport={selectedTransport}
         />
+        <Partner />
       </div>
       <Outlet />
     </div>

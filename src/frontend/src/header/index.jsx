@@ -18,10 +18,11 @@ export default function Header({
     { value: 'UA', label: 'УКР' },
     { value: 'ENG', label: 'ENG' },
   ];
+
   function getSystemLanguage() {
     const systemLanguage = navigator.language.split('-')[0];
     if (systemLanguage !== 'uk') {
-      return ({ value: 'ENG', label: 'ENG' });
+      return { value: 'ENG', label: 'ENG' };
     }
     return null;
   }
@@ -65,6 +66,7 @@ export default function Header({
   useEffect(() => {
     displayLanguage();
   }, []);
+
   useEffect(() => {
     if (authorization && authorization.status === 200 && authorization.image) {
       setUserAvatar(authorization.image);
@@ -91,7 +93,6 @@ export default function Header({
         isSearchable={false}
         onChange={(lang) => handleLanguageChange(lang)}
       />
-
       <LoginBtn
         setIsProfilePopup={setIsProfilePopup}
         status={authorization}
