@@ -201,7 +201,15 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        return createTicket(webTicket, route, price, totalMinutes, formattedTicketDate, date);
+        String carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText();
+
+        if(carrier.isEmpty()){
+            carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getAttribute("href").replaceAll(".*/", "");
+        }
+
+        carrier.toUpperCase().replaceAll("\"", "").replace("ТОВ ", "");
+
+        return createTicket(webTicket, route, price, carrier, totalMinutes, formattedTicketDate, date);
     }
 
 
@@ -261,7 +269,7 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
         actions.moveToElement(element).click().build().perform();
     }
 
-    private static BusTicket createTicket(WebElement webTicket, Route route, String price, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
+    private static BusTicket createTicket(WebElement webTicket, Route route, String price, String carrier, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
@@ -272,7 +280,7 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
                 .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalDate(formattedTicketDate.format(date))
-                .carrier(webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText().toUpperCase().replaceAll("\"", "").replace("ТОВ ", "")).build();
+                .carrier(carrier).build();
     }
 
 }
