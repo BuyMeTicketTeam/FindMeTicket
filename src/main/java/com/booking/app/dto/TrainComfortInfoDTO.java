@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Data
 public class TrainComfortInfoDTO {
 
-    private String link;
+    private String url;
 
     private String comfort;
 

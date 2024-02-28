@@ -27,6 +27,7 @@ public interface TrainMapper {
     @Mapping(target = "type", constant = "TRAIN")
     TicketDto toTrainTicketDto(TrainTicket ticket, @Context String language);
 
+    @Mapping(source = "link", target = "url")
     TrainComfortInfoDTO toTrainComfortInfoDTO(TrainComfortInfo ticket);
 
     @Named("decimalToString")
