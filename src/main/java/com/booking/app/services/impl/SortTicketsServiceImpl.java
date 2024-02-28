@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,32 +33,6 @@ public class SortTicketsServiceImpl implements SortTicketsService {
     public List<TicketDto> getSortedTickets(RequestSortedTicketsDTO dto, String language) {
         List<Ticket> tickets = new ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate()).getTickets().stream().toList());
 
-        tickets.sort((o1, o2) -> {
-            try {
-                String get = "get";
-                Method getter1 = switch (o1) {
-                    case BusTicket t -> BusTicket.class.getMethod(get + dto.getSortingBy());
-                    case TrainTicket t -> TrainTicket.class.getMethod(get + dto.getSortingBy());
-                    default -> throw new MethodNotFoundException();
-                };
-
-                Method getter2 = switch (o2) {
-                    case BusTicket t -> BusTicket.class.getMethod(get + dto.getSortingBy());
-                    case TrainTicket t -> TrainTicket.class.getMethod(get + dto.getSortingBy());
-                    default -> throw new MethodNotFoundException();
-                };
-
-                Comparable fieldValue1 = (Comparable) getter1.invoke(o1);
-                Comparable fieldValue2 = (Comparable) getter2.invoke(o2);
-
-                int ascending = dto.isAscending() ? 1 : -1;
-
-                return ascending * fieldValue1.compareTo(fieldValue2);
-            } catch (Exception e) {
-                return 0;
-            }
-        });
-
         List<TicketDto> result = new LinkedList<>();
 
         for (Ticket ticket : tickets) {
@@ -70,10 +45,21 @@ public class SortTicketsServiceImpl implements SortTicketsService {
                     if (dto.getTrain())
                         result.add(trainMapper.toTrainTicketDto(t, language));
                 }
-                default -> throw new UnsupportedOperationException("Unsupported ticket type: " + ticket.getClass().getSimpleName());
+                default ->
+                        throw new UnsupportedOperationException("Unsupported ticket type: " + ticket.getClass().getSimpleName());
             }
 
         }
+
+        Comparator<TicketDto> comparator = switch (dto.getSortingBy()) {
+            case "Price" -> Comparator.comparing(TicketDto::getPrice);
+            case "DepartureTime" -> Comparator.comparing(TicketDto::getDepartureTime);
+            case "ArrivalTime" -> Comparator.comparing(TicketDto::formatArrivalDateTime);
+            case "TravelTime" -> Comparator.comparing(TicketDto::getTravelTime);
+            default -> throw new UnsupportedOperationException();
+        };
+
+        result.sort(comparator);
 
         return result;
     }

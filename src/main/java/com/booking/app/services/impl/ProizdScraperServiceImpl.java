@@ -190,7 +190,6 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
                 : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
 
         LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
-
         ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"))
                 : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
         String formattedDate = date.format(ticketDate);
