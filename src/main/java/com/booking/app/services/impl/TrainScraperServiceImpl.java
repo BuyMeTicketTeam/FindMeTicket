@@ -53,7 +53,7 @@ public class TrainScraperServiceImpl implements ScraperService, TicketOperation 
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
@@ -109,7 +109,7 @@ public class TrainScraperServiceImpl implements ScraperService, TicketOperation 
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaTrain();
             case ("eng") -> linkProps.getProizdEngTrain();

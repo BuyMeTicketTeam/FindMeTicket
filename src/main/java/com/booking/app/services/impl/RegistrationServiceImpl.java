@@ -9,7 +9,7 @@ import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.enums.EnumProvider;
 import com.booking.app.enums.EnumRole;
-import com.booking.app.exception.exception.EmailExistsException;
+import com.booking.app.exception.exception.EmailAlreadyExistsException;
 import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
@@ -51,18 +51,18 @@ public class RegistrationServiceImpl implements RegistrationService {
      *
      * @param registrationDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO Returns an EmailDTO containing information about the registration confirmation email.
-     * @throws EmailExistsException    If a user with the provided email already exists.
+     * @throws EmailAlreadyExistsException    If a user with the provided email already exists.
      * @throws UsernameAlreadyExistsException If a user with the provided username already exists.
-     * @throws MessagingException      If there is an issue with sending the confirmation email.
+     * @throws MessagingException             If there is an issue with sending the confirmation email.
      */
     @Override
-    public EmailDTO register(RegistrationDTO registrationDTO) throws EmailExistsException, MessagingException, UsernameAlreadyExistsException {
+    public EmailDTO register(RegistrationDTO registrationDTO) throws MessagingException {
         Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername());
         if (userCredentials.isPresent()
                 && userCredentials.get().getEmail().equals(registrationDTO.getEmail())
                 && userCredentials.get().isEnabled()) {
 
-            throw new EmailExistsException("We’re sorry. This email already exists");
+            throw new EmailAlreadyExistsException("We’re sorry. This email already exists");
         }
 
         if (userCredentials.isPresent()

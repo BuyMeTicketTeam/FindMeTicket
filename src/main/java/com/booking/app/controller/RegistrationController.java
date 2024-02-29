@@ -1,9 +1,10 @@
 package com.booking.app.controller;
 
 import com.booking.app.controller.api.RegisterAPI;
-import com.booking.app.dto.*;
-import com.booking.app.exception.exception.EmailExistsException;
-import com.booking.app.exception.exception.UsernameAlreadyExistsException;
+import com.booking.app.dto.EmailDTO;
+import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.TokenConfirmationDTO;
+import com.booking.app.exception.exception.EmailAlreadyExistsException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import jakarta.mail.MessagingException;
@@ -11,7 +12,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 
 /**
@@ -34,17 +39,15 @@ public class RegistrationController implements RegisterAPI {
      *
      * @param dto The RegistrationDTO containing user registration information.
      * @return ResponseDTO containing information about the registration process.
-     * @throws EmailExistsException Thrown if the email already exists.
-     * @throws EmailExistsException Thrown if the username already exists.
-     * @throws MessagingException   Thrown if an error occurs during email sending.
-     * @throws IOException          Thrown if an I/O error occurs.
+     * @throws MessagingException          Thrown if an error occurs during email sending.
+     * @throws IOException                 Thrown if an I/O error occurs.
      */
     //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/register")
     @Override
-    public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws EmailExistsException, MessagingException, IOException, UsernameAlreadyExistsException {
+    public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws MessagingException, IOException {
         EmailDTO register = registrationService.register(dto);
-        log.info(String.format("User %s has successfully registered!",dto.getEmail()));
+        log.info(String.format("User %s has successfully registered!", dto.getEmail()));
         return ResponseEntity.ok().body(register);
     }
 
@@ -59,7 +62,7 @@ public class RegistrationController implements RegisterAPI {
     @Override
     public ResponseEntity<?> confirmEmailToken(@RequestBody TokenConfirmationDTO dto) {
         if (registrationService.enableIfValid(dto)) {
-            log.info(String.format("User %s has successfully confirmed email!",dto.getEmail()));
+            log.info(String.format("User %s has successfully confirmed email!", dto.getEmail()));
             return ResponseEntity.status(HttpStatus.OK).body("User successfully confirmed its email");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token is not right");

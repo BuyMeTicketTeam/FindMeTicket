@@ -56,7 +56,7 @@ public class BusforScraperServiceImpl implements ScraperService, TicketOperation
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -108,7 +108,7 @@ public class BusforScraperServiceImpl implements ScraperService, TicketOperation
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -198,7 +198,7 @@ public class BusforScraperServiceImpl implements ScraperService, TicketOperation
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public String determineBaseUrl(String language)  {
         return switch (language) {
             case ("ua") -> linkProps.getBusforUaBus();
             case ("eng") -> linkProps.getBusforEngBus();
@@ -207,7 +207,7 @@ public class BusforScraperServiceImpl implements ScraperService, TicketOperation
         };
     }
 
-    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) throws UndefinedLanguageException {
+    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait)  {
 
         String carrier = webTicket.findElement(By.cssSelector("div.Style__Information-sc-13gvs4g-6.jBuzam > div.Style__Carrier-sc-13gvs4g-3.gUvIjh > span:nth-child(2)")).getText().toUpperCase();
 
@@ -238,7 +238,7 @@ public class BusforScraperServiceImpl implements ScraperService, TicketOperation
         return createTicket(route, departureInfo, arrivalInfo, departureDateTime, arrivalDateTime.substring(0, 5), arrivalDate, totalMinutes, price, carrier);
     }
 
-    private static String formatDate(String inputDate, String language) throws UndefinedLanguageException {
+    private static String formatDate(String inputDate, String language)  {
         DateTimeFormatter formatter;
         DateTimeFormatter resultFormatter;
 
