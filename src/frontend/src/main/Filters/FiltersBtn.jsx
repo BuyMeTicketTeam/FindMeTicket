@@ -1,9 +1,9 @@
 import React from 'react';
-import loaderIcon from './loader.svg';
 import './filters.scss';
+import loaderAnim from '../loader.svg';
 
 export default function FiltersBtn({
-  isDown, isUp, onClick, sortType, children, loading, dataTestId,
+  isDown, isUp, onClick, sortType, children, dataTestId, loading,
 }) {
   const btnActive = isDown ? 'active' : '';
   const btnUp = isUp ? 'up' : '';
@@ -11,12 +11,12 @@ export default function FiltersBtn({
   return (
     <button
       data-testid={dataTestId}
-      disabled={loading}
       className={`main-filters__btn ${btnActive} ${btnUp}`}
       type="button"
       onClick={() => onClick(sortType)}
+      disabled={loading}
     >
-      {loading ? <img className="main-filters__img" src={loaderIcon} alt="loaderIcon" /> : children}
+      {loading ? <img src={loaderAnim} alt="Loader anim" /> : children}
     </button>
   );
 }

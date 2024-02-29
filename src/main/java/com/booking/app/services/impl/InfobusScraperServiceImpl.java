@@ -53,7 +53,7 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
     private static final String DIV_TICKET_NOT_FOUND = "div.col-sm-12.alert.alert-warning";
 
     @Async
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -98,7 +98,7 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         Route route = ticket.getRoute();
@@ -162,7 +162,7 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getInfobusUaBus();
             case ("eng") -> linkProps.getInfobusEngBus();

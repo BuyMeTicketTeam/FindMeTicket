@@ -1,6 +1,6 @@
 package com.booking.app.mapper;
 
-import com.booking.app.dto.BusTicketDTO;
+import com.booking.app.dto.TicketDto;
 import com.booking.app.entity.BusTicket;
 import org.mapstruct.*;
 
@@ -17,7 +17,7 @@ public interface BusMapper {
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(target = "type", constant = "BUS")
-    BusTicketDTO ticketToTicketDto(BusTicket ticket, @Context String language);
+    TicketDto ticketToTicketDto(BusTicket ticket, @Context String language);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {
@@ -53,11 +53,8 @@ public interface BusMapper {
     }
 
     @AfterMapping
-    default void getPrice(BusTicket ticket, @MappingTarget BusTicketDTO ticketDTO) {
-        BigDecimal price = ticket.getBusforPrice() != null ? ticket.getBusforPrice() :
-                (ticket.getInfobusPrice() != null ? ticket.getInfobusPrice() :
-                        (ticket.getProizdPrice() != null ? ticket.getProizdPrice() : null));
-        ticketDTO.setPrice(price);
+    default void getPrice(BusTicket ticket, @MappingTarget TicketDto ticketDTO) {
+        ticketDTO.setPrice(ticket.getPrice());
     }
 
 }

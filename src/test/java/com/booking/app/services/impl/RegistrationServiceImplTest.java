@@ -7,7 +7,7 @@ import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.exception.exception.EmailExistsException;
+import com.booking.app.exception.exception.EmailAlreadyExistsException;
 import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
@@ -89,7 +89,7 @@ class RegistrationServiceImplTest {
         when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
                 .thenReturn(Optional.of(UserCredentials.builder().email(registrationDTO.getEmail()).username("Lalka228").enabled(true).build()));
 
-        assertThrows(EmailExistsException.class, () -> registrationService.register(registrationDTO));
+        assertThrows(EmailAlreadyExistsException.class, () -> registrationService.register(registrationDTO));
     }
 
     @Test

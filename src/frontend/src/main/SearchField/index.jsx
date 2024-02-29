@@ -87,10 +87,14 @@ export default function SearchField({
     function handleMessage(event) {
       const parsedData = JSON.parse(event.data);
       setTicketsData((prevTickets) => [...prevTickets, parsedData]);
-      setLoading(false);
     }
 
     function handleError() {
+      console.log('error func');
+      setLoading(false);
+    }
+
+    function handleClose() {
       setLoading(false);
     }
 
@@ -100,6 +104,7 @@ export default function SearchField({
       handleOpen,
       handleMessage,
       handleError,
+      handleClose,
       method: 'POST',
       headers: { 'Content-Language': i18n.language.toLowerCase() },
     });

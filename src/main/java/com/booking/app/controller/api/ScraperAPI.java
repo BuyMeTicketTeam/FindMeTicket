@@ -3,7 +3,6 @@ package com.booking.app.controller.api;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
-import com.booking.app.exception.exception.UndefinedLanguageException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,22 +22,23 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
+
 @Validated
-@Tag(name = "Scraping info",description = "Endpoints for scraping tickets' info etc")
+@Tag(name = "Scraping info", description = "Endpoints for scraping tickets' info etc")
 public interface ScraperAPI {
 
     @Operation(summary = "Searching tickets", description = "Find tickets based by criteria")
     @ApiResponse(responseCode = "200", description = "Returns tickets")
     @ApiResponse(responseCode = "404", description = "Tickets not found")
-    ResponseBodyEmitter findTickets(RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException;
+    ResponseBodyEmitter findTickets(RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException;
 
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponse(responseCode = "200", description = "Returns ticket if found")
-    ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException;
+    ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException;
 
     @Operation(summary = "Sorting", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Returns sorted tickets")
-    ResponseEntity<?> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request);
+    ResponseEntity<?> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request);
 
     @Operation(summary = "Tickets", description = "After tickets are uploaded, there's a need to switch between all transport types instantly without waiting")
     @ApiResponses(value = {

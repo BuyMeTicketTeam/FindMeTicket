@@ -1,9 +1,26 @@
 package com.booking.app.dto;
 
+import com.google.api.client.util.DateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
-public abstract class TicketDto {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class TicketDto {
 
     private UUID id;
 
@@ -24,4 +41,13 @@ public abstract class TicketDto {
     private String travelTime;
 
     private BigDecimal price;
+
+    private String carrier;
+
+    public LocalDateTime formatArrivalDateTime() {
+        LocalTime time = LocalTime.parse(arrivalTime, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDate date = LocalDate.parse(arrivalDate.replaceAll(",.*", "")+"."+ Year.now().getValue(), DateTimeFormatter.ofPattern("d.MM.yyyy"));
+
+        return LocalDateTime.of(date, time);
+    }
 }
