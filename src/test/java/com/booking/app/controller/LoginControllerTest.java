@@ -9,7 +9,6 @@ import com.booking.app.entity.UserCredentials;
 import com.booking.app.enums.EnumRole;
 import com.booking.app.security.jwt.JwtProvider;
 import com.booking.app.services.GoogleAccountService;
-import com.booking.app.util.CookieUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +19,9 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Base64;
@@ -112,10 +109,10 @@ class LoginControllerTest {
                             .content(objectMapper.writeValueAsString(loginDTO))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.header().exists(USER_ID))
-                    .andExpect(MockMvcResultMatchers.header().exists(REMEMBER_ME))
+                    .andExpect(MockMvcResultMatchers.cookie().exists(REMEMBER_ME))
                     .andExpect(MockMvcResultMatchers.header().exists(AUTHORIZATION))
                     .andExpect(MockMvcResultMatchers.cookie().exists(REFRESH_TOKEN))
+                    .andExpect(MockMvcResultMatchers.cookie().exists(USER_ID))
                     .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(authorizedUserDTO)));
 
             assertTrue(authentication.isAuthenticated());
@@ -155,9 +152,9 @@ class LoginControllerTest {
                         .content(objectMapper.writeValueAsString(tokenDTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.header().exists(USER_ID))
                 .andExpect(MockMvcResultMatchers.header().exists(AUTHORIZATION))
                 .andExpect(MockMvcResultMatchers.cookie().exists(REFRESH_TOKEN))
+                .andExpect(MockMvcResultMatchers.cookie().exists(USER_ID))
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(authorizedUserDTO)));
         assertTrue(authentication.isAuthenticated());
     }
