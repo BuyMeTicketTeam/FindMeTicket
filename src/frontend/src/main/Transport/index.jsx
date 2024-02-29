@@ -6,6 +6,7 @@ import makeQuerry from '../../helper/querry';
 import {
   busIcon, trainIcon, planeIcon, boatIcon, everythingIcon,
 } from './transport-img/img';
+import loaderAnim from '../loader.svg';
 
 function TransportButton({
   label, isActive, onClick, img, disabled, loading,
@@ -22,7 +23,7 @@ function TransportButton({
         src={img}
         alt={label}
       />
-      {label}
+      {loading ? <img src={loaderAnim} alt="Loading anim" /> : label}
     </button>
   );
 }

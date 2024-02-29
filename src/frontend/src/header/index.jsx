@@ -20,7 +20,6 @@ export default function Header({
   ];
   function getSystemLanguage() {
     const systemLanguage = navigator.language.split('-')[0];
-    console.log({ systemLanguage });
     if (systemLanguage !== 'uk') {
       return ({ value: 'ENG', label: 'ENG' });
     }

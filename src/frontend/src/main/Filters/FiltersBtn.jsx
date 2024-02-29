@@ -1,5 +1,6 @@
 import React from 'react';
 import './filters.scss';
+import loaderAnim from '../loader.svg';
 
 export default function FiltersBtn({
   isDown, isUp, onClick, sortType, children, dataTestId, loading,
@@ -15,7 +16,7 @@ export default function FiltersBtn({
       onClick={() => onClick(sortType)}
       disabled={loading}
     >
-      {children}
+      {loading ? <img src={loaderAnim} alt="Loader anim" /> : children}
     </button>
   );
 }
