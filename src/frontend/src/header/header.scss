@@ -70,9 +70,10 @@
 .header .react-select__control {
   background: transparent;
   margin-right: 10px;
-  min-width: 60px;
   border: none;
-
+  .css-1fdsijx-ValueContainer {
+    padding: 2px 0px 2px 2px;
+  }
   &.react-select__control--is-focused {
     box-shadow: none;
   }
@@ -89,7 +90,6 @@
     padding: 0;
   }
 }
-
 .header .react-select__menu {
   background: $main;
   
