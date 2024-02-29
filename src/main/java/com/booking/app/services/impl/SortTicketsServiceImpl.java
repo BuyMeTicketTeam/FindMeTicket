@@ -59,7 +59,8 @@ public class SortTicketsServiceImpl implements SortTicketsService {
             default -> throw new UnsupportedOperationException();
         };
 
-        result.sort(comparator);
+
+        result.sort(dto.isAscending()? comparator:comparator.reversed());
 
         return result;
     }

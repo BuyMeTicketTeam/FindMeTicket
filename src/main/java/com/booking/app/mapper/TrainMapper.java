@@ -2,7 +2,6 @@ package com.booking.app.mapper;
 
 import com.booking.app.dto.TicketDto;
 import com.booking.app.dto.TrainComfortInfoDTO;
-import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @Builder(disableBuilder = true))
@@ -42,7 +40,7 @@ public interface TrainMapper {
     }
 
     @Named("departureTimeMapping")
-    static String departureTimeMapping(String departureDate, @Context String language) throws UndefinedLanguageException {
+    static String departureTimeMapping(String departureDate, @Context String language) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         return switch (language) {
             case ("ua") -> {

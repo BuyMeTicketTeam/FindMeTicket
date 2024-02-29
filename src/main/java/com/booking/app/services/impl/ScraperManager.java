@@ -6,7 +6,6 @@ import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
 import com.booking.app.entity.TrainTicket;
-import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
@@ -64,7 +63,7 @@ public class ScraperManager {
     private final TrainMapper trainMapper;
 
     @Async
-    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException {
 
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
@@ -102,7 +101,7 @@ public class ScraperManager {
     }
 
     @Async
-    public CompletableFuture<Boolean> getTicket(UUID id, SseEmitter emitter, String language) throws IOException, ParseException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getTicket(UUID id, SseEmitter emitter, String language) throws IOException, ParseException {
 
         Ticket ticket = ticketRepository.findById(id).orElseGet(Ticket::new);
 
@@ -132,7 +131,7 @@ public class ScraperManager {
         return CompletableFuture.completedFuture(true);
     }
 
-    private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws IOException, ParseException, UndefinedLanguageException {
+    private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws IOException, ParseException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(busMapper.ticketToTicketDto(busTicket, language)));
 
@@ -196,7 +195,7 @@ public class ScraperManager {
                 .build();
     }
 
-    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException, UndefinedLanguageException {
+    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {
         return Arrays.asList(
                 infobusService.scrapeTickets(emitter, newRoute, language, doDisplay),
                 proizdService.scrapeTickets(emitter, newRoute, language, doDisplay),

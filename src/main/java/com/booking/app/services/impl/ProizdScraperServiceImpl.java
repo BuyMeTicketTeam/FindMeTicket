@@ -56,7 +56,7 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -101,7 +101,7 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -158,7 +158,7 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaBus();
             case ("eng") -> linkProps.getProizdEngBus();
