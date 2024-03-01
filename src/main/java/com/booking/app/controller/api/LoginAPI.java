@@ -4,6 +4,7 @@ import com.booking.app.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -16,9 +17,10 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 @Validated
+@Tag(name = "Logging in",description = "Endpoints for basic and social login")
 public interface LoginAPI {
 
-    @Operation(summary = "Basic authentication via username and password")
+    @Operation(summary = "Basic authentication")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User has been authenticated"),
             @ApiResponse(responseCode = "401", description = "Invalid credentials or such user doesn't exist")

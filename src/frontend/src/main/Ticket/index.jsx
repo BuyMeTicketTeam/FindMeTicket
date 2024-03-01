@@ -52,7 +52,7 @@ export default function Ticket({ data }) {
         <div className="price-options">
           <div className="price-options__row">
             <div className="ticket__price">
-              <p className="price__ordinry">{`${Number(data.price).toFixed(2)} ${t('uan')}`}</p>
+              <p className="price__ordinry">{`${data.priceMin ? 'Від ' : ''}${Number(data.price ?? data.priceMin).toFixed(2)} ${t('uan')}`}</p>
             </div>
             <Link className="ticket__buy button" to={`/ticket-page/${data.id}`}>{t('select')}</Link>
           </div>

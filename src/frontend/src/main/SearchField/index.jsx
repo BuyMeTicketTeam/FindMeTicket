@@ -12,7 +12,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError, loading,
+  setLoading, setTicketsData, setRequestBody, setError, selectedTransport, loading,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
   const [cityFrom, setCityFrom] = useState('');
@@ -47,6 +47,8 @@ export default function SearchField({
       departureCity: cityFrom.value,
       arrivalCity: cityTo.value,
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      ...selectedTransport,
+
     };
     setError(null);
     setRequestBody(body);
@@ -70,10 +72,14 @@ export default function SearchField({
     function handleMessage(event) {
       const parsedData = JSON.parse(event.data);
       setTicketsData((prevTickets) => [...prevTickets, parsedData]);
-      setLoading(false);
     }
 
     function handleError() {
+      console.log('error func');
+      setLoading(false);
+    }
+
+    function handleClose() {
       setLoading(false);
     }
 
@@ -83,6 +89,7 @@ export default function SearchField({
       handleOpen,
       handleMessage,
       handleError,
+      handleClose,
       method: 'POST',
       headers: { 'Content-Language': i18n.language.toLowerCase() },
     });

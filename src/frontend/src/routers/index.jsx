@@ -12,10 +12,27 @@ import ResetPassword from '../resetPassword';
 import ChangePassword from '../changePassword';
 import PrivacyPolicy from '../privacyPolicy';
 
-export default function Routers({ updateAuthValue, ticketsData, setTicketsData }) {
+export default function Routers({
+  updateAuthValue, ticketsData,
+  setTicketsData, selectedTransport,
+  setSelectedTransport, requestBody,
+  setRequestBody,
+}) {
   return (
     <Routes>
-      <Route path="/*" element={<Index ticketsData={ticketsData} setTicketsData={setTicketsData} />}>
+      <Route
+        path="/*"
+        element={(
+          <Index
+            ticketsData={ticketsData}
+            setTicketsData={setTicketsData}
+            selectedTransport={selectedTransport}
+            setSelectedTransport={setSelectedTransport}
+            requestBody={requestBody}
+            setRequestBody={setRequestBody}
+          />
+        )}
+      >
         <Route path="login" element={<Login updateAuthValue={updateAuthValue} />} />
       </Route>
       <Route path="/register" element={<Register />} />

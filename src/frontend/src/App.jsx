@@ -16,6 +16,13 @@ function App() {
   const { auth, updateAuthValue } = useAuthCheck();
   const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
   const [ticketsData, setTicketsData] = useState([]);
+  const [selectedTransport, setSelectedTransport] = useState({
+    bus: true,
+    train: true,
+    airplane: false,
+    ferry: false,
+  });
+  const [requestBody, setRequestBody] = useState({});
 
   return (
     <Router>
@@ -27,7 +34,16 @@ function App() {
             authorization={auth}
             updateAuthValue={updateAuthValue}
           />
-          <Routers updateAuthValue={updateAuthValue} language={language} ticketsData={ticketsData} setTicketsData={setTicketsData} />
+          <Routers
+            updateAuthValue={updateAuthValue}
+            language={language}
+            ticketsData={ticketsData}
+            setTicketsData={setTicketsData}
+            selectedTransport={selectedTransport}
+            setSelectedTransport={setSelectedTransport}
+            requestBody={requestBody}
+            setRequestBody={setRequestBody}
+          />
           <CookieBanner />
           <Footer />
         </GoogleOAuthProvider>

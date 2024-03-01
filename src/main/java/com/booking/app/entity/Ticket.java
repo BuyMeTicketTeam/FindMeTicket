@@ -51,4 +51,8 @@ public class Ticket {
     @JoinColumn(name = "route_id")
     private Route route;
 
+
+    public BigDecimal getPrice() {
+        return BigDecimal.valueOf(0);
+    }
 }

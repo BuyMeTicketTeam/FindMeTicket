@@ -1,13 +1,12 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.config.LinkProps;
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
-import com.booking.app.entity.TrainComfortInfo;
-import com.booking.app.entity.TrainTicket;
+import com.booking.app.entity.*;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.TrainMapper;
+import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -38,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("train")
 @RequiredArgsConstructor
 @Log4j2
-public class TrainScraperServiceImpl implements ScraperService {
+public class TrainScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
@@ -46,13 +45,15 @@ public class TrainScraperServiceImpl implements ScraperService {
 
     private final TrainMapper trainMapper;
 
+    private final TrainTicketRepository trainRepository;
+
     private static final String DIV_TICKET = "div.trip-adaptive";
 
     private static final String DIV_TICKET_NOT_FOUND = "div.error.card";
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
@@ -78,13 +79,14 @@ public class TrainScraperServiceImpl implements ScraperService {
         log.info("PROIZD TRAIN TICKETS IN scrapeTickets(): " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            TrainTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
-            if (route.getTickets().add(ticket) && BooleanUtils.isTrue(doShow)) {
-                emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(ticket, language)));
-            } else {
-                List infolist = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(ticket)).findFirst().get()).getInfoList();
-                ticket.getInfoList().forEach(infolist::add);
-            }
+            TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+
+            Optional<TrainTicket> trainTicket = trainRepository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+            if (trainTicket.isEmpty())
+                saveTicket(emitter, route, language, doDisplay, scrapedTicket);
+            else
+                updateTicket(trainTicket.get(), scrapedTicket);
         }
 
         driver.quit();
@@ -92,7 +94,22 @@ public class TrainScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public void updateTicket(Ticket trainTicket, Ticket scrapedTicket) {
+        ((TrainTicket) trainTicket).getInfoList().addAll(((TrainTicket) scrapedTicket).getInfoList());
+        trainRepository.save((TrainTicket) trainTicket);
+    }
+
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        trainRepository.save((TrainTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay)) {
+            emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto((TrainTicket) scrapedTicket, language)));
+        }
+    }
+
+    @Override
+    public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaTrain();
             case ("eng") -> linkProps.getProizdEngTrain();
@@ -128,7 +145,7 @@ public class TrainScraperServiceImpl implements ScraperService {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        String carrier = language.equals("eng") ? "" : "Укрзалізниця";
+        String carrier = language.equals("eng") ? "Ukrainian Railways" : "Укрзалізниця";
 
 
         List<WebElement> elements = element.findElements(By.cssSelector("div.carriage"));

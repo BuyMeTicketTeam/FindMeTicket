@@ -4,7 +4,6 @@ import com.booking.app.controller.api.ScraperAPI;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
-import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
 import com.booking.app.services.impl.ScraperManager;
@@ -38,7 +37,7 @@ public class ScraperController implements ScraperAPI {
 
     @PostMapping("/searchTickets")
     @Override
-    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException {
+    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
 
         CompletableFuture<Boolean> isTicketScraped = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
@@ -52,7 +51,7 @@ public class ScraperController implements ScraperAPI {
 
     @GetMapping("/get/ticket/{id}")
     @Override
-    public ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException, UndefinedLanguageException {
+    public ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
         SseEmitter emitter = new SseEmitter();
         CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
@@ -62,8 +61,7 @@ public class ScraperController implements ScraperAPI {
 
     @PostMapping(value = "/sortedBy", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, HttpServletRequest request) {
-        String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
+    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request) {
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 

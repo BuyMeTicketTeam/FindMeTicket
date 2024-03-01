@@ -5,6 +5,7 @@ import com.booking.app.dto.ResetPasswordDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import java.io.IOException;
 
 @Validated
+@Tag(name = "Resetting password",description = "Endpoints for resetting and confirming new password")
 public interface ResetPasswordAPI {
 
     @Operation(summary = "Send password reset token")

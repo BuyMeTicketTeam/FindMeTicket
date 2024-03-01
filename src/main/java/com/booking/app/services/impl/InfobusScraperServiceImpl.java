@@ -5,9 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,16 +32,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Year;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("infobus")
 @RequiredArgsConstructor
 @Log4j2
-public class InfobusScraperServiceImpl implements ScraperService {
+public class InfobusScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
@@ -46,12 +46,14 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
     private final WebDriverFactory webDriverFactory;
 
+    private final BusTicketRepository repository;
+
     private static final String DIV_TICKET = "div.main-detail-wrap";
 
     private static final String DIV_TICKET_NOT_FOUND = "div.col-sm-12.alert.alert-warning";
 
     @Async
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -69,7 +71,6 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
         try {
             synchronized (driver) {
-                //cringe
                 driver.wait(5000);
             }
         } catch (InterruptedException e) {
@@ -80,16 +81,15 @@ public class InfobusScraperServiceImpl implements ScraperService {
         log.info("INFOBUS TICKETS IN scrapeTickets(): " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket ticket = scrapeTicketInfo(elements.get(i), route);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setInfobusPrice(ticket.getInfobusPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getInfobusPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
         }
 
         driver.quit();
@@ -98,7 +98,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         Route route = ticket.getRoute();
@@ -162,13 +162,27 @@ public class InfobusScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getInfobusUaBus();
             case ("eng") -> linkProps.getInfobusEngBus();
             default ->
                     throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
+    }
+
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateInfobusPrice(((BusTicket) scrapedTicket).getInfobusPrice());
+        repository.save((BusTicket) ticket);
     }
 
     private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
@@ -187,7 +201,15 @@ public class InfobusScraperServiceImpl implements ScraperService {
         int minutes = Integer.parseInt(parts[1]);
         int totalMinutes = hours * 60 + minutes;
 
-        return createTicket(webTicket, route, price, totalMinutes, formattedTicketDate, date);
+        String carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText();
+
+        if(carrier.isEmpty()){
+            carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getAttribute("href").replaceAll(".*/", "");
+        }
+
+        carrier.toUpperCase().replaceAll("\"", "").replace("ТОВ ", "");
+
+        return createTicket(webTicket, route, price, carrier, totalMinutes, formattedTicketDate, date);
     }
 
 
@@ -247,7 +269,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
         actions.moveToElement(element).click().build().perform();
     }
 
-    private static BusTicket createTicket(WebElement webTicket, Route route, String price, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
+    private static BusTicket createTicket(WebElement webTicket, Route route, String price, String carrier, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
@@ -258,7 +280,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
                 .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalDate(formattedTicketDate.format(date))
-                .carrier(webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText().toUpperCase().replaceAll("\"", "").replace("ТОВ ", "")).build();
+                .carrier(carrier).build();
     }
 
 }

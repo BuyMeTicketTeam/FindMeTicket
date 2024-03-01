@@ -5,9 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,16 +34,13 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("proizd")
 @RequiredArgsConstructor
 @Log4j2
-public class ProizdScraperServiceImpl implements ScraperService {
+public class ProizdScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
@@ -48,13 +48,15 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     private final WebDriverFactory webDriverFactory;
 
+    private final BusTicketRepository repository;
+
     private static final String DIV_TICKET = "div.trip-adaptive";
 
     private static final String DIV_TICKET_NOT_FOUND = "div.error.card";
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -79,21 +81,18 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
-
         log.info("PROIZD TICKETS IN scrapeTickets(): " + elements.size());
 
-
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket ticket = scrapeTicketInfo(elements.get(i), route, language);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setProizdPrice(ticket.getProizdPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getProizdPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
         }
 
         driver.quit();
@@ -102,7 +101,7 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -158,9 +157,8 @@ public class ProizdScraperServiceImpl implements ScraperService {
         return CompletableFuture.completedFuture(true);
     }
 
-
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaBus();
             case ("eng") -> linkProps.getProizdEngBus();
@@ -169,6 +167,19 @@ public class ProizdScraperServiceImpl implements ScraperService {
         };
     }
 
+    @Override
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateProizdPrice(((BusTicket) scrapedTicket).getProizdPrice());
+        repository.save((BusTicket) ticket);
+    }
 
     private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
@@ -179,7 +190,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
                 : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
 
         LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
-
         ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"))
                 : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
         String formattedDate = date.format(ticketDate);
@@ -244,7 +254,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-
         SimpleDateFormat outputMonthFormat = language.equals("eng") ? new SimpleDateFormat("MMMM", new Locale("en"))
                 : new SimpleDateFormat("MMMM", new Locale("uk"));
 
@@ -283,7 +292,6 @@ public class ProizdScraperServiceImpl implements ScraperService {
         List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
         WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
         actions.moveToElement(liDate).doubleClick().build().perform();
-
     }
 
     private static BusTicket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime, String carrier) {

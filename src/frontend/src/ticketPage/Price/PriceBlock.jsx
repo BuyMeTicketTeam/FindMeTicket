@@ -29,6 +29,8 @@ export default function PriceBlock({ ticketUrl }) {
       </span>
       <div className="price-container" data-testid="price-container">
         <div className="price">
+          {ticketUrl.comfort}
+          {' '}
           {Number(ticketUrl.price).toFixed(2)}
           {' '}
           {t('uan')}

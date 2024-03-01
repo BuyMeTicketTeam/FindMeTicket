@@ -6,10 +6,12 @@ import Transport from './Transport';
 import Ad from '../Ad/index';
 import './main.scss';
 import TicketsBody from './Body';
+import Partner from './Partner';
 
-export default function Index({ ticketsData, setTicketsData }) {
+export default function Index({
+  ticketsData, setTicketsData, selectedTransport, setSelectedTransport, requestBody, setRequestBody,
+}) {
   const [loading, setLoading] = useState(false);
-  const [requestBody, setRequestBody] = useState({});
   const [error, setError] = useState(null);
 
   return (
@@ -17,7 +19,14 @@ export default function Index({ ticketsData, setTicketsData }) {
       <div className="container">
         <div className="search_index">
           <Ad />
-          <Transport />
+          <Transport
+            loading={loading}
+            selectedTransport={selectedTransport}
+            setSelectedTransport={setSelectedTransport}
+            ticketsData={ticketsData}
+            setTicketsData={setTicketsData}
+            requestBody={requestBody}
+          />
           <SearchField
             loading={loading}
             setLoading={setLoading}
@@ -25,6 +34,7 @@ export default function Index({ ticketsData, setTicketsData }) {
             setRequestBody={setRequestBody}
             setError={setError}
             ticketsData={ticketsData}
+            selectedTransport={selectedTransport}
           />
         </div>
         <TicketsBody
@@ -33,7 +43,9 @@ export default function Index({ ticketsData, setTicketsData }) {
           requestBody={requestBody}
           setTicketsData={setTicketsData}
           ticketsData={ticketsData}
+          selectedTransport={selectedTransport}
         />
+        <Partner />
       </div>
       <Outlet />
     </div>

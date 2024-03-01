@@ -26,7 +26,7 @@
                   "processing": "Processing...",
                   "time": "Send the letter again: {{minutes}}:{{seconds}}",
                   "auth-link": "Click to log in",
-                  "success-message": "The password has been changed!!!"
+                  "success-message": "The password has been changed!"
             },
             "update-password": {
                   "error-server": "Try again",
@@ -43,7 +43,7 @@
                   "confirm-password-error": "The new passwords do not match",
                   "processing": "Processing...",
                   "auth-link": "Click to return to the page",
-                  "success-message": "The password has been changed!!!"
+                  "success-message": "The password has been changed!"
             },
             "login": {
                   "login-error": "The email field is not filled in correctly",
@@ -110,7 +110,7 @@
                   "processing": "Processing...",
                   "time": "Send the email again: {{minutes}}:{{seconds}}",
                   "auth-link": "Click to log in",
-                  "success-message": "Mail is confirmed!!!"
+                  "success-message": "Mail is confirmed!"
             },
             "reset": {
                   "error-server": "There is no user using this mail",
@@ -127,7 +127,7 @@
                   "accept-btn": "Accept cookies"
             },
             "main-calendar": {
-                  "title": "Date of dispatch",
+                  "title": "Departure date",
                   "days": [
                         "Mon",
                         "Tues",
@@ -177,10 +177,10 @@
                   "ticket-not-found": "Sorry, no tickets found for this route"
             },
             "filters": {
-                  "price": "Price",
-                  "travelTime": "Travel time",
-                  "departureTime": "Departure time",
-                  "arrivalTime": "Arrival time"
+                  "Price": "Price",
+                  "TravelTime": "Travel time",
+                  "DepartureTime": "Departure time",
+                  "ArrivalTime": "Arrival time"
             },
             "passengers": {
                   "adults": "Adults:",
@@ -213,16 +213,25 @@
                   "text": "We apologize for the inconvenience, please try again"
             },
             "ad": {
-                  "title": "Your ad can be here!",
+                  "title": "Your advertisement could be here!",
                   "email":"findmeticketweb@gmail.com"
             },
             "ticket-page": {
                   "uan": "UAN",
                   "buy": "Buy",
-                  "price": "Price",
+                  "price": "Prices and carriers",
                   "restaurants": "Restaurants",
                   "hotels": "Hotels",
-                  "tourist places": "Tourist places"
-            }
+                  "tourist places": "Tourist places",
+                  "reviews": "reviews",
+                  "working-hours": "Working hours:",
+                  "back-btn": "Back",
+                  "status-open": "Open",
+                  "status-close": "Closed",
+                  "station-marker-title": "Place of arrival"
+            },
+            "partners": {
+                  "partners": "Our information partners"
+             }
       }
 }

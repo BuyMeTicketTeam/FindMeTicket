@@ -7,15 +7,15 @@ import Ticket from '../Ticket';
 import Ad from '../../Ad';
 
 export default function TicketsBody({
-  loading, error, ticketsData, setTicketsData, requestBody,
+  loading, error, ticketsData, setTicketsData, requestBody, selectedTransport,
 }) {
-  if (loading) {
-    return <Loader />;
-  }
   if (error) {
     return <Error error={error} />;
   }
-  if (ticketsData.length > 0) {
+  if (loading && ticketsData?.length === 0) {
+    return <Loader />;
+  }
+  if (ticketsData?.length > 0) {
     return (
       <>
         <Tourist
@@ -23,7 +23,12 @@ export default function TicketsBody({
           setTicketsData={setTicketsData}
           city={requestBody.arrivalCity}
         />
-        <Filters setTicketsData={setTicketsData} requestBody={requestBody} />
+        <Filters
+          loading={loading}
+          setTicketsData={setTicketsData}
+          requestBody={requestBody}
+          selectedTransport={selectedTransport}
+        />
         <div className="tickets">
           {ticketsData.map((item) => <Ticket key={item.id} data={item} />)}
         </div>

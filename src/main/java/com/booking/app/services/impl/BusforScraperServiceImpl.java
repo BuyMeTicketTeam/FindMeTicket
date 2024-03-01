@@ -5,9 +5,12 @@ import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
+import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
+import com.booking.app.services.TicketOperation;
 import com.booking.app.util.ExchangeRateUtils;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
@@ -31,15 +34,13 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service("busfor")
 @RequiredArgsConstructor
 @Log4j2
-public class BusforScraperServiceImpl implements ScraperService {
+public class BusforScraperServiceImpl implements ScraperService, TicketOperation {
 
     private final LinkProps linkProps;
 
@@ -47,13 +48,15 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     private final WebDriverFactory webDriverFactory;
 
+    private final BusTicketRepository repository;
+
     private static final String DIV_TICKET = "div.ticket";
 
     private static final String DIV_TICKET_NOT_FOUND = "div.Style__EmptyTitle-xljhz5-2.iBjiPF";
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -86,18 +89,17 @@ public class BusforScraperServiceImpl implements ScraperService {
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
 
         for (int i = 0; i < tickets.size() && i < 150; i++) {
-
             WebElement webTicket = driver.findElements(By.cssSelector(DIV_TICKET)).get(i);
-            BusTicket ticket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
-            if (route.getTickets().add(ticket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(ticket, language)));
-            } else {
-                route.getTickets().stream()
-                        .filter(t -> t.equals(ticket))
-                        .findFirst()
-                        .ifPresent(t -> ((BusTicket) t).setBusforPrice(ticket.getBusforPrice()));
-            }
+            BusTicket scrapedTicket = scrapeTicketInfo(webTicket, route, currentUAH, language, wait);
+
+            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+
+
+            if (busTicket.isEmpty())
+                saveTicket(emitter, route, language, doShow, scrapedTicket);
+            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getBusforPrice()))
+                updateTicket(busTicket.get(), scrapedTicket);
+
         }
 
         driver.quit();
@@ -106,7 +108,7 @@ public class BusforScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, UndefinedLanguageException {
+    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException{
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -182,7 +184,21 @@ public class BusforScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public String determineBaseUrl(String language) throws UndefinedLanguageException {
+    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
+        scrapedTicket.setRoute(route);
+        repository.save((BusTicket) scrapedTicket);
+        if (BooleanUtils.isTrue(doDisplay))
+            emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
+    }
+
+    @Override
+    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
+        ((BusTicket) ticket).updateBusforPrice(((BusTicket) scrapedTicket).getBusforPrice());
+        repository.save((BusTicket) ticket);
+    }
+
+    @Override
+    public String determineBaseUrl(String language)  {
         return switch (language) {
             case ("ua") -> linkProps.getBusforUaBus();
             case ("eng") -> linkProps.getBusforEngBus();
@@ -191,7 +207,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         };
     }
 
-    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait) throws UndefinedLanguageException {
+    private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route, BigDecimal currentRate, String language, WebDriverWait wait)  {
 
         String carrier = webTicket.findElement(By.cssSelector("div.Style__Information-sc-13gvs4g-6.jBuzam > div.Style__Carrier-sc-13gvs4g-3.gUvIjh > span:nth-child(2)")).getText().toUpperCase();
 
@@ -222,7 +238,7 @@ public class BusforScraperServiceImpl implements ScraperService {
         return createTicket(route, departureInfo, arrivalInfo, departureDateTime, arrivalDateTime.substring(0, 5), arrivalDate, totalMinutes, price, carrier);
     }
 
-    private static String formatDate(String inputDate, String language) throws UndefinedLanguageException {
+    private static String formatDate(String inputDate, String language)  {
         DateTimeFormatter formatter;
         DateTimeFormatter resultFormatter;
 

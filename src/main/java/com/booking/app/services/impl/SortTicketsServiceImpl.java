@@ -1,15 +1,22 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestSortedTicketsDTO;
-import com.booking.app.dto.BusTicketDTO;
+import com.booking.app.dto.TicketDto;
+import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Ticket;
-import com.booking.app.mapper.TicketMapper;
+import com.booking.app.entity.TrainTicket;
+import com.booking.app.mapper.BusMapper;
+import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.services.SortTicketsService;
+import jakarta.el.MethodNotFoundException;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.pool.TypePool;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,32 +26,41 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
     private final RouteRepository routeRepository;
 
-    private final TicketMapper ticketMapper;
+    private final BusMapper busMapper;
 
-    public List<BusTicketDTO> getSortedTickets(RequestSortedTicketsDTO requestSortedTicketsDTO, String language) {
-        List<Ticket> tickets = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestSortedTicketsDTO.getDepartureCity(), requestSortedTicketsDTO.getArrivalCity(), requestSortedTicketsDTO.getDepartureDate()).getTickets().stream().toList();
+    private final TrainMapper trainMapper;
 
-        tickets.sort((o1, o2) -> {
-            try {
-                Field field = o1.getClass().getDeclaredField(requestSortedTicketsDTO.getSortingBy());
-                field.setAccessible(true);
+    public List<TicketDto> getSortedTickets(RequestSortedTicketsDTO dto, String language) {
+        List<Ticket> tickets = new ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate()).getTickets().stream().toList());
 
-                Comparable fieldValue1 = (Comparable) field.get(o1);
-                Comparable fieldValue2 = (Comparable) field.get(o2);
+        List<TicketDto> result = new LinkedList<>();
 
-                int ascending = requestSortedTicketsDTO.isAscending() ? 1 : -1;
-
-                return ascending * fieldValue1.compareTo(fieldValue2);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                return 0;
+        for (Ticket ticket : tickets) {
+            switch (ticket) {
+                case BusTicket t -> {
+                    if (dto.getBus())
+                        result.add(busMapper.ticketToTicketDto(t, language));
+                }
+                case TrainTicket t -> {
+                    if (dto.getTrain())
+                        result.add(trainMapper.toTrainTicketDto(t, language));
+                }
+                default ->
+                        throw new UnsupportedOperationException("Unsupported ticket type: " + ticket.getClass().getSimpleName());
             }
-        });
 
-        List<BusTicketDTO> result = new LinkedList<>();
-
-        for (int i = 0; i < 30 && i < tickets.size(); i++) {
-            result.add(ticketMapper.ticketToTicketDto(tickets.get(i), language));
         }
+
+        Comparator<TicketDto> comparator = switch (dto.getSortingBy()) {
+            case "Price" -> Comparator.comparing(TicketDto::getPrice);
+            case "DepartureTime" -> Comparator.comparing(TicketDto::getDepartureTime);
+            case "ArrivalTime" -> Comparator.comparing(TicketDto::formatArrivalDateTime);
+            case "TravelTime" -> Comparator.comparing(TicketDto::getTravelTime);
+            default -> throw new UnsupportedOperationException();
+        };
+
+
+        result.sort(dto.isAscending()? comparator:comparator.reversed());
 
         return result;
     }

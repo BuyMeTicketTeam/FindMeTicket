@@ -26,7 +26,7 @@
                   "processing": "Обробка...",
                   "time": "Відправити лист знову: {{minutes}}:{{seconds}}",
                   "auth-link": "Натисніть для того щоб авторизуватися",
-                  "success-message": "Пароль змінено!!!"
+                  "success-message": "Пароль змінено!"
             },
             "update-password": {
                   "error-server": "Спробуйте ще раз",
@@ -43,7 +43,7 @@
                   "confirm-password-error": " Нові паролі не збігаються",
                   "processing": "Обробка...",
                   "auth-link": "Натисніть для того щоб повернутися на сторінку",
-                  "success-message": "Пароль змінено!!!"
+                  "success-message": "Пароль змінено!"
             },
             "login": {
                   "login-error": "Поле email заповнено не вірно",
@@ -111,7 +111,7 @@
                   "processing": "Обробка...",
                   "time": "Відправити лист знову: {{minutes}}:{{seconds}}",
                   "auth-link": "Натисніть для того щоб авторизуватися",
-                  "success-message": "Пошту підтверджено!!!"
+                  "success-message": "Пошту підтверджено!"
             },
             "reset": {
                   "error-server": "Немає коритсувача який використовує цю пошту",
@@ -178,10 +178,10 @@
                   "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено"
             },
             "filters": {
-                  "price": "Ціна",
-                  "travelTime": "Тривалість поїздки",
-                  "departureTime": "Час відправлення",
-                  "arrivalTime": "Час прибуття"
+                  "Price": "Ціна",
+                  "TravelTime": "Тривалість поїздки",
+                  "DepartureTime": "Час відправлення",
+                  "ArrivalTime": "Час прибуття"
             },
             "passengers": {
                   "adults": "Дорослі:",
@@ -220,10 +220,19 @@
             "ticket-page": {
                   "uan": "грн",
                   "buy": "Купити",
-                  "price": "Ціна",
+                  "price": "Ціни та перевізники",
                   "restaurants": "Ресторани",
                   "hotels": "Готелі",
-                  "tourist places": "Туристичні місця"
+                  "tourist places": "Туристичні місця",
+                  "reviews": "відгуків",
+                  "working-hours": "Робочий час:",
+                  "back-btn": "Назад",
+                  "status-open": "Відкрито",
+                  "status-close": "Закрито",
+                  "station-marker-title": "Місце прибуття"
+            },
+            "partners": {
+                 "partners": "Наші інформаційні партнери"
             }
       }
 }

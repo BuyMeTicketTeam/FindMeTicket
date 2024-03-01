@@ -7,6 +7,7 @@ import LoginBtn from './LoginBtn';
 import Popup from './profile';
 import './header.scss';
 import logo from './logo.svg';
+import globys from './language.svg';
 
 export default function Header({
   authorization, updateAuthValue, language, setLanguage,
@@ -15,15 +16,16 @@ export default function Header({
   const [isprofilePopup, setIsProfilePopup] = useState(false);
   const [userAvatar, setUserAvatar] = useState(null);
   const languages = [
-    { value: 'UA', label: 'УКР' },
-    { value: 'ENG', label: 'ENG' },
+    { value: 'UA', label: 'Укр' },
+    { value: 'ENG', label: 'Eng' },
   ];
+
   function getSystemLanguage() {
     const systemLanguage = navigator.language.split('-')[0];
     if (systemLanguage !== 'uk') {
-      return ({ value: 'ENG', label: 'ENG' });
+      return { value: 'ENG', label: 'ENG' };
     }
-    return null;
+    return ({ value: 'UA', label: 'УКР' });
   }
 
   function setLanguageToStorage(language) {
@@ -39,7 +41,7 @@ export default function Header({
     if (savedLanguage) {
       return savedLanguage;
     }
-    return getSystemLanguage();
+    return getSystemLanguage() ?? ({ value: 'ENG', label: 'ENG' });
   }
 
   function displayLanguage(languageParam) {
@@ -65,6 +67,7 @@ export default function Header({
   useEffect(() => {
     displayLanguage();
   }, []);
+
   useEffect(() => {
     if (authorization && authorization.status === 200 && authorization.image) {
       setUserAvatar(authorization.image);
@@ -82,6 +85,7 @@ export default function Header({
         <li className="menu__item"><a href="/">{t('tourist-places')}</a></li>
         <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
       </ul>
+      <img src={globys} alt="Busfor" />
       <Select
         data-testid="language-select"
         options={languages}
@@ -91,7 +95,6 @@ export default function Header({
         isSearchable={false}
         onChange={(lang) => handleLanguageChange(lang)}
       />
-
       <LoginBtn
         setIsProfilePopup={setIsProfilePopup}
         status={authorization}

@@ -1,7 +1,7 @@
 package com.booking.app.mapper;
 
+import com.booking.app.dto.TicketDto;
 import com.booking.app.dto.TrainComfortInfoDTO;
-import com.booking.app.dto.TrainTicketDTO;
 import com.booking.app.entity.TrainComfortInfo;
 import com.booking.app.entity.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -11,10 +11,9 @@ import org.springframework.http.HttpHeaders;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @Builder(disableBuilder = true))
 public interface TrainMapper {
 
     @Mapping(source = "route.departureCity", target = "departureCity")
@@ -22,11 +21,11 @@ public interface TrainMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
-    @Mapping(source = "infoList", target = "priceMin", qualifiedByName = "minPrice")
+    @Mapping(source = "carrier", target = "carrier")
     @Mapping(target = "type", constant = "TRAIN")
-    TrainTicketDTO toTrainTicketDto(TrainTicket ticket, @Context String language);
+    TicketDto toTrainTicketDto(TrainTicket ticket, @Context String language);
 
-
+    @Mapping(source = "link", target = "url")
     TrainComfortInfoDTO toTrainComfortInfoDTO(TrainComfortInfo ticket);
 
     @Named("decimalToString")
@@ -41,7 +40,7 @@ public interface TrainMapper {
     }
 
     @Named("departureTimeMapping")
-    static String departureTimeMapping(String departureDate, @Context String language) throws UndefinedLanguageException {
+    static String departureTimeMapping(String departureDate, @Context String language) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
         return switch (language) {
             case ("ua") -> {
@@ -59,9 +58,10 @@ public interface TrainMapper {
         };
     }
 
-    @Named("minPrice")
-    static BigDecimal minPrice(List<TrainComfortInfo> list) {
-        return list.stream().map(TrainComfortInfo::getPrice).min(BigDecimal::compareTo).get();
+    @AfterMapping
+    default void getPrice(TrainTicket ticket, @MappingTarget TicketDto ticketDTO) {
+        ticketDTO.setPrice(ticket.getPrice());
     }
+
 
 }
