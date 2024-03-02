@@ -6,7 +6,6 @@ import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.ScraperService;
-import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -37,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("train")
 @RequiredArgsConstructor
 @Log4j2
-public class TrainScraperServiceImpl implements ScraperService, TicketOperation {
+public class TrainScraperServiceImpl implements ScraperService{
 
     private final LinkProps linkProps;
 
@@ -80,32 +79,20 @@ public class TrainScraperServiceImpl implements ScraperService, TicketOperation 
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
             TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+            TrainTicket trainTicket =scrapedTicket;
 
-            Optional<TrainTicket> trainTicket = trainRepository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+            if (route.getTickets().add(scrapedTicket)) {
+                if (BooleanUtils.isTrue(doDisplay))
+                    emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
 
-            if (trainTicket.isEmpty())
-                saveTicket(emitter, route, language, doDisplay, scrapedTicket);
-            else
-                updateTicket(trainTicket.get(), scrapedTicket);
+            } else
+                scrapedTicket = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(trainTicket)).findFirst().get()).addPrices(trainTicket);
+
+            trainRepository.save(scrapedTicket);
         }
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
-    }
-
-    @Override
-    public void updateTicket(Ticket trainTicket, Ticket scrapedTicket) {
-        ((TrainTicket) trainTicket).getInfoList().addAll(((TrainTicket) scrapedTicket).getInfoList());
-        trainRepository.save((TrainTicket) trainTicket);
-    }
-
-    @Override
-    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
-        scrapedTicket.setRoute(route);
-        trainRepository.save((TrainTicket) scrapedTicket);
-        if (BooleanUtils.isTrue(doDisplay)) {
-            emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto((TrainTicket) scrapedTicket, language)));
-        }
     }
 
     @Override

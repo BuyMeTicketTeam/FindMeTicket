@@ -10,7 +10,6 @@ import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
-import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 @Service("infobus")
 @RequiredArgsConstructor
 @Log4j2
-public class InfobusScraperServiceImpl implements ScraperService, TicketOperation {
+public class InfobusScraperServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
@@ -83,18 +82,23 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route);
 
-            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
 
-            if (busTicket.isEmpty())
-                saveTicket(emitter, route, language, doShow, scrapedTicket);
+            BusTicket busTicket = scrapedTicket;
 
-            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getInfobusPrice()))
-                updateTicket(busTicket.get(), scrapedTicket);
+            if (route.getTickets().add(scrapedTicket)) {
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
+
+            } else
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
+
+            repository.save(scrapedTicket);
         }
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
+
 
     @Async
     @Override
@@ -169,20 +173,6 @@ public class InfobusScraperServiceImpl implements ScraperService, TicketOperatio
             default ->
                     throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
-    }
-
-    @Override
-    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
-        scrapedTicket.setRoute(route);
-        repository.save((BusTicket) scrapedTicket);
-        if (BooleanUtils.isTrue(doDisplay))
-            emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
-    }
-
-    @Override
-    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
-        ((BusTicket) ticket).updateInfobusPrice(((BusTicket) scrapedTicket).getInfobusPrice());
-        repository.save((BusTicket) ticket);
     }
 
     private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
