@@ -4,10 +4,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("link")
+@ConfigurationProperties(prefix = "link")
 @RequiredArgsConstructor
 @Getter
-public class LinkProps {
+public final class LinkProps {
     private final String busforUaBus;
     private final String busforEngBus;
 
