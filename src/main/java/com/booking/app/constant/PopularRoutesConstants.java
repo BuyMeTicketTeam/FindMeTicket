@@ -9,7 +9,7 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PopularRoutesConstants {
-    public static final List<City> popularRoutes = new ArrayList<>();
+    private static final List<City> popularRoutes = new ArrayList<>();
 
     static {
         popularRoutes.add(new City(703448L, 706483L)); // Kyiv-Kharkiv
@@ -23,6 +23,10 @@ public class PopularRoutesConstants {
         popularRoutes.add(new City(706483L, 687700L));// Kharkiv-Zaporizhzhia
         popularRoutes.add(new City(698740L, 706448L));// Odesa-Kherson
         popularRoutes.add(new City(687700L, 703845L));// Zaporizhzhia-Kryvyi Rih
+    }
+
+    public static List<City> getPopularRoutes() {
+        return List.copyOf(popularRoutes);
     }
 
 }
