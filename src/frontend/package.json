@@ -5,20 +5,21 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@greatsumini/react-facebook-login": "^3.3.3",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@react-google-maps/api": "^2.19.2",
-    "eventsource-client": "^1.0.0",
-    "@greatsumini/react-facebook-login": "^3.3.3",
     "@react-oauth/google": "^0.12.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "eventsource-client": "^1.0.0",
     "i18next": "^23.7.1",
     "jest-fetch-mock": "^3.0.3",
     "miragejs": "^0.1.48",
     "react": "^18.2.0",
     "react-datepicker": "^4.23.0",
     "react-dom": "^18.2.0",
+    "react-horizontal-scrolling-menu": "^6.0.2",
     "react-i18next": "^13.3.1",
     "react-router-dom": "^6.18.0",
     "react-scripts": "5.0.1",
@@ -62,8 +63,8 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "miragejs": "^0.1.48",
-    "mocksse": "^1.0.4",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "mocksse": "^1.0.4"
   },
   "jest": {
     "collectCoverageFrom": [
