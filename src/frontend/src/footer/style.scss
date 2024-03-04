@@ -1,4 +1,6 @@
 @import '../styles/variables.scss';
+@import url('https://fonts.googleapis.com/css2?family=Cookie&display=swap');
+
 
 footer {
   background-color: $semi-dark;
@@ -11,7 +13,6 @@ footer.open {
 footer .footer-container{
   display: flex;
   justify-content: space-between;
-  max-width: 900px;
   margin: 0 auto;
 }
 .footer-column {
@@ -35,27 +36,66 @@ footer .footer-container{
   font-size: 14px; 
 }
 
-
-.footer-contact {
-  padding-top: 20px;
-  margin-top: 20px;
+.rectangle {
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  width: 100%; 
+  height: 80px;
+  background-color: $dark;
+  margin-bottom: 20px; 
+  
 }
 
-.footer-contact-line {
-  margin-top: 10px;
+.rectangle img {
+  object-fit: cover;
+  width: 120px;
+  height: 80px; 
+  margin-right: 20px; 
 }
+
+.rectangle p {
+  margin-left: 20px;
+}
+
+.rectangle-k {
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  width: 100%; 
+  height: 80px;
+  background-color: $dark;
+  margin-bottom: 20px; 
+  
+}
+.rectangle-k img{
+  object-fit: cover;
+  width: 120px;
+  height: 80px; 
+  margin-right: 20px; 
+}
+
 
 .footer-column {
   margin-bottom: 20px;
 }
 .footer-year {
-  text-align: center;
+  align-items: center;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr 1fr 1fr ;
   border-top: 1px solid $dark;
-  padding: 20px 0;
+  padding: 10px 20px;
   font-size: 12px;
 }
 .footer-container {
   position: relative;
+}
+
+.footer-content-container {
+  overflow: hidden;
 }
 
 .footer-arrow-icon.open {
@@ -84,5 +124,83 @@ footer .footer-container{
   font-size: 20px;
   display: inline-block;
   transform-origin: center;
+}
+
+.buy-me-coffee { 
+  width: max-content;
+  background: #FF813F;
+  color: $font-color;
+  font-size: 25px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  transition: 0.3s;
+  text-decoration: none;
+  font-family: Cookie;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+.buy-me-coffee:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 8px 1px $bright;
+  transform: translateY(-3px);
+}
+.coffee{
+  width: 30px;
+  height: 30px;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.arrow-left,
+.arrow-right {
+  position: absolute;
+  top: 20%;
+  cursor: pointer;
+}
+
+.arrow-left {
+  left: 5px; 
+}
+
+.arrow-right {
+  right: 5px; 
+}
+
+.arrow-left img,
+.arrow-right img {
+  width: 50px; 
+  height: auto; 
+}
+
+
+
+
+.footer-column-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: hidden; 
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.footer-column {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+  width: 300px; 
+  height: 100px; 
+  margin-right: 20px; 
+}
+
+.copyright{
+text-align: center;
+}
+.contact-footer{
+  text-align: right; 
+}
+.contact-info,
+.privacy-policy{
+  margin-right: 20px;
 }
 
