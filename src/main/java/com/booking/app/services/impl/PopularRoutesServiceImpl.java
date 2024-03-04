@@ -12,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -28,11 +25,11 @@ import java.util.Optional;
 public class PopularRoutesServiceImpl implements PopularRoutesService {
 
     private final ScraperManager manager;
+
     private final UkrPlacesRepository placesRepository;
 
     @Override
     @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void findRoutes() throws IOException, ParseException {
         for (City popularRoute : PopularRoutesConstants.getPopularRoutes()) {
             Optional<UkrainianPlaces> departureCity
@@ -45,7 +42,7 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
                         .departureCity(departureCity.get().getNameUa())
                         .arrivalCity(arrivalCity.get().getNameUa())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
-                        .build(), new SseEmitter(), "ua");
+                        .build(), null, "ua");
                 manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameEng())
                         .arrivalCity(arrivalCity.get().getNameEng())
@@ -53,7 +50,6 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
                         .build(), null, "eng");
             }
         }
-
     }
 
 }

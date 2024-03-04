@@ -80,7 +80,7 @@ public class ScraperManager {
                 allOf.join();
             } catch (CancellationException | CompletionException e) {
                 log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
-                emitter.completeWithError(e);
+                if (emitter != null) emitter.completeWithError(e);
                 return CompletableFuture.completedFuture(false);
             }
         } else {
