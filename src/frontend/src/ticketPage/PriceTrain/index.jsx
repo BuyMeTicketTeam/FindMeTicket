@@ -3,16 +3,16 @@ import './style.scss';
 import PriceBlock from './PriceBlock';
 import proizdIcon from './proizd.webp';
 import spinningLoaderIcon from './spinning-loading.svg';
-import skybookingIcon from './skybooking.png';
+import ticketsuaIcon from './ticketsua.jpg';
 
 function PriceTrain({ ticketUrls, connection }) {
   const [proizdTickets, setProizdTickets] = useState([]);
-  const [skybookingTickets, setSkybookingTickets] = useState([]);
+  const [ticketsuaTickets, setTicketsuaTickets] = useState([]);
   const [selctedResource, setSelectedResource] = useState(0);
 
   function groupTickets(resource, ticketUrl) {
-    if (resource === 'skybooking') {
-      setSkybookingTickets((prevTicket) => [...prevTicket, ticketUrl]);
+    if (resource === 'ticketsua') {
+      setTicketsuaTickets((prevTicket) => [...prevTicket, ticketUrl]);
     } else {
       setProizdTickets((prevTicket) => [...prevTicket, ticketUrl]);
     }
@@ -33,10 +33,10 @@ function PriceTrain({ ticketUrls, connection }) {
           Proizd.ua
         </button>
         )}
-        {skybookingTickets.length > 0 && (
-        <button className={`ticket-header__btn ${selctedResource === 1 ? 'active' : ''} skybooking`} type="button" onClick={() => setSelectedResource(1)}>
-          <img src={skybookingIcon} alt="proizdIcon" className="proizd-icon" />
-          Skybooking.ua
+        {ticketsuaTickets.length > 0 && (
+        <button className={`ticket-header__btn ${selctedResource === 1 ? 'active' : ''}`} type="button" onClick={() => setSelectedResource(1)}>
+          <img src={ticketsuaIcon} alt="proizdIcon" className="proizd-icon" />
+          Tickets.ua
         </button>
         )}
       </div>
@@ -44,7 +44,7 @@ function PriceTrain({ ticketUrls, connection }) {
         {selctedResource === 0 && proizdTickets.length > 0 && proizdTickets.map(
           (tickets) => <PriceBlock ticketUrl={tickets} />,
         )}
-        {selctedResource === 1 && proizdTickets.length > 0 && skybookingTickets.map(
+        {selctedResource === 1 && proizdTickets.length > 0 && ticketsuaTickets.map(
           (tickets) => <PriceBlock ticketUrl={tickets} />,
         )}
       </div>
