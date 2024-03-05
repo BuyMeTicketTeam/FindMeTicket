@@ -21,7 +21,7 @@ function TicketPage() {
     placeAt: 'Вокзальна площа, 1, Київ',
     type: 'TRAIN',
   });
-  const [ticketUrl, setTicketUrl] = useState([{ comfort: 'купе', price: 100 }, { comfort: 'купе', price: 200 }]);
+  const [ticketUrl, setTicketUrl] = useState([{ resource: 'ticketsua', comfort: 'купе', price: 100 }, { resource: 'proizd', comfort: 'купе', price: 200 }]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });

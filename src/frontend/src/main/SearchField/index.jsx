@@ -1,9 +1,13 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
+import {
+  useSearchParams, Link, useNavigate, useLocation,
+} from 'react-router-dom';
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
 import makeQuerry from '../../helper/querry';
@@ -14,13 +18,17 @@ import './searchField.scss';
 export default function SearchField({
   setLoading, setTicketsData, setRequestBody, setError, selectedTransport, loading,
 }) {
+  const [searchParams] = useSearchParams();
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
-  const [cityFrom, setCityFrom] = useState('');
-  const [cityTo, setCityTo] = useState('');
+  const [cityFrom, setCityFrom] = useState({ value: searchParams.get('from') ?? '' });
+  const [cityTo, setCityTo] = useState({ value: searchParams.get('to') ?? '' });
   const [errorCityFrom, onErrorCityFrom] = useState(false);
   const [errorCityTo, onErrorCityTo] = useState(false);
-  const [date, onDate] = useState(new Date());
+  const paramDate = searchParams.get('departureDate');
+  const [date, onDate] = useState(paramDate ? new Date(+paramDate) : new Date());
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   function validation() {
     if (!cityFrom && !cityTo) {
@@ -39,26 +47,17 @@ export default function SearchField({
     return true;
   }
 
-  async function sendRequest() {
-    if (!validation()) {
-      return;
-    }
-    const body = {
-      departureCity: cityFrom.value,
-      arrivalCity: cityTo.value,
-      departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      ...selectedTransport,
-
+  function sendRequest(body) {
+    const requestBody = {
+      ...body,
+      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
     };
-    setError(null);
-    setRequestBody(body);
     setLoading(true);
     setTicketsData([]);
-
     function handleOpen(res) {
       switch (res.status) {
         case 200:
-          console.log('open successfully');
+          // console.log('open successfully');
           break;
         case 404:
           setError(t('ticket-not-found'));
@@ -75,7 +74,6 @@ export default function SearchField({
     }
 
     function handleError() {
-      console.log('error func');
       setLoading(false);
     }
 
@@ -85,7 +83,7 @@ export default function SearchField({
 
     eventSourceQuery2({
       address: 'searchTickets',
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
       handleOpen,
       handleMessage,
       handleError,
@@ -94,6 +92,31 @@ export default function SearchField({
       headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
   }
+
+  function handleRequest() {
+    if (!validation()) {
+      return;
+    }
+    setError(null);
+    navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}`);
+  }
+
+  useEffect(() => {
+    if (searchParams.size < 2) {
+      return;
+    }
+    const body = {
+      departureCity: searchParams.get('from'),
+      arrivalCity: searchParams.get('to'),
+      departureDate: searchParams.get('date') || date,
+      ...selectedTransport,
+      bus: searchParams.get('type') === 'bus' || !searchParams.get('type'),
+      train: searchParams.get('type') === 'train' || !searchParams.get('type'),
+    };
+    onDate(body.departureDate);
+    setRequestBody(body);
+    sendRequest(body);
+  }, [searchParams]);
 
   function changeCities() {
     const cityToTemp = cityTo;
@@ -138,7 +161,7 @@ export default function SearchField({
         <AsyncSelect
           aria-label="cityFromSelect"
           isClearable
-          value={cityFrom}
+          defaultInputValue={cityFrom.value}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions
@@ -162,7 +185,7 @@ export default function SearchField({
         <AsyncSelect
           isClearable
           aria-label="cityToSelect"
-          value={cityTo}
+          defaultInputValue={cityTo.value}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions
@@ -175,7 +198,7 @@ export default function SearchField({
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
-      <Button name={t('find')} onButton={sendRequest} disabled={loading} />
+      <Button name={t('find')} onButton={handleRequest} disabled={loading} />
     </div>
   );
 }
