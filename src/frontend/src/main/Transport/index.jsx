@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import InProgress from '../../InProgress/index';
 import './transport.scss';
 import makeQuerry from '../../helper/querry';
@@ -33,12 +34,16 @@ function Transport({
   setSelectedTransport, requestBody,
   ticketsData, loading,
 }) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'transport' });
 
   const handleButtonClick = (button) => {
     setSelectedTransport((prevSelectedTransport) => {
+      navigate(location.search.replace(/bus|all|train/, button));
       if (button === 'all') {
         return (
           {
@@ -82,21 +87,21 @@ function Transport({
     <div>
       <TransportButton
         label={t('everything')}
-        isActive={selectedTransport.bus && selectedTransport.train}
+        isActive={searchParams.get('type') === 'all'}
         onClick={() => { handleButtonClick('all'); setButtonClicked(true); }}
         img={everythingIcon}
         loading={loading}
       />
       <TransportButton
         label={t('bus')}
-        isActive={selectedTransport.bus && !selectedTransport.train}
+        isActive={searchParams.get('type') === 'bus'}
         onClick={() => { handleButtonClick('bus'); setButtonClicked(true); }}
         img={busIcon}
         loading={loading}
       />
       <TransportButton
         label={t('train')}
-        isActive={selectedTransport.train && !selectedTransport.bus}
+        isActive={searchParams.get('type') === 'train'}
         onClick={() => { handleButtonClick('train'); setButtonClicked(true); }}
         img={trainIcon}
         loading={loading}

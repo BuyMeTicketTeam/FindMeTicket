@@ -3,6 +3,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import FiltersBtn from './FiltersBtn';
 import makeQuerry from '../../helper/querry';
 import './filters.scss';
@@ -13,15 +14,19 @@ export default function Filters({
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
+  const [searchParams] = useSearchParams();
 
   const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
 
   async function sendRequest(sortArg, reverse) {
     const body = {
-      ...requestBody,
+      departureCity: searchParams.get('from'),
+      arrivalCity: searchParams.get('to'),
+      departureDate: searchParams.get('date'),
+      bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
+      train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
       sortingBy: sortArg,
       ascending: reverse,
-      ...selectedTransport,
     };
     const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
 
