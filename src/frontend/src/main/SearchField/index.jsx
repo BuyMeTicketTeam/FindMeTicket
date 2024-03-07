@@ -21,8 +21,8 @@ export default function SearchField({
 }) {
   const [searchParams] = useSearchParams();
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
-  const [cityFrom, setCityFrom] = useState(searchParams.get('from') ?? '');
-  const [cityTo, setCityTo] = useState(searchParams.get('to') ?? '');
+  const [cityFrom, setCityFrom] = useState('');
+  const [cityTo, setCityTo] = useState('');
   const [errorCityFrom, onErrorCityFrom] = useState(false);
   const [errorCityTo, onErrorCityTo] = useState(false);
   // const paramDate = searchParams.get('departureDate');
@@ -99,27 +99,29 @@ export default function SearchField({
       return;
     }
     setError(null);
-    navigate(`?type=${searchParams.get('type')}&from=${cityFrom}&to=${cityTo}&departureDate=${+date}`);
+    navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}`);
   }
 
   useEffect(() => {
     if (!(/^.*type=(bus|train|all).*$/).test(location.search)) {
       navigate(`?${location.search.replace('?', '')}&type=all`);
     }
-    if (searchParams.size < 2) {
-      return;
-    }
     const body = {
       departureCity: searchParams.get('from'),
       arrivalCity: searchParams.get('to'),
-      departureDate: new Date(+searchParams.get('departureDate')) || date,
+      departureDate: searchParams.get('departureDate') ? new Date(+searchParams.get('departureDate')) : date,
       bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
       train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
     };
+    onDate(body.departureDate);
+    setCityFrom(body.departureCity ? { value: body.departureCity, label: body.departureCity } : '');
+    setCityTo(body.arrivalCity ? { value: body.arrivalCity, label: body.arrivalCity } : '');
+    if (searchParams.size < 2) {
+      return;
+    }
     console.log({ dateEffect: body.departureDate });
     setRequestBody(body);
     sendRequest(body);
-    onDate(body.departureDate);
   }, [searchParams]);
 
   function changeCities() {
@@ -163,17 +165,16 @@ export default function SearchField({
       <div className={`field ${errorCityFrom ? 'error-select' : ''}`}>
         <div className="field__name">{t('where')}</div>
         <AsyncSelect
-          value="asdasdsad"
           aria-label="cityFromSelect"
           isClearable
-          // defaultInputValue={cityFrom}
+          value={cityFrom}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
           placeholder="Київ"
-          onChange={(value) => setCityFrom(value ? value.value : null)}
+          onChange={setCityFrom}
         />
         {errorCityFrom && <p data-testid="errorCityFrom" className="search-field__error">{t('error2')}</p>}
       </div>
@@ -189,15 +190,14 @@ export default function SearchField({
         <AsyncSelect
           isClearable
           aria-label="cityToSelect"
-          defaultInputValue={cityTo}
+          value={cityTo}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
           placeholder="Одеса"
-          onChange={(value) => setCityTo(value ? value.value : null)}
-          onInputChange={() => onErrorCityTo(false)}
+          onChange={setCityTo}
         />
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
