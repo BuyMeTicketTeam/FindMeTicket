@@ -128,7 +128,7 @@ footer .footer-container{
 
 .buy-me-coffee { 
   width: max-content;
-  background: #FF813F;
+  background: $bright;
   color: $font-color;
   font-size: 25px;
   padding: 8px 20px;
@@ -136,7 +136,7 @@ footer .footer-container{
   transition: 0.3s;
   text-decoration: none;
   font-family: Cookie;
-  color: black;
+  color: rgb(255, 255, 255);
   display: flex;
   align-items: center;
   justify-content: center; 

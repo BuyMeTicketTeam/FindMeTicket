@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { useTranslation } from 'react-i18next';
 import Arrow from './arrow.svg';
@@ -23,6 +23,22 @@ function Footer() {
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState('60px');
   const [isDetailedInfoVisible, setIsDetailedInfoVisible] = useState(true);
+  const [scrollEnd, setScrollEnd] = useState(false);
+  const [scrollStart, setScrollStart] = useState(true);
+
+  useEffect(() => {
+    const container = document.getElementById('footerContainer');
+    const handleScroll = () => {
+      const isStart = container.scrollLeft === 0;
+      const isEnd = container.scrollLeft + container.clientWidth === container.scrollWidth;
+      setScrollStart(isStart);
+      setScrollEnd(isEnd);
+    };
+    container.addEventListener('scroll', handleScroll);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const toggleFooter = () => {
     setIsFooterVisible(!isFooterVisible);
@@ -78,7 +94,7 @@ function Footer() {
         <div className="footer-content-container">
           <footer style={{ height: footerHeight }}>
             <div
-              style={{ display: isFooterVisible ? 'block' : 'none' }}
+              style={{ display: isFooterVisible ? 'block' : 'none', visibility: scrollEnd ? 'hidden' : 'visible' }}
               className="arrow-right"
               onClick={scrollRight}
               onKeyDown={handleRightArrowKey}
@@ -88,7 +104,7 @@ function Footer() {
               <img src={ArrowRight} alt="Scroll Right" />
             </div>
             <div
-              style={{ display: isFooterVisible ? 'block' : 'none' }}
+              style={{ display: isFooterVisible ? 'block' : 'none', visibility: scrollStart ? 'hidden' : 'visible' }}
               className="arrow-left"
               onClick={scrollLeft}
               onKeyDown={handleLeftArrowKey}
@@ -217,8 +233,7 @@ function Footer() {
                 className="buy-me-coffee"
                 href="https://www.buymeacoffee.com/findmeticket"
               >
-                <img className="coffee" src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" />
-                Buy me a coffee
+                Підтримка
               </a>
               <span className="copyright">© 2023 FindMeTicket</span>
               <div className="contact-footer">
