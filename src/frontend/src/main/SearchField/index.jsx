@@ -184,7 +184,7 @@ export default function SearchField({
         <AsyncSelect
           aria-label="cityFromSelect"
           isClearable
-          inputValue={cityFrom}
+          value={cityFrom}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions
@@ -207,7 +207,7 @@ export default function SearchField({
         <AsyncSelect
           isClearable
           aria-label="cityToSelect"
-          inputValue={cityTo}
+          value={cityTo}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions

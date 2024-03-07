@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import Arrow from './arrow.svg';
 import ArrowLeft from './arrowLeft.svg';
 import ArrowRight from './arrowRight.svg';
@@ -118,96 +119,95 @@ function Footer() {
                 {isFooterVisible && (
                   <>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Київ&to=Харків&endpoint=1" className="rectangle">
                         <img src={Kharkiv} alt="Icon 1" />
                         <p>{t('Kiev-Kharkiv')}</p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Дніпро&to=Чернівці&endpoint=1" className="rectangle">
                         <img src={Chernivtsi} alt="Icon 2" />
                         <p>{t('Dnipro-Chernivtsi')}</p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Київ&to=Дніпро&endpoint=1" className="rectangle">
                         <img src={Dnipro} alt="Icon 3" />
                         <p>{t('Kiev-Dnipro')}</p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Харків&to=Івано-Франківськ&endpoint=1" className="rectangle">
                         <img src={Ivanofrankivsk} alt="Icon 4" />
                         <p>
                           {t('Kharkiv-Ivano-Frankivsk')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Львів&to=Київ&endpoint=1" className="rectangle">
                         <img src={Kyiv} alt="Icon 4" />
                         <p>
                           {t('Lviv-Kiev')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Дніпро&to=Одеса&endpoint=1" className="rectangle">
                         <img src={Odessa} alt="Icon 4" />
                         <p>
                           {t('Dnipro-Odessa')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Київ&to=Полтава&endpoint=1" className="rectangle">
                         <img src={Poltava} alt="Icon 4" />
                         <p>
                           {t('Kiev-Poltava')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Львів&to=Тернопіль&endpoint=1" className="rectangle">
                         <img src={Ternopil} alt="Icon 4" />
                         <p>
                           {t('Lviv-Ternopil')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Харків&to=Запоріжжя&endpoint=1" className="rectangle">
                         <img src={Zaporizhzhia} alt="Icon 4" />
                         <p>
                           {t('Kharkiv-Zaporizhzhya')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Одеса&to=Херсон&endpoint=1" className="rectangle">
                         <img src={Kherson} alt="Icon 4" />
                         <p>
                           {t('Odessa-Kherson')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle-k">
+                      <Link to="?&type=all&from=Запоріжжя&to=Кривий Ріг&endpoint=1" className="rectangle">
                         <img src={Kryvyirih} alt="Icon 4" />
                         <p>
                           {t('Zaporizhzhya-Krivyi Rih')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
                     <div className="footer-column">
-                      <div className="rectangle">
+                      <Link to="?&type=all&from=Віниця&to=Львів&endpoint=1" className="rectangle">
                         <img src={Lviv} alt="Icon 4" />
                         <p>
                           {t('Vinnytsia-Lviv')}
                         </p>
-                      </div>
+                      </Link>
                     </div>
-
                   </>
                 )}
               </div>
