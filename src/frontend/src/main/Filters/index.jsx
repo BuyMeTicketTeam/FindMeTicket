@@ -9,7 +9,7 @@ import makeQuerry from '../../helper/querry';
 import './filters.scss';
 
 export default function Filters({
-  requestBody, setTicketsData, selectedTransport, loading,
+  setTicketsData, loading,
 }) {
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);

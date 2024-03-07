@@ -17,7 +17,7 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError, selectedTransport, loading,
+  setLoading, setTicketsData, setError, loading,
 }) {
   const [searchParams] = useSearchParams();
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
@@ -25,7 +25,6 @@ export default function SearchField({
   const [cityTo, setCityTo] = useState('');
   const [errorCityFrom, onErrorCityFrom] = useState(false);
   const [errorCityTo, onErrorCityTo] = useState(false);
-  // const paramDate = searchParams.get('departureDate');
   const [date, onDate] = useState(new Date());
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
   const navigate = useNavigate();
@@ -48,7 +47,7 @@ export default function SearchField({
     return true;
   }
 
-  function sendRequest(body) {
+  function sendRequestEvents(body) {
     const requestBody = {
       ...body,
       departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
@@ -94,12 +93,26 @@ export default function SearchField({
     });
   }
 
+  function sendRequestHTTP(body) {
+    const requestBody = {
+      ...body,
+      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+    };
+    makeQuerry('selectedTransport', JSON.stringify(requestBody), { 'Content-Language': i18n.language.toLowerCase() })
+      .then((response) => {
+        setTicketsData(response.body);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
   function handleRequest() {
     if (!validation()) {
       return;
     }
     setError(null);
-    navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}`);
+    navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}&endpoint=1`);
   }
 
   useEffect(() => {
@@ -113,15 +126,19 @@ export default function SearchField({
       bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
       train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
     };
+    const endpoint = searchParams.get('endpoint');
     onDate(body.departureDate);
     setCityFrom(body.departureCity ? { value: body.departureCity, label: body.departureCity } : '');
     setCityTo(body.arrivalCity ? { value: body.arrivalCity, label: body.arrivalCity } : '');
-    if (searchParams.size < 2) {
+    if (searchParams.size < 3 || !body.departureCity || !body.arrivalCity || !endpoint) {
+      setTicketsData([]);
       return;
     }
-    console.log({ dateEffect: body.departureDate });
-    setRequestBody(body);
-    sendRequest(body);
+    if (endpoint === '2') {
+      sendRequestHTTP(body);
+      return;
+    }
+    sendRequestEvents(body);
   }, [searchParams]);
 
   function changeCities() {
@@ -154,7 +171,7 @@ export default function SearchField({
           resolve(responseBody);
         }, 500);
       });
-      // updateState(result[0]);
+      updateState(result[0]);
       return result;
     }
     return [];
