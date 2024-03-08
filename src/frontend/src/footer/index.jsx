@@ -6,18 +6,10 @@ import { Link } from 'react-router-dom';
 import Arrow from './arrow.svg';
 import ArrowLeft from './arrowLeft.svg';
 import ArrowRight from './arrowRight.svg';
-import Chernivtsi from './chernivtsi.jpg';
-import Kharkiv from './kharkiv.jpg';
-import Dnipro from './dnipro.jpg';
-import Ivanofrankivsk from './ivano-frankivsk.jpg';
-import Kyiv from './kyiv.jpg';
-import Odessa from './odessa.jpg';
-import Poltava from './poltava.jpg';
-import Ternopil from './ternopil.jpg';
-import Zaporizhzhia from './zaporizhzhia.jpg';
-import Kherson from './Kherson.jpg';
-import Kryvyirih from './kryvyi rih.jpg';
-import Lviv from './lviv.jpg';
+import {
+  Chernivtsi, Dnipro, IvanoFrankivsk, Kharkiv, KryvyiRih, Kyiv,
+  Lviv, Odesa, Poltava, Ternopil, Kherson, Zaporizhzhia,
+} from './img/img';
 
 function Footer() {
   const { t } = useTranslation('translation', { keyPrefix: 'cities' });
@@ -138,7 +130,7 @@ function Footer() {
                     </div>
                     <div className="footer-column">
                       <Link to="?&type=all&from=Харків&to=Івано-Франківськ&endpoint=1" className="rectangle">
-                        <img src={Ivanofrankivsk} alt="Icon 4" />
+                        <img src={IvanoFrankivsk} alt="Icon 4" />
                         <p>
                           {t('Kharkiv-Ivano-Frankivsk')}
                         </p>
@@ -154,7 +146,7 @@ function Footer() {
                     </div>
                     <div className="footer-column">
                       <Link to="?&type=all&from=Дніпро&to=Одеса&endpoint=1" className="rectangle">
-                        <img src={Odessa} alt="Icon 4" />
+                        <img src={Odesa} alt="Icon 4" />
                         <p>
                           {t('Dnipro-Odessa')}
                         </p>
@@ -194,7 +186,7 @@ function Footer() {
                     </div>
                     <div className="footer-column">
                       <Link to="?&type=all&from=Запоріжжя&to=Кривий Ріг&endpoint=1" className="rectangle">
-                        <img src={Kryvyirih} alt="Icon 4" />
+                        <img src={KryvyiRih} alt="Icon 4" />
                         <p>
                           {t('Zaporizhzhya-Krivyi Rih')}
                         </p>
@@ -240,8 +232,14 @@ function Footer() {
                 <span className="privacy-policy">
                   <a href="/privacy-policy">Privacy policy</a>
                 </span>
-                <span className="contact-info">findmeticketweb@gmail.com</span>
-                <span className="contact-info">+380958454545</span>
+                <span className="contact-info">
+                  <a href="mailto:findmeticketweb@gmail.com">
+                    findmeticketweb@gmail.com
+                  </a>
+                </span>
+                <span className="contact-info">
+                  <a href="tel:+380958454545">+380958454545</a>
+                </span>
               </div>
             </div>
           </footer>
