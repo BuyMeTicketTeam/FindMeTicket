@@ -19,13 +19,15 @@ export default function Filters({
   const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
 
   async function sendRequest(sortArg, reverse) {
-    const date = searchParams.get('departureDate');
+    const date = new Date(+searchParams.get('departureDate'));
     const body = {
       departureCity: searchParams.get('from'),
       arrivalCity: searchParams.get('to'),
       departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
       bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
       train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
+      ferry: false,
+      airplane: false,
       sortingBy: sortArg,
       ascending: reverse,
     };

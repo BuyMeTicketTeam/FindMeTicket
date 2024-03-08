@@ -125,6 +125,8 @@ export default function SearchField({
       departureDate: searchParams.get('departureDate') ? new Date(+searchParams.get('departureDate')) : date,
       bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
       train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
+      ferry: false,
+      airplane: false,
     };
     const endpoint = searchParams.get('endpoint');
     onDate(body.departureDate);
