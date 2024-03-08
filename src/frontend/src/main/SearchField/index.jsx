@@ -57,7 +57,7 @@ export default function SearchField({
     function handleOpen(res) {
       switch (res.status) {
         case 200:
-          // console.log('open successfully');
+          console.log('open successfully');
           break;
         case 404:
           setError(t('ticket-not-found'));
