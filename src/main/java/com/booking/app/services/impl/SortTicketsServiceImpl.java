@@ -32,6 +32,20 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
         List<TicketDto> result = new LinkedList<>();
 
+
+        Comparator<Ticket> comparator = switch (dto.getSortingBy()) {
+            case "Price" -> Comparator.comparing(Ticket::getPrice);
+            case "DepartureTime" -> Comparator.comparing(Ticket::getDepartureTime);
+            case "ArrivalTime" -> Comparator.comparing(Ticket::formatArrivalDateTime);
+            case "TravelTime" -> Comparator.comparing(Ticket::getTravelTime);
+            default -> throw new UnsupportedOperationException();
+        };
+
+        if(dto.isAscending()) {
+            tickets.sort(comparator);
+        }else tickets.sort(comparator.reversed());
+
+
         for (Ticket ticket : tickets) {
             switch (ticket) {
                 case BusTicket t -> {
@@ -48,16 +62,16 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
         }
 
-        Comparator<TicketDto> comparator = switch (dto.getSortingBy()) {
-            case "Price" -> Comparator.comparing(TicketDto::getPrice);
-            case "DepartureTime" -> Comparator.comparing(TicketDto::getDepartureTime);
-            case "ArrivalTime" -> Comparator.comparing(TicketDto::formatArrivalDateTime);
-            case "TravelTime" -> Comparator.comparing(TicketDto::getTravelTime);
-            default -> throw new UnsupportedOperationException();
-        };
-
-
-        result.sort(dto.isAscending()? comparator:comparator.reversed());
+//        Comparator<TicketDto> comparator = switch (dto.getSortingBy()) {
+//            case "Price" -> Comparator.comparing(TicketDto::getPrice);
+//            case "DepartureTime" -> Comparator.comparing(TicketDto::getDepartureTime);
+//            case "ArrivalTime" -> Comparator.comparing(TicketDto::formatArrivalDateTime);
+//            case "TravelTime" -> Comparator.comparing(TicketDto::getTravelTime);
+//            default -> throw new UnsupportedOperationException();
+//        };
+//
+//
+//        result.sort(dto.isAscending()? comparator:comparator.reversed());
 
         return result;
     }

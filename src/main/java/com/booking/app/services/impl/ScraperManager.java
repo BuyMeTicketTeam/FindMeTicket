@@ -200,11 +200,11 @@ public class ScraperManager {
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {
         return Arrays.asList(
-//                infobusService.scrapeTickets(emitter, newRoute, language, doDisplay),
-//                proizdService.scrapeTickets(emitter, newRoute, language, doDisplay),
-//                busforService.scrapeTickets(emitter, newRoute, language, doDisplay),
-                gdticketsBusService.scrapeTickets(emitter, newRoute, language, doDisplay)
-//                trainService.scrapeTickets(emitter, newRoute, language, doTrain)
+                infobusService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                proizdService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                busforService.scrapeTickets(emitter, newRoute, language, doDisplay),
+//                  gdticketsBusService.scrapeTickets(emitter, newRoute, language, doDisplay)
+                trainService.scrapeTickets(emitter, newRoute, language, doTrain)
         );
     }
 
