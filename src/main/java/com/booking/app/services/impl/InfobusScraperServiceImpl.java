@@ -52,6 +52,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
     private static final String DIV_TICKET_NOT_FOUND = "div.col-sm-12.alert.alert-warning";
 
     @Async
+    @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -165,7 +166,6 @@ public class InfobusScraperServiceImpl implements ScraperService {
         return CompletableFuture.completedFuture(true);
     }
 
-    @Override
     public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getInfobusUaBus();
@@ -270,7 +270,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
                 .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalDate(formattedTicketDate.format(date))
-                .carrier(carrier).build();
+                .carrier(carrier.toUpperCase()).build();
     }
 
 }

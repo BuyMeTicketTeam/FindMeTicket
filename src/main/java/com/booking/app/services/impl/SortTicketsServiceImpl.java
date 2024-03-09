@@ -9,12 +9,9 @@ import com.booking.app.mapper.BusMapper;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.services.SortTicketsService;
-import jakarta.el.MethodNotFoundException;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.pool.TypePool;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;

@@ -95,7 +95,6 @@ public class TrainScraperServiceImpl implements ScraperService{
         return CompletableFuture.completedFuture(true);
     }
 
-    @Override
     public String determineBaseUrl(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaTrain();
