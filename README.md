@@ -1,9 +1,11 @@
-![logo.svg](..%2F..%2F..%2F..%2FDownloads%2FTelegram%20Desktop%2Flogo.svg) 
-## Find best tickets for 🚌🚂✈️⛴️
+<div align="center">
+<a href="https://imgbb.com/"><img src="https://i.ibb.co/RBK67jt/logo.png" alt="logo" border="0"></a>
+<h3>Find best tickets for 🚌🚂✈️⛴️</h3>
+</div>
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000)
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg?cacheSeconds=2592000)
 
->  This web application revolutionizes the ticket booking experience for various types of transport, including buses, trains, airplanes, and ferries. It offers a user-friendly interface, simplifying the process of finding and redirecting users to the sellers of the best tickets available across multiple websites in Ukraine.
+This web application revolutionizes the ticket booking experience for various types of transport, including buses, trains, airplanes, and ferries. It offers a user-friendly interface, simplifying the process of finding and redirecting users to the sellers of the best tickets available across multiple websites in Ukraine.
 
 ### 🏠 [Homepage](https://github.com/FindMeTicketTeam/FindMeTicket)
 ***
