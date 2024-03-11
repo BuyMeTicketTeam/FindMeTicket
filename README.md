@@ -36,8 +36,6 @@ Give a ⭐️ if this project helped you!
 <img src="https://user-images.githubusercontent.com/25181517/117207242-07d5a700-adf4-11eb-975e-be04e62b984b.png" alt="Java" width="50" height="50">
 </div>
 
-
-
 ***
 ## Getting Started
 First, you need to clone the project to your PC:
