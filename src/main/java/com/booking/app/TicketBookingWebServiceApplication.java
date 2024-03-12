@@ -1,9 +1,8 @@
 package com.booking.app;
 
-import com.booking.app.config.LinkProps;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -12,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableAsync
 @EnableScheduling
-@EnableConfigurationProperties(LinkProps.class)
+@ConfigurationPropertiesScan(basePackages = {"com.booking.app.config"})
 public class TicketBookingWebServiceApplication {
 
     public static void main(String[] args) {
