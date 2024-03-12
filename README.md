@@ -4,7 +4,7 @@
 
 <a href = "https://app.swaggerhub.com/apis/MykhailoMarchuk/FindMETICKET/2">![Swagger](https://img.shields.io/badge/swagger-2.0.0-blue.svg?cacheSeconds=2592000)</a>
 <h6 align="center">Project is led by SoftServe company</h6>
-> This web application revolutionizes the ticket booking experience for various types of transport, including buses, trains, airplanes, and ferries. It offers a user-friendly interface, simplifying the process of finding and redirecting users to the sellers of the best tickets available across multiple websites in Ukraine.
+This web application revolutionizes the ticket booking experience for various types of transport, including buses, trains, airplanes, and ferries. It offers a user-friendly interface, simplifying the process of finding and redirecting users to the sellers of the best tickets available across multiple websites in Ukraine.
 ***
 ## TechStack
 <div>
