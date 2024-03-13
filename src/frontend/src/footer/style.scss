@@ -14,6 +14,7 @@ footer .footer-container{
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
+  margin-top: 20px;
 }
 .footer-column {
   display: inline-block;
@@ -45,18 +46,21 @@ footer .footer-container{
   height: 80px;
   background-color: $dark;
   margin-bottom: 20px; 
-  
-}
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 
-.rectangle img {
-  object-fit: cover;
-  width: 120px;
-  height: 80px; 
-  margin-right: 20px; 
-}
+  img {
+    object-fit: cover;
+    width: 120px;
+    height: 80px; 
+    margin-right: 20px; 
+  }
 
-.rectangle p {
-  margin-left: 20px;
+  p {
+    margin-left: 20px;
+  }
 }
 
 .rectangle-k {
@@ -69,14 +73,13 @@ footer .footer-container{
   background-color: $dark;
   margin-bottom: 20px; 
   
+  img{
+    object-fit: cover;
+    width: 120px;
+    height: 80px; 
+    margin-right: 20px; 
+  }
 }
-.rectangle-k img{
-  object-fit: cover;
-  width: 120px;
-  height: 80px; 
-  margin-right: 20px; 
-}
-
 
 .footer-column {
   margin-bottom: 20px;
@@ -104,7 +107,7 @@ footer .footer-container{
 
 .footer-arrow-icon {
   position: absolute;
-  top: 0%;
+  top: 20px;
   right: 20px;
   transform: translate(0, -50%);
   cursor: pointer;

@@ -15,8 +15,7 @@ import PrivacyPolicy from '../privacyPolicy';
 export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
-  setSelectedTransport, requestBody,
-  setRequestBody,
+  setSelectedTransport,
 }) {
   return (
     <Routes>
@@ -28,8 +27,6 @@ export default function Routers({
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
-            requestBody={requestBody}
-            setRequestBody={setRequestBody}
           />
         )}
       >
