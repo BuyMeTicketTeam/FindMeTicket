@@ -233,12 +233,14 @@ function Footer() {
                 className="buy-me-coffee"
                 href="https://www.buymeacoffee.com/findmeticket"
               >
-                Підтримка
+                {t('Site support')}
               </a>
               <span className="copyright">© 2023 FindMeTicket</span>
               <div className="contact-footer">
                 <span className="privacy-policy">
-                  <a href="/privacy-policy">Privacy policy</a>
+                  <a href="/privacy-policy">
+                    {t('Privacy policy')}
+                  </a>
                 </span>
                 <span className="contact-info">findmeticketweb@gmail.com</span>
                 <span className="contact-info">+380958454545</span>
