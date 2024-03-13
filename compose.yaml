@@ -12,20 +12,21 @@ services:
       - ticket_network
     restart: unless-stopped
     volumes:
-      - ./src/main/resources:/src/main/resources/db/changelog
-      - ./src/main/resources:/src/main/resources/data
+      - ./src/main/resources/data:/docker-entrypoint-initdb.d
   react_app:
     container_name: react_app
     image: stepanstadniuk/react-app
     ports:
-      - "81:8080"
+      - "81:8079"
     networks:
       - ticket_network
   spring_boot_app:
     container_name: spring_boot_app
     image: mishaakamichael999/backend-findmeticket
     ports:
-      - "85:8080"
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
     networks:
       - ticket_network
     depends_on:
