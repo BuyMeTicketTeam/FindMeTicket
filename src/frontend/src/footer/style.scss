@@ -87,7 +87,7 @@ footer .footer-container{
   justify-content: center;
   grid-template-columns: 1fr 1fr 1fr ;
   border-top: 1px solid $dark;
-  padding: 10px 20px;
+  padding: 20px 20px;
   font-size: 12px;
 }
 .footer-container {
@@ -126,26 +126,6 @@ footer .footer-container{
   transform-origin: center;
 }
 
-.buy-me-coffee { 
-  width: max-content;
-  background: $bright;
-  color: $font-color;
-  font-size: 25px;
-  padding: 8px 20px;
-  border-radius: 10px;
-  transition: 0.3s;
-  text-decoration: none;
-  font-family: Cookie;
-  color: rgb(255, 255, 255);
-  display: flex;
-  align-items: center;
-  justify-content: center; 
-}
-.buy-me-coffee:hover {
-  cursor: pointer;
-  box-shadow: 0px 0px 8px 1px $bright;
-  transform: translateY(-3px);
-}
 .coffee{
   width: 30px;
   height: 30px;
@@ -174,6 +154,10 @@ footer .footer-container{
   height: auto; 
 }
 
+
+.buy-me-coffee {
+  margin-left: 10px;
+}
 
 
 
