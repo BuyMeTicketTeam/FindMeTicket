@@ -1,0 +1,1 @@
+CREATE SCHEMA IF NOT EXISTS find_me_ticket_schema
