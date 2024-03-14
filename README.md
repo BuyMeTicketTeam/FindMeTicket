@@ -7,7 +7,11 @@
 This web application revolutionizes the ticket booking experience for various types of transport, including buses,
 trains, airplanes, and ferries. It offers a user-friendly interface, simplifying the process of finding and redirecting
 users to the sellers of the best tickets available across multiple websites in Ukraine.
+
 ***
+
+![Animation-ezgif.com-speed.gif](..%2F..%2FDownloads%2FAnimation-ezgif.com-speed.gif)
+
 
 ## TechStack
 
