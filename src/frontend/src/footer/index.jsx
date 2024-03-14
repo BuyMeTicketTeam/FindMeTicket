@@ -69,7 +69,7 @@ function Footer() {
                 <div className="footer-column">
                   <Link to="?&type=all&from=Харків&to=Івано-Франківськ&endpoint=1" className="rectangle">
                     <img src={IvanoFrankivsk} alt="Icon 4" />
-                    <p>
+                    <p className="word-space">
                       {t('Kharkiv-Ivano-Frankivsk')}
                     </p>
                   </Link>
@@ -125,7 +125,7 @@ function Footer() {
                 <div className="footer-column">
                   <Link to="?&type=all&from=Запоріжжя&to=Кривий Ріг&endpoint=1" className="rectangle">
                     <img src={KryvyiRih} alt="Icon 4" />
-                    <p>
+                    <p className="word-space">
                       {t('Zaporizhzhya-Krivyi Rih')}
                     </p>
                   </Link>
