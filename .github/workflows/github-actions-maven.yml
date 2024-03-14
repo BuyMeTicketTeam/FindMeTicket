@@ -15,7 +15,9 @@ on:
 
 jobs:
   build:
-
+    env:
+      DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     runs-on: ubuntu-latest
 
     steps:
@@ -28,4 +30,4 @@ jobs:
           architecture: x64
           cache: maven
       - name: Build with Maven
-        run: mvn -B package --file pom.xml
+        run: mvn compile jib:build --file pom.xml -Djib.to.auth.username=$DOCKER_LOGIN -Djib.to.auth.password=$DOCKER_PASSWORD
