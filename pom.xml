@@ -8,16 +8,16 @@
         <version>3.2.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.booking</groupId>
-    <artifactId>app</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <groupId>com.findmeticket</groupId>
+    <artifactId>find-me-ticket</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>Ticket Booking WebService</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>21</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
     <dependencies>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.3</version>
+            <version>2.3.0</version>
         </dependency>
 
         <dependency>
@@ -213,6 +213,11 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
@@ -232,6 +237,31 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.4.1</version>
+                <configuration>
+                    <from>
+                        <image>openjdk:21-jdk</image>
+                    </from>
+                    <to>
+                        <auth>
+                            <username>${env.DOCKER_LOGIN}</username>
+                            <password>${env.DOCKER_PASSWORD}</password>
+                        </auth>
+                        <image>findmeticket/backend-findmeticket</image>
+                    </to>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
