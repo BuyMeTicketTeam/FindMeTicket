@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import starIcon from '../star.svg';
+import starIcon from '../../ticketPage/Maps/star.svg';
 import './placePreviewItem.scss';
 
 export default function PlacePreviewItem({

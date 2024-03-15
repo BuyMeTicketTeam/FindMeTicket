@@ -18,7 +18,7 @@
     background: $dark;
     border-radius: 10px;
     padding: 20px;
-    max-width: 400px;
+    max-width: 350px;
 }
 
 .unauthorized-content__title {
@@ -26,6 +26,22 @@
     margin-bottom: 15px;
 }
 
+.unauthorized-content__text {
+    margin-bottom: 15px;
+}
+
 .unauthorized-content__button {
     display: block;
+    text-decoration: none;
+    text-align: center;
+}
+
+.tourist-places {
+    display: flex;
+    height: calc(100vh - 121.6px);
+    overflow-y: hidden;
+
+    .placeList {
+        flex: 0 0 20%;
+    }
 }
