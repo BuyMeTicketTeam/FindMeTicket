@@ -13,11 +13,13 @@
 
 .place__info {
     flex: auto;
+    margin-right: 6px;
 }
 
 .place__img {
     width: 80px;
-    max-height: 80px;
+    height: 80px;
+    object-fit: cover;
 }
 
 .place__addInfo {

@@ -10,7 +10,7 @@ export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, update
           key={placeInfo.place_id}
           name={placeInfo.name}
           img={placeInfo.photos[0].getUrl()}
-          openNow={false}
+          openNow={placeInfo.opening_hours?.open_now}
           rating={placeInfo.rating}
           onClick={() => {
             setCurrentPlaceId(placeInfo.place_id);
