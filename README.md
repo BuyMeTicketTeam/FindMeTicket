@@ -10,8 +10,9 @@ users to the sellers of the best tickets available across multiple websites in U
 
 ***
 
-![Animation-ezgif.com-speed.gif](..%2F..%2FDownloads%2FAnimation-ezgif.com-speed.gif)
-
+<div align="center">
+<img src="src/main/resources/image/app.gif?raw=true" alt="animation">
+</div>
 
 ## TechStack
 
