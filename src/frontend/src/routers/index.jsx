@@ -44,7 +44,7 @@ export default function Routers({
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/tourist-places" element={<TouristPlaces auth={auth} />} />
+      <Route path="/tourist-places/:city" element={<TouristPlaces auth={auth} />} />
     </Routes>
   );
 }

@@ -1,14 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect,
+} from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
-import makeQuerry from '../../helper/querry';
 import arrowsImg from './arrows.svg';
 import eventSourceQuery2 from '../../helper/eventSourceQuery2';
+import useGetCities from '../../hook/useGetCities';
 import './searchField.scss';
 
 export default function SearchField({
@@ -21,6 +23,7 @@ export default function SearchField({
   const [errorCityTo, onErrorCityTo] = useState(false);
   const [date, onDate] = useState(new Date());
   const [showPassengers, onShowPassengers] = useState(false);
+  const getCities = useGetCities();
   const fieldRef = React.createRef();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
@@ -114,35 +117,6 @@ export default function SearchField({
     const cityToTemp = cityTo;
     onCityTo(cityFrom);
     onCityFrom(cityToTemp);
-  }
-
-  function transformData(item) {
-    switch (true) {
-      case item.siteLanguage === 'ua' && item.cityEng !== null:
-        return ({ value: item.cityUa, label: `${item.cityUa} (${item.cityEng}), ${item.country}` });
-      case item.siteLanguage === 'ua' && item.cityEng === null:
-        return ({ value: item.cityUa, label: `${item.cityUa}, ${item.country}` });
-      case item.siteLanguage === 'eng' && item.cityUa === null:
-        return ({ value: item.cityEng, label: `${item.cityEng}, ${item.country}` });
-      default:
-        return ({ value: item.cityEng, label: `${item.cityEng} (${item.cityUa}), ${item.country}` });
-    }
-  }
-
-  let timerId;
-  async function getCities(inputValue) {
-    if (inputValue.length > 1) {
-      clearInterval(timerId);
-      const result = await new Promise((resolve) => {
-        timerId = setTimeout(async () => {
-          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }), { 'Content-language': i18n.language.toLowerCase() });
-          const responseBody = response.status === 200 ? response.body.map(transformData) : [];
-          resolve(responseBody);
-        }, 500);
-      });
-      return result;
-    }
-    return [];
   }
 
   return (
