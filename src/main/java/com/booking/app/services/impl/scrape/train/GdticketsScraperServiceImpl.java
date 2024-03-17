@@ -1,6 +1,6 @@
-package com.booking.app.services.impl;
+package com.booking.app.services.impl.scrape.train;
 
-import com.booking.app.config.LinkProps;
+import com.booking.app.props.LinkProps;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.mapper.BusMapper;
@@ -23,14 +23,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 @Service("gdtickets")
 @RequiredArgsConstructor
@@ -56,8 +52,9 @@ public class GdticketsScraperServiceImpl implements ScraperService {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 //        String url = determineBaseUrl(language);
-        if(!requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, "https://gd.tickets.ua/", language))
-            return CompletableFuture.completedFuture(false);;
+        if (!requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, "https://gd.tickets.ua/", language))
+            return CompletableFuture.completedFuture(false);
+        ;
 
 //        try {
 //            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
@@ -97,7 +94,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
         }
 
         Actions actions = new Actions(driver);
-        actions.moveToElement( driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[2]/div/div[2]/button"))).click().build().perform();
+        actions.moveToElement(driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[2]/div/div[2]/button"))).click().build().perform();
         return true;
     }
 
@@ -159,12 +156,12 @@ public class GdticketsScraperServiceImpl implements ScraperService {
 
             WebElement sdsd = driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[2]/div[2]"));
 
-            List<WebElement> days = (requestMonthNumber % 2 == 0 ? driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[1]")) :  driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[2]"))).findElements(By.cssSelector("div.f-center-stretch")).stream().map(t->t.findElements(By.cssSelector("div.f--grow.f--shrink.f--no-basis"))).flatMap(List::stream).toList();
+            List<WebElement> days = (requestMonthNumber % 2 == 0 ? driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[1]")) : driver.findElement(By.xpath("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[2]/div[2]/div[2]/div/div/div[2]"))).findElements(By.cssSelector("div.f-center-stretch")).stream().map(t -> t.findElements(By.cssSelector("div.f--grow.f--shrink.f--no-basis"))).flatMap(List::stream).toList();
 
             for (WebElement t : days) {
                 try {
                     WebElement element = t.findElement(By.tagName("button")).findElements(By.tagName("div")).get(0);
-                    if (element.getText().equals(requestDay)){
+                    if (element.getText().equals(requestDay)) {
                         Actions actions = new Actions(driver);
                         actions.moveToElement(t.findElement(By.tagName("button"))).click().build().perform();
                         break;
@@ -180,11 +177,11 @@ public class GdticketsScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
         throw new java.lang.UnsupportedOperationException();
     }
 
-    public String determineBaseUrl(String language) {
+    public String determineBaseUri(String language) {
         throw new java.lang.UnsupportedOperationException();
     }
 }

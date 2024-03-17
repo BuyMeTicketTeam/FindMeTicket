@@ -1,4 +1,4 @@
-package com.booking.app.services.impl;
+package com.booking.app.services.impl.scrape;
 
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
@@ -40,17 +40,17 @@ public class ScraperManager {
 
     private final TrainTicketRepository trainTicketRepository;
 
-    @Qualifier("busfor")
-    private final ScraperService busforService;
+    @Qualifier("busforBusService")
+    private final ScraperService busforBusService;
 
-    @Qualifier("infobus")
-    private final ScraperService infobusService;
+    @Qualifier("infobusBusService")
+    private final ScraperService infobusBusService;
 
-    @Qualifier("proizd")
-    private final ScraperService proizdService;
+    @Qualifier("proizdBusService")
+    private final ScraperService proizdBusService;
 
-    @Qualifier("train")
-    private final ScraperService trainService;
+    @Qualifier("proizdTrainService")
+    private final ScraperService proizdTrainService;
 
     @Qualifier("gdtickets")
     private final ScraperService gdticketsBusService;
@@ -143,11 +143,11 @@ public class ScraperManager {
             List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
 
             if (busTicket.getBusforPrice() != null)
-                completableFutureListBus.add(busforService.getBusTicket(emitter, busTicket, language));
+                completableFutureListBus.add(busforBusService.scrapeTicketUri(emitter, busTicket, language));
             if (busTicket.getInfobusPrice() != null)
-                completableFutureListBus.add(infobusService.getBusTicket(emitter, busTicket, language));
+                completableFutureListBus.add(infobusBusService.scrapeTicketUri(emitter, busTicket, language));
             if (busTicket.getProizdPrice() != null)
-                completableFutureListBus.add(proizdService.getBusTicket(emitter, busTicket, language));
+                completableFutureListBus.add(proizdBusService.scrapeTicketUri(emitter, busTicket, language));
 
             CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
 
@@ -200,11 +200,11 @@ public class ScraperManager {
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {
         return Arrays.asList(
-                infobusService.scrapeTickets(emitter, newRoute, language, doDisplay),
-                proizdService.scrapeTickets(emitter, newRoute, language, doDisplay),
-                busforService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                infobusBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                proizdBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                busforBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
 //                  gdticketsBusService.scrapeTickets(emitter, newRoute, language, doDisplay)
-                trainService.scrapeTickets(emitter, newRoute, language, doTrain)
+                proizdTrainService.scrapeTickets(emitter, newRoute, language, doTrain)
         );
     }
 

@@ -6,7 +6,7 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
-import com.booking.app.services.impl.ScraperManager;
+import com.booking.app.services.impl.scrape.ScraperManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +70,6 @@ public class ScraperController implements ScraperAPI {
         return ticketService.getBusTickets(requestTicketsDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-
     }
 
 }

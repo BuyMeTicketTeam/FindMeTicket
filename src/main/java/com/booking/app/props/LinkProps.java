@@ -1,4 +1,4 @@
-package com.booking.app.config;
+package com.booking.app.props;
 
 import lombok.Getter;
 import lombok.Setter;

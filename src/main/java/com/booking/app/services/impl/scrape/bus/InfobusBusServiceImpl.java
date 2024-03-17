@@ -1,11 +1,10 @@
-package com.booking.app.services.impl;
+package com.booking.app.services.impl.scrape.bus;
 
-import com.booking.app.config.LinkProps;
+import com.booking.app.props.LinkProps;
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
-import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.repositories.BusTicketRepository;
@@ -14,9 +13,7 @@ import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -31,13 +28,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Year;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Service("infobus")
+@Service("infobusBusService")
 @RequiredArgsConstructor
 @Log4j2
-public class InfobusScraperServiceImpl implements ScraperService {
+public class InfobusBusServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
@@ -57,81 +57,91 @@ public class InfobusScraperServiceImpl implements ScraperService {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        String url = determineBaseUrl(language);
+        String url = determineBaseUri(language);
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-        try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
-            driver.findElement(By.cssSelector(DIV_TICKET));
-        } catch (Exception e) {
-            driver.quit();
-            log.info("INFOBUS TICKETS IN scrapeTickets(): NOT FOUND");
-            return CompletableFuture.completedFuture(false);
-        }
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        try {
-            synchronized (driver) {
-                driver.wait(5000);
-            }
-        } catch (InterruptedException e) {
-        }
+        waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-
-        log.info("INFOBUS TICKETS IN scrapeTickets(): " + elements.size());
-
-        for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route);
-
-
-            BusTicket busTicket = scrapedTicket;
-
-            if (route.getTickets().add(scrapedTicket)) {
-                if (BooleanUtils.isTrue(doShow))
-                    emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
-
-            } else
-                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
-
-            repository.save(scrapedTicket);
-        }
+        processScrapedTickets(emitter, route, language, doShow, elements);
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
     }
 
-
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         Route route = ticket.getRoute();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        String url = determineBaseUrl(language);
+        String url = determineBaseUri(language);
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-        try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-            driver.findElement(By.cssSelector(DIV_TICKET));
-
-        } catch (Exception e) {
-            driver.quit();
-            log.info("INFOBUS TICKETS IN scrapeTickets(): NOT FOUND");
-            return CompletableFuture.completedFuture(false);
-        }
-        try {
-            synchronized (driver) {
-                driver.wait(5000);
-            }
-        } catch (InterruptedException e) {
-        }
+        waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        log.info("INFOBUS TICKETS IN single getTicket(): " + elements.size());
+        processTicketInfo(emitter, ticket, elements, driver, wait);
+
+        driver.quit();
+        return CompletableFuture.completedFuture(true);
+    }
+
+    private static void waitForTickets(WebDriver driver) {
+        int previousCount = 0;
+        int currentCount = 0;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        try {
+            do {
+                previousCount = currentCount;
+
+                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+                wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(DIV_TICKET), previousCount));
+
+                List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+                currentCount = elements.size();
+            } while (currentCount > previousCount);
+        } catch (TimeoutException e) {
+
+        }
+    }
+
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements) throws ParseException, IOException {
+        log.info("Bus tickets on infobus: " + elements.size());
+        for (int i = 0; i < elements.size() && i < 150; i++) {
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route);
+
+            BusTicket busTicket = scrapedTicket;
+
+            if (route.getTickets().add(scrapedTicket)) {
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
+            } else
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
+
+            repository.save(scrapedTicket);
+        }
+    }
+
+    private String determineBaseUri(String language) {
+        return switch (language) {
+            case ("ua") -> linkProps.getInfobusUaBus();
+            case ("eng") -> linkProps.getInfobusEngBus();
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
+        };
+    }
+
+    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait) throws IOException {
+        log.info("Bus tickets on infobus: " + elements.size());
         for (WebElement element : elements) {
             String price = element.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
 
@@ -161,18 +171,18 @@ public class InfobusScraperServiceImpl implements ScraperService {
                             .url(ticket.getInfobusLink())
                             .build()));
         } else log.info("INFOBUS URL NOT FOUND");
-
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
     }
 
-    public String determineBaseUrl(String language) {
-        return switch (language) {
-            case ("ua") -> linkProps.getInfobusUaBus();
-            case ("eng") -> linkProps.getInfobusEngBus();
-            default ->
-                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
-        };
+    private static boolean areTicketsPresent(WebDriverWait wait, WebDriver driver) {
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+            return true;
+        } catch (Exception e) {
+            driver.quit();
+            log.info("Bus tickets on infobus: NOT FOUND");
+            return false;
+        }
     }
 
     private static BusTicket scrapeTicketInfo(WebElement webTicket, Route route) throws ParseException {
@@ -193,7 +203,7 @@ public class InfobusScraperServiceImpl implements ScraperService {
 
         String carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText();
 
-        if(carrier.isEmpty()){
+        if (carrier.isEmpty()) {
             carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getAttribute("href").replaceAll(".*/", "");
         }
 
