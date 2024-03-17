@@ -44,10 +44,5 @@ public class TicketDto {
 
     private String carrier;
 
-    public LocalDateTime formatArrivalDateTime() {
-        LocalTime time = LocalTime.parse(arrivalTime, DateTimeFormatter.ofPattern("HH:mm"));
-        LocalDate date = LocalDate.parse(arrivalDate.replaceAll(",.*", "")+"."+ Year.now().getValue(), DateTimeFormatter.ofPattern("d.MM.yyyy"));
 
-        return LocalDateTime.of(date, time);
-    }
 }

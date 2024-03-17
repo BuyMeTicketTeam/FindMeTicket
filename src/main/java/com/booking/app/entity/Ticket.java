@@ -5,6 +5,11 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Entity
@@ -51,6 +56,12 @@ public class Ticket {
     @JoinColumn(name = "route_id")
     private Route route;
 
+    public LocalDateTime formatArrivalDateTime() {
+        LocalTime time = LocalTime.parse(arrivalTime, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDate date = LocalDate.parse(arrivalDate.replaceAll(",.*", "")+"."+ Year.now().getValue(), DateTimeFormatter.ofPattern("d.MM.yyyy"));
+
+        return LocalDateTime.of(date, time);
+    }
 
     public BigDecimal getPrice() {
         return BigDecimal.valueOf(0);

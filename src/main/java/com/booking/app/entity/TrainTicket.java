@@ -33,4 +33,18 @@ public class TrainTicket extends Ticket {
         return infoList.stream().map(t -> t.getPrice()).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    public TrainTicket addPrices(TrainTicket trainTicket) {
+        infoList.addAll(trainTicket.getInfoList());
+        return this;
+    }
 }

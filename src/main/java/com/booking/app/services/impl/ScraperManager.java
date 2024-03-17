@@ -52,6 +52,9 @@ public class ScraperManager {
     @Qualifier("train")
     private final ScraperService trainService;
 
+    @Qualifier("gdtickets")
+    private final ScraperService gdticketsBusService;
+
     private final RouteRepository routeRepository;
 
     private final BusTicketRepository busTicketRepository;
@@ -200,6 +203,7 @@ public class ScraperManager {
                 infobusService.scrapeTickets(emitter, newRoute, language, doDisplay),
                 proizdService.scrapeTickets(emitter, newRoute, language, doDisplay),
                 busforService.scrapeTickets(emitter, newRoute, language, doDisplay),
+//                  gdticketsBusService.scrapeTickets(emitter, newRoute, language, doDisplay)
                 trainService.scrapeTickets(emitter, newRoute, language, doTrain)
         );
     }

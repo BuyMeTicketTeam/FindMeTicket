@@ -13,5 +13,4 @@ public interface ScraperService {
 
     CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException;
 
-    String determineBaseUrl(String language);
 }
