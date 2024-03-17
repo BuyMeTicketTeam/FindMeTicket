@@ -268,3 +268,71 @@ input[type='number'] {
   align-items: center;
   margin-top: 15px;
 }
+
+.search-field .input,
+.search-field .react-select__control,
+.search-city .react-select__control {
+    background: $main;
+    font-size: 18px;
+}
+
+.search-field .react-select__control {
+    min-width: 320px;
+    border-radius: 10px;
+    border: 2px solid $bright;
+    padding-top: 2px;
+    padding-bottom: 1px;
+}
+
+.field.error-select .react-select__control {
+    border: 2px solid $error;
+    outline-color: $error;
+    box-shadow: 0px 0px 9px 2px $error;
+}
+
+.search-field .react-select__control:hover,
+.search-city .react-select__control:hover {
+    border: 2px solid $bright;
+}
+
+.search-field .react-select__control--is-focused,
+.search-city .react-select__control--is-focused {
+    box-shadow: 0px 0px 8px 1px $bright;
+}
+
+.search-field .react-select__input-container,
+.search-city .react-select__input-container {
+    color: $font-color;
+}
+
+.search-field .react-select__indicator,
+.search-field .react-select__indicator-separator,
+.search-city .react-select__indicator,
+.search-city .react-select__indicator-separator {
+    display: none;
+}
+
+.search-field .react-select__menu,
+.search-city .react-select__menu {
+    background: $main;
+}
+
+.search-field .react-select__option,
+.search-city .react-select__option {
+    color: $font-color;
+}
+
+.search-field .react-select__option--is-selected,
+.search-city .react-select__option--is-selected {
+    background: inherit;
+}
+
+.search-field .react-select__single-value,
+.search-city .react-select__single-value {
+    color: $font-color;
+}
+
+.search-field .react-select__option--is-focused,
+.search-city .react-select__option--is-focused {
+    background: $dark;
+}

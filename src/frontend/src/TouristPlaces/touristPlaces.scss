@@ -1,9 +1,9 @@
 @import '../styles/variables.scss';
-.unauthorized {
+.unauthorized, .search-city {
     position: relative;
 }
 
-.unauthorized-background{
+.tourist-places-background {
     width: 100%;
     height: calc(100vh - 121.6px);
     background: url('./unauthorized-image.png');
@@ -36,7 +36,7 @@
     text-align: center;
 }
 
-.tourist-places {
+.tourist-places__map {
     display: flex;
     height: calc(100vh - 121.6px);
     overflow-y: hidden;
@@ -72,4 +72,45 @@
     .place-preview__photo img {
         height: 150px;
     }
+}
+
+.search-city {
+}
+
+.search-city-form {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 20px;
+    flex-wrap: wrap;
+    transform: translate(-50%, 0);
+    background: $dark;
+    border-radius: 15px;
+    padding: 20px;
+    width: 600px;
+}
+
+.search-city-form__title {
+    font-size: 26px;
+    flex: 100%;
+    margin-bottom: 10px;
+}
+
+.search-city .react-select__control {
+    min-width: 100%;
+    border-radius: 10px;
+    border: 2px solid $bright;
+    padding-top: 2px;
+    padding-bottom: 1px;
+}
+
+.search-city .css-b62m3t-container {
+    width: 422px;
+}
+
+button.search-city-form__button {
+    min-width: 0;
+    padding: 0 28px;
 }
