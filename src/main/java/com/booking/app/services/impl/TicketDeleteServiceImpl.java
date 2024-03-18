@@ -1,7 +1,6 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.repositories.RouteRepository;
-import com.booking.app.services.DeleteTicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -12,7 +11,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class ScheduledTicketDeleteService implements DeleteTicketService {
+public class TicketDeleteServiceImpl implements com.booking.app.services.TicketDeleteService {
 
     private final RouteRepository routeRepository;
 

@@ -1,23 +1,19 @@
-package com.booking.app.services.impl;
+package com.booking.app.services.impl.scrape.bus;
 
-import com.booking.app.config.LinkProps;
+import com.booking.app.props.LinkProps;
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
-import com.booking.app.entity.Ticket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
-import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,13 +30,16 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Service("proizd")
+@Service("proizdBusService")
 @RequiredArgsConstructor
 @Log4j2
-public class ProizdScraperServiceImpl implements ScraperService, TicketOperation {
+public class ProizdBusServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
@@ -56,44 +55,19 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException{
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        String url = determineBaseUrl(language);
+        String url = determineBaseUri(language);
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-        try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
-            driver.findElement(By.cssSelector(DIV_TICKET));
-        } catch (Exception e) {
-            driver.quit();
-            log.info("PROIZD TICKETS IN scrapeTickets(): NOT FOUND");
-            return CompletableFuture.completedFuture(false);
-        }
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        try {
-            synchronized (driver) {
-                driver.wait(5000);
-            }
-        } catch (InterruptedException e) {
-        }
+        waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-
-        log.info("PROIZD TICKETS IN scrapeTickets(): " + elements.size());
-
-        for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
-
-            Optional<BusTicket> busTicket = repository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
-
-            if (busTicket.isEmpty())
-                saveTicket(emitter, route, language, doShow, scrapedTicket);
-
-            if (busTicket.isPresent() && Objects.isNull(busTicket.get().getProizdPrice()))
-                updateTicket(busTicket.get(), scrapedTicket);
-        }
+        processScrapedTickets(emitter, route, language, doShow, elements);
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
@@ -101,31 +75,76 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
 
     @Async
     @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException{
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         Route route = ticket.getRoute();
-        String url = determineBaseUrl(language);
+        String url = determineBaseUri(language);
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-        try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
-            driver.findElement(By.cssSelector(DIV_TICKET));
-        } catch (Exception e) {
-            driver.quit();
-            log.info("PROIZD TICKETS IN scrapeTickets(): NOT FOUND");
-            return CompletableFuture.completedFuture(false);
-        }
-        try {
-            synchronized (driver) {
-                driver.wait(5000);
-            }
-        } catch (InterruptedException e) {
-        }
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+
+        waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+        processTicketInfo(emitter, ticket, language, elements);
+
+        driver.quit();
+        return CompletableFuture.completedFuture(true);
+    }
+
+    private static void waitForTickets(WebDriver driver) {
+        int previousCount = 0;
+        int currentCount = 0;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        try {
+            do {
+                previousCount = currentCount;
+
+                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+                wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(DIV_TICKET), previousCount));
+
+                List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+                currentCount = elements.size();
+            } while (currentCount > previousCount);
+        } catch (TimeoutException e) {
+
+        }
+    }
+
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements) throws IOException {
+        log.info("Bus tickets on proizd: " + elements.size());
+
+        for (int i = 0; i < elements.size() && i < 150; i++) {
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+
+
+            BusTicket busTicket = scrapedTicket;
+
+            if (route.getTickets().add(scrapedTicket)) {
+                if (BooleanUtils.isTrue(doShow))
+                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
+
+            } else
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
+
+            repository.save(scrapedTicket);
+        }
+    }
+
+    private String determineBaseUri(String language) {
+        return switch (language) {
+            case ("ua") -> linkProps.getProizdUaBus();
+            case ("eng") -> linkProps.getProizdEngBus();
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
+        };
+    }
+
+    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> elements) throws IOException {
         log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
 
@@ -152,34 +171,20 @@ public class ProizdScraperServiceImpl implements ScraperService, TicketOperation
                     .url(ticket.getProizdLink())
                     .build()));
         } else log.info("PROIZD URL NOT FOUND");
-
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
     }
 
-    @Override
-    public String determineBaseUrl(String language) {
-        return switch (language) {
-            case ("ua") -> linkProps.getProizdUaBus();
-            case ("eng") -> linkProps.getProizdEngBus();
-            default ->
-                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
-        };
+    private static boolean areTicketsPresent(WebDriverWait wait, WebDriver driver) {
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+            return true;
+        } catch (Exception e) {
+            driver.quit();
+            log.info("Bus tickets on proizd: : NOT FOUND");
+            return false;
+        }
     }
 
-    @Override
-    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
-        scrapedTicket.setRoute(route);
-        repository.save((BusTicket) scrapedTicket);
-        if (BooleanUtils.isTrue(doDisplay))
-            emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto((BusTicket) scrapedTicket, language)));
-    }
-
-    @Override
-    public void updateTicket(Ticket ticket, Ticket scrapedTicket) {
-        ((BusTicket) ticket).updateProizdPrice(((BusTicket) scrapedTicket).getProizdPrice());
-        repository.save((BusTicket) ticket);
-    }
 
     private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();

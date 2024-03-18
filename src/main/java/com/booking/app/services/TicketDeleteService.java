@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-public interface DeleteTicketService {
+public interface TicketDeleteService {
 
     void deleteOldTickets();
 }

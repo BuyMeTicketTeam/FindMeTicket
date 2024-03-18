@@ -1,20 +1,20 @@
-package com.booking.app.services.impl;
+package com.booking.app.services.impl.scrape.train;
 
-import com.booking.app.config.LinkProps;
-import com.booking.app.entity.*;
+import com.booking.app.props.LinkProps;
+import com.booking.app.entity.BusTicket;
+import com.booking.app.entity.Route;
+import com.booking.app.entity.TrainComfortInfo;
+import com.booking.app.entity.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.ScraperService;
-import com.booking.app.services.TicketOperation;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.BooleanUtils;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,10 +34,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-@Service("train")
+@Service("proizdTrainService")
 @RequiredArgsConstructor
 @Log4j2
-public class TrainScraperServiceImpl implements ScraperService, TicketOperation {
+public class ProizdTrainServiceImpl implements ScraperService {
 
     private final LinkProps linkProps;
 
@@ -56,37 +56,28 @@ public class TrainScraperServiceImpl implements ScraperService, TicketOperation 
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUrl(language), language);
+        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUri(language), language);
 
-        try {
-            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
-            driver.findElement(By.cssSelector(DIV_TICKET));
-        } catch (Exception e) {
-            driver.quit();
-            log.info("PROIZD TRAIN TICKETS IN scrapeTickets(): NOT FOUND");
-            return CompletableFuture.completedFuture(false);
-        }
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        try {
-            synchronized (driver) {
-                driver.wait(5000);
-            }
-        } catch (InterruptedException e) {
-        }
+        waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
-        log.info("PROIZD TRAIN TICKETS IN scrapeTickets(): " + elements.size());
+        log.info("Train tickets on proizd: " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
             TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+            TrainTicket trainTicket = scrapedTicket;
 
-            Optional<TrainTicket> trainTicket = trainRepository.findByDepartureTimeAndArrivalTimeAndArrivalDateAndCarrier(scrapedTicket.getDepartureTime(), scrapedTicket.getArrivalTime(), scrapedTicket.getArrivalDate(), scrapedTicket.getCarrier());
+            if (route.getTickets().add(scrapedTicket)) {
+                if (BooleanUtils.isTrue(doDisplay))
+                    emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
 
-            if (trainTicket.isEmpty())
-                saveTicket(emitter, route, language, doDisplay, scrapedTicket);
-            else
-                updateTicket(trainTicket.get(), scrapedTicket);
+            } else
+                scrapedTicket = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(trainTicket)).findFirst().get()).addPrices(trainTicket);
+
+            trainRepository.save(scrapedTicket);
         }
 
         driver.quit();
@@ -94,34 +85,49 @@ public class TrainScraperServiceImpl implements ScraperService, TicketOperation 
     }
 
     @Override
-    public void updateTicket(Ticket trainTicket, Ticket scrapedTicket) {
-        ((TrainTicket) trainTicket).getInfoList().addAll(((TrainTicket) scrapedTicket).getInfoList());
-        trainRepository.save((TrainTicket) trainTicket);
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) {
+        throw new java.lang.UnsupportedOperationException();
     }
 
-    @Override
-    public void saveTicket(SseEmitter emitter, Route route, String language, Boolean doDisplay, Ticket scrapedTicket) throws IOException {
-        scrapedTicket.setRoute(route);
-        trainRepository.save((TrainTicket) scrapedTicket);
-        if (BooleanUtils.isTrue(doDisplay)) {
-            emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto((TrainTicket) scrapedTicket, language)));
+    private static boolean areTicketsPresent(WebDriverWait wait, WebDriver driver) {
+        try {
+            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
+            driver.findElement(By.cssSelector(DIV_TICKET));
+            return true;
+        } catch (Exception e) {
+            driver.quit();
+            log.info("Train tickets on proizd: NOT FOUND");
+            return false;
         }
     }
 
-    @Override
-    public String determineBaseUrl(String language) {
+    private static void waitForTickets(WebDriver driver) {
+        int previousCount = 0;
+        int currentCount = 0;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        try {
+            do {
+                previousCount = currentCount;
+
+                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+                wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(DIV_TICKET), previousCount));
+
+                List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+                currentCount = elements.size();
+            } while (currentCount > previousCount);
+        } catch (TimeoutException e) {
+
+        }
+    }
+
+    public String determineBaseUri(String language) {
         return switch (language) {
             case ("ua") -> linkProps.getProizdUaTrain();
             case ("eng") -> linkProps.getProizdEngTrain();
             default ->
                     throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
-    }
-
-
-    @Override
-    public CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) {
-        throw new java.lang.UnsupportedOperationException();
     }
 
     private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language) {

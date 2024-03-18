@@ -50,27 +50,15 @@ public class BusTicket extends Ticket {
         return super.hashCode();
     }
 
-    public void updateProizdPrice(BigDecimal newProizdPrice) {
-        if (newProizdPrice != null) {
-            this.proizdPrice = newProizdPrice;
-        }
-    }
-
-    public void updateInfobusPrice(BigDecimal newInfobusPrice) {
-        if (newInfobusPrice != null) {
-            this.infobusPrice = newInfobusPrice;
-        }
-    }
-
-    public void updateBusforPrice(BigDecimal newBusforPrice) {
-        if (newBusforPrice != null) {
-            this.busforPrice = newBusforPrice;
-        }
-    }
-
     @Override
     public BigDecimal getPrice() {
         return Stream.of(proizdPrice, infobusPrice, busforPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
     }
 
+    public BusTicket addPrices(BusTicket busTicket) {
+        if (busforPrice == null) busforPrice = busTicket.getBusforPrice();
+        if (proizdPrice == null) proizdPrice = busTicket.getProizdPrice();
+        if (infobusPrice == null) infobusPrice = busTicket.getInfobusPrice();
+        return this;
+    }
 }
