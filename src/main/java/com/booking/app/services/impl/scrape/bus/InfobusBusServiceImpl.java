@@ -1,12 +1,12 @@
 package com.booking.app.services.impl.scrape.bus;
 
-import com.booking.app.props.LinkProps;
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.props.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
@@ -24,6 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -204,10 +205,10 @@ public class InfobusBusServiceImpl implements ScraperService {
         String carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getText();
 
         if (carrier.isEmpty()) {
-            carrier = webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g")).getAttribute("href").replaceAll(".*/", "");
+            carrier = URLDecoder.decode(webTicket.findElement(By.cssSelector("span.carrier-info")).findElement(By.cssSelector("a.text-g"))
+                    .getAttribute("href")).replaceAll(".*/", "");
         }
-
-        carrier.toUpperCase().replaceAll("\"", "").replace("ТОВ ", "");
+        if (carrier.indexOf('/') != -1) carrier = carrier.substring(0, carrier.indexOf('/'));
 
         return createTicket(webTicket, route, price, carrier, totalMinutes, formattedTicketDate, date);
     }
