@@ -1,9 +1,14 @@
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
+import {
+  useSearchParams, useNavigate, useLocation,
+} from 'react-router-dom';
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
 import makeQuerry from '../../helper/querry';
@@ -12,30 +17,18 @@ import eventSourceQuery2 from '../../helper/eventSourceQuery2';
 import './searchField.scss';
 
 export default function SearchField({
-  setLoading, setTicketsData, setRequestBody, setError, selectedTransport, loading,
+  setLoading, setTicketsData, setError, loading,
 }) {
+  const [searchParams] = useSearchParams();
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
-  const [cityFrom, onCityFrom] = useState('');
-  const [cityTo, onCityTo] = useState('');
+  const [cityFrom, setCityFrom] = useState('');
+  const [cityTo, setCityTo] = useState('');
   const [errorCityFrom, onErrorCityFrom] = useState(false);
   const [errorCityTo, onErrorCityTo] = useState(false);
   const [date, onDate] = useState(new Date());
-  const [showPassengers, onShowPassengers] = useState(false);
-  const fieldRef = React.createRef();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
-
-  useEffect(() => {
-    const checkIfClickedOutside = (e) => {
-      if (showPassengers && fieldRef.current && !fieldRef.current.contains(e.target)) {
-        onShowPassengers(false);
-      }
-    };
-    document.addEventListener('mousedown', checkIfClickedOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', checkIfClickedOutside);
-    };
-  }, [showPassengers, fieldRef]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   function validation() {
     if (!cityFrom && !cityTo) {
@@ -54,22 +47,13 @@ export default function SearchField({
     return true;
   }
 
-  async function sendRequest() {
-    if (!validation()) {
-      return;
-    }
-    const body = {
-      departureCity: cityFrom.value,
-      arrivalCity: cityTo.value,
-      departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      ...selectedTransport,
-
+  function sendRequestEvents(body) {
+    const requestBody = {
+      ...body,
+      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
     };
-    setError(null);
-    setRequestBody(body);
     setLoading(true);
     setTicketsData([]);
-
     function handleOpen(res) {
       switch (res.status) {
         case 200:
@@ -90,7 +74,6 @@ export default function SearchField({
     }
 
     function handleError() {
-      console.log('error func');
       setLoading(false);
     }
 
@@ -100,7 +83,7 @@ export default function SearchField({
 
     eventSourceQuery2({
       address: 'searchTickets',
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestBody),
       handleOpen,
       handleMessage,
       handleError,
@@ -110,10 +93,60 @@ export default function SearchField({
     });
   }
 
+  function sendRequestHTTP(body) {
+    const requestBody = {
+      ...body,
+      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+    };
+    makeQuerry('selectedTransport', JSON.stringify(requestBody), { 'Content-Language': i18n.language.toLowerCase() })
+      .then((response) => {
+        setTicketsData(response.body);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }
+
+  function handleRequest() {
+    if (!validation()) {
+      return;
+    }
+    setError(null);
+    navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}&endpoint=1`);
+  }
+
+  useEffect(() => {
+    if (!(/^.*type=(bus|train|all).*$/).test(location.search)) {
+      navigate(`?${location.search.replace('?', '')}&type=all`);
+    }
+    const body = {
+      departureCity: searchParams.get('from'),
+      arrivalCity: searchParams.get('to'),
+      departureDate: searchParams.get('departureDate') ? new Date(+searchParams.get('departureDate')) : date,
+      bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
+      train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
+      ferry: false,
+      airplane: false,
+    };
+    const endpoint = searchParams.get('endpoint');
+    onDate(body.departureDate);
+    setCityFrom(body.departureCity ? { value: body.departureCity, label: body.departureCity } : '');
+    setCityTo(body.arrivalCity ? { value: body.arrivalCity, label: body.arrivalCity } : '');
+    if (searchParams.size < 3 || !body.departureCity || !body.arrivalCity || !endpoint) {
+      setTicketsData([]);
+      return;
+    }
+    if (endpoint === '2') {
+      sendRequestHTTP(body);
+      return;
+    }
+    sendRequestEvents(body);
+  }, [searchParams]);
+
   function changeCities() {
     const cityToTemp = cityTo;
-    onCityTo(cityFrom);
-    onCityFrom(cityToTemp);
+    setCityTo(cityFrom);
+    setCityFrom(cityToTemp);
   }
 
   function transformData(item) {
@@ -130,7 +163,7 @@ export default function SearchField({
   }
 
   let timerId;
-  async function getCities(inputValue) {
+  async function getCities(inputValue, updateState) {
     if (inputValue.length > 1) {
       clearInterval(timerId);
       const result = await new Promise((resolve) => {
@@ -140,6 +173,7 @@ export default function SearchField({
           resolve(responseBody);
         }, 500);
       });
+      updateState(result[0]);
       return result;
     }
     return [];
@@ -157,9 +191,9 @@ export default function SearchField({
           loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
-          loadOptions={getCities}
+          loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
           placeholder="Київ"
-          onChange={onCityFrom}
+          onChange={setCityFrom}
           onInputChange={() => onErrorCityFrom(false)}
         />
         {errorCityFrom && <p data-testid="errorCityFrom" className="search-field__error">{t('error2')}</p>}
@@ -181,15 +215,15 @@ export default function SearchField({
           loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
-          loadOptions={getCities}
+          loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
           placeholder="Одеса"
-          onChange={onCityTo}
+          onChange={setCityTo}
           onInputChange={() => onErrorCityTo(false)}
         />
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
       <Calendar date={date} onDate={onDate} />
-      <Button name={t('find')} onButton={sendRequest} disabled={loading} />
+      <Button name={t('find')} onButton={handleRequest} disabled={loading} />
     </div>
   );
 }
