@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Validated
 @Tag(name = "Scraping info", description = "Endpoints for scraping tickets' info etc")
-public interface ScraperAPI {
+public interface TicketApi {
 
     @Operation(summary = "Searching tickets", description = "Find tickets based by criteria")
     @ApiResponse(responseCode = "200", description = "Returns tickets")

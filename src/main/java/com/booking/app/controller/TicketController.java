@@ -1,9 +1,10 @@
 package com.booking.app.controller;
 
-import com.booking.app.controller.api.ScraperAPI;
+import com.booking.app.controller.api.TicketApi;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
 import com.booking.app.services.impl.scrape.ScraperManager;
@@ -27,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
 @RequiredArgsConstructor
-public class ScraperController implements ScraperAPI {
+public class TicketController implements TicketApi {
 
     private final ScraperManager scrapingService;
 
@@ -38,6 +39,7 @@ public class ScraperController implements ScraperAPI {
     @PostMapping("/searchTickets")
     @Override
     public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
+        validateLanguage(siteLanguage);
         SseEmitter emitter = new SseEmitter();
 
         CompletableFuture<Boolean> isTicketScraped = scrapingService.scrapeTickets(ticketsDTO, emitter, siteLanguage);
@@ -52,6 +54,7 @@ public class ScraperController implements ScraperAPI {
     @GetMapping("/get/ticket/{id}")
     @Override
     public ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
+        validateLanguage(siteLanguage);
         SseEmitter emitter = new SseEmitter();
         CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
@@ -62,6 +65,7 @@ public class ScraperController implements ScraperAPI {
     @PostMapping(value = "/sortedBy", produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request) {
+        validateLanguage(siteLanguage);
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 
@@ -70,6 +74,11 @@ public class ScraperController implements ScraperAPI {
         return ticketService.getBusTickets(requestTicketsDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    private void validateLanguage(String language) {
+        if (language.equals("ua") || language.equals("eng")) ;
+        throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE + " (ua or eng required)");
     }
 
 }
