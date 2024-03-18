@@ -185,7 +185,10 @@ public class ScraperManager {
             }
 
         }
-        emitter.complete();
+
+        if(emitter!=null) {
+            emitter.complete();
+        }
         return CompletableFuture.completedFuture(true);
     }
 
