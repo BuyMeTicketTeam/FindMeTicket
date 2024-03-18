@@ -1,0 +1,36 @@
+services:
+  postgres:
+    container_name: db_postgres
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db_ticket
+    networks:
+      - ticket_network
+    restart: unless-stopped
+    volumes:
+      - ./src/main/resources/data:/docker-entrypoint-initdb.d
+  react_app:
+    container_name: react_app
+    image: stepanstadniuk/react-app
+    ports:
+      - "81:8079"
+    networks:
+      - ticket_network
+  spring_boot_app:
+    container_name: spring_boot_app
+    image: findmeticket/backend-findmeticket
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - ticket_network
+    depends_on:
+      - postgres
+networks:
+  ticket_network:
+    driver: bridge
