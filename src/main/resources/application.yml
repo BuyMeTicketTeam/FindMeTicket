@@ -18,7 +18,6 @@ management:
 ##-------------------------
 logging:
   level:
-    sql: debug
     ROOT: INFO
     org:
       springframework:
@@ -123,3 +122,9 @@ link:
   infobus-ua-train: 'https://infobus.eu/ua/train'
   proizd-eng-train: 'https://proizd.ua/en'
   proizd-ua-train: 'https://proizd.ua/'
+
+#-------------------------
+# API Key Configuration
+#-------------------------
+api:
+  currency-rate-key: 'ss'

@@ -6,6 +6,8 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.UkrainianPlaces;
 import com.booking.app.repositories.UkrPlacesRepository;
 import com.booking.app.services.PopularRoutesService;
+import com.booking.app.services.ScraperService;
+import com.booking.app.services.impl.scrape.ScraperManager;
 import com.booking.app.util.City;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
