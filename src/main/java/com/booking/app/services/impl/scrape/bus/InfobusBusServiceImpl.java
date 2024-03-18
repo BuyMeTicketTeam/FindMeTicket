@@ -210,7 +210,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         }
         if (carrier.indexOf('/') != -1) carrier = carrier.substring(0, carrier.indexOf('/'));
 
-        return createTicket(webTicket, route, price, carrier, totalMinutes, formattedTicketDate, date);
+        return createTicket(webTicket, route, price, carrier.trim(), totalMinutes, formattedTicketDate, date);
     }
 
 
