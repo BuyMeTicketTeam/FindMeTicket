@@ -1,26 +1,26 @@
 package com.booking.app.config;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("link")
-@RequiredArgsConstructor
+@Setter
 @Getter
 public class LinkProps {
-    private final String busforUaBus;
-    private final String busforEngBus;
+    private String busforUaBus;
+    private String busforEngBus;
 
-    private final String infobusUaBus;
-    private final String infobusEngBus;
+    private String infobusUaBus;
+    private String infobusEngBus;
 
-    private final String infobusEngTrain;
-    private final String infobusUaTrain;
+    private String infobusEngTrain;
+    private String infobusUaTrain;
 
-    private final String proizdUaBus;
-    private final String proizdEngBus;
+    private String proizdUaBus;
+    private String proizdEngBus;
 
-    private final String proizdEngTrain;
-    private final String proizdUaTrain;
+    private String proizdEngTrain;
+    private String proizdUaTrain;
 
 }

@@ -233,6 +233,23 @@
             },
             "partners": {
                  "partners": "Наші інформаційні партнери"
-            }
+            },
+            "cities": {
+                  "Kiev-Kharkiv": "Київ-Харків",
+                  "Dnipro-Chernivtsi": "Дніпро-Чернівці",
+                  "Kiev-Dnipro": "Київ-Дніпро",
+                  "Kharkiv-Ivano-Frankivsk": "Харків-Івано-Франківськ",
+                  "Lviv-Kiev": "Львів-Київ",
+                  "Dnipro-Odessa": "Дніпро-Одесса",
+                  "Kiev-Poltava": "Київ-Полтава",
+                  "Lviv-Ternopil": "Львів-Тернопіль",
+                  "Kharkiv-Zaporizhzhya": "Харків-Запоріжжя",
+                  "Odessa-Kherson": "Одеса-Херсон",
+                  "Zaporizhzhya-Krivyi Rih": "Запоріжжя-Кривий Ріг",
+                  "Vinnytsia-Lviv": "Вінниця-Львів",
+                  "Site support": "Підтримка сайта",
+                  "Privacy policy": "Політика конфіденційності"
+             }
+           
       }
 }
