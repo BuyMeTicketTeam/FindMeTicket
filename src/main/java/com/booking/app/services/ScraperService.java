@@ -11,7 +11,6 @@ import java.util.concurrent.CompletableFuture;
 public interface ScraperService {
     CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doSend) throws ParseException, IOException;
 
-    CompletableFuture<Boolean> getBusTicket(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException;
+    CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException;
 
-    String determineBaseUrl(String language);
 }

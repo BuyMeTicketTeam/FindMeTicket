@@ -9,7 +9,7 @@ import TicketsBody from './Body';
 import Partner from './Partner';
 
 export default function Index({
-  ticketsData, setTicketsData, selectedTransport, setSelectedTransport, requestBody, setRequestBody,
+  ticketsData, setTicketsData, selectedTransport, setSelectedTransport,
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,13 +25,11 @@ export default function Index({
             setSelectedTransport={setSelectedTransport}
             ticketsData={ticketsData}
             setTicketsData={setTicketsData}
-            requestBody={requestBody}
           />
           <SearchField
             loading={loading}
             setLoading={setLoading}
             setTicketsData={setTicketsData}
-            setRequestBody={setRequestBody}
             setError={setError}
             ticketsData={ticketsData}
             selectedTransport={selectedTransport}
@@ -40,7 +38,6 @@ export default function Index({
         <TicketsBody
           loading={loading}
           error={error}
-          requestBody={requestBody}
           setTicketsData={setTicketsData}
           ticketsData={ticketsData}
           selectedTransport={selectedTransport}

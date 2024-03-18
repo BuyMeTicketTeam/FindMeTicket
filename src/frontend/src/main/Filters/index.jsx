@@ -3,25 +3,33 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import FiltersBtn from './FiltersBtn';
 import makeQuerry from '../../helper/querry';
 import './filters.scss';
 
 export default function Filters({
-  requestBody, setTicketsData, selectedTransport, loading,
+  setTicketsData, loading,
 }) {
   const [sort, setSort] = useState('');
   const [ascending, setAscending] = useState(false);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
+  const [searchParams] = useSearchParams();
 
   const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
 
   async function sendRequest(sortArg, reverse) {
+    const date = new Date(+searchParams.get('departureDate'));
     const body = {
-      ...requestBody,
+      departureCity: searchParams.get('from'),
+      arrivalCity: searchParams.get('to'),
+      departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+      bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
+      train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
+      ferry: false,
+      airplane: false,
       sortingBy: sortArg,
       ascending: reverse,
-      ...selectedTransport,
     };
     const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
 
