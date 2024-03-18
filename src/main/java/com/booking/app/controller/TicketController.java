@@ -77,7 +77,7 @@ public class TicketController implements TicketApi {
     }
 
     private void validateLanguage(String language) {
-        if (language.equals("ua") || language.equals("eng")) ;
+        if (language.equals("ua") || language.equals("eng")) return;
         throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE + " (ua or eng required)");
     }
 
