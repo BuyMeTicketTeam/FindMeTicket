@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
 import {
-  useSearchParams, Link, useNavigate, useLocation,
+  useSearchParams, useNavigate, useLocation,
 } from 'react-router-dom';
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
@@ -194,6 +194,7 @@ export default function SearchField({
           loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
           placeholder="Київ"
           onChange={setCityFrom}
+          onInputChange={() => onErrorCityFrom(false)}
         />
         {errorCityFrom && <p data-testid="errorCityFrom" className="search-field__error">{t('error2')}</p>}
       </div>
@@ -217,6 +218,7 @@ export default function SearchField({
           loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
           placeholder="Одеса"
           onChange={setCityTo}
+          onInputChange={() => onErrorCityTo(false)}
         />
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
