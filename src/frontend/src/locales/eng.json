@@ -231,7 +231,23 @@
                   "station-marker-title": "Place of arrival"
             },
             "partners": {
-                  "partners": "Our information partners"
+                  "partners": "Our informative partners"
+             },
+             "cities": {
+                  "Kiev-Kharkiv": "Kiev-Kharkiv",
+                  "Dnipro-Chernivtsi": "Dnipro-Chernivtsi",
+                  "Kiev-Dnipro": "Kiev-Dnipro",
+                  "Kharkiv-Ivano-Frankivsk": "Kharkiv-Ivano-Frankivsk",
+                  "Lviv-Kiev": "Lviv-Kiev",
+                  "Dnipro-Odessa": "Dnipro-Odessa",
+                  "Kiev-Poltava": "Kiev-Poltava",
+                  "Lviv-Ternopil": "Lviv-Ternopil",
+                  "Kharkiv-Zaporizhzhya": "Kharkiv-Zaporizhzhya",
+                  "Odessa-Kherson": "Odessa-Kherson",
+                  "Zaporizhzhya-Krivyi Rih": "Zaporizhzhya-Krivyi Rih",
+                  "Vinnytsia-Lviv": "Vinnytsia-Lviv",
+                  "Site support": "Site support",
+                  "Privacy policy": "Privacy policy"
              }
       }
 }

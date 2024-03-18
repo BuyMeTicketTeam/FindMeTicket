@@ -7,7 +7,7 @@ import Ticket from '../Ticket';
 import Ad from '../../Ad';
 
 export default function TicketsBody({
-  loading, error, ticketsData, setTicketsData, requestBody, selectedTransport,
+  loading, error, ticketsData, setTicketsData, selectedTransport,
 }) {
   if (error) {
     return <Error error={error} />;
@@ -21,12 +21,10 @@ export default function TicketsBody({
         <Tourist
           ticketsData={ticketsData}
           setTicketsData={setTicketsData}
-          city={requestBody.arrivalCity}
         />
         <Filters
           loading={loading}
           setTicketsData={setTicketsData}
-          requestBody={requestBody}
           selectedTransport={selectedTransport}
         />
         <div className="tickets">

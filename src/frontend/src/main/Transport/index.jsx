@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-useless-concat */
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import InProgress from '../../InProgress/index';
 import './transport.scss';
-import makeQuerry from '../../helper/querry';
 import {
   busIcon, trainIcon, planeIcon, boatIcon, everythingIcon,
 } from './transport-img/img';
@@ -29,81 +30,44 @@ function TransportButton({
 }
 
 function Transport({
-  setTicketsData, selectedTransport,
-  setSelectedTransport, requestBody,
-  ticketsData, loading,
+  setSelectedTransport, loading,
 }) {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-  const [buttonClicked, setButtonClicked] = useState(false);
-  const { t, i18n } = useTranslation('translation', { keyPrefix: 'transport' });
+  const { t } = useTranslation('translation', { keyPrefix: 'transport' });
 
   const handleButtonClick = (button) => {
-    setSelectedTransport((prevSelectedTransport) => {
-      if (button === 'all') {
-        return (
-          {
-            ...prevSelectedTransport,
-            bus: true,
-            train: true,
-          }
-        );
-      }
-      return (
-        {
-          ...Object.keys(prevSelectedTransport).reduce((acc, key) => {
-            acc[key] = false;
-            return acc;
-          }, {}),
-          [button]: true,
-        }
-      );
-    });
+    navigate(location.search.replace(/bus|all|train/, button).replace(/(endpoint=)\d+/, '$1' + '2'));
+    setSelectedTransport(button);
   };
-
-  useEffect(() => {
-    if ((ticketsData.length || Object.keys(requestBody).length !== 0) > 0 && buttonClicked) {
-      console.log(ticketsData);
-      setButtonClicked(false);
-      const body = {
-        ...requestBody,
-        ...selectedTransport,
-      };
-      makeQuerry('selectedTransport', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() })
-        .then((response) => {
-          setTicketsData(response.body);
-        })
-        .catch((error) => {
-          console.error('Error fetching data:', error);
-        });
-    }
-  }, [selectedTransport, buttonClicked]);
 
   return (
     <div>
       <TransportButton
         label={t('everything')}
-        isActive={selectedTransport.bus && selectedTransport.train}
-        onClick={() => { handleButtonClick('all'); setButtonClicked(true); }}
+        isActive={searchParams.get('type') === 'all'}
+        onClick={() => { handleButtonClick('all'); }}
         img={everythingIcon}
         loading={loading}
       />
       <TransportButton
         label={t('bus')}
-        isActive={selectedTransport.bus && !selectedTransport.train}
-        onClick={() => { handleButtonClick('bus'); setButtonClicked(true); }}
+        isActive={searchParams.get('type') === 'bus'}
+        onClick={() => { handleButtonClick('bus'); }}
         img={busIcon}
         loading={loading}
       />
       <TransportButton
         label={t('train')}
-        isActive={selectedTransport.train && !selectedTransport.bus}
-        onClick={() => { handleButtonClick('train'); setButtonClicked(true); }}
+        isActive={searchParams.get('type') === 'train'}
+        onClick={() => { handleButtonClick('train'); }}
         img={trainIcon}
         loading={loading}
       />
       <TransportButton
         label={t('plane')}
-        isActive={selectedTransport.airplane}
         onClick={() => setIsOpen(true)}
         img={planeIcon}
         loading={loading}
@@ -111,7 +75,6 @@ function Transport({
       />
       <TransportButton
         label={t('ferry')}
-        isActive={selectedTransport.ferry}
         onClick={() => setIsOpen(true)}
         img={boatIcon}
         loading={loading}

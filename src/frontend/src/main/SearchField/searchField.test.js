@@ -1,10 +1,16 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { BrowserRouter as Router } from 'react-router-dom';
 import SearchField from './index';
 
 test('renders city selection fields', () => {
-  render(<SearchField />);
+  const setTicketsData = jest.fn();
+  render(
+    <Router>
+      <SearchField setTicketsData={setTicketsData} />
+    </Router>,
+  );
 
   const cityFromInput = screen.getByLabelText('cityFromSelect');
   const cityToInput = screen.getByLabelText('cityToSelect');
@@ -14,7 +20,12 @@ test('renders city selection fields', () => {
 });
 
 test('displays error message when city is not selected', async () => {
-  render(<SearchField />);
+  const setTicketsData = jest.fn();
+  render(
+    <Router>
+      <SearchField setTicketsData={setTicketsData} />
+    </Router>,
+  );
 
   userEvent.click(screen.getByRole('button', { name: /find/i })); // Simulate clicking the "Find" button
 
@@ -28,7 +39,12 @@ test('displays error message when city is not selected', async () => {
 });
 
 test('renders date picker', () => {
-  render(<SearchField />);
+  const setTicketsData = jest.fn();
+  render(
+    <Router>
+      <SearchField setTicketsData={setTicketsData} />
+    </Router>,
+  );
 
   const datePicker = screen.getByTestId('datepicker'); // Assuming a role for the datepicker
 
