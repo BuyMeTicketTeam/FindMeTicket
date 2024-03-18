@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Button from '../../utils/Button';
+import { Link } from 'react-router-dom';
 import './tourist.scss';
 
 function Banner({ city }) {
@@ -14,7 +14,7 @@ function Banner({ city }) {
           {' '}
           {city}
         </p>
-        <Button className="banner__btn" name={t('banner-btn')} />
+        <Link to={`/tourist-places/${city}`} className="button banner__btn">{t('banner-btn')}</Link>
       </div>
     </div>
   );

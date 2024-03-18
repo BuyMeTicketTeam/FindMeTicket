@@ -2,7 +2,9 @@ import React from 'react';
 import PlacePreviewItem from '../PlacePreviewItem/placePreviewItem';
 import './placePreviewList.scss';
 
-export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, updateMarker }) {
+export default function PlacePreviewList({
+  placesInfo, setCurrentPlaceId, updateMarker, loadMore,
+}) {
   return (
     <div className="placeList">
       {placesInfo.map((placeInfo) => (
@@ -18,6 +20,7 @@ export default function PlacePreviewList({ placesInfo, setCurrentPlaceId, update
           }}
         />
       ))}
+      <button className="placeList__load" type="button" onClick={() => loadMore.nextPage()}>Load more</button>
     </div>
   );
 }

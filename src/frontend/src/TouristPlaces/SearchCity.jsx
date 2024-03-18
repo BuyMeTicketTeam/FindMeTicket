@@ -6,17 +6,19 @@ import useGetCities from '../hook/useGetCities';
 import Button from '../utils/Button';
 
 export default function SearchCity() {
-  const [cityTo, setCityTo] = useState('');
+  const [city, setCity] = useState('');
+  const [errorCity, setErrorCity] = useState(false);
   const getCities = useGetCities();
   const { t } = useTranslation('translation', { keyPrefix: 'search' });
   const navigate = useNavigate();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
   function findPlaces() {
-    if (!cityTo) {
+    if (!city) {
+      setErrorCity(true);
       return;
     }
-    navigate(`/tourist-places/${cityTo.value}`);
+    navigate(`/tourist-places/${city.value}`);
   }
 
   return (
@@ -26,20 +28,22 @@ export default function SearchCity() {
         <h1 className="search-city-form__title">Пошук туристичних місць:</h1>
         <AsyncSelect
           isClearable
-          value={cityTo}
+          value={city}
           noOptionsMessage={noOptionsMessage}
           loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
           placeholder="Одеса"
-          onChange={setCityTo}
+          onChange={setCity}
+          onInputChange={() => setErrorCity(false)}
         />
         <Button
           name="Пошук"
           className="search-city-form__button"
           onButton={() => findPlaces()}
         />
+        {errorCity && <p className="search-field__error">{t('error2')}</p>}
       </div>
     </div>
   );

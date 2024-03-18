@@ -15,6 +15,7 @@ const zoom = 11;
 export default function Map({ address }) {
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
+  const [pageToken, setPageToken] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -77,9 +78,8 @@ export default function Map({ address }) {
     const service = new window.google.maps.places.PlacesService(map);
     setPlacesInfo([]);
     service.nearbySearch(request, (results, status, pagination) => {
-      console.log(pagination);
+      setPageToken(pagination);
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        console.log(results);
         const resultsWithMarker = results.map((result) => {
           const placeMarker = createMarkerWithClick(result, map);
           return ({ ...result, marker: placeMarker });
@@ -125,6 +125,7 @@ export default function Map({ address }) {
           placesInfo={placesInfo}
           setCurrentPlaceId={setCurrentPlaceId}
           updateMarker={(place) => updateMarker(place)}
+          loadMore={pageToken}
         />
       </div>
       {currentPlaceId && (
