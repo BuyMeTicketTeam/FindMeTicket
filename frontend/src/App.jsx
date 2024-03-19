@@ -14,7 +14,7 @@ import './locales/i18n';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
-  const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
+  const [language, setLanguage] = useState({ value: 'UA', label: 'Укр' });
   const [ticketsData, setTicketsData] = useState([]);
   const [selectedTransport, setSelectedTransport] = useState({
     bus: true,
