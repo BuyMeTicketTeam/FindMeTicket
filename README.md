@@ -83,7 +83,7 @@ docker-compose up
 Mentor* [[GitHub](https://github.com/VKuzmich) | [LinkedIn](https://www.linkedin.com/in/volodymyr-kuzmych-9915942a/)]
 
 👤 **Mykhailo Marchuk** - *Backend
-dev* [[GitHub](https://github.com/mishaakamichael999) | [LinkedIn](https://github.com/mishaakamichael999)]
+dev* [[GitHub](https://github.com/mishaakamichael999) | [LinkedIn](https://www.linkedin.com/in/mishaakamichael999/)]
 
 👤 **Kyrylo Peniaziev** - *Backend
 dev* [[GitHub](https://github.com/Stepan22-prog) | [LinkedIn](https://www.linkedin.com/in/kyrylo-peniaziev-9137a328a/)]
