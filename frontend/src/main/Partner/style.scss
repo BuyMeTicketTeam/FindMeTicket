@@ -1,0 +1,41 @@
+@import '../../styles/variables.scss';
+.partner {
+  width: 100%;
+  background-color: #D6E5FF;
+  border: 2px solid $dark;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+.partner-body{
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+}
+.our-partners{
+  color: black;
+  text-align: center;
+  margin-bottom: 10px;
+  margin-top: -5px;
+  font-size: 25px;
+}
+
+.partner-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-decoration: none;
+}
+.partner img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+}
+
+.partner-title {
+  color: black;
+  font-size: 20px;
+  margin-top: 10px;
+}
