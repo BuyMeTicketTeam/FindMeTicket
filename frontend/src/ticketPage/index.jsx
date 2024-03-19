@@ -13,15 +13,8 @@ import './style.scss';
 
 function TicketPage() {
   const { ticketId } = useParams();
-  const [ticketData, setTicketData] = useState({
-    departureTime: 'asdads',
-    travelTime: 'dafsdf',
-    arrivalTime: 'asdasd',
-    departureCity: 'asdasd',
-    placeAt: 'Вокзальна площа, 1, Київ',
-    type: 'TRAIN',
-  });
-  const [ticketUrl, setTicketUrl] = useState([{ resource: 'ticketsua', comfort: 'купе', price: 100 }, { resource: 'proizd', comfort: 'купе', price: 200 }]);
+  const [ticketData, setTicketData] = useState(null);
+  const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
