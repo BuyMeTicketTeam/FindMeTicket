@@ -17,7 +17,7 @@ export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
   setSelectedTransport, requestBody,
-  setRequestBody,
+  setRequestBody, auth,
 }) {
   return (
     <Routes>
@@ -44,7 +44,7 @@ export default function Routers({
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-      <Route path="/tourist-places/:city?" element={<TouristPlaces auth />} />
+      <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
     </Routes>
   );
 }
