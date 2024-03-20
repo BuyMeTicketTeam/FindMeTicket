@@ -11,6 +11,7 @@ import CookieBanner from './cookieBanner/cookie';
 import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
+import ScrollButton from './scrollButton';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
@@ -45,6 +46,7 @@ function App() {
             setRequestBody={setRequestBody}
           />
           <CookieBanner />
+          <ScrollButton />
           <Footer />
         </GoogleOAuthProvider>
       </div>
