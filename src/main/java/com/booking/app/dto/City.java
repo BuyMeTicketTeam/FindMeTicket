@@ -1,4 +1,4 @@
-package com.booking.app.util;
+package com.booking.app.dto;
 
 public record City(Long departureId, Long arrivalId) {
 }
