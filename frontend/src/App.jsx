@@ -11,10 +11,11 @@ import CookieBanner from './cookieBanner/cookie';
 import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
+import ScrollButton from './scrollButton';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
-  const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
+  const [language, setLanguage] = useState({ value: 'UA', label: 'Укр' });
   const [ticketsData, setTicketsData] = useState([]);
   const [selectedTransport, setSelectedTransport] = useState({
     bus: true,
@@ -45,6 +46,7 @@ function App() {
             setRequestBody={setRequestBody}
           />
           <CookieBanner />
+          <ScrollButton />
           <Footer />
         </GoogleOAuthProvider>
       </div>
