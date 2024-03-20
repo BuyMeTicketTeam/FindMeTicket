@@ -248,6 +248,9 @@
                   "Vinnytsia-Lviv": "Vinnitsa - Lviv",
                   "Site support": "Site support",
                   "Privacy policy": "Privacy policy"
-             }
+            },
+            "scroll-button": {
+                 "up": "Up"
+            }
       }
 }

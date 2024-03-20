@@ -249,7 +249,10 @@
                   "Vinnytsia-Lviv": "Вінниця - Львів",
                   "Site support": "Підтримка сайту",
                   "Privacy policy": "Політика конфіденційності"
-             }
+             },
+            "scroll-button": {
+                 "up": "Вгору"
+            }
 
       }
 }
