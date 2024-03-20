@@ -69,6 +69,15 @@ export default function Map({ address }) {
     return marker;
   }
 
+  function compareOpenStatus(placeA, placeB) {
+    if (!placeA.opening_hours && !placeB.opening_hours) return 0;
+    if (!placeA.opening_hours && placeB.opening_hours) return 1;
+    if (placeA.opening_hours && !placeB.opening_hours) return -1;
+    if (placeA.opening_hours.open_now < placeB.opening_hours.open_now) return 1;
+    if (placeA.opening_hours.open_now > placeB.opening_hours.open_now) return -1;
+    return 0;
+  }
+
   function nearbySearch(stationLocation, map) {
     const request = {
       location: stationLocation,
@@ -82,7 +91,10 @@ export default function Map({ address }) {
         setPageToken(pagination);
       }
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        const resultsWithMarker = results.map((result) => {
+        const sortedResults = results.sort(
+          (placeA, placeB) => compareOpenStatus(placeA, placeB) || placeB.rating - placeA.rating,
+        );
+        const resultsWithMarker = sortedResults.map((result) => {
           const placeMarker = createMarkerWithClick(result, map);
           return ({ ...result, marker: placeMarker });
         });
