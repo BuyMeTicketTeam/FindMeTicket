@@ -78,19 +78,20 @@ export default function Map({ address }) {
     const service = new window.google.maps.places.PlacesService(map);
     setPlacesInfo([]);
     service.nearbySearch(request, (results, status, pagination) => {
-      setPageToken(pagination);
+      if (pagination.hasNextPage) {
+        setPageToken(pagination);
+      }
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
         const resultsWithMarker = results.map((result) => {
           const placeMarker = createMarkerWithClick(result, map);
           return ({ ...result, marker: placeMarker });
         });
-        setPlacesInfo(resultsWithMarker);
+        setPlacesInfo((prevPage) => [...prevPage, ...resultsWithMarker]);
       }
     });
   }
 
   const onLoad = useCallback((map) => {
-    console.log('Loading started');
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ address }, (results, status) => {
       if (status === 'OK') {

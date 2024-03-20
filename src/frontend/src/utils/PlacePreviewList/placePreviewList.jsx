@@ -11,7 +11,7 @@ export default function PlacePreviewList({
         <PlacePreviewItem
           key={placeInfo.place_id}
           name={placeInfo.name}
-          img={placeInfo.photos[0].getUrl()}
+          // img={placeInfo.photos[0].getUrl()}
           openNow={placeInfo.opening_hours?.open_now}
           rating={placeInfo.rating}
           onClick={() => {
@@ -20,7 +20,8 @@ export default function PlacePreviewList({
           }}
         />
       ))}
-      <button className="placeList__load" type="button" onClick={() => loadMore.nextPage()}>Load more</button>
+      {loadMore
+        && <button className="placeList__load button" type="button" onClick={() => loadMore.nextPage()}>Load more</button>}
     </div>
   );
 }
