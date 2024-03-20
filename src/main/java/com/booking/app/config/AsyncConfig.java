@@ -17,9 +17,9 @@ public class AsyncConfig implements AsyncConfigurer {
     @Bean(name = "asyncExecutor")
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(15);
-        executor.setMaxPoolSize(200);
-        executor.setQueueCapacity(50);
+        executor.setCorePoolSize(40);
+        executor.setMaxPoolSize(80);
+        executor.setQueueCapacity(1000);
         executor.setThreadNamePrefix("custom-async-");
         executor.setRejectedExecutionHandler((Runnable r, ThreadPoolExecutor e) -> {
             log.error("Task Rejected: Thread pool is full. Increase the thread pool size.");
