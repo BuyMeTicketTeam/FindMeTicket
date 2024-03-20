@@ -19,7 +19,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -33,24 +36,46 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
     @Override
     @Async
     public void findRoutes() throws IOException, ParseException {
-        for (City popularRoute : PopularRoutesConstants.getPopularRoutes()) {
-            Optional<UkrainianPlaces> departureCity
-                    = placesRepository.findById(popularRoute.departureId());
-            Optional<UkrainianPlaces> arrivalCity
-                    = placesRepository.findById(popularRoute.arrivalId());
 
+        List<City> routes = PopularRoutesConstants.getPopularRoutes();
+        List<CompletableFuture<Boolean>> runningRoutes = new LinkedList<>();
+
+        for (int i = 0; i < routes.size(); i++) {
+
+            Optional<UkrainianPlaces> departureCity
+                    = placesRepository.findById(routes.get(i).departureId());
+            Optional<UkrainianPlaces> arrivalCity
+                    = placesRepository.findById(routes.get(i).arrivalId());
+//
             if (departureCity.isPresent() && arrivalCity.isPresent()) {
-                manager.scrapeTickets(RequestTicketsDTO.builder()
+                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameUa())
                         .arrivalCity(arrivalCity.get().getNameUa())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
-                        .build(), null, "ua");
-                manager.scrapeTickets(RequestTicketsDTO.builder()
+                        .build(), null, "ua"));
+                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameEng())
                         .arrivalCity(arrivalCity.get().getNameEng())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
-                        .build(), null, "eng");
+                        .build(), null, "eng"));
+
+                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
+                        .departureCity(arrivalCity.get().getNameUa())
+                        .arrivalCity(departureCity.get().getNameUa())
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
+                        .build(), null, "ua"));
+                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
+                        .departureCity(arrivalCity.get().getNameEng())
+                        .arrivalCity(departureCity.get().getNameEng())
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
+                        .build(), null, "eng"));
+
+
+                CompletableFuture.allOf(runningRoutes.toArray((CompletableFuture[]::new))).join();
+
+                runningRoutes.clear();
             }
+
         }
     }
 
