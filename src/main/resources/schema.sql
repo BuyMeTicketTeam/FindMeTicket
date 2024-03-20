@@ -1,1 +1,0 @@
-CREATE SCHEMA IF NOT EXISTS liquibase_schema;

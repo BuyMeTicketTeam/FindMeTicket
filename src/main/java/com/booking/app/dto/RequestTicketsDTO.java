@@ -18,9 +18,11 @@ public class RequestTicketsDTO {
     @NotNull
     private String departureDate;
     @NotNull
-    private Boolean bus;
+    @Builder.Default
+    private Boolean bus = false;
     @NotNull
-    private Boolean train;
+    @Builder.Default
+    private Boolean train = false;
     @NotNull
     private Boolean airplane;
     @NotNull

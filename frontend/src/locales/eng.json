@@ -1,0 +1,256 @@
+{
+      "translation": {
+            "header": {
+                  "news": "News",
+                  "reviews": "Reviews",
+                  "tourist-places": "Tourist places",
+                  "popular-places": "Popular places",
+                  "login": "Login",
+                  "profile": "Profile"
+            },
+            "reset-password": {
+                  "error-server": "Try again",
+                  "error-server2": "Server error. Try again",
+                  "error-code": "The code is incorrect",
+                  "title": "Create a new password",
+                  "confirm-text1": "You have received an email with a password reset code.",
+                  "confirm-text2": "You have 10 minutes to confirm it.",
+                  "code-input-title": "Enter the code from the mail",
+                  "password-input-title": "New password",
+                  "password-tip": "Password must be at least 8 characters long and contain numbers and letters",
+                  "confirm-password-title": "Repeat the password",
+                  "button-title": "Send",
+                  "code-error": "The field with the code is filled in incorrectly",
+                  "password-error": "The password field is incorrect",
+                  "confirm-password-error": "Passwords do not match",
+                  "processing": "Processing...",
+                  "time": "Send the letter again: {{minutes}}:{{seconds}}",
+                  "auth-link": "Click to log in",
+                  "success-message": "The password has been changed!"
+            },
+            "update-password": {
+                  "error-server": "Try again",
+                  "error-server2": "Server error. Try again",
+                  "error-code": "The current password is incorrect",
+                  "title": "Create a new password",
+                  "code-input-title": "Current password",
+                  "password-input-title": "New password",
+                  "password-tip": "Password must be at least 8 characters long and contain numbers and letters",
+                  "confirm-password-title": "Repeat the password",
+                  "button-title": "Send",
+                  "code-error": "The current password is incorrect",
+                  "password-error": "The password field is incorrect",
+                  "confirm-password-error": "The new passwords do not match",
+                  "processing": "Processing...",
+                  "auth-link": "Click to return to the page",
+                  "success-message": "The password has been changed!"
+            },
+            "login": {
+                  "login-error": "The email field is not filled in correctly",
+                  "error-lp": "The login or password is incorrect",
+                  "error-server2": "Server error. Try again",
+                  "password-error": "The password field is incorrect",
+                  "login-tip": "Please enter your email address",
+                  "password-tip": "Please enter your password",
+                  "email-name": "Email",
+                  "password-name": "Password",
+                  "forgot-password": "Forgot password",
+                  "login-buttom": "Login",
+                  "processing": "Processing...",
+                  "register": "Sign up",
+                  "or": "Or",
+                  "google": "Google",
+                  "remember-me": "Remember me"
+            },
+            "profile": {
+                  "change-password": "Change password",
+                  "exit": "Log out",
+                  "privacy-policy": "Privacy Policy",
+                  "delete-account": "Delete account",
+                  "hello": "Hi,"
+            },
+            "register": {
+                  "error-email": "The user with this email address is already registered",
+                  "error-again": "Server error. Try again",
+                  "privacy-policy": "You must agree to the privacy policy",
+                  "nickname-error": "The alias field is not filled correctly",
+                  "email-error": "The email field is not filled in correctly",
+                  "password-error": "The password field is incorrect",
+                  "confirm-password-error": "Passwords do not match",
+                  "registration": "Registration",
+                  "email": "Email address",
+                  "nickname": "Nickname",
+                  "password": "Password",
+                  "tip-password": "Password must be at least 8 characters long and contain numbers and letters",
+                  "tip-email": "Email address must contain @",
+                  "confirm-password": "Confirm password",
+                  "agree": "I agree with",
+                  "privacy policy": "privacy policy",
+                  "register": "Sign up",
+                  "processing": "Processing...",
+                  "error-nickname-exist": "This nickname already exists, come up with something else"
+            },
+            "tip": {
+                  "nickname-tip-title": "Your nickname must meet the following requirements:",
+                  "nickname-tip-chars-numbers": "5-20 alphanumeric characters",
+                  "nickname-tip-letters": "Lowercase and uppercase letters",
+                  "nickname-tip-sumbols": "Only Latin characters",
+                  "nickname-tip-spaces": "Spaces are allowed"
+            },
+            "confirm": {
+                  "error-server2": "Server error. Try again",
+                  "error-code": "The code is not correct",
+                  "error-server1": "Try again",
+                  "confirm": "to confirm",
+                  "confirm-email": "Confirm your email",
+                  "confirm-code": "We send you an email with a confirmation code.",
+                  "confirm-ten": "You have 10 minutes to confirm it.",
+                  "send": "Send",
+                  "send-letter": "Send the letter again",
+                  "processing": "Processing...",
+                  "time": "Send the email again: {{minutes}}:{{seconds}}",
+                  "auth-link": "Click to log in",
+                  "success-message": "Mail is confirmed!"
+            },
+            "reset": {
+                  "error-server": "There is no user using this mail",
+                  "error-server2": "Server error. Try again",
+                  "reset-error": "Please enter a valid email address",
+                  "password-reset": "Password reset",
+                  "email": "Enter your e-mail address, where you will receive a password change code.",
+                  "send": "Send",
+                  "processing": "Processing...",
+                  "error-user-not-found": "There is no account registered for this email"
+            },
+            "cookie-banner": {
+                  "aboutCookieText": "This website uses cookies to improve your experience.",
+                  "accept-btn": "Accept cookies"
+            },
+            "main-calendar": {
+                  "title": "Departure date",
+                  "days": [
+                        "Mon",
+                        "Tues",
+                        "Wed",
+                        "Thurs",
+                        "Fri",
+                        "Sat",
+                        "Sun"
+                  ],
+                  "months": [
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December"
+                  ]
+            },
+            "transport": {
+                  "bus": "Bus",
+                  "everything": "All",
+                  "plane": "Plane",
+                  "train": "Train",
+                  "ferry": "Ferry",
+                  "message-title": "This feature is under development ):",
+                  "message-text": "We are constantly working to improve the product. We will let you know as soon as this feature is available."
+            },
+            "search": {
+                  "adult": "Adult",
+                  "child": "Child",
+                  "adults": "Adults",
+                  "children": "Children",
+                  "childrens": "Children",
+                  "find": "Find",
+                  "passengers": "Passengers",
+                  "loading": "Loading...",
+                  "where": "From",
+                  "where-t": "To",
+                  "error": "Nothing was found for your request",
+                  "error2": "The field must not be empty",
+                  "ticket-not-found": "Sorry, no tickets found for this route"
+            },
+            "filters": {
+                  "Price": "Price",
+                  "TravelTime": "Travel time",
+                  "DepartureTime": "Departure time",
+                  "ArrivalTime": "Arrival time"
+            },
+            "passengers": {
+                  "adults": "Adults:",
+                  "children": "Children under 14 years old:"
+            },
+            "banner": {
+                  "banner-text": "We have a number of places that you can find locally in",
+                  "banner-btn": "More information"
+            },
+            "ticket": {
+                  "select": "Select",
+                  "uan": "UAH"
+            },
+            "loading": {
+                  "text-our-service": "Our service is already looking for tickets...",
+                  "text-thanks": "Thank you for choosing our service.",
+                  "text-wait": "There's still a little left...",
+                  "text-almost": "Almost ready...",
+                  "text-tourist-places": "Don't forget about the tourist spots..."
+            },
+            "find-more-btn": {
+                  "find-more": "Find more",
+                  "error": "An error occurred. Try again"
+            },
+            "in-progress": {
+                  "ok": "Okay"
+            },
+            "main-error": {
+                  "title": "An error occurred",
+                  "text": "We apologize for the inconvenience, please try again"
+            },
+            "ad": {
+                  "title": "Your advertisement could be here!",
+                  "email":"findmeticketweb@gmail.com"
+            },
+            "ticket-page": {
+                  "uan": "UAN",
+                  "buy": "Buy",
+                  "price": "Prices and carriers",
+                  "restaurants": "Restaurants",
+                  "hotels": "Hotels",
+                  "tourist places": "Tourist places",
+                  "reviews": "reviews",
+                  "working-hours": "Working hours:",
+                  "back-btn": "Back",
+                  "status-open": "Open",
+                  "status-close": "Closed",
+                  "station-marker-title": "Place of arrival"
+            },
+            "partners": {
+                  "partners": "Our informative partners"
+             },
+             "cities": {
+                  "Kiev-Kharkiv": "Kyiv - Kharkiv",
+                  "Dnipro-Chernivtsi": "Dnipro - Chernivtsi",
+                  "Kiev-Dnipro": "Kyiv - Dnipro",
+                  "Kharkiv-Ivano-Frankivsk": "Kharkiv -     Ivano-Frankivsk",
+                  "Lviv-Kiev": "Lviv - Kyiv",
+                  "Dnipro-Odessa": "Dnipro - Odesa",
+                  "Kiev-Poltava": "Kyiv - Poltava",
+                  "Lviv-Ternopil": "Lviv - Ternopil",
+                  "Kharkiv-Zaporizhzhya": "Kharkiv - Zaporizhzhya",
+                  "Odessa-Kherson": "Odesa - Kherson",
+                  "Zaporizhzhya-Krivyi Rih": "Zaporizhzhya - Krivyi Rih",
+                  "Vinnytsia-Lviv": "Vinnitsa - Lviv",
+                  "Site support": "Site support",
+                  "Privacy policy": "Privacy policy"
+            },
+            "scroll-button": {
+                 "up": "Up"
+            }
+      }
+}
