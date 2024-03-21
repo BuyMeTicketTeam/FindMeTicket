@@ -16,7 +16,7 @@ const zoom = 11;
 export default function Map({ address }) {
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
-  const [pageToken, setPageToken] = useState(null);
+  const [nextPage, setNextPage] = useState(null);
   const { t } = useTranslation('translation', { keyPrefix: 'tourist-places' });
 
   const { isLoaded } = useJsApiLoader({
@@ -72,12 +72,18 @@ export default function Map({ address }) {
   }
 
   function compareOpenStatus(placeA, placeB) {
-    if (!placeA.opening_hours && !placeB.opening_hours) return 0;
-    if (!placeA.opening_hours && placeB.opening_hours) return 1;
-    if (placeA.opening_hours && !placeB.opening_hours) return -1;
-    if (placeA.opening_hours.open_now < placeB.opening_hours.open_now) return 1;
-    if (placeA.opening_hours.open_now > placeB.opening_hours.open_now) return -1;
-    return 0;
+    const getOpenStatus = (place) => (place.opening_hours ? place.opening_hours.open_now : false);
+
+    const openStatusA = getOpenStatus(placeA);
+    const openStatusB = getOpenStatus(placeB);
+
+    if (openStatusA === openStatusB) {
+      return 0;
+    }
+    if (openStatusA) {
+      return -1;
+    }
+    return 1;
   }
 
   function nearbySearch(stationLocation, map) {
@@ -90,17 +96,17 @@ export default function Map({ address }) {
     setPlacesInfo([]);
     service.nearbySearch(request, (results, status, pagination) => {
       if (pagination.hasNextPage) {
-        setPageToken(pagination);
+        setNextPage(pagination);
       }
       if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
-        const sortedResults = results.sort(
-          (placeA, placeB) => compareOpenStatus(placeA, placeB) || placeB.rating - placeA.rating,
-        );
-        const resultsWithMarker = sortedResults.map((result) => {
+        const filterResults = results.filter((place) => place.rating);
+        const resultsWithMarker = filterResults.map((result) => {
           const placeMarker = createMarkerWithClick(result, map);
           return ({ ...result, marker: placeMarker });
         });
-        setPlacesInfo((prevPage) => [...prevPage, ...resultsWithMarker]);
+        setPlacesInfo((prevPage) => [...prevPage, ...resultsWithMarker].sort(
+          (placeA, placeB) => compareOpenStatus(placeA, placeB) || placeB.rating - placeA.rating,
+        ));
       }
     });
   }
@@ -140,7 +146,7 @@ export default function Map({ address }) {
           placesInfo={placesInfo}
           setCurrentPlaceId={setCurrentPlaceId}
           updateMarker={(place) => updateMarker(place)}
-          loadMore={pageToken}
+          loadMore={nextPage}
         />
       </div>
       {currentPlaceId && (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -13,13 +13,13 @@ export default function SearchCity() {
   const navigate = useNavigate();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
-  function findPlaces() {
+  const findPlaces = useCallback(() => {
     if (!city) {
       setErrorCity(true);
       return;
     }
     navigate(`/tourist-places/${city.value}`);
-  }
+  }, [city]);
 
   return (
     <div className="search-city">
@@ -41,7 +41,7 @@ export default function SearchCity() {
         <Button
           name={t('search')}
           className="search-city-form__button"
-          onButton={() => findPlaces()}
+          onButton={findPlaces}
         />
         {errorCity && <p className="search-field__error">{t('error2')}</p>}
       </div>
