@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useTranslation } from 'react-i18next';
 import PlacePreviewList from '../utils/PlacePreviewList/placePreviewList';
 import PlacePreview from '../utils/PlacePreview/placePreview';
 
@@ -16,6 +17,7 @@ export default function Map({ address }) {
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [pageToken, setPageToken] = useState(null);
+  const { t } = useTranslation('translation', { keyPrefix: 'tourist-places' });
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -130,7 +132,7 @@ export default function Map({ address }) {
     <div className="tourist-places__map">
       <div className="places">
         <h1 className="place-list__title">
-          Туристичні місця у місті
+          {t('title')}
           {' '}
           {address}
         </h1>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import PlacePreviewItem from '../PlacePreviewItem/placePreviewItem';
 import './placePreviewList.scss';
 import noImage from './no-image.jpg';
@@ -6,6 +7,7 @@ import noImage from './no-image.jpg';
 export default function PlacePreviewList({
   placesInfo, setCurrentPlaceId, updateMarker, loadMore,
 }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'tourist-places' });
   return (
     <div className="placeList">
       {placesInfo.map((placeInfo) => (
@@ -22,7 +24,7 @@ export default function PlacePreviewList({
         />
       ))}
       {loadMore
-        && <button className="placeList__load button" type="button" onClick={() => loadMore.nextPage()}>Load more</button>}
+        && <button className="placeList__load button" type="button" onClick={() => loadMore.nextPage()}>{t('load-more')}</button>}
     </div>
   );
 }

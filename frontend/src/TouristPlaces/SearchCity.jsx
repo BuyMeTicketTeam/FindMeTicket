@@ -9,7 +9,7 @@ export default function SearchCity() {
   const [city, setCity] = useState('');
   const [errorCity, setErrorCity] = useState(false);
   const getCities = useGetCities();
-  const { t } = useTranslation('translation', { keyPrefix: 'search' });
+  const { t } = useTranslation('translation', { keyPrefix: 'tourist-places' });
   const navigate = useNavigate();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
@@ -25,7 +25,7 @@ export default function SearchCity() {
     <div className="search-city">
       <div className="tourist-places-background" />
       <div className="search-city-form">
-        <h1 className="search-city-form__title">Пошук туристичних місць:</h1>
+        <h1 className="search-city-form__title">{t('search-title')}</h1>
         <AsyncSelect
           isClearable
           value={city}
@@ -34,12 +34,12 @@ export default function SearchCity() {
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={getCities}
-          placeholder="Одеса"
+          placeholder={t('placeholder')}
           onChange={setCity}
           onInputChange={() => setErrorCity(false)}
         />
         <Button
-          name="Пошук"
+          name={t('search')}
           className="search-city-form__button"
           onButton={() => findPlaces()}
         />
