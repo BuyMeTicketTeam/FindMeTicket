@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import './UnauthorizedPopup.scss';
 
 export default function UnauthorizedPopup() {
   const { t } = useTranslation('translation', { keyPrefix: 'tourist-places' });

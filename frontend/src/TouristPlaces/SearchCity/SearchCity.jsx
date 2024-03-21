@@ -2,8 +2,9 @@ import React, { useCallback, useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import useGetCities from '../hook/useGetCities';
-import Button from '../utils/Button';
+import useGetCities from '../../hook/useGetCities';
+import Button from '../../utils/Button';
+import './SearchCity.scss';
 
 export default function SearchCity() {
   const [city, setCity] = useState('');

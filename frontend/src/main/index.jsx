@@ -7,6 +7,7 @@ import Ad from '../Ad/index';
 import './main.scss';
 import TicketsBody from './Body';
 import Partner from './Partner';
+import Banner from './Tourist';
 
 export default function Index({
   ticketsData, setTicketsData, selectedTransport, setSelectedTransport,
@@ -35,6 +36,7 @@ export default function Index({
             selectedTransport={selectedTransport}
           />
         </div>
+        <Banner city="Dnipro" />
         <TicketsBody
           loading={loading}
           error={error}

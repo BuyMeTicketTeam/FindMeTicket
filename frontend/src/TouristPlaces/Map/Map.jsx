@@ -1,8 +1,9 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { useTranslation } from 'react-i18next';
-import PlacePreviewList from '../utils/PlacePreviewList/placePreviewList';
-import PlacePreview from '../utils/PlacePreview/placePreview';
+import PlacePreviewList from '../../utils/PlacePreviewList/placePreviewList';
+import PlacePreview from '../../utils/PlacePreview/placePreview';
+import './Map.scss';
 
 const containerStyle = {
   width: '75vw',

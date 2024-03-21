@@ -1,9 +1,9 @@
 import React from 'react';
 import './touristPlaces.scss';
 import { useParams } from 'react-router-dom';
-import UnauthorizedPopup from './UnauthorizedPopup';
-import SearchCity from './SearchCity';
-import Map from './Map';
+import UnauthorizedPopup from './UnauthorizedPopup/UnauthorizedPopup';
+import SearchCity from './SearchCity/SearchCity';
+import Map from './Map/Map';
 
 function TouristPlaces({ auth }) {
   const { city } = useParams();
