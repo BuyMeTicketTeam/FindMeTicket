@@ -36,6 +36,7 @@ function App() {
             updateAuthValue={updateAuthValue}
           />
           <Routers
+            auth={auth}
             updateAuthValue={updateAuthValue}
             language={language}
             ticketsData={ticketsData}

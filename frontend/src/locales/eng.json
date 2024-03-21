@@ -251,6 +251,20 @@
             },
             "scroll-button": {
                  "up": "Up"
+            },
+            "tourist-places": {
+                  "title": "Tourist places in ",
+                  "error": "Nothing was found for your request",
+                  "error2": "The field must not be empty",
+                  "loading": "Loading...",
+                  "search": "Search",
+                  "search-title": "Search for tourist places",
+                  "placeholder": "Odesa",
+                  "unauthorized-attention": "Warning",
+                  "unauthorized-text": "The map of tourist places is available only to authorized users",
+                  "unauthorized-button": "Log in",
+                  "load-more": "Load more"
             }
+
       }
 }

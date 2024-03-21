@@ -1,9 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Button from '../../utils/Button';
+import { Link, useSearchParams } from 'react-router-dom';
 import './tourist.scss';
 
-function Banner({ city }) {
+function Banner() {
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation('translation', { keyPrefix: 'banner' });
 
   return (
@@ -12,9 +13,9 @@ function Banner({ city }) {
         <p className="banner-text">
           {t('banner-text')}
           {' '}
-          {city}
+          {searchParams.get('to')}
         </p>
-        <Button className="banner__btn" name={t('banner-btn')} />
+        <Link to={`/tourist-places/${searchParams.get('to')}`} className="button banner__btn">{t('banner-btn')}</Link>
       </div>
     </div>
   );

@@ -82,8 +82,7 @@ export default function Header({
       <ul className="menu">
         <li className="menu__item"><a href="/">{t('news')}</a></li>
         <li className="menu__item"><a href="/">{t('reviews')}</a></li>
-        <li className="menu__item"><a href="/">{t('tourist-places')}</a></li>
-        <li className="menu__item"><a href="/">{t('popular-places')}</a></li>
+        <li className="menu__item"><Link to="/tourist-places">{t('tourist-places')}</Link></li>
       </ul>
       <img src={globys} alt="Busfor" />
       <Select
