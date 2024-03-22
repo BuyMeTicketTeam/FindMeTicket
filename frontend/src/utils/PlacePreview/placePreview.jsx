@@ -1,12 +1,12 @@
 /* eslint-disable no-plusplus */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import starIcon from '../star.svg';
+import starIcon from '../../ticketPage/Maps/star.svg';
 import phoneIcon from './phone.svg';
 import addressIcon from './location.svg';
 import websiteIcon from './websiteIcon.svg';
 import arrowIcon from './arrowIcon.svg';
-import loadingIcon from '../../spinning-loading.svg';
+import loadingIcon from '../../ticketPage/spinning-loading.svg';
 import './placePreview.scss';
 
 function View({ placeData, renderStars }) {
@@ -71,14 +71,14 @@ function View({ placeData, renderStars }) {
       <div className="place-preview__photos">
         {photos.map((photo) => (
           <div className="place-preview__photo">
-            <img src={photo.getUrl()} alt={name} />
+            <img key={photo.getUrl()} src={photo.getUrl()} alt={name} />
           </div>
         ))}
       </div>
       )}
       <div className="place-preview__reviews">
         {reviews && reviews.map((review) => (
-          <div className="place-preview-review">
+          <div key={review.time} className="place-preview-review">
             <div className="place-preview-review__row-flex">
               <img src={review.profile_photo_url} alt={review.author_name} className="place-preview-review__img" referrerPolicy="no-referrer" />
               <h4 className="place-preview-review-name">{review.author_name}</h4>
