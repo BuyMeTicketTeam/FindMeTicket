@@ -89,17 +89,6 @@ docker-compose up
 ````
 This command will build and start the Docker containers defined in the docker-compose.yml file.
 
-This app is Docker ready!
-The application requires API keys to work properly.
-Go into env files
-
-
-Navigate to the main 'FindMeTicket' directory and execute:
-
-````
-docker-compose up
-````
-
 ## Authors
 
 👤 **Aleksandra Poichenko** - *Project Manager* [[LinkedIn](https://www.linkedin.com/in/aleksandra-poichenko/)]
