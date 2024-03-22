@@ -67,7 +67,32 @@ users to the sellers of the best tickets available across multiple websites in U
 </div>
 
 # Docker 🐳
+### Steps
+1. Clone the repository to your local machine:
+````
+git clone https://github.com/FindMeTicketTeam/FindMeTicket.git
+````
+2. Navigate to the Project Directory
+````
+cd FindMeTicket
+````
+3. Update Environment Variables
+
+The application requires API keys for proper functionality. You need to provide these API keys in environment files.
+Navigate to the main project directory and locate two environment files:
+
+* frontend/.env
+* src/main/resources/.env
+4. Run Docker Compose
+````
+docker-compose up
+````
+This command will build and start the Docker containers defined in the docker-compose.yml file.
+
 This app is Docker ready!
+The application requires API keys to work properly.
+Go into env files
+
 
 Navigate to the main 'FindMeTicket' directory and execute:
 
