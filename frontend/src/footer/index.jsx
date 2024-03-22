@@ -158,12 +158,6 @@ function Footer() {
               onClick={toggleDetailedInfo}
               onKeyDown={handleKeyDown}
             >
-              <a
-                className="buy-me-coffee"
-                href="https://www.buymeacoffee.com/findmeticket"
-              >
-                {t('Site support')}
-              </a>
               <span className="copyright">© 2023 FindMeTicket</span>
               <div className="contact-footer">
                 <span className="privacy-policy">
