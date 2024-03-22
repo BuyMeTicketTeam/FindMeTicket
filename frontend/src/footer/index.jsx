@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.scss';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,12 @@ function Footer() {
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [footerHeight, setFooterHeight] = useState('60px');
   const [isDetailedInfoVisible, setIsDetailedInfoVisible] = useState(true);
+
+  useEffect(() => {
+    if (isFooterVisible) {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  }, [isFooterVisible]);
 
   const toggleFooter = () => {
     setIsFooterVisible(!isFooterVisible);
