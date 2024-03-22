@@ -130,8 +130,3 @@ link:
 #-------------------------
 api:
   currency-rate-key: ${CURRENCY_API_KEY}
-  #-------------------------
-  # Environment variables file
-  #-------------------------
-  config:
-    import: classpath:.env
