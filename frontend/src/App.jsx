@@ -28,7 +28,7 @@ function App() {
   return (
     <Router>
       <div className="body">
-        <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_KEY}>
           <Header
             language={language}
             setLanguage={setLanguage}

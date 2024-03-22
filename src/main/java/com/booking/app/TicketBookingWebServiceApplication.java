@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 @ConfigurationPropertiesScan(basePackages = {"com.booking.app.props"})
+@PropertySource("classpath:.env")
 public class TicketBookingWebServiceApplication {
 
     public static void main(String[] args) {
