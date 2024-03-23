@@ -21,7 +21,7 @@ services:
     networks:
       - ticket_network
     env_file:
-      - frontend/.env
+      - frontend/.env.docker
   spring_boot_app:
     container_name: spring_boot_app
     image: findmeticket/backend-findmeticket
@@ -30,7 +30,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
     env_file:
-      - src/main/resources/.env
+      - src/main/resources/.env.docker
     networks:
       - ticket_network
     depends_on:
