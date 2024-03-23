@@ -92,7 +92,7 @@ footer .footer-container{
   align-items: center;
   display: grid;
   justify-content: center;
-  grid-template-columns: 1fr 1fr 1fr ;
+  grid-template-columns: 1fr 1fr minmax(400px, 1fr);
   border-top: 1px solid $dark;
   padding: 20px 20px;
   font-size: 12px;
@@ -185,6 +185,7 @@ footer .footer-container{
 }
 
 .copyright{
+  grid-column: 2 / 2;
   text-align: center;
 }
 .contact-footer{

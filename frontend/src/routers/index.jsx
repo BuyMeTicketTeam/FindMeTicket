@@ -11,11 +11,12 @@ import Login from '../header/login/index';
 import ResetPassword from '../resetPassword';
 import ChangePassword from '../changePassword';
 import PrivacyPolicy from '../privacyPolicy';
+import TouristPlaces from '../TouristPlaces';
 
 export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
-  setSelectedTransport,
+  setSelectedTransport, auth,
 }) {
   return (
     <Routes>
@@ -40,6 +41,7 @@ export default function Routers({
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
     </Routes>
   );
 }

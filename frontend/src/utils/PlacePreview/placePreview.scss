@@ -1,4 +1,4 @@
-@import '../../../styles/variables.scss';
+@import '../../styles/variables.scss';
 .place-preview {
     height: 100%;
     width: 250px;
@@ -85,7 +85,7 @@
 }
 
 .place-preview__photo img {
-    width: 105px;
+    width: 100%;
     height: 105px;
     object-fit: cover;
 }
