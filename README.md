@@ -78,16 +78,15 @@ cd FindMeTicket
 ````
 3. Update Environment Variables
 
-The application requires API keys for proper functionality. You need to provide these API keys in environment files.
-Navigate to the main project directory and locate two environment files:
+You need to provide these API keys in environment files. Set values in next files:
 
-* frontend/.env
-* src/main/resources/.env
+* frontend/.env.docker
+* src/main/resources/.env.docker
 4. Run Docker Compose
 ````
 docker-compose up
 ````
-This command will build and start the Docker containers defined in the docker-compose.yml file.
+This command will build and start the Docker container.
 
 ## Authors
 
