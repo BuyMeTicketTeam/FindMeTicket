@@ -1,6 +1,6 @@
 package com.booking.app.constant;
 
-import com.booking.app.util.City;
+import com.booking.app.dto.City;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

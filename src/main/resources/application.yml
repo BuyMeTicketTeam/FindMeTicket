@@ -96,7 +96,7 @@ languages: eng.txt, ua.txt
 # OAuth 2.0 configuration
 #-------------------------
 app:
-  googleClientId: '827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com'
+  googleClientId: ${GOOGLE_AUTH_KEY}
 
 #-------------------------
 # Encoding
@@ -122,9 +122,8 @@ link:
   infobus-ua-train: 'https://infobus.eu/ua/train'
   proizd-eng-train: 'https://proizd.ua/en'
   proizd-ua-train: 'https://proizd.ua/'
-
 #-------------------------
 # API Key Configuration
 #-------------------------
 api:
-  currency-rate-key: 'ss'
+  currency-rate-key: ${CURRENCY_API_KEY}
