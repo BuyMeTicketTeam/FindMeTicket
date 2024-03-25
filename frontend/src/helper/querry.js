@@ -5,6 +5,7 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
   const token = localStorage.getItem('JWTtoken');
   let response;
   try {
+    console.log(process.env.REACT_APP_PORT);
     response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/${address}`, {
       headers: {
         "Content-Type": "application/json",
@@ -16,6 +17,7 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
       body,
     });
   } catch (error) {
+    console.log(error);
     return { status: 500, error };
   }
   let bodyResponse;
