@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import makeQuerry from '../helper/querry';
 
-export default function LoginBtn({ status, updateAuthValue, setIsProfilePopup }) {
+export default function LoginBtn({ status, updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   const cookies = new Cookies(null, { path: '/' });
   const [logout, setLogout] = useState(false);
@@ -39,9 +39,10 @@ export default function LoginBtn({ status, updateAuthValue, setIsProfilePopup })
         data-testid="logout-btn"
         className="login"
         type="button"
-        onClick={() => { setIsProfilePopup(true); }}
       >
-        {t('profile')}
+        <a href="/profile-Page">
+          {t('profile')}
+        </a>
       </button>
     );
   }
