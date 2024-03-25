@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableAsync
 @EnableScheduling
-@ConfigurationPropertiesScan(basePackages = {"com.booking.app.config"})
+@ConfigurationPropertiesScan(basePackages = {"com.booking.app.props"})
 public class TicketBookingWebServiceApplication {
 
     public static void main(String[] args) {
