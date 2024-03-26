@@ -1,0 +1,35 @@
+package com.booking.app.controller;
+
+import com.booking.app.controller.api.SearchHistoryAPI;
+import com.booking.app.services.SearchHistoryService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+@RequiredArgsConstructor
+public class SearchHistoryController implements SearchHistoryAPI {
+
+    private final SearchHistoryService searchHistoryService;
+
+    @GetMapping("/getHistory")
+    @Override
+    public ResponseEntity<?> getHistory(HttpServletRequest request) {
+
+        try {
+            return ResponseEntity.ok().body(searchHistoryService.getUserHistory(request));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+}
