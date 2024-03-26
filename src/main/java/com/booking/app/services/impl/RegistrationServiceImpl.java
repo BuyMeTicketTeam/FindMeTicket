@@ -102,7 +102,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         securityEntity.setProvider(EnumProvider.LOCAL);
         securityEntity.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
 
-        User user = createNewRegisteredUser(securityEntity);
+        User user = createNewRegisteredUser(securityEntity, registrationDTO.getNotification());
 
         mailService.sendEmail("confirmMailUa", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
 
@@ -116,13 +116,14 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @return User that was saved
      */
     @Transactional
-    public User createNewRegisteredUser(UserCredentials userCredentials) {
+    public User createNewRegisteredUser(UserCredentials userCredentials, Boolean notification) {
         Role role = roleRepository.findRoleByEnumRole(EnumRole.USER);
 
         Avatar avatar = GitHubAvatar.newAvatarBuilder().layers(new ColorPaintBackgroundLayer(Color.WHITE)).build();
         byte[] asPngBytes = avatar.createAsPngBytes(new Random().nextLong());
 
         User user = User.builder()
+                .notification(notification)
                 .security(userCredentials)
                 .profilePicture(asPngBytes)
                 .role(role)

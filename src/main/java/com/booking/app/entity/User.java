@@ -35,6 +35,8 @@ public class User {
 
     private String urlPicture;
 
+    private Boolean notification;
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "role_id")
     private Role role;
