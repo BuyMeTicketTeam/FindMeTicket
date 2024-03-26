@@ -54,21 +54,28 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
     @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
+        driver.manage().window().setSize(new Dimension(1850, 1000));
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
         String uri = determineBaseUri(language);
+
         requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, uri, language);
+        switchToMainTab(driver);
 
         if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-//        waitForTickets(driver);
+        waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        processScrapedTickets(driver, emitter, route, language, doShow, elements, route.getDepartureDate());
+        processScrapedTickets(emitter, route, language, doShow, elements, route.getDepartureDate());
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
+    }
+
+    private static void switchToMainTab(WebDriver driver) {
+        ArrayList<String> switchTabs = new ArrayList<>(driver.getWindowHandles());
+        driver.switchTo().window(switchTabs.get(1));
     }
 
     private String determineBaseUri(String language) {
@@ -85,11 +92,11 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
         throw new java.lang.UnsupportedOperationException();
     }
 
-    private void processScrapedTickets(WebDriver driver, SseEmitter emitter, Route route, String language, Boolean doDisplay, List<WebElement> elements, String departureDate) throws IOException {
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, List<WebElement> elements, String departureDate) throws IOException {
         log.info("Train tickets on ticketsUa: " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
-            TrainTicket scrapedTicket = scrapeTicketInfo(driver, elements.get(i), route, language, departureDate);
+            TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language, departureDate);
             TrainTicket trainTicket = scrapedTicket;
 
             if (route.getTickets().add(scrapedTicket)) {
@@ -103,7 +110,7 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
         }
     }
 
-    private static TrainTicket scrapeTicketInfo(WebDriver driver, WebElement element, Route route, String language, String arrivalDate) {
+    private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language, String arrivalDate) {
         if (!element.findElements(By.cssSelector("div.t-tooltip-v2.display-i.rel.railway-train-duration-time__different-day-arrival")).isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
             LocalDate date = LocalDate.parse(arrivalDate, formatter).plusDays(1);
@@ -131,12 +138,11 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
                     .price(new BigDecimal(price)).build());
 //                    .link(webElement.findElement(By.cssSelector("a.btn")).getAttribute("href")).build());
         }
-        String[] stations = getPlaces(driver, element);
+        String[] stations = getPlaces(element);
         return createTicket(element, route, totalMinutes, carrier, list, arrivalDate, stations[0], stations[1]);
     }
 
     private static TrainTicket createTicket(WebElement element, Route route, int totalMinutes, String carrier, List<TrainComfortInfo> list, String arrivalDate, String stationFrom, String stationAt) {
-
         return TrainTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
@@ -184,14 +190,13 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
     }
 
     private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
-
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(url);
 
-        selectCity("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[1]/label/div/input", "/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[1]/div/div/div[1]/div[1]", "/html/body/header/div/div[3]/div[6]/form/div[1]/div/div/div[1]/div[1]/div/div/div[1]/div[1]/button", departureCity, driver, wait);
+        selectCity("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[1]/label/div/input", "/html/body/header/div/div[3]/div[6]/form/div[1]/div/div/div[1]/div[1]/div/div/div[1]/div[1]/button", departureCity, driver, wait);
 
-        selectCity("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[3]/label/div/input", "/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[3]/div", "/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/button", arrivalCity, driver, wait);
+        selectCity("/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[3]/label/div/input", "/html/body/header/div/div[3]/div[6]/form/div[1]/div[1]/div/div[1]/div[3]/div/div/div[1]/div[1]/button", arrivalCity, driver, wait);
 
         selectDate(departureDate, driver, wait, language);
 
@@ -200,7 +205,7 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
     }
 
     @SneakyThrows
-    private static void selectCity(String inputXpath, String liXpath, String cityXpath, String city, WebDriver driver, WebDriverWait wait) {
+    private static void selectCity(String inputXpath, String cityXpath, String city, WebDriver driver, WebDriverWait wait) {
         WebElement inputCity = driver.findElement(By.xpath(inputXpath));
         Actions actions = new Actions(driver);
         actions.moveToElement(inputCity).click().doubleClick().perform();
@@ -276,15 +281,8 @@ public class TicketsUaTrainServiceImpl implements ScraperService {
         }
     }
 
-    private static String[] getPlaces(WebDriver driver, WebElement element) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1));
-        Actions actions = new Actions(driver);
-        actions.moveToElement(element.findElement(By.cssSelector("button.size-4.shadow-hover.rounded.font-size-12.pl-2.pr-2.bs-2.color-21.t-btn-atomic.cursor-pointer.theme-default"))).click().perform();
-
-        String[] stations = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("button.t-btn-atomic.cursor-pointer.theme-default.railway-train-route-popup-activator.as-link"))).getText().split(" - ");
-
-
-        actions.moveToElement(element.findElement(By.cssSelector("button.size-4.shadow-hover.rounded.font-size-12.pl-2.pr-2.bs-2.color-21.t-btn-atomic.cursor-pointer.theme-default"))).click().perform();
+    private static String[] getPlaces(WebElement element) {
+        String[] stations = element.findElement(By.cssSelector("button.t-btn-atomic.cursor-pointer.theme-default.railway-train-route-popup-activator.as-link")).getText().split(" - ");
         return new String[]{stations[0], stations[1]};
     }
 
