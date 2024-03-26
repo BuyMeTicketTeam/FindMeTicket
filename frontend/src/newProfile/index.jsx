@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './style.scss';
+import './profile.scss';
 import { useTranslation } from 'react-i18next';
 import Cookies from 'universal-cookie';
 import { useNavigate } from 'react-router-dom';
@@ -127,11 +127,11 @@ function Popup({
         <p className="contact-text">Контакти</p>
         <div className="contact-item">
           <img src={Email} className="contact-icon" alt="Email" />
-          <p className="contact-info email-info">Електронна пошта</p>
+          <p className="contact-info-two email-info">Електронна пошта</p>
           <img src={Address} className="contact-icon" alt="Dia" />
-          <p className="contact-info actions-info">Дії</p>
+          <p className="contact-info-two actions-info">Дії</p>
           <img src={Phone} className="contact-icon" alt="Phone" />
-          <p className="contact-info phone-info">Номер телефону</p>
+          <p className="contact-info-two phone-info">Номер телефону</p>
         </div>
       </div>
       <div
