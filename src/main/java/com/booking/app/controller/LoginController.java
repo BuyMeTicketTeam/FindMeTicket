@@ -79,7 +79,8 @@ public class LoginController implements LoginAPI {
             String accessToken = jwtProvider.generateAccessToken(loginDTO.getEmail());
 
             CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-            CookieUtils.addCookie(response, USER_ID, userCredentials.getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
+            CookieUtils.addCookie(response, USER_ID, userCredentials.getId().toString(), 10000000, false, true);
+            CookieUtils.addCookie(response, "login", userCredentials.getEmail(), 10000000, false, true);
             response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
 
 
