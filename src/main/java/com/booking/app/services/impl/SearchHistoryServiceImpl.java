@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
+
 @Service
 @RequiredArgsConstructor
 public class SearchHistoryServiceImpl implements SearchHistoryService {
@@ -52,6 +54,6 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     }
 
     private UUID getIdFromRequest(HttpServletRequest request){
-        return UUID.fromString(Arrays.stream(request.getCookies()).filter(t->t.getName().equals("user_id")).findFirst().get().getValue());
+        return UUID.fromString(Arrays.stream(request.getCookies()).filter(t->t.getName().equals(USER_ID)).findFirst().get().getValue());
     }
 }
