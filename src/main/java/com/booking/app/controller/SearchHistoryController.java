@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ public class SearchHistoryController implements SearchHistoryAPI {
     private final SearchHistoryService searchHistoryService;
 
     @GetMapping("/getHistory")
+    @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Override
     public ResponseEntity<?> getHistory(HttpServletRequest request) {
 
