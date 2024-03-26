@@ -92,15 +92,15 @@ public class RegistrationServiceImpl implements RegistrationService {
      * Creates user, token
      * Sends email
      *
-     * @param securityDTO The RegistrationDTO containing user registration details.
+     * @param registrationDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO containing email
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
     //    @Transactional
-    public EmailDTO performRegistration(RegistrationDTO securityDTO) throws MessagingException {
-        UserCredentials securityEntity = mapper.toUserSecurity(securityDTO);
+    public EmailDTO performRegistration(RegistrationDTO registrationDTO) throws MessagingException {
+        UserCredentials securityEntity = mapper.toUserSecurity(registrationDTO);
         securityEntity.setProvider(EnumProvider.LOCAL);
-        securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
+        securityEntity.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
 
         User user = createNewRegisteredUser(securityEntity);
 
