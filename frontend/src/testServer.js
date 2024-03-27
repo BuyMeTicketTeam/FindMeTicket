@@ -145,20 +145,20 @@ createServer({
       document.cookie = 'remember_me=true; path=/; max-age=600';
       return new Response(200, { Authorization: 'alkshfksadfjs2143234' });
     });
-    this.post('/history', () => new Response(200, undefined, JSON.stringify([
+    this.get('/getHistory', () => new Response(200, undefined, JSON.stringify([
       {
-        date: '12.03.2077',
-        cityFrom: 'Dnipro',
-        cityTo: 'Kiev',
-        type: 'BUS',
+        addingTime: '12.03.2077',
+        departureCity: 'Dnipro',
+        arrivalCity: 'Kiev',
+        bus: true,
         departureDate: '12.23.1990',
       },
       {
-        date: '12.03.2077',
-        cityFrom: 'Dnipro',
-        cityTo: 'Kiev',
-        type: 'TRAIN',
-        departureDate: '12.23.1890',
+        addingTime: '12.03.2022',
+        departureCity: 'Dnipro',
+        arrivalCity: 'Kiev',
+        train: true,
+        departureDate: '12.09.2024',
       },
     ])));
   },
