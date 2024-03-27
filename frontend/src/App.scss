@@ -214,6 +214,7 @@ input[type='number'] {
   &::after {
     position: absolute;
     left: 0;
+    top: 0;
     content: '';
     display: block;
     width: 15px;
@@ -228,7 +229,7 @@ input[type='number'] {
 
   &:checked~.checkbox::before {
     left: 0px;
-    top: -3px;
+    top: -4px;
     position: absolute;
     content: '';
     display: block;
