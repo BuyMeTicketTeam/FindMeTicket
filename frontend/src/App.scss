@@ -280,6 +280,20 @@ input[type='number'] {
   margin-top: 15px;
 }
 
+
+body #bmc-wbtn {
+  left: 20px;
+  width: 50px !important;
+  height: 50px !important;
+}
+
+body #bmc-iframe {
+  left: 45px;
+  bottom: 85px !important;
+  transform-origin: left bottom !important;
+  height: 400px !important;
+  min-height: 0 !important;
+
 .search-field .input,
 .search-field .react-select__control,
 .search-city .react-select__control {

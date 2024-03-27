@@ -6,9 +6,8 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.UkrainianPlaces;
 import com.booking.app.repositories.UkrPlacesRepository;
 import com.booking.app.services.PopularRoutesService;
-import com.booking.app.services.ScraperService;
 import com.booking.app.services.impl.scrape.ScraperManager;
-import com.booking.app.util.City;
+import com.booking.app.dto.City;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PopularRoutesServiceImpl implements PopularRoutesService {
 
+    public static final String PATTERN = "yyyy-M-d";
     private final ScraperManager manager;
 
     private final UkrPlacesRepository placesRepository;
@@ -51,23 +51,23 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
                 runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameUa())
                         .arrivalCity(arrivalCity.get().getNameUa())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "ua"));
                 runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameEng())
                         .arrivalCity(arrivalCity.get().getNameEng())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "eng"));
 
                 runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(arrivalCity.get().getNameUa())
                         .arrivalCity(departureCity.get().getNameUa())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "ua"));
                 runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
                         .departureCity(arrivalCity.get().getNameEng())
                         .arrivalCity(departureCity.get().getNameEng())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-M-d")))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "eng"));
 
 
