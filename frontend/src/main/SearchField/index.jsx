@@ -120,7 +120,7 @@ export default function SearchField({
   }
 
   useEffect(() => {
-    if (!(/^.*type=(bus|train|all).*$/).test(location.search)) {
+    if (!(/^.*type=(bus|train|all).*$/).test(location.search) && location.pathname !== '/login') {
       navigate(`?${location.search.replace('?', '')}&type=all`);
     }
     const body = {
