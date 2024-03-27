@@ -14,6 +14,7 @@ import Phone from './phone.svg';
 import Address from './address.svg';
 import Ellipse from './Ellipse 9.png';
 import { busIcon, trainIcon, everythingIcon } from './transport-img/img';
+import loaderIcon from './spinning-loading.svg';
 
 function Popup({
   // setIsProfilePopup,
@@ -223,7 +224,7 @@ function Popup({
                 </div>
                 <span className="history-to">{historyItem.cityTo}</span>
               </div>
-            )) : <p>Loading</p>}
+            )) : <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
         </div>
       )}
     </div>
