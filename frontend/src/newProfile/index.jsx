@@ -148,7 +148,7 @@ function Popup({
       </div>
       <div className="notification-wrapper">
         <p className="notification-text">
-          Бажаєте отримувати сповіщення про наявність квитків?
+          {t('notice')}
         </p>
         <label className="switch">
           <input type="checkbox" checked={notificationEnabled} onChange={() => setNotificationEnabled(!notificationEnabled)} />
@@ -156,27 +156,42 @@ function Popup({
         </label>
       </div>
       <div className="contact-wrapper">
-        <p className="contact-text">Акаунт</p>
+        <p className="contact-text">{t('account')}</p>
         <div className="contact-item">
           <div className="column">
             <img src={Email} className="contact-icon" alt="Email" />
-            <p className="contact-info-two email-info">Електронна пошта</p>
+            <p className="contact-info-two email-info">{t('email')}</p>
             <div className="contact-info-data">
               misha@gmail.com
             </div>
           </div>
           <div className="column">
-            <img src={Phone} className="contact-icon" alt="Phone" />
-            <p className="contact-info-two phone-info">Номер телефону</p>
+            <div className="phone">
+              <img src={Phone} className="contact-icon" alt="Phone" />
+            </div>
+            <p className="contact-info-two phone-info">{t('phone')}</p>
             <div className="contact-info-data">
-              Додати
+              <p>
+                <button
+                  type="button"
+                  className="custom-button"
+                >
+                  {t('add')}
+                </button>
+              </p>
+
             </div>
           </div>
           <div className="column">
-            <img src={Address} className="contact-icon" alt="Dia" />
-            <p className="contact-info-two actions-info">Керування обліковим записом</p>
+            <div className="ddd">
+              <img src={Address} className="contact-icon" alt="Dia" />
+            </div>
+            <div className="das">
+              <p className="contact-info-two actions-info">{t('account-management')}</p>
+            </div>
             <p>
               <Link
+                type="button"
                 to="/change-password"
                 className="change-password"
                 data-testid="change-password-link"
@@ -207,7 +222,7 @@ function Popup({
         }}
       >
         <img src={History} alt="History" className="new-icon" />
-        <p className="history-text">Історія</p>
+        <p className="history-text">{t('history')}</p>
         <div className={`history-arrow ${isHistoryExpanded ? 'arrow-down' : ''}`} />
       </div>
       {isHistoryExpanded && (

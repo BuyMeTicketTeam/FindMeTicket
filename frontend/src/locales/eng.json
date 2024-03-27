@@ -67,7 +67,14 @@
                   "exit": "Log out",
                   "privacy-policy": "Privacy Policy",
                   "delete-account": "Delete account",
-                  "hello": "Hi,"
+                  "hello": "Hi,",
+                  "notice": "Would you like to receive notifications about the availability of tickets?",
+                  "account": "Account",
+                  "email": "Email",
+                  "phone": "Phone number",
+                  "account-management": "Account management",
+                  "add": "Add",
+                  "history": "History"
             },
             "register": {
                   "error-email": "The user with this email address is already registered",
