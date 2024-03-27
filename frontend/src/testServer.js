@@ -145,5 +145,21 @@ createServer({
       document.cookie = 'remember_me=true; path=/; max-age=600';
       return new Response(200, { Authorization: 'alkshfksadfjs2143234' });
     });
+    this.post('/history', () => new Response(200, undefined, JSON.stringify([
+      {
+        date: '12.03.2077',
+        cityFrom: 'Dnipro',
+        cityTo: 'Kiev',
+        type: 'BUS',
+        departureDate: '12.23.1990',
+      },
+      {
+        date: '12.03.2077',
+        cityFrom: 'Dnipro',
+        cityTo: 'Kiev',
+        type: 'TRAIN',
+        departureDate: '12.23.1890',
+      },
+    ])));
   },
 });

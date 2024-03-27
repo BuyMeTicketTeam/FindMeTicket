@@ -26,6 +26,7 @@
     "react-select": "^5.8.0",
     "sass": "^1.69.7",
     "universal-cookie": "^7.0.1",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -78,7 +78,6 @@
 .popup-content p {
   display: flex;
   flex-direction: column;
-  align-items: left;
 }
 
 .popup-content a {
@@ -186,13 +185,14 @@
 .popup-content .notification-text {
   margin-left: 20px; 
   font-size: 20px;
+  flex: auto;
 }
 .switch {
   position: relative;
   display: inline-block;
   width: 40px; 
-  height: 20px; 
-  margin-left: 370px;
+  height: 20px;
+  margin-right: 20px;
 }
 
 .slider {
@@ -266,12 +266,7 @@ input:checked + .slider:before {
   background-color: $semi-dark;
   margin: 20px auto;
   border-radius: 10px;
-
 }
-
-
-
-
 
 .history-wrapper {
   position: relative; 
@@ -284,7 +279,6 @@ input:checked + .slider:before {
   background-color: $semi-dark;
   margin: 20px auto;
   border-radius: 10px;
-  margin-top: 40px;
   padding-left: 20px;
   cursor: pointer;
 }
@@ -317,7 +311,7 @@ input:checked + .slider:before {
 
 .history-item {
   height: 70px;
-  width: 100%;
+  width: 80%;
   max-width: 1000px;
   background-color: $dark;
   margin: 20px auto;
@@ -368,10 +362,20 @@ input:checked + .slider:before {
   margin-right: 20px;
 }
 
+.history-central-column {
+  padding-top: 6px;
+  align-self: baseline;
+  flex: auto;
+}
+
+.history-departure-date {
+  text-align: center;
+  font-size: 13px;
+}
+
 .history-line {
   border: none;
   border-top: 1px solid #fff; 
-  flex: auto;
   margin: 5px 0; 
 }
 
@@ -402,13 +406,12 @@ input:checked + .slider:before {
   margin: 20px auto;
   border-radius: 10px;
   position: relative;
-  margin-top: 50px;
 }
 
 .contact-text {
   font-size: 25px;
   margin: 10px 0;
-  padding-left: 60px;
+  padding-left: 33px;
 }
 
 .contact-item {

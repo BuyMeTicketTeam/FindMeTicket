@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+/* eslint-disable import/no-extraneous-dependencies */
+import React, { useEffect, useState } from 'react';
 import './profile.scss';
 import { useTranslation } from 'react-i18next';
 import Cookies from 'universal-cookie';
 import { Link, useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import makeQuerry from '../helper/querry';
 import DeleteConfirmationPopup from '../header/deletePopup';
 import Frame from './Frame.svg';
-import BusIcon from './bus.svg';
 import History from './history.svg';
 import Email from './email.svg';
 import Phone from './phone.svg';
 import Address from './address.svg';
 import Ellipse from './Ellipse 9.png';
+import { busIcon, trainIcon, everythingIcon } from './transport-img/img';
 
 function Popup({
   // setIsProfilePopup,
@@ -22,6 +24,7 @@ function Popup({
   const cookies = new Cookies(null, { path: '/' });
   const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
+  const [history, setHistory] = useState([]);
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
   const navigate = useNavigate();
 
@@ -80,10 +83,37 @@ function Popup({
     setIsHistoryExpanded(!isHistoryExpanded);
   };
 
+  const getIcon = (type) => {
+    switch (type) {
+      case 'BUS':
+        return busIcon;
+      case 'TRAIN':
+        return trainIcon;
+      default:
+        return everythingIcon;
+    }
+  };
+
+  async function getHistory() {
+    const response = await makeQuerry('history');
+    switch (response.status) {
+      case 200:
+        setHistory(response.body);
+        break;
+      default:
+        break;
+    }
+  }
+
+  useEffect(() => {
+    getHistory();
+  }, []);
+
   if (!status) {
     navigate('/login');
     return <p>redirect</p>;
   }
+
   return (
     <div className="popup-content main">
       <div className="centered-block">
@@ -181,30 +211,21 @@ function Popup({
       </div>
       {isHistoryExpanded && (
         <div className="history-content">
-          <div className="history-item">
-            <span className="history-date">12.02.2024</span>
-            <img src={BusIcon} alt="Bus" className="history-icon" />
-            <span className="history-from">Київ</span>
-            <hr className="history-line" />
-            <span className="history-to">Дніпро</span>
-          </div>
-          <div className="history-item">
-            <span className="history-date">12.02.2024</span>
-            <img src={BusIcon} alt="Bus" className="history-icon" />
-            <span className="history-from">Київ</span>
-            <hr className="history-line" />
-            <span className="history-to">Харків</span>
-          </div>
-          <div className="history-item">
-            <span className="history-date">12.02.2024</span>
-            <img src={BusIcon} alt="Bus" className="history-icon" />
-            <span className="history-from">Івано-Франківськ</span>
-            <hr className="history-line" />
-            <span className="history-to">КиЇв</span>
-          </div>
+          {history.length > 0
+            ? history.map((historyItem) => (
+              <div key={uuidv4()} className="history-item">
+                <span className="history-date">{historyItem.date}</span>
+                <img src={getIcon(historyItem.type)} alt="Transport icon" className="history-icon" />
+                <span className="history-from">{historyItem.cityFrom}</span>
+                <div className="history-central-column">
+                  <div className="history-departure-date">{historyItem.departureDate}</div>
+                  <hr className="history-line" />
+                </div>
+                <span className="history-to">{historyItem.cityTo}</span>
+              </div>
+            )) : <p>Loading</p>}
         </div>
       )}
-
     </div>
   );
 }
