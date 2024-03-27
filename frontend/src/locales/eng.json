@@ -88,7 +88,8 @@
                   "privacy policy": "privacy policy",
                   "register": "Sign up",
                   "processing": "Processing...",
-                  "error-nickname-exist": "This nickname already exists, come up with something else"
+                  "error-nickname-exist": "This nickname already exists, come up with something else",
+                  "ticket-alerts-agreement": "Would you like to receive emails about new tickets?"
             },
             "tip": {
                   "nickname-tip-title": "Your nickname must meet the following requirements:",

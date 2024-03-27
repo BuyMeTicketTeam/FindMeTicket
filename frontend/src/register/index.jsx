@@ -26,6 +26,14 @@ export default function Register() {
   const [show, onShow] = useState(false);
   const navigate = useNavigate();
 
+  const [ticketAlerts, setTicketAlerts] = useState(false);
+  const [ticketAlertsError, setTicketAlertsError] = useState(false);
+
+  function handleTicketAlertsChange() {
+    setTicketAlerts(!ticketAlerts);
+    setTicketAlertsError(false);
+  }
+
   function validation() {
     switch (true) {
       case nicknameCheck(nickname):
@@ -176,6 +184,14 @@ export default function Register() {
         >
           {t('agree')}
           <a href="/">{t('privacy policy')}</a>
+        </Checkbox>
+        <Checkbox
+          dataTestId="ticket-alerts-checkbox"
+          policyError={ticketAlertsError}
+          onChange={() => handleTicketAlertsChange()}
+        >
+          {t('ticket-alerts-agreement')}
+          {' '}
         </Checkbox>
         <Button
           dataTestId="register-btn"

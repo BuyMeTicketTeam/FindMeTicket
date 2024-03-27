@@ -35,15 +35,13 @@ export default function LoginBtn({ status, updateAuthValue }) {
 
   if (status) {
     return (
-      <button
-        data-testid="logout-btn"
-        className="login"
-        type="button"
+      <Link
+        data-testid="login-btn"
+        className="login-link"
+        to="/profile-page"
       >
-        <a href="/profile-Page">
-          {t('profile')}
-        </a>
-      </button>
+        {t('profile')}
+      </Link>
     );
   }
   return (

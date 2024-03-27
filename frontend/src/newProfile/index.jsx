@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './profile.scss';
 import { useTranslation } from 'react-i18next';
 import Cookies from 'universal-cookie';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import makeQuerry from '../helper/querry';
 import DeleteConfirmationPopup from '../header/deletePopup';
 import Frame from './Frame.svg';
@@ -11,6 +11,7 @@ import History from './history.svg';
 import Email from './email.svg';
 import Phone from './phone.svg';
 import Address from './address.svg';
+import Ellipse from './Ellipse 9.png';
 
 function Popup({
   // setIsProfilePopup,
@@ -56,9 +57,9 @@ function Popup({
     });
   }
 
-  // const handleDeleteAccount = () => {
-  //   setShowDeleteConfirmation(true);
-  // };
+  const handleDeleteAccount = () => {
+    setShowDeleteConfirmation(true);
+  };
 
   const handleCancelDelete = () => {
     setShowDeleteConfirmation(false);
@@ -87,11 +88,11 @@ function Popup({
     <div className="popup-content main">
       <div className="centered-block">
         <div className="avatar" data-testid="avatar">
-          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : '')} alt="Avatar" referrerPolicy="no-referrer" />
+          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)} alt="Avatar" referrerPolicy="no-referrer" />
         </div>
         <p className="username">
-          {' '}
           {t('hello')}
+          {' '}
           {status.username}
         </p>
         <button
@@ -124,14 +125,43 @@ function Popup({
         </label>
       </div>
       <div className="contact-wrapper">
-        <p className="contact-text">Контакти</p>
+        <p className="contact-text">Акаунт</p>
         <div className="contact-item">
-          <img src={Email} className="contact-icon" alt="Email" />
-          <p className="contact-info-two email-info">Електронна пошта</p>
-          <img src={Address} className="contact-icon" alt="Dia" />
-          <p className="contact-info-two actions-info">Дії</p>
-          <img src={Phone} className="contact-icon" alt="Phone" />
-          <p className="contact-info-two phone-info">Номер телефону</p>
+          <div className="column">
+            <img src={Email} className="contact-icon" alt="Email" />
+            <p className="contact-info-two email-info">Електронна пошта</p>
+            <div className="contact-info-data">
+              misha@gmail.com
+            </div>
+          </div>
+          <div className="column">
+            <img src={Phone} className="contact-icon" alt="Phone" />
+            <p className="contact-info-two phone-info">Номер телефону</p>
+            <div className="contact-info-data">
+              Додати
+            </div>
+          </div>
+          <div className="column">
+            <img src={Address} className="contact-icon" alt="Dia" />
+            <p className="contact-info-two actions-info">Керування обліковим записом</p>
+            <p>
+              <Link
+                to="/change-password"
+                className="change-password"
+                data-testid="change-password-link"
+              >
+                {t('change-password')}
+              </Link>
+            </p>
+            <button
+              type="button"
+              className="delete-account"
+              onClick={handleDeleteAccount}
+              data-testid="delete-account-button"
+            >
+              {t('delete-account')}
+            </button>
+          </div>
         </div>
       </div>
       <div
@@ -168,24 +198,13 @@ function Popup({
           <div className="history-item">
             <span className="history-date">12.02.2024</span>
             <img src={BusIcon} alt="Bus" className="history-icon" />
-            <span className="history-from">Київ</span>
+            <span className="history-from">Івано-Франківськ</span>
             <hr className="history-line" />
-            <span className="history-to">Херсон</span>
+            <span className="history-to">КиЇв</span>
           </div>
         </div>
       )}
 
-      {/* <p>
-          <Link to="/change-password"
-           className="change-password" onClick={() =>
-            setIsProfilePopup(false)} data-testid="change-password-link">
-            {t('change-password')}</Link>
-        </p>
-
-        <button type="button" className="delete-account"
-        onClick={handleDeleteAccount} data-testid="delete-account-button">
-          {t('delete-account')}
-        </button> */}
     </div>
   );
 }
