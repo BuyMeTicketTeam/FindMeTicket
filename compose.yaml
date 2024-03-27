@@ -1,6 +1,8 @@
+networks:
+  ticket_network:
+    driver: bridge
 services:
-  postgres:
-    container_name: db_postgres
+  db-postgres:
     image: postgres
     ports:
       - "5432:5432"
@@ -13,17 +15,15 @@ services:
     restart: unless-stopped
     volumes:
       - ./src/main/resources/data:/docker-entrypoint-initdb.d
-  react_app:
-    container_name: react_app
-    image: stepanstadniuk/react-app
+  react-app:
+    image: findmeticket/react-app
     ports:
       - "81:8079"
     networks:
       - ticket_network
     env_file:
       - frontend/.env.docker
-  spring_boot_app:
-    container_name: spring_boot_app
+  spring-boot-app:
     image: findmeticket/backend-findmeticket
     ports:
       - "8080:8080"
@@ -34,7 +34,24 @@ services:
     networks:
       - ticket_network
     depends_on:
-      - postgres
-networks:
-  ticket_network:
-    driver: bridge
+      - db-postgres
+  selenium-hub:
+    image: selenium/hub:4.2
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+    networks:
+      - ticket_network
+  driver-chrome:
+    image: selenium/node-chrome:4.2
+    ports:
+      - "6900:5900"
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    depends_on:
+      - selenium-hub
+    networks:
+      - ticket_network
