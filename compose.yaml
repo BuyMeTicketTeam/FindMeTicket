@@ -24,7 +24,7 @@ services:
     env_file:
       - frontend/.env.docker
   spring-boot-app:
-    image: findmeticket/backend-findmeticket
+    image: findmeticket/spring-boot-app
     ports:
       - "8080:8080"
     environment:
@@ -47,6 +47,7 @@ services:
     image: selenium/node-chrome:4.2
     ports:
       - "6900:5900"
+    scale: 7
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
