@@ -39,15 +39,19 @@
 .popup-content .change-password {
   cursor: pointer;
   transition: 0.3s;
-  border: none;
+  border: 2px solid #39C04F;
+  border-radius: 10px;
+  background-color: #39C04F;
   font-size: 14px;
   color: #fff;
-  flex: 0 0 100%;
-  color: #39C04F;
+  flex: 0 0 50%;
+  margin-left: 40px;
+  margin-top: 15px;
+  padding: 6px;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5) ;
 }
-
 .popup-content .change-password:hover {
-  color: $bright;
+  box-shadow: 0px 0px 8px 1px #39C04F ;
 }
 
 .popup-content .avatar img {
@@ -98,17 +102,18 @@
   font-size: 14px;
   color: #fff;
   background-color: transparent;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
   border-radius: 10px;
-  border: none; 
+  border: 2px solid #C03939;
+  padding: 6px;
+  background-color: #C03939;
   align-self: flex-end;
   margin-left: auto;
-  flex: 0 0 100%;
-  color:#C03939;
-
+  color: #fff;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.5) ;
 }
 .popup-content .delete-account:hover {
-  color: $bright; 
+  box-shadow: 0px 0px 8px 1px #C03939 ;
 }
 .popup-content .privacy-policy-link {
   cursor: pointer;
@@ -136,10 +141,6 @@
 }
 
 .popup-content .close-button:hover {
-  color: $bright;
-}
-
-.popup-content .change-password:hover {
   color: $bright;
 }
 
@@ -410,7 +411,7 @@ a.history-item {
 .contact-text {
   font-size: 25px;
   margin: 10px 0;
-  padding-left: 33px;
+  padding-left: 50px;
 }
 
 .contact-item {
@@ -435,4 +436,27 @@ a.history-item {
   flex: 100%;
   margin-top: 10px;
   text-align: center
+}
+.phone{
+  height: 15px;
+}
+.das{
+  margin-top: 5px;
+}
+.ddd{
+  margin-top: 10px;
+}
+
+.custom-button {
+  cursor: pointer;
+  transition: 0.3s;
+  border: 2px ;
+  border-radius: 10px;
+  background-color: $grey;
+  font-size: 14px;
+  color: #fff;
+  margin-left: 110px;
+    margin-top: -14px;
+  padding: 6px;
+  width: 120px;
 }
