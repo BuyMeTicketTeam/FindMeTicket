@@ -11,6 +11,7 @@ import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.SearchHistoryService;
 import com.booking.app.services.TypeAheadService;
+import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 
@@ -37,13 +39,11 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     private final HistoryMapper historyMapper;
 
-    public void addToHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request){
+    public void addToHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request) {
+        Optional<UUID> userId = getIdFromRequest(request);
 
-        UUID userId = getIdFromRequest(request);
-
-        Optional<UserCredentials> User = userRepository.findById(userId);
-
-        User.ifPresent(t-> historyRepository.save(UserSearchHistory.builder()
+        Optional<UserCredentials> user = userId.flatMap(userRepository::findById);
+        user.ifPresent(t -> historyRepository.save(UserSearchHistory.builder()
                 .user(t.getUser())
                 .departureCityId(typeAheadService.getCityId(requestTicketsDTO.getDepartureCity(), language))
                 .arrivalCityId(typeAheadService.getCityId(requestTicketsDTO.getArrivalCity(), language))
@@ -51,11 +51,23 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
                 .build()));
     }
 
-    public List<SearchHistoryDto> getUserHistory(HttpServletRequest request){
-        return userRepository.findById(getIdFromRequest(request)).orElseThrow(()->new UsernameNotFoundException("No such user")).getUser().getHistory().stream().map(historyMapper::historyToDto).collect(Collectors.toList());
+
+    public List<SearchHistoryDto> getUserHistory(HttpServletRequest request) {
+        return getIdFromRequest(request)
+                .flatMap(userRepository::findById)
+                .map(user -> user.getUser().getHistory().stream().map(historyMapper::historyToDto).collect(Collectors.toList()))
+                .orElseThrow(() -> new UsernameNotFoundException("No such user"));
     }
 
-    private UUID getIdFromRequest(HttpServletRequest request){
-        return UUID.fromString(Arrays.stream(request.getCookies()).filter(t->t.getName().equals(USER_ID)).findFirst().get().getValue());
+    private Optional<UUID> getIdFromRequest(HttpServletRequest request) {
+        Optional<Cookie> cookie = CookieUtils.getCookie(request, USER_ID);
+        return cookie.map(c -> {
+            try {
+                return Optional.of(UUID.fromString(c.getValue()));
+            } catch (IllegalArgumentException e) {
+                return Optional.<UUID>empty();
+            }
+        }).orElse(Optional.empty());
     }
+
 }
