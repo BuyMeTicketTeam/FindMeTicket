@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+@RequestMapping
 @RequiredArgsConstructor
 public class SearchHistoryController implements SearchHistoryAPI {
 

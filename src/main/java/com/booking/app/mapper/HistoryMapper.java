@@ -12,11 +12,15 @@ import java.time.format.DateTimeFormatter;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface HistoryMapper {
 
+    @Mapping(source = "departureCityId", target = "departureCity")
+    @Mapping(source = "arrivalCityId", target = "arrivalCity")
     @Mapping(source = "addingTime", target = "addingTime", qualifiedByName = "timeToString")
     SearchHistoryDto historyToDto(UserSearchHistory userSearchHistory);
 
     @Named("timeToString")
     static String timeToString(LocalDateTime time) {
     return time.format(DateTimeFormatter.ofPattern("hh:mm, d.M.yyyy"));
+
+
     }
 }
