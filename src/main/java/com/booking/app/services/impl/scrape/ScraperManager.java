@@ -97,8 +97,9 @@ public class ScraperManager {
             }
         }
 
-        emitter.complete();
-
+        if (emitter != null) {
+            emitter.complete();
+        }
         return route == null && newRoute.getTickets().isEmpty() ?
                 CompletableFuture.completedFuture(false) : CompletableFuture.completedFuture(true);
     }
@@ -186,7 +187,7 @@ public class ScraperManager {
 
         }
 
-        if(emitter!=null) {
+        if (emitter != null) {
             emitter.complete();
         }
         return CompletableFuture.completedFuture(true);
