@@ -77,7 +77,7 @@ export default function Popup({ updateAuthValue }) {
     const response = await makeQuerry(`oauth2/authorize/${provider}`, bodyJSON);
     switch (response.status) {
       case 200:
-        navigate('/');
+        navigate(state.navigate);
         updateAuthValue(response.body);
         break;
       case 401:
