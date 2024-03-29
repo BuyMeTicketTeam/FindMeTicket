@@ -74,7 +74,8 @@
                   "phone": "Phone number",
                   "account-management": "Account management",
                   "add": "Add",
-                  "history": "History"
+                  "history": "History",
+                  "no-items": "You have no search history"
             },
             "register": {
                   "error-email": "The user with this email address is already registered",

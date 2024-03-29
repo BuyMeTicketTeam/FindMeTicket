@@ -193,7 +193,7 @@ function Popup({
             <img src={Email} className="contact-icon" alt="Email" />
             <p className="contact-info-two email-info">{t('email')}</p>
             <div className="contact-info-data">
-              misha@gmail.com
+              {status.email}
             </div>
           </div>
           <div className="column">
@@ -271,7 +271,7 @@ function Popup({
                 </div>
                 <span className="history-to">{historyItem.arrivalCity}</span>
               </Link>
-            )) : <div className="history-item no-items">У вас немає історії пошуку</div>}
+            )) : <div className="history-item no-items">{t('no-items')}</div>}
         </div>
       )}
     </div>
