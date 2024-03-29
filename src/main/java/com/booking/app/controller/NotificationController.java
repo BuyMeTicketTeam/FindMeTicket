@@ -35,7 +35,7 @@ public class NotificationController implements NotificationApi {
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Override
     public ResponseEntity<?> enableNotification(HttpServletRequest request) {
-        if (CookieUtils.getCookie(request, USER_ID).isEmpty()) {
+        if (CookieUtils.getCookie(request, USER_ID).isPresent()) {
             notificationService.enable(CookieUtils.getCookie(request, USER_ID).get());
             return ResponseEntity.ok().build();
         } else
