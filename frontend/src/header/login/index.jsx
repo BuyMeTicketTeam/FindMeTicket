@@ -108,6 +108,7 @@ export default function Popup({ updateAuthValue }) {
   }
 
   function handleRememberMeChange() {
+    console.log(remember);
     rememberMe(!remember);
   }
 
@@ -139,7 +140,7 @@ export default function Popup({ updateAuthValue }) {
           onShow={onShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
+        <Checkbox id="rememberMe" onChange={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
             to="/reset"
