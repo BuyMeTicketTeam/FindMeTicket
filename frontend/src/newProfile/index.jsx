@@ -23,7 +23,7 @@ function Popup({
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const cookies = new Cookies(null, { path: '/' });
-  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const [notificationEnabled, setNotificationEnabled] = useState(status.notification);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -135,9 +135,11 @@ function Popup({
     return () => {
       if (notification.current) {
         makeQuerry('notifications/enable', undefined, undefined, 'GET');
+        updateAuthValue({ ...status, notification: true });
         return;
       }
       makeQuerry('notifications/disable', undefined, undefined, 'GET');
+      updateAuthValue({ ...status, notification: false });
     };
   }, []);
 
@@ -190,37 +192,35 @@ function Popup({
         <p className="contact-text">{t('account')}</p>
         <div className="contact-item">
           <div className="column">
-            <img src={Email} className="contact-icon" alt="Email" />
-            <p className="contact-info-two email-info">{t('email')}</p>
+            <div className="column-header">
+              <img src={Email} className="contact-icon" alt="Email" />
+              <p className="contact-info-two email-info">{t('email')}</p>
+            </div>
             <div className="contact-info-data">
               {status.email}
             </div>
           </div>
           <div className="column">
-            <div className="phone">
-              <img src={Phone} className="contact-icon" alt="Phone" />
+            <div className="column-header">
+              <img src={Phone} className="contact-icon phone" alt="Phone" />
+              <p className="contact-info-two phone-info">{t('phone')}</p>
             </div>
-            <p className="contact-info-two phone-info">{t('phone')}</p>
             <div className="contact-info-data">
-              <p>
-                <button
-                  type="button"
-                  className="custom-button"
-                >
-                  {t('add')}
-                </button>
-              </p>
+              <button
+                type="button"
+                className="custom-button"
+              >
+                {t('add')}
+              </button>
 
             </div>
           </div>
           <div className="column">
-            <div className="ddd">
+            <div className="column-header">
               <img src={Address} className="contact-icon" alt="Dia" />
-            </div>
-            <div className="das">
               <p className="contact-info-two actions-info">{t('account-management')}</p>
             </div>
-            <p>
+            <div className="contact-info-data">
               <Link
                 type="button"
                 to="/change-password"
@@ -229,15 +229,15 @@ function Popup({
               >
                 {t('change-password')}
               </Link>
-            </p>
-            <button
-              type="button"
-              className="delete-account"
-              onClick={handleDeleteAccount}
-              data-testid="delete-account-button"
-            >
-              {t('delete-account')}
-            </button>
+              <button
+                type="button"
+                className="delete-account"
+                onClick={handleDeleteAccount}
+                data-testid="delete-account-button"
+              >
+                {t('delete-account')}
+              </button>
+            </div>
           </div>
         </div>
       </div>
