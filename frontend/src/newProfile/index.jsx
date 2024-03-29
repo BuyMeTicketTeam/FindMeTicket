@@ -134,10 +134,10 @@ function Popup({
 
     return () => {
       if (notification.current) {
-        makeQuerry('/notifications/enable', undefined, undefined, 'GET');
+        makeQuerry('notifications/enable', undefined, undefined, 'GET');
         return;
       }
-      makeQuerry('/notifications/disable', undefined, undefined, 'GET');
+      makeQuerry('notifications/disable', undefined, undefined, 'GET');
     };
   }, []);
 

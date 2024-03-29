@@ -5,7 +5,7 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
   const token = localStorage.getItem('JWTtoken');
   let response;
   try {
-    response = await fetch(`http://localhost:${process.env.REACT_SERVER_PORT}/${address}`, {
+    response = await fetch(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/${address}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: token || null,
