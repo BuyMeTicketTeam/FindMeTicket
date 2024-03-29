@@ -18,7 +18,7 @@ services:
   react-app:
     image: findmeticket/react-app
     ports:
-      - "81:8079"
+      - "81:81"
     networks:
       - ticket_network
     env_file:
