@@ -50,6 +50,7 @@ public class WebSecurityConfiguration {
             "/typeAhead",
             "/fail",
             "/login",
+            "/logout",
             "/oauth2/authorize/**",
             "/sortedBy",
             "/searchTickets",
