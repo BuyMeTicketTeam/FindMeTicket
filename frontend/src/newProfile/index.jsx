@@ -23,7 +23,9 @@ function Popup({
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const cookies = new Cookies(null, { path: '/' });
-  const [notificationEnabled, setNotificationEnabled] = useState(status.notification);
+  const [notificationEnabled, setNotificationEnabled] = useState(
+    status ? status.notification : false,
+  );
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -139,12 +141,14 @@ function Popup({
         return;
       }
       makeQuerry('notifications/disable', undefined, undefined, 'GET');
-      updateAuthValue({ ...status, notification: false });
+      if (status) {
+        updateAuthValue({ ...status, notification: false });
+      }
     };
   }, []);
 
   if (!status) {
-    navigate('/login');
+    navigate('/login', { state: { navigate: '/' } });
     return <p>redirect</p>;
   }
 
