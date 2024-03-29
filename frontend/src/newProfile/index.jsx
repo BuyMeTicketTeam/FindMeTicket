@@ -84,19 +84,21 @@ function Popup({
     setIsHistoryExpanded(!isHistoryExpanded);
   };
 
-  const getIcon = (type) => {
-    switch (type) {
-      case 'BUS':
-        return busIcon;
-      case 'TRAIN':
-        return trainIcon;
-      default:
-        return everythingIcon;
+  const getIcon = (historyData) => {
+    if (historyData.bus && historyData.train) {
+      return everythingIcon;
     }
+    if (historyData.bus) {
+      return busIcon;
+    }
+    if (historyData.train) {
+      return trainIcon;
+    }
+    return everythingIcon;
   };
 
   async function getHistory() {
-    const response = await makeQuerry('history');
+    const response = await makeQuerry('getHistory', undefined, undefined, 'GET');
     switch (response.status) {
       case 200:
         setHistory(response.body);
@@ -104,6 +106,23 @@ function Popup({
       default:
         break;
     }
+  }
+
+  function defineRoute(historyData) {
+    let request = `/?from=${historyData.departureCity}&to=${historyData.arrivalCity}&endpoint=1`;
+    if (+new Date() <= Date.parse(historyData.departureDate)) {
+      request += `&departureDate=${Date.parse(historyData.departureDate)}`;
+    }
+    if (historyData.bus && historyData.train) {
+      request += '&type=all';
+    } else if (historyData.bus) {
+      request += '&type=bus';
+    } else if (historyData.train) {
+      request += '&type=train';
+    } else {
+      request += '&type=all';
+    }
+    return request;
   }
 
   useEffect(() => {
@@ -229,16 +248,16 @@ function Popup({
         <div className="history-content">
           {history.length > 0
             ? history.map((historyItem) => (
-              <div key={uuidv4()} className="history-item">
-                <span className="history-date">{historyItem.date}</span>
-                <img src={getIcon(historyItem.type)} alt="Transport icon" className="history-icon" />
-                <span className="history-from">{historyItem.cityFrom}</span>
+              <Link to={defineRoute(historyItem)} key={uuidv4()} className="history-item">
+                <span className="history-date">{historyItem.addingTime}</span>
+                <img src={getIcon(historyItem)} alt="Transport icon" className="history-icon" />
+                <span className="history-from">{historyItem.departureCity}</span>
                 <div className="history-central-column">
                   <div className="history-departure-date">{historyItem.departureDate}</div>
                   <hr className="history-line" />
                 </div>
-                <span className="history-to">{historyItem.cityTo}</span>
-              </div>
+                <span className="history-to">{historyItem.arrivalCity}</span>
+              </Link>
             )) : <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
         </div>
       )}

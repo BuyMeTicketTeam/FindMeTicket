@@ -278,7 +278,7 @@ input:checked + .slider:before {
   width: 80%;
   max-width: 1000px;
   background-color: $semi-dark;
-  margin: 20px auto;
+  margin: 20px auto 15px auto;
   border-radius: 10px;
   padding-left: 20px;
   cursor: pointer;
@@ -310,15 +310,14 @@ input:checked + .slider:before {
 }
 
 
-.history-item {
+a.history-item {
   height: 70px;
   width: 80%;
   max-width: 1000px;
   background-color: $dark;
-  margin: 20px auto;
+  margin: 0px auto 10px auto;
   border-radius: 10px;
   padding: 10px;
-  margin-top: -10px;
   display: flex;
   align-items: center;
 }
@@ -384,7 +383,7 @@ input:checked + .slider:before {
   font-size: 20px; 
 }
 
-.history-item {
+a.history-item {
   position: relative;
 }
 
