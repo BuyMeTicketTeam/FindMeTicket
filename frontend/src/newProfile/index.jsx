@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './profile.scss';
 import { useTranslation } from 'react-i18next';
 import Cookies from 'universal-cookie';
@@ -28,6 +28,7 @@ function Popup({
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
+  const notification = useRef();
   const navigate = useNavigate();
 
   function handleLogoutButton() {
@@ -130,6 +131,14 @@ function Popup({
 
   useEffect(() => {
     getHistory();
+
+    return () => {
+      if (notification.current) {
+        makeQuerry('/notifications/enable', undefined, undefined, 'GET');
+        return;
+      }
+      makeQuerry('/notifications/disable', undefined, undefined, 'GET');
+    };
   }, []);
 
   if (!status) {
@@ -173,7 +182,7 @@ function Popup({
           {t('notice')}
         </p>
         <label className="switch">
-          <input type="checkbox" checked={notificationEnabled} onChange={() => setNotificationEnabled(!notificationEnabled)} />
+          <input type="checkbox" checked={notificationEnabled} onChange={() => { setNotificationEnabled(!notificationEnabled); notification.current = !notification.current; }} />
           <span className="slider round" />
         </label>
       </div>
