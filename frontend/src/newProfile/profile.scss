@@ -310,7 +310,7 @@ input:checked + .slider:before {
 }
 
 
-a.history-item {
+.history-item {
   height: 70px;
   width: 80%;
   max-width: 1000px;
@@ -320,6 +320,10 @@ a.history-item {
   padding: 10px;
   display: flex;
   align-items: center;
+
+  &.no-items {
+    justify-content: center;
+  }
 }
 .history-item .history-date {
   margin-right: 10px;

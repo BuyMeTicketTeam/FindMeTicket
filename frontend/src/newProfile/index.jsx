@@ -26,6 +26,7 @@ function Popup({
   const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [history, setHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
   const navigate = useNavigate();
 
@@ -98,7 +99,9 @@ function Popup({
   };
 
   async function getHistory() {
+    setLoading(true);
     const response = await makeQuerry('getHistory', undefined, undefined, 'GET');
+    setLoading(false);
     switch (response.status) {
       case 200:
         setHistory(response.body);
@@ -246,7 +249,8 @@ function Popup({
       </div>
       {isHistoryExpanded && (
         <div className="history-content">
-          {history.length > 0
+          {loading && <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
+          {(history.length > 0 && !loading)
             ? history.map((historyItem) => (
               <Link to={defineRoute(historyItem)} key={uuidv4()} className="history-item">
                 <span className="history-date">{historyItem.addingTime}</span>
@@ -258,7 +262,7 @@ function Popup({
                 </div>
                 <span className="history-to">{historyItem.arrivalCity}</span>
               </Link>
-            )) : <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
+            )) : <div className="history-item no-items">У вас немає історії пошуку</div>}
         </div>
       )}
     </div>
