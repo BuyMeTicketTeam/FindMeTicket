@@ -34,7 +34,7 @@ export default function SearchCity() {
           loadingMessage={() => t('loading')}
           cacheOptions
           classNamePrefix="react-select"
-          loadOptions={getCities}
+          loadOptions={(inputValue) => getCities(inputValue, setCity)}
           placeholder={t('placeholder')}
           onChange={setCity}
           onInputChange={() => setErrorCity(false)}
