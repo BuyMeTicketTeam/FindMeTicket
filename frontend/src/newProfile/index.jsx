@@ -24,9 +24,7 @@ function Popup({
 }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const cookies = new Cookies(null, { path: '/' });
-  const [notificationEnabled, setNotificationEnabled] = useState(
-    status ? status.notification : false,
-  );
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [isHistoryExpanded, setIsHistoryExpanded] = useState(false);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -133,19 +131,14 @@ function Popup({
 
   useEffect(() => {
     getHistory();
-
-    // return () => {
-    //   if (status.notification) {
-    //     makeQuerry('notifications/enable', undefined, undefined, 'GET');
-    //     updateAuthValue({ ...status, notification: true });
-    //     return;
-    //   }
-    //   makeQuerry('notifications/disable', undefined, undefined, 'GET');
-    //   if (status) {
-    //     updateAuthValue({ ...status, notification: false });
-    //   }
-    // };
   }, []);
+
+  useEffect(() => {
+    console.log(status);
+    if (status) {
+      setNotificationEnabled(status.notification);
+    }
+  }, [status]);
 
   const timerId = useRef();
   const sendNotification = async (notificationEnabled) => {

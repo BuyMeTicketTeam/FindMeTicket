@@ -13,9 +13,7 @@ function useAuthCheck() {
   }, []);
   function updateAuthValue(value) {
     setAuth(value);
-    if (!cookies.get('rememberMe')) {
-      cookies.set('rememberMe', JSON.stringify(value));
-    }
+    cookies.set('rememberMe', JSON.stringify(value));
   }
   return { auth, updateAuthValue };
 }
