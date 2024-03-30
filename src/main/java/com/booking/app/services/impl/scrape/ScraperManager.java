@@ -7,6 +7,7 @@ import com.booking.app.entity.Route;
 import com.booking.app.entity.Ticket;
 import com.booking.app.entity.TrainTicket;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.mapper.RouteMapper;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.repositories.RouteRepository;
@@ -22,7 +23,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 
 import static com.booking.app.constant.SiteConstants.*;
 
@@ -65,47 +66,75 @@ public class ScraperManager {
 
     private final TrainMapper trainMapper;
 
+    private final RouteMapper routeMapper;
+
     @Async
-    public CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> findTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws IOException, ParseException {
+
+        CompletableFuture<Boolean> result = sendTickets(requestTicketDTO, emitter, language);
+
+        if (emitter != null) emitter.complete();
+
+        return result;
+    }
+
+    private CompletableFuture<Boolean> sendTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws ParseException, IOException {
 
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
-        Route newRoute = null;
         if (route == null) {
-            newRoute = createRoute(requestTicketDTO);
-            routeRepository.save(newRoute);
-
-            List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(emitter, newRoute, language, requestTicketDTO.getBus(), requestTicketDTO.getTrain());
-
-            CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
-
-            try {
-                allOf.join();
-            } catch (CancellationException | CompletionException e) {
-                log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
-                if (emitter != null) emitter.completeWithError(e);
-                return CompletableFuture.completedFuture(false);
-            }
+            return scrapeTickets(requestTicketDTO, emitter, language);
         } else {
-            for (Ticket ticket : route.getTickets()) {
-                if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
-                    emitter.send(SseEmitter.event().name("Ticket bus data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
-                }
-                if (ticket instanceof TrainTicket && requestTicketDTO.getTrain()) {
-                    emitter.send(SseEmitter.event().name("Ticket train data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
-                }
+            return extractTickets(requestTicketDTO, emitter, language, route);
+        }
+    }
+
+    private CompletableFuture<Boolean> extractTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language, Route route) throws IOException {
+        if (route.getTickets().isEmpty()) return CompletableFuture.completedFuture(false);
+
+        for (Ticket ticket : route.getTickets()) {
+            if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
+                emitter.send(SseEmitter.event().name("Ticket bus data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
+            }
+            if (ticket instanceof TrainTicket && requestTicketDTO.getTrain()) {
+                emitter.send(SseEmitter.event().name("Ticket train data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
             }
         }
+        return CompletableFuture.completedFuture(true);
+    }
 
-        if (emitter != null) {
-            emitter.complete();
+    private CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws ParseException, IOException {
+
+        Route route = routeMapper.toRoute(requestTicketDTO);
+        routeRepository.save(route);
+
+        List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(emitter, route, language, requestTicketDTO.getBus(), requestTicketDTO.getTrain());
+
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
+
+        try {
+            allOf.join();
+        } catch (CancellationException | CompletionException e) {
+            log.error("Error in Scraper service, scrapeTickets() method: " + e.getMessage());
+            if (emitter != null) emitter.completeWithError(e);
+            return CompletableFuture.completedFuture(false);
         }
-        return route == null && newRoute.getTickets().isEmpty() ?
-                CompletableFuture.completedFuture(false) : CompletableFuture.completedFuture(true);
+
+        return CompletableFuture.completedFuture(completableFutureListBus.stream().map(t -> {
+            try {
+                return t.get();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }).filter(t -> !t.booleanValue()).findFirst().isEmpty());
+
     }
 
     @Async
-    public CompletableFuture<Boolean> getTicket(UUID id, SseEmitter emitter, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> getTicket(UUID id, SseEmitter emitter, String language) throws
+            IOException, ParseException {
 
         Ticket ticket = ticketRepository.findById(id).orElseGet(Ticket::new);
 
@@ -120,7 +149,8 @@ public class ScraperManager {
 
     }
 
-    private CompletableFuture<Boolean> sendTrain(TrainTicket trainTicket, SseEmitter emitter, String language) throws IOException {
+    private CompletableFuture<Boolean> sendTrain(TrainTicket trainTicket, SseEmitter emitter, String language) throws
+            IOException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(trainMapper.toTrainTicketDto(trainTicket, language)));
 
@@ -135,7 +165,8 @@ public class ScraperManager {
         return CompletableFuture.completedFuture(true);
     }
 
-    private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws IOException, ParseException {
+    private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws
+            IOException, ParseException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(busMapper.ticketToTicketDto(busTicket, language)));
 
@@ -193,16 +224,8 @@ public class ScraperManager {
         return CompletableFuture.completedFuture(true);
     }
 
-    private static Route createRoute(RequestTicketsDTO requestTicketDTO) {
-        return Route.builder()
-                .addingTime(LocalDateTime.now())
-                .departureCity(requestTicketDTO.getDepartureCity())
-                .arrivalCity(requestTicketDTO.getArrivalCity())
-                .departureDate(requestTicketDTO.getDepartureDate())
-                .build();
-    }
-
-    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {
+    private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String
+            language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {
         return Arrays.asList(
                 infobusBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
                 proizdBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
