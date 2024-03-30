@@ -10,8 +10,8 @@ async function eventSourceQuery2({
         'Content-Type': 'application/json',
         Accept: 'application/json',
         ...headers,
-        credentials: 'include',
       },
+      credentials: 'include',
       body,
       onopen(res) {
         if (res.ok && res.status === 200) {
