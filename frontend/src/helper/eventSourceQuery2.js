@@ -10,6 +10,7 @@ async function eventSourceQuery2({
         'Content-Type': 'application/json',
         Accept: 'application/json',
         ...headers,
+        credentials: "include",
       },
       body,
       onopen(res) {
