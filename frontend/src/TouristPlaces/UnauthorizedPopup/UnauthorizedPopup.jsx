@@ -13,7 +13,7 @@ export default function UnauthorizedPopup() {
       <div className="unauthorized-content">
         <h2 className="unauthorized-content__title">{t('unauthorized-attention')}</h2>
         <p className="unauthorized-content__text">{t('unauthorized-text')}</p>
-        <Link to="/login" state={{ navigate: pathname }} className="unauthorized-content__button button">{t('unauthorized-button')}</Link>
+        <Link to="/login" state={{ successNavigate: pathname, closeNavigate: pathname }} className="unauthorized-content__button button">{t('unauthorized-button')}</Link>
       </div>
     </div>
   );

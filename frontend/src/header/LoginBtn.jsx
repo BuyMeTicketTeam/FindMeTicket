@@ -11,6 +11,8 @@ export default function LoginBtn({ status, updateAuthValue }) {
   const [logout, setLogout] = useState(false);
   const { pathname } = useLocation();
 
+  const successRedirect = ['/tourist-places', '/ticket-page', '/privacy-policy'];
+
   function handleLogoutButton() {
     setLogout(false);
 
@@ -50,7 +52,7 @@ export default function LoginBtn({ status, updateAuthValue }) {
       data-testid="login-btn"
       className="login-link"
       to="/login"
-      state={{ navigate: pathname }}
+      state={{ successNavigate: successRedirect.includes(pathname) ? pathname : '/', closeNavigate: pathname }}
     >
       {t('login')}
     </Link>
