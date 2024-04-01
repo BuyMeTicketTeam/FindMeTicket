@@ -108,7 +108,6 @@ export default function Popup({ updateAuthValue }) {
   }
 
   function handleRememberMeChange() {
-    console.log(remember);
     rememberMe(!remember);
   }
 

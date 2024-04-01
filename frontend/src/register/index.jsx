@@ -121,7 +121,6 @@ export default function Register() {
       handleClick();
     }
   }, [send]);
-  console.log(notification);
   return (
     <div data-testid="register" className="register main">
       <div className="form-body">

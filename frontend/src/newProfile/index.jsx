@@ -32,7 +32,7 @@ function Popup({
   const navigate = useNavigate();
 
   function handleLogoutButton() {
-    makeQuerry('logout').then((response) => {
+    makeQuerry('logout', undefined, undefined, 'GET').then((response) => {
       switch (response.status) {
         case 200:
           navigate('/');
@@ -134,7 +134,6 @@ function Popup({
   }, []);
 
   useEffect(() => {
-    console.log(status);
     if (status) {
       setNotificationEnabled(status.notification);
     }
@@ -159,7 +158,7 @@ function Popup({
   }, [notificationEnabled]);
 
   if (!status) {
-    navigate('/login', { state: { navigate: '/' } });
+    navigate('/login', { state: { successNavigate: '/profile-page', closeNavigate: '/' } });
     return <p>redirect</p>;
   }
 
