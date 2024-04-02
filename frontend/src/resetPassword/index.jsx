@@ -147,7 +147,7 @@ export default function Index() {
               className="link-success"
               data-testid=""
               to="/login"
-              state={{ navigate: '/' }}
+              state={{ successNavigate: '/', closeNavigate: '/' }}
             >
               {t('auth-link')}
             </Link>
