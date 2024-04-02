@@ -149,7 +149,7 @@ export default function SearchField({
       return;
     }
     sendRequestEvents(body);
-  }, [searchParams]);
+  }, [searchParams, location]);
 
   function changeCities() {
     const cityToTemp = cityTo;
