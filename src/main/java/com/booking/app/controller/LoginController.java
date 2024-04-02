@@ -5,7 +5,7 @@ import com.booking.app.dto.AuthorizedUserDTO;
 import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.security.jwt.JwtProvider;
+import com.booking.app.security.filter.JwtProvider;
 import com.booking.app.services.GoogleAccountService;
 import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
