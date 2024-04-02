@@ -1,18 +1,18 @@
 import React from 'react';
 
 export default function Checkbox({
-  onChange, children, policyError, dataTestid,
+  onChange, children, policyError, dataTestid, id,
 }) {
   return (
-    <>
+    <div>
       <input
         data-testid={dataTestid}
-        id="remember"
+        id={id}
         type="checkbox"
         className={policyError ? 'checkbox__field checkbox-error' : 'checkbox__field'}
         onChange={onChange}
       />
-      <label htmlFor="remember" className="checkbox">{children}</label>
-    </>
+      <label htmlFor={id} className="checkbox">{children}</label>
+    </div>
   );
 }

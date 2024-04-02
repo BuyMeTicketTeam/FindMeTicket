@@ -28,7 +28,7 @@ export default function Popup({ updateAuthValue }) {
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        navigate(state.navigate);
+        navigate(state.successNavigate ?? '/');
         updateAuthValue(response.body);
         break;
       case 401:
@@ -77,7 +77,7 @@ export default function Popup({ updateAuthValue }) {
     const response = await makeQuerry(`oauth2/authorize/${provider}`, bodyJSON);
     switch (response.status) {
       case 200:
-        navigate('/');
+        navigate(state.successNavigate ?? '/');
         updateAuthValue(response.body);
         break;
       case 401:
@@ -114,7 +114,7 @@ export default function Popup({ updateAuthValue }) {
   return (
     <div data-testid="login" className="background">
       <div className="popup__body">
-        <Link to={state.navigate} className="close" aria-label="Close" />
+        <Link to={state.closeNavigate ?? '/'} className="close" aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           error={loginError}
@@ -139,7 +139,7 @@ export default function Popup({ updateAuthValue }) {
           onShow={onShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
+        <Checkbox id="rememberMe" onChange={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
             to="/reset"

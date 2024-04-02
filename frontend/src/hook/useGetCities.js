@@ -17,7 +17,7 @@ export default function useGetCities() {
   }
 
   const timerId = useRef();
-  const getCities = useCallback(async (inputValue) => {
+  const getCities = useCallback(async (inputValue, updateState) => {
     if (inputValue.length > 1) {
       clearInterval(timerId.current);
       const result = await new Promise((resolve) => {
@@ -27,6 +27,7 @@ export default function useGetCities() {
           resolve(responseBody);
         }, 500);
       });
+      updateState(result[0]);
       return result;
     }
     return [];

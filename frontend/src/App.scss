@@ -215,6 +215,7 @@ input[type='number'] {
   &::after {
     position: absolute;
     left: 0;
+    top: 0;
     content: '';
     display: block;
     width: 15px;
@@ -229,7 +230,7 @@ input[type='number'] {
 
   &:checked~.checkbox::before {
     left: 0px;
-    top: -3px;
+    top: -4px;
     position: absolute;
     content: '';
     display: block;
@@ -281,7 +282,6 @@ input[type='number'] {
   margin-top: 15px;
 }
 
-
 body #bmc-wbtn {
   left: 20px;
   width: 50px !important;
@@ -302,6 +302,7 @@ body #bmc-iframe {
   height: 400px !important;
   min-height: 0 !important;
 }
+
 .search-field .input,
 .search-field .react-select__control,
 .search-city .react-select__control {

@@ -4,13 +4,14 @@ async function eventSourceQuery2({
   address, body, handleMessage, handleError, handleClose, handleOpen, method = 'GET', headers,
 }) {
   try {
-    await fetchEventSource(`http://localhost:${process.env.REACT_APP_PORT}/${address}`, {
+    await fetchEventSource(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/${address}`, {
       method,
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
         ...headers,
       },
+      credentials: 'include',
       body,
       onopen(res) {
         if (res.ok && res.status === 200) {

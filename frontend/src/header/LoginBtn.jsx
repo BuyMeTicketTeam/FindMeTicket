@@ -5,11 +5,13 @@ import { Link, useLocation } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import makeQuerry from '../helper/querry';
 
-export default function LoginBtn({ status, updateAuthValue, setIsProfilePopup }) {
+export default function LoginBtn({ status, updateAuthValue }) {
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
   const cookies = new Cookies(null, { path: '/' });
   const [logout, setLogout] = useState(false);
   const { pathname } = useLocation();
+
+  const successRedirect = ['/tourist-places', '/ticket-page', '/privacy-policy'];
 
   function handleLogoutButton() {
     setLogout(false);
@@ -36,14 +38,13 @@ export default function LoginBtn({ status, updateAuthValue, setIsProfilePopup })
 
   if (status) {
     return (
-      <button
-        data-testid="logout-btn"
-        className="login"
-        type="button"
-        onClick={() => { setIsProfilePopup(true); }}
+      <Link
+        data-testid="login-btn"
+        className="login-link"
+        to="/profile-page"
       >
         {t('profile')}
-      </button>
+      </Link>
     );
   }
   return (
@@ -51,7 +52,7 @@ export default function LoginBtn({ status, updateAuthValue, setIsProfilePopup })
       data-testid="login-btn"
       className="login-link"
       to="/login"
-      state={{ navigate: pathname }}
+      state={{ successNavigate: successRedirect.includes(pathname) ? pathname : '/', closeNavigate: pathname }}
     >
       {t('login')}
     </Link>
