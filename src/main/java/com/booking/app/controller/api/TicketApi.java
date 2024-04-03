@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.UUID;
 
 @Validated
 @Tag(name = "Scraping info", description = "Endpoints for scraping tickets' info etc")
@@ -34,7 +33,7 @@ public interface TicketApi {
 
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponse(responseCode = "200", description = "Returns ticket if found")
-    ResponseBodyEmitter getTicketById(@PathVariable UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException;
+    ResponseBodyEmitter getTicketById(@PathVariable String id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException;
 
     @Operation(summary = "Sorting", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Returns sorted tickets")
