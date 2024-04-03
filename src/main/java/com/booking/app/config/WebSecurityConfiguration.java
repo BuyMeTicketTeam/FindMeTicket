@@ -68,8 +68,7 @@ public class WebSecurityConfiguration {
         http.logout(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
 
-        http.authorizeHttpRequests(req -> req.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated());
-
+        http.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthFilter, ExceptionTranslationFilter.class);
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(new RestAuthenticationEntryPoint()));
