@@ -93,7 +93,6 @@ export default function SearchField({
       handleError,
       handleClose,
       method: 'POST',
-      headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
   }
 
@@ -102,7 +101,7 @@ export default function SearchField({
       ...body,
       departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
     };
-    makeQuerry('selectedTransport', JSON.stringify(requestBody), { 'Content-Language': i18n.language.toLowerCase() })
+    makeQuerry('selectedTransport', JSON.stringify(requestBody))
       .then((response) => {
         setTicketsData(response.body);
       })
@@ -115,11 +114,11 @@ export default function SearchField({
     if (!validation()) {
       return;
     }
-    setError(null);
     navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}&endpoint=1`);
   }
 
   useEffect(() => {
+    setError(null);
     let params = '';
     if (!(/^.*type=(bus|train|all).*$/).test(location.search)) {
       params += '&type=all';
@@ -170,7 +169,7 @@ export default function SearchField({
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
-          placeholder="Київ"
+          placeholder={t('from-placeholder')}
           onChange={setCityFrom}
           onInputChange={() => onErrorCityFrom(false)}
         />
@@ -194,7 +193,7 @@ export default function SearchField({
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
-          placeholder="Одеса"
+          placeholder={t('to-placeholder')}
           onChange={setCityTo}
           onInputChange={() => onErrorCityTo(false)}
         />

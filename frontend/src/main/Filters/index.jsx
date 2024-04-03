@@ -31,7 +31,7 @@ export default function Filters({
       sortingBy: sortArg,
       ascending: reverse,
     };
-    const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
+    const response = await makeQuerry('sortedBy', JSON.stringify(body));
 
     const responseBody = response.status === 200 ? response.body : null;
     setTicketsData(responseBody);
