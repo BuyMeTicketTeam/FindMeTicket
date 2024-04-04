@@ -1,0 +1,46 @@
+@import '../styles/variables.scss';
+
+.reviews-title {
+  text-align: center;
+  margin-top: 35px;
+  margin-bottom: 25px;
+}
+
+.reviews-card {
+  background: $semi-dark;
+  border-radius: 10px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+
+  .reviews-card__info {
+    padding: 20px;
+    flex: auto;
+  }
+  
+  .reviews-card__stars {
+    display: flex;
+    margin-bottom: 8px;
+    gap: 4px;
+  }
+
+  .reviews-card__star {
+    width: 25px;
+    list-style: none;
+  }
+
+  .reviews-card__user-data {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px 10px 20px;
+    border-top: 1px solid $font-color;
+    gap: 15px;
+  }
+
+  .reviews-card__user-avatar {
+    width: 40px;
+    height: 40px;
+    background: $grey;
+    border-radius: 50%;
+  } 
+}
