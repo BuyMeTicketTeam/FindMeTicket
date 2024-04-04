@@ -18,7 +18,6 @@ import { busIcon, trainIcon, everythingIcon } from './transport-img/img';
 import loaderIcon from './spinning-loading.svg';
 
 function Popup({
-  // setIsProfilePopup,
   updateAuthValue,
   status,
 }) {
