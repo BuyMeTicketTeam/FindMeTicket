@@ -60,10 +60,10 @@ public class TicketController implements TicketApi {
 
     @GetMapping("/get/ticket/{id}")
     @Override
-    public ResponseBodyEmitter getTicketById(@PathVariable String id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
+    public ResponseBodyEmitter getTicketById(@PathVariable("id") UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
         validateLanguage(siteLanguage);
         SseEmitter emitter = new SseEmitter();
-        CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(UUID.fromString(id), emitter, siteLanguage);
+        CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
         isTicketFound.thenAccept(isFound -> response.setStatus(isFound ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value()));
         return emitter;
