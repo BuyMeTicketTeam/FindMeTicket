@@ -112,7 +112,7 @@ export default function Popup({ updateAuthValue }) {
   }
 
   return (
-    <div data-testid="login" className="background">
+    <div data-testid="login" className="background main">
       <div className="popup__body">
         <Link to={state.closeNavigate ?? '/'} className="close" aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
