@@ -67,7 +67,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     private SearchHistoryDto historyToDto(UserSearchHistory userSearchHistory, String language) {
         String cityTo = getCity(userSearchHistory.getArrivalCityId(), language);
-        String cityFrom = getCity(userSearchHistory.getArrivalCityId(), language);
+        String cityFrom = getCity(userSearchHistory.getDepartureCityId(), language);
 
         return SearchHistoryDto.builder()
                 .addingTime(userSearchHistory.getAddingTime().format(DateTimeFormatter.ofPattern("hh:mm, dd/MM/yyyy")))
