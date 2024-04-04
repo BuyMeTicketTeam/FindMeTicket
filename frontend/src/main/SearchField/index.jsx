@@ -110,6 +110,19 @@ export default function SearchField({
       });
   }
 
+  async function sendSortRequest(body) {
+    const requestBody = {
+      ...body,
+      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+      sortingBy: searchParams.get('sort'),
+      ascending: searchParams.get('ascending') === 'true',
+    };
+    const response = await makeQuerry('sortedBy', JSON.stringify(requestBody));
+
+    const responseBody = response.status === 200 ? response.body : null;
+    setTicketsData(responseBody);
+  }
+
   function handleRequest() {
     if (!validation()) {
       return;
@@ -145,6 +158,10 @@ export default function SearchField({
     }
     if (endpoint === '2') {
       sendRequestHTTP(body);
+      return;
+    }
+    if (endpoint === '3') {
+      sendSortRequest(body);
       return;
     }
     sendRequestEvents(body);
