@@ -19,6 +19,12 @@ import makeQuerry from '../../helper/querry';
 import useGetCities from '../../hook/useGetCities';
 import './searchField.scss';
 
+const dateFormat = new Intl.DateTimeFormat('ru', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
 export default function SearchField({
   setLoading, setTicketsData, setError, loading,
 }) {
@@ -54,7 +60,7 @@ export default function SearchField({
   function sendRequestEvents(body) {
     const requestBody = {
       ...body,
-      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+      departureDate: dateFormat.format(body.departureDate),
     };
     setLoading(true);
     setTicketsData([]);
@@ -99,7 +105,7 @@ export default function SearchField({
   function sendRequestHTTP(body) {
     const requestBody = {
       ...body,
-      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+      departureDate: dateFormat.format(body.departureDate),
     };
     makeQuerry('selectedTransport', JSON.stringify(requestBody))
       .then((response) => {
@@ -113,7 +119,7 @@ export default function SearchField({
   async function sendSortRequest(body) {
     const requestBody = {
       ...body,
-      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+      departureDate: dateFormat.format(body.departureDate),
       sortingBy: searchParams.get('sort'),
       ascending: searchParams.get('ascending') === 'true',
     };
