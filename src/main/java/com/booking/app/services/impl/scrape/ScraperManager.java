@@ -139,8 +139,8 @@ public class ScraperManager {
         Ticket ticket = ticketRepository.findById(id).orElseGet(Ticket::new);
 
         return switch (ticket) {
-            case BusTicket e -> sendBus(e, emitter, language);
-            case TrainTicket e -> sendTrain(e, emitter, language);
+            case BusTicket e -> getBusTicket(e, emitter, language);
+            case TrainTicket e -> getTrainTicket(e, emitter, language);
             default -> {
                 emitter.complete();
                 yield CompletableFuture.completedFuture(false);
@@ -149,7 +149,7 @@ public class ScraperManager {
 
     }
 
-    private CompletableFuture<Boolean> sendTrain(TrainTicket trainTicket, SseEmitter emitter, String language) throws
+    private CompletableFuture<Boolean> getTrainTicket(TrainTicket trainTicket, SseEmitter emitter, String language) throws
             IOException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(trainMapper.toTrainTicketDto(trainTicket, language)));
@@ -165,23 +165,14 @@ public class ScraperManager {
         return CompletableFuture.completedFuture(true);
     }
 
-    private CompletableFuture<Boolean> sendBus(BusTicket busTicket, SseEmitter emitter, String language) throws
+    private CompletableFuture<Boolean> getBusTicket(BusTicket busTicket, SseEmitter emitter, String language) throws
             IOException, ParseException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(busMapper.ticketToTicketDto(busTicket, language)));
 
         if (!busTicket.linksAreScraped()) {
 
-            List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
-
-            if (busTicket.getBusforPrice() != null)
-                completableFutureListBus.add(busforBusService.scrapeTicketUri(emitter, busTicket, language));
-            if (busTicket.getInfobusPrice() != null)
-                completableFutureListBus.add(infobusBusService.scrapeTicketUri(emitter, busTicket, language));
-            if (busTicket.getProizdPrice() != null)
-                completableFutureListBus.add(proizdBusService.scrapeTicketUri(emitter, busTicket, language));
-
-            CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
+            CompletableFuture<Void> allOf = scrapeBusLink(busTicket, emitter, language);
 
             try {
                 allOf.join();
@@ -192,30 +183,9 @@ public class ScraperManager {
             }
 
             busTicketRepository.save(busTicket);
-        } else {
-            if (busTicket.getProizdLink() != null) {
-                emitter.send(SseEmitter.event().name(PROIZD_UA).data(UrlAndPriceDTO.builder()
-                        .price(busTicket.getProizdPrice())
-                        .url(busTicket.getProizdLink())
-                        .build()));
-                log.info("PROIZD URL IN single getTicket() INSTANTLY:" + busTicket.getProizdLink());
-            }
-            if (busTicket.getBusforLink() != null) {
-                emitter.send(SseEmitter.event().name(BUSFOR_UA).data(UrlAndPriceDTO.builder()
-                        .price(busTicket.getBusforPrice())
-                        .url(busTicket.getBusforLink())
-                        .build()));
-                log.info("BUSFOR URL IN single getTicket() INSTANTLY: " + busTicket.getBusforLink());
-            }
-            if (busTicket.getInfobusLink() != null) {
-                emitter.send(SseEmitter.event().name(INFOBUS).data(
-                        UrlAndPriceDTO.builder()
-                                .price(busTicket.getInfobusPrice())
-                                .url(busTicket.getInfobusLink())
-                                .build()));
-                log.info("INFOBUS URL IN single getTicket() INSTANTLY:  " + busTicket.getInfobusLink());
-            }
 
+        } else {
+            extractBusPriceAndLink(busTicket, emitter);
         }
 
         if (emitter != null) {
@@ -223,6 +193,44 @@ public class ScraperManager {
         }
         return CompletableFuture.completedFuture(true);
     }
+
+
+    private CompletableFuture<Void> scrapeBusLink( BusTicket busTicket, SseEmitter emitter, String language){
+
+        List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
+
+        busTicket.getInfoList().forEach(t -> {
+            try {
+                switch (t.getSourceWebsite()) {
+                    case PROIZD_UA ->
+                            completableFutureListBus.add(proizdBusService.scrapeTicketUri(emitter, busTicket, language));
+                    case BUSFOR_UA ->
+                            completableFutureListBus.add(busforBusService.scrapeTicketUri(emitter, busTicket, language));
+                    case INFOBUS ->
+                            completableFutureListBus.add(infobusBusService.scrapeTicketUri(emitter, busTicket, language));
+                }
+            } catch (IOException | ParseException e) {
+            }
+        });
+
+        return CompletableFuture.allOf(completableFutureListBus.toArray((CompletableFuture[]::new)));
+    }
+
+
+    private void extractBusPriceAndLink(BusTicket busTicket, SseEmitter emitter){
+        busTicket.getInfoList().forEach(t->{
+            try {
+                emitter.send(SseEmitter.event().name(t.getSourceWebsite()).data(UrlAndPriceDTO.builder()
+                        .price(t.getPrice())
+                        .url(t.getLink())
+                        .build()));
+                log.info(t.getSourceWebsite() + " URL IN single getTicket() INSTANTLY:" + t.getLink());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String
             language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {

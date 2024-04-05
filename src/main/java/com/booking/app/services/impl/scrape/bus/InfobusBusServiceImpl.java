@@ -2,6 +2,7 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.BusPriceInfo;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -142,6 +143,9 @@ public class InfobusBusServiceImpl implements ScraperService {
     }
 
     private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait) throws IOException {
+
+        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t->t.getSourceWebsite().equals(SiteConstants.INFOBUS)).findFirst().get();
+
         log.info("Bus tickets on infobus: " + elements.size());
         for (WebElement element : elements) {
             String price = element.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
@@ -152,24 +156,24 @@ public class InfobusBusServiceImpl implements ScraperService {
 
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
-                    ticket.getInfobusPrice().equals(new BigDecimal(price))) {
+                    priceInfo.getPrice().equals(new BigDecimal(price))) {
 
                 WebElement button = element.findElement(By.cssSelector("button.btn"));
                 Actions actions = new Actions(driver);
                 actions.moveToElement(button).doubleClick().build().perform();
 
                 wait.until(ExpectedConditions.urlContains("deeplink"));
-                ticket.setInfobusLink(driver.getCurrentUrl());
+                priceInfo.setLink(driver.getCurrentUrl());
                 log.info("INFOBUS URL: " + driver.getCurrentUrl());
                 break;
             }
         }
 
-        if (ticket.getInfobusLink() != null) {
+        if (priceInfo.getLink() != null) {
             emitter.send(SseEmitter.event().name(SiteConstants.INFOBUS).data(
                     UrlAndPriceDTO.builder()
-                            .price(ticket.getInfobusPrice())
-                            .url(ticket.getInfobusLink())
+                            .price(priceInfo.getPrice())
+                            .url(priceInfo.getLink())
                             .build()));
         } else log.info("INFOBUS URL NOT FOUND");
     }
@@ -274,7 +278,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .infobusPrice(new BigDecimal(price))
+                .infoList(List.of(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.INFOBUS).build()))
                 .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
                 .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
                 .travelTime(BigDecimal.valueOf(totalMinutes))

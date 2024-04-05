@@ -1,16 +1,15 @@
 package com.booking.app.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Stream;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("BUS")
@@ -21,23 +20,13 @@ import java.util.stream.Stream;
 //@EqualsAndHashCode(callSuper = true) --> doesn't work
 public class BusTicket extends Ticket {
 
-    @Column(columnDefinition = "varchar(1000)")
-    private String busforLink;
-
-    private BigDecimal busforPrice;
-
-    @Column(columnDefinition = "varchar(1000)")
-    private String infobusLink;
-
-    private BigDecimal infobusPrice;
-
-    @Column(columnDefinition = "varchar(1000)")
-    private String proizdLink;
-
-    private BigDecimal proizdPrice;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "bus_info", joinColumns = @JoinColumn(name = "bus_ticket_id"))
+    @Column(name = "bus_info")
+    List<BusPriceInfo> infoList = new ArrayList<>();
 
     public boolean linksAreScraped() {
-        return busforLink != null || proizdLink != null || infobusLink != null;
+        return infoList.stream().anyMatch(t->t.getLink()!=null);
     }
 
     @Override
@@ -52,13 +41,11 @@ public class BusTicket extends Ticket {
 
     @Override
     public BigDecimal getPrice() {
-        return Stream.of(proizdPrice, infobusPrice, busforPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
+        return infoList.stream().map(BusPriceInfo::getPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
     }
 
-    public BusTicket addPrices(BusTicket busTicket) {
-        if (busforPrice == null) busforPrice = busTicket.getBusforPrice();
-        if (proizdPrice == null) proizdPrice = busTicket.getProizdPrice();
-        if (infobusPrice == null) infobusPrice = busTicket.getInfobusPrice();
+    public BusTicket addPrices(BusTicket busPriceInfo) {
+        infoList.addAll(busPriceInfo.getInfoList());
         return this;
     }
 }

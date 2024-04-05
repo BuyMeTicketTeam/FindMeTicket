@@ -1,5 +1,6 @@
 package com.booking.app.services.impl.scrape.bus;
 
+import com.booking.app.entity.BusPriceInfo;
 import com.booking.app.props.LinkProps;
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
@@ -145,6 +146,9 @@ public class ProizdBusServiceImpl implements ScraperService {
     }
 
     private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> elements) throws IOException {
+
+        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t->t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
+
         log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
 
@@ -158,17 +162,17 @@ public class ProizdBusServiceImpl implements ScraperService {
 
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
-                    ticket.getProizdPrice().equals(new BigDecimal(price))) {
-                ticket.setProizdLink(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
+                    priceInfo.getPrice().equals(new BigDecimal(price))) {
+                priceInfo.setLink(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 break;
             }
         }
 
-        if (ticket.getProizdLink() != null) {
+        if (priceInfo.getLink() != null) {
             emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(UrlAndPriceDTO.builder()
-                    .price(ticket.getProizdPrice())
-                    .url(ticket.getProizdLink())
+                    .price(priceInfo.getPrice())
+                    .url(priceInfo.getLink())
                     .build()));
         } else log.info("PROIZD URL NOT FOUND");
     }
@@ -303,7 +307,7 @@ public class ProizdBusServiceImpl implements ScraperService {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .proizdPrice(new BigDecimal(price))
+                .infoList(List.of(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build()))
                 .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
                 .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
                 .travelTime(BigDecimal.valueOf(totalMinutes))

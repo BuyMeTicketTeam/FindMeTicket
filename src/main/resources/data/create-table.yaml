@@ -1,6 +1,28 @@
 databaseChangeLog:
   - changeSet:
-      id: 1711556399489-1
+      id: 1712328676417-1
+      author: User (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: bus_ticket_id
+                  type: UUID
+              - column:
+                  name: link
+                  type: varchar(1000)
+              - column:
+                  name: source_website
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: DECIMAL
+            tableName: bus_info
+  - changeSet:
+      id: 1712328676417-2
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -19,7 +41,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1711556399489-2
+      id: 1712328676417-3
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -46,7 +68,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1711556399489-3
+      id: 1712328676417-4
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -86,27 +108,9 @@ databaseChangeLog:
               - column:
                   name: route_id
                   type: UUID
-              - column:
-                  name: busfor_link
-                  type: varchar(1000)
-              - column:
-                  name: busfor_price
-                  type: DECIMAL
-              - column:
-                  name: infobus_link
-                  type: varchar(1000)
-              - column:
-                  name: infobus_price
-                  type: DECIMAL
-              - column:
-                  name: proizd_link
-                  type: varchar(1000)
-              - column:
-                  name: proizd_price
-                  type: DECIMAL
             tableName: ticket
   - changeSet:
-      id: 1711556399489-4
+      id: 1712328676417-5
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -131,7 +135,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: token
   - changeSet:
-      id: 1711556399489-5
+      id: 1712328676417-6
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -153,7 +157,7 @@ databaseChangeLog:
                   type: DECIMAL
             tableName: train_info
   - changeSet:
-      id: 1711556399489-6
+      id: 1712328676417-7
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -187,7 +191,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_places
   - changeSet:
-      id: 1711556399489-7
+      id: 1712328676417-8
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -237,7 +241,7 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: user_credentials
   - changeSet:
-      id: 1711556399489-8
+      id: 1712328676417-9
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -267,7 +271,7 @@ databaseChangeLog:
                   type: UUID
             tableName: user_search_history
   - changeSet:
-      id: 1711556399489-9
+      id: 1712328676417-10
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -293,6 +297,8 @@ databaseChangeLog:
                   name: url_picture
                   type: VARCHAR(255)
               - column:
+                  constraints:
+                    nullable: false
                   name: notification
                   type: BOOLEAN
               - column:
@@ -303,7 +309,7 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1711556399489-10
+      id: 1712328676417-11
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -312,7 +318,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_email
             tableName: user_credentials
   - changeSet:
-      id: 1711556399489-11
+      id: 1712328676417-12
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -321,7 +327,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_user
             tableName: user_credentials
   - changeSet:
-      id: 1711556399489-12
+      id: 1712328676417-13
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -330,7 +336,7 @@ databaseChangeLog:
             constraintName: uc_user_credentials_username
             tableName: user_credentials
   - changeSet:
-      id: 1711556399489-13
+      id: 1712328676417-14
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -339,7 +345,7 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1711556399489-14
+      id: 1712328676417-15
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -348,7 +354,7 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1711556399489-15
+      id: 1712328676417-16
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -359,7 +365,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1711556399489-16
+      id: 1712328676417-17
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -370,7 +376,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1711556399489-17
+      id: 1712328676417-18
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -381,7 +387,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1711556399489-18
+      id: 1712328676417-19
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -392,7 +398,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: token
   - changeSet:
-      id: 1711556399489-19
+      id: 1712328676417-20
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -403,7 +409,18 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1711556399489-20
+      id: 1712328676417-21
+      author: User (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: bus_ticket_id
+            baseTableName: bus_info
+            constraintName: fk_bus_info_on_bus_ticket
+            referencedColumnNames: id
+            referencedTableName: ticket
+  - changeSet:
+      id: 1712328676417-22
       author: User (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:

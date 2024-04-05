@@ -2,6 +2,7 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.BusPriceInfo;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -30,6 +31,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -125,9 +127,14 @@ public class BusforBusServiceImpl implements ScraperService {
     private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> tickets, WebDriverWait wait, WebDriver driver) throws IOException {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
+
+        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t->t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
+
         if (language.equals("eng"))
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
         for (WebElement element : tickets) {
+
+
 
             List<WebElement> ticketInfo = element.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));
 
@@ -139,7 +146,7 @@ public class BusforBusServiceImpl implements ScraperService {
 
             BigDecimal price = new BigDecimal(element.findElement(By.cssSelector("span.price")).getText().replace(",", ".").trim());
             if (language.equals("eng")) price = currentUAH.multiply(price);
-            BigDecimal difference = ticket.getBusforPrice().subtract(price);
+            BigDecimal difference = priceInfo.getPrice().subtract(price);
             Range<Integer> range = Range.between(-2, 2);
 
             if (range.contains(difference.intValue()) &&
@@ -151,16 +158,16 @@ public class BusforBusServiceImpl implements ScraperService {
 
                 wait.until(ExpectedConditions.or(ExpectedConditions.urlContains("preorders"), (ExpectedConditions.urlContains("checkout"))));
 
-                ticket.setBusforLink(driver.getCurrentUrl());
+                priceInfo.setLink(driver.getCurrentUrl());
                 log.info("BUSFOR URL: " + driver.getCurrentUrl());
                 break;
             }
         }
 
-        if (ticket.getBusforLink() != null) {
+        if (priceInfo.getLink() != null) {
             emitter.send(SseEmitter.event().name(SiteConstants.BUSFOR_UA).data(UrlAndPriceDTO.builder()
-                    .price(ticket.getBusforPrice())
-                    .url(ticket.getBusforLink())
+                    .price(priceInfo.getPrice())
+                    .url(priceInfo.getLink())
                     .build()));
         } else log.info("BUSFOR URL NOT FOUND");
     }
@@ -273,7 +280,7 @@ public class BusforBusServiceImpl implements ScraperService {
                 .departureTime(departureDateTime.substring(0, 5))
                 .arrivalTime(arrivalDateTime)
                 .arrivalDate(arrivalDate)
-                .busforPrice(price)
+                .infoList(List.of(BusPriceInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build()))
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .carrier(carrier).build();
     }
