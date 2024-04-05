@@ -1,16 +1,19 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable import/no-unresolved */
-import React from 'react';
+import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
-  EffectCoverflow, Autoplay, Keyboard, Mousewheel,
+  EffectCoverflow, Autoplay, Keyboard, Mousewheel, Navigation,
 } from 'swiper/modules';
+
 import ReviewsCard from './ReviewsCard';
 
 import 'swiper/scss';
 import './reviews.scss';
+import ReviewsForm from './ReviewsForm';
 
 export default function Reviews() {
-  const reviews = [
+  const [reviews, setReviews] = useState([
     {
       rating: 5, text: 'Some text', username: 'Stepan', useravatar: 'qwerty',
     },
@@ -29,7 +32,7 @@ export default function Reviews() {
     {
       rating: 5, text: 'Some text', username: 'Somebody', useravatar: 'qwerty',
     },
-  ];
+  ]);
 
   return (
     <div className="reviews main">
@@ -40,7 +43,8 @@ export default function Reviews() {
             effect="coverflow"
             spaceBetween={50}
             slidesPerView={3}
-            modules={[EffectCoverflow, Autoplay, Keyboard, Mousewheel]}
+            centeredSlides
+            modules={[EffectCoverflow, Autoplay, Keyboard, Mousewheel, Navigation]}
             coverflowEffect={{
               rotate: 0,
               depth: 150,
@@ -48,10 +52,9 @@ export default function Reviews() {
               modifier: 1,
               slideShadows: false,
             }}
-            autoplay={{
-              delay: 3000,
-            }}
-            loop
+            // autoplay={{
+            //   delay: 3000,
+            // }}
             speed={800}
             keyboard={{
               enabled: true,
@@ -62,9 +65,10 @@ export default function Reviews() {
           >
             {reviews.map((slide, index) => (
               <SwiperSlide key={slide} virtualIndex={index}>
-                <ReviewsCard />
+                <ReviewsCard {...slide} />
               </SwiperSlide>
             ))}
+            <ReviewsForm reviews={reviews} setReviews={setReviews} />
           </Swiper>
         </div>
       </div>

@@ -1,5 +1,9 @@
 @import '../styles/variables.scss';
 
+.reviews {
+  
+}
+
 .reviews-title {
   text-align: center;
   margin-top: 35px;
@@ -43,4 +47,41 @@
     background: $grey;
     border-radius: 50%;
   } 
+}
+
+.reviews-form {
+  margin: 35px auto 20px auto;
+  max-width: max-content;
+  
+  &__title {
+    margin-bottom: 10px;
+  }
+
+  &__textarea {
+    min-width: 500px;
+    min-height: 150px;
+    font-size: 16px;
+    resize: none;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  &__stars {
+    background: $semi-dark;
+    padding: 5px 12px;
+    border-radius: 8px;
+  }
+
+  .star-svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  &__submit-btn.button {
+    min-width: 150px;
+  }
 }
