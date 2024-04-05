@@ -6,7 +6,7 @@ const initialState = {
   isAuthenticated: false,
   username: null,
   userPhoto: null,
-  userMail: null,
+  userEmail: null,
   token: null,
 };
 
