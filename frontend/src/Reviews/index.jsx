@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import {
   EffectCoverflow, Autoplay, Keyboard, Mousewheel, Navigation,
 } from 'swiper/modules';
+import { v4 as uuidv4 } from 'uuid';
 
 import ReviewsCard from './ReviewsCard';
 
@@ -12,7 +13,7 @@ import 'swiper/scss';
 import './reviews.scss';
 import ReviewsForm from './ReviewsForm';
 
-export default function Reviews() {
+export default function Reviews({ status }) {
   const [reviews, setReviews] = useState([
     {
       rating: 5, text: 'Some text', username: 'Stepan', useravatar: 'qwerty',
@@ -52,9 +53,10 @@ export default function Reviews() {
               modifier: 1,
               slideShadows: false,
             }}
-            // autoplay={{
-            //   delay: 3000,
-            // }}
+            autoplay={{
+              delay: 3000,
+              stopOnLastSlide: true,
+            }}
             speed={800}
             keyboard={{
               enabled: true,
@@ -64,11 +66,11 @@ export default function Reviews() {
             }}
           >
             {reviews.map((slide, index) => (
-              <SwiperSlide key={slide} virtualIndex={index}>
+              <SwiperSlide key={uuidv4()} virtualIndex={index}>
                 <ReviewsCard {...slide} />
               </SwiperSlide>
             ))}
-            <ReviewsForm reviews={reviews} setReviews={setReviews} />
+            <ReviewsForm status={status} reviews={reviews} setReviews={setReviews} />
           </Swiper>
         </div>
       </div>

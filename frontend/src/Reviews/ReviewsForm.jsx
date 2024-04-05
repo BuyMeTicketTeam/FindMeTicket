@@ -3,8 +3,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSwiper } from 'swiper/react';
 import { Rating } from 'react-simple-star-rating';
+import noImage from './no-image.jpg';
 
-export default function ReviewsForm({ reviews, setReviews }) {
+export default function ReviewsForm({ status, reviews, setReviews }) {
   const swiper = useSwiper();
   const didMount = useRef(false);
   const [reviewText, setReviewText] = useState('');
@@ -12,7 +13,10 @@ export default function ReviewsForm({ reviews, setReviews }) {
 
   function submitReview() {
     setReviews((prevData) => [...prevData, {
-      rating, text: reviewText, username: 'Somebody',
+      rating,
+      text: reviewText,
+      username: status.username,
+      useravatar: status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : noImage),
     }]);
   }
 

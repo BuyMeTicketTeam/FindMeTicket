@@ -45,7 +45,7 @@ export default function Routers({
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
       <Route path="/profile-page" element={<ProfilePage status={auth} updateAuthValue={updateAuthValue} />} />
-      <Route path="/reviews" element={<Reviews />} />
+      <Route path="/reviews" element={<Reviews status={auth} />} />
     </Routes>
   );
 }
