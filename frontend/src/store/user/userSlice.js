@@ -7,17 +7,24 @@ const initialState = {
   username: null,
   userPhoto: null,
   userEmail: null,
-  token: null,
+  notification: false,
 };
+
+function userRequest(state, action) {
+  state.isAuthenticated = true;
+  state.username = action.payload.username;
+  state.notification = action.payload.notification;
+  state.userEmail = action.payload.email;
+  state.userPhoto = action.payload.googlePicture ?? action.payload.basicPicture;
+}
 
 const slice = createSlice({
   name: 'user',
   initialState,
   extraReducers: (builder) => {
-    builder.addMatcher(userApi.endpoints.login.matchFulfilled, (state, action) => {
-      state.isAuthenticated = true;
-      state.token = action.payload.token;
-    });
+    builder.addMatcher(userApi.endpoints.login.matchFulfilled, userRequest);
+    builder.addMatcher(userApi.endpoints.loginGoogle.matchFulfilled, userRequest);
+    builder.addMatcher(userApi.endpoints.loginFacebook.matchFulfilled, userRequest);
   },
 });
 

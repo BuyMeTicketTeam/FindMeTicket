@@ -9,6 +9,20 @@ export const userApi = api.injectEndpoints({
         body: userData,
       }),
     }),
+    loginGoogle: builder.mutation({
+      query: (token) => ({
+        url: '/oauth2/authorize/google',
+        method: 'POST',
+        body: token,
+      }),
+    }),
+    loginFacebook: builder.mutation({
+      query: (token) => ({
+        url: '/oauth2/authorize/facebook',
+        method: 'POST',
+        body: token,
+      }),
+    }),
   }),
 });
 
