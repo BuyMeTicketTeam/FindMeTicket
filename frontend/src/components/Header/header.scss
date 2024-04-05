@@ -1,0 +1,120 @@
+@import '../../styles/variables.scss';
+
+.header {
+  display: flex;
+  padding: 0 25px;
+  background: $semi-dark;
+  align-items: center;
+  font-size: 18px;
+  position: relative;
+  z-index: 2;
+
+  .language-select {
+    display: flex;
+  }
+}
+
+.logo {
+  width: 275px;
+  margin-right: 30px;
+}
+
+.menu {
+  flex: auto;
+  display: flex;
+  list-style: none;
+  align-items: center;
+}
+
+.menu__item {
+  margin-right: 15px;
+
+  a {
+    display: inline-block;
+    color: inherit;
+    text-decoration: none;
+    padding: 20px 0;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    color: $bright;
+    transition: 0.3s;
+  }
+}
+
+.select {
+  font-size: inherit;
+  border: none;
+  margin-right: 15px;
+  background: $dark;
+  color: $bright;
+
+  &:focus-visible {
+    outline: none;
+  }  
+}
+
+.login {
+  font-size: inherit;
+  background: transparent;
+  border: none;
+  color: inherit;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
+//select
+.header .react-select__control {
+  background: transparent;
+  margin-right: 10px;
+  border: none;
+  .css-1fdsijx-ValueContainer {
+    padding: 2px 0px 2px 2px;
+  }
+  &.react-select__control--is-focused {
+    box-shadow: none;
+  }
+
+  .react-select__single-value {
+    color: $font-color;
+  }
+
+  .react-select__indicator-separator {
+    display: none;
+  }
+
+  .react-select__indicator {
+    padding: 0;
+  }
+}
+.header .react-select__menu {
+  background: $main;
+  
+  .react-select__option {
+    color: $font-color;
+  }
+
+  .react-select__option--is-selected {
+    background: inherit;
+  }
+
+  .react-select__single-value {
+    color: $font-color;
+  }
+
+  .react-select__option--is-focused {
+    background: inherit;
+  }
+
+  .react-select__option:hover {
+    background: $dark;
+  }
+}
+
+.login-link {
+  text-decoration: none;
+}

@@ -6,8 +6,8 @@ import engJSON from './eng.json';
 
 i18n.use(initReactI18next).init({
   resources: {
-    UA: { ...ukJSON },
-    ENG: { ...engJSON },
+    Ua: { ...ukJSON },
+    Eng: { ...engJSON },
   }, // Where we're gonna put translations' files
-  lng: 'UA', // Set the initial language of the App
+  lng: 'Eng', // Set the initial language of the App
 });
