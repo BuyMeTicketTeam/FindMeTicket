@@ -3,11 +3,6 @@ import React from 'react';
 function PrivacyPolicy() {
   return (
     <div className="page">
-      <div className="header">
-        <div className="container">
-          <p className="title">Privacy Policy for FindMeTicket</p>
-        </div>
-      </div>
       <div className="translations-content-container">
         <div className="container">
           <div className="tab-content translations-content-item en visible" id="en">
