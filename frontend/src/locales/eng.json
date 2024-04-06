@@ -273,6 +273,13 @@
                   "unauthorized-text": "The map of tourist places is available only to authorized users",
                   "unauthorized-button": "Log in",
                   "load-more": "Load more"
+            },
+            "reviews": {
+                  "title": "Many amazing people are using our service daily",
+                  "form-title": "Leave your comment",
+                  "lock-message": "Only authorized users can leave comments",
+                  "lock-button": "Log in",
+                  "form-submit-btn": "Submit"
             }
 
       }

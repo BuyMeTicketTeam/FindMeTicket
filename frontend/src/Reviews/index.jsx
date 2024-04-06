@@ -6,39 +6,41 @@ import {
   EffectCoverflow, Autoplay, Keyboard, Mousewheel, Navigation,
 } from 'swiper/modules';
 import { v4 as uuidv4 } from 'uuid';
+import { useTranslation } from 'react-i18next';
 
 import ReviewsCard from './ReviewsCard';
+import ReviewsForm from './ReviewsForm';
 
 import 'swiper/scss';
 import './reviews.scss';
-import ReviewsForm from './ReviewsForm';
+
+import StepanPhoto from './image 13.png';
+import MykhailoPhoto from './image15.png';
+import MaximPhoto from './image14.png';
+import KirillPhoto from './image16.png';
 
 export default function Reviews({ status }) {
   const [reviews, setReviews] = useState([
     {
-      rating: 5, text: 'Some text', username: 'Stepan', useravatar: 'qwerty',
+      rating: 5, text: 'Some text', username: 'Михайло', useravatar: MykhailoPhoto,
     },
     {
-      rating: 4, text: 'Some text', username: 'Misha', useravatar: 'qwerty',
+      rating: 5, text: 'Нещодавно я використав застосунок FindMeTicket, і можу сказати, що це дійсно зручний і корисний інструмент для тих, хто подорожує. Сайт пропонує широкий вибір квитків на автобуси та потяги, що дозволяє легко порівнювати ціни та вибирати найбільш вигідні пропозиції.', username: 'Степан', useravatar: StepanPhoto,
     },
     {
-      rating: 5, text: 'Some text', username: 'Somebody', useravatar: 'qwerty',
+      rating: 5, text: 'Some text', username: 'Максим', useravatar: MaximPhoto,
     },
     {
-      rating: 5, text: 'Some text', username: 'Stepan', useravatar: 'qwerty',
-    },
-    {
-      rating: 4, text: 'Some text', username: 'Misha', useravatar: 'qwerty',
-    },
-    {
-      rating: 5, text: 'Some text', username: 'Somebody', useravatar: 'qwerty',
+      rating: 5, text: 'Some text', username: 'Кирило', useravatar: KirillPhoto,
     },
   ]);
+
+  const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
 
   return (
     <div className="reviews main">
       <div className="container">
-        <h1 className="reviews-title">Many amazing people are using our service daily</h1>
+        <h1 className="reviews-title">{t('title')}</h1>
         <div className="reviews-swiper">
           <Swiper
             effect="coverflow"
