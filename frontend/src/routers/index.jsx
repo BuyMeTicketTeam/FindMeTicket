@@ -9,7 +9,7 @@ import Register from '../register';
 import Confirm from '../confirm';
 import Index from '../main';
 import TicketPage from '../ticketPage';
-import Login from '../header/login/index';
+import Login from '../pages/Login';
 import ResetPassword from '../resetPassword';
 import ChangePassword from '../changePassword';
 import PrivacyPolicy from '../privacyPolicy';
