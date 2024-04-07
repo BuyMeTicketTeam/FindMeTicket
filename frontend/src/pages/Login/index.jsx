@@ -45,19 +45,19 @@ export default function Login() {
     <div data-testid="login" className="background main">
       <form className="popup__body" onSubmit={handleSubmit(onSubmit)}>
         <Link to="/" className="close" aria-label="Close" />
-        {error && <p data-testid="error" className="error">{error}</p>}
+        {error && <p data-testid="error" className="error">{t([`error_${error}`, 'error_500'])}</p>}
         <Input
           id="email"
           error={errors.email}
-          errorMessage="Email is invalid"
-          label="Email"
+          errorMessage={t('login_error')}
+          label={t('email_name')}
           otherProps={{ ...register('email', { required: true, pattern: EMAIL_PATTERN }) }}
         />
         <Input
           id="password"
           error={errors.password}
-          errorMessage="Password is invalid"
-          label="Password"
+          errorMessage={t('password_error')}
+          label={t('password_name')}
           type="password"
           otherProps={{ ...register('password', { required: true, pattern: PASSWORD_PATTERN }) }}
         />
@@ -66,17 +66,17 @@ export default function Login() {
           id="rememberMe"
           otherProps={{ ...register('rememberMe') }}
         >
-          {t('remember-me')}
+          {t('remember_me')}
         </Checkbox>
         <div className="link">
           <Link
             to="/reset"
           >
-            {t('forgot-password')}
+            {t('forgot_password')}
           </Link>
         </div>
 
-        <button disabled={isLoading} className="button btn-full" type="submit">{isLoading ? 'Loading...' : 'Login'}</button>
+        <button disabled={isLoading} className="button btn-full" type="submit">{isLoading ? t('processing') : t('login_button')}</button>
 
         <div className="login__another">
           <span className="login-another__line" />
@@ -88,7 +88,7 @@ export default function Login() {
             handleQuery({ idToken: credentialResponse.credential }, loginGoogle);
           }}
           onError={() => {
-            setError('Помилка. Спробуйте ще раз');
+            setError('google');
           }}
           shape="circle"
           width={336}
@@ -98,7 +98,7 @@ export default function Login() {
           className="login__google"
           onSuccess={(response) => handleQuery({ idToken: response.userID }, loginFacebook)}
           onFail={() => {
-            setError('Помилка. Спробуйте ще раз');
+            setError('facebook');
           }}
         >
           <img src={facebookIcon} alt="logo" />

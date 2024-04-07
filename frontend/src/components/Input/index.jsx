@@ -10,7 +10,7 @@ export default function Input({
   return (
     <div className="field">
       <label htmlFor={id} className="field__name">{label}</label>
-      <input id={id} className="input" type={showPassword ? 'text' : type} {...otherProps} />
+      <input id={id} className={error ? 'input input-error' : 'input'} type={showPassword ? 'text' : type} {...otherProps} />
       {type === 'password' && (
         <button
           className={!showPassword ? 'show-password hide' : 'show-password'}
