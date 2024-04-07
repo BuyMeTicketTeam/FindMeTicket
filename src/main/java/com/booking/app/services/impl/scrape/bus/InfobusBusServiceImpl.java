@@ -2,7 +2,7 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
-import com.booking.app.entity.BusPriceInfo;
+import com.booking.app.entity.BusInfo;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -73,10 +73,10 @@ public class InfobusBusServiceImpl implements ScraperService {
 
 
             return CompletableFuture.completedFuture(true);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error in INFOBUS BUS service: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
-        }finally {
+        } finally {
             driver.quit();
         }
 
@@ -153,7 +153,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
     private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait) throws IOException {
 
-        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t->t.getSourceWebsite().equals(SiteConstants.INFOBUS)).findFirst().get();
+        BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.INFOBUS)).findFirst().get();
 
         log.info("Bus tickets on infobus: " + elements.size());
         for (WebElement element : elements) {
@@ -293,7 +293,7 @@ public class InfobusBusServiceImpl implements ScraperService {
                 .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalDate(date)
-                .carrier(carrier.toUpperCase()).build().addPrice(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.INFOBUS).build());
+                .carrier(carrier.toUpperCase()).build().addPrice(BusInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.INFOBUS).build());
     }
 
 }

@@ -22,12 +22,12 @@ import java.util.List;
 public class BusTicket extends Ticket {
 
 
-    @OneToMany(mappedBy = "busTicket" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "busTicket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Builder.Default
-    List<BusPriceInfo> infoList = new ArrayList<>();
+    List<BusInfo> infoList = new ArrayList<>();
 
     public boolean linksAreScraped() {
-        return infoList.stream().anyMatch(t->t.getLink()!=null);
+        return infoList.stream().anyMatch(t -> t.getLink() != null);
     }
 
     @Override
@@ -42,17 +42,12 @@ public class BusTicket extends Ticket {
 
     @Override
     public BigDecimal getPrice() {
-        return infoList.stream().map(BusPriceInfo::getPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
+        return infoList.stream().map(BusInfo::getPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
     }
 
-    public BusTicket addPrices(BusTicket busPriceInfo) {
-        infoList.addAll(busPriceInfo.getInfoList());
-        return this;
-    }
-
-    public BusTicket addPrice(BusPriceInfo busPriceInfo) {
-        busPriceInfo.setBusTicket(this);
-        infoList.add(busPriceInfo);
+    public BusTicket addPrice(BusInfo busInfo) {
+        busInfo.setBusTicket(this);
+        infoList.add(busInfo);
         return this;
     }
 }

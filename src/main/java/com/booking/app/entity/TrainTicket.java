@@ -20,9 +20,9 @@ import java.util.List;
 @DynamicUpdate
 public class TrainTicket extends Ticket {
 
-    @OneToMany(mappedBy = "trainTicket" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainTicket", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @Builder.Default
-    List<TrainComfortInfo> infoList = new ArrayList<>();
+    List<TrainInfo> infoList = new ArrayList<>();
 
     @Override
     public BigDecimal getPrice() {
@@ -39,11 +39,17 @@ public class TrainTicket extends Ticket {
         return super.hashCode();
     }
 
-    public TrainTicket addPrices(TrainTicket trainTicket) {
-        trainTicket.getInfoList().forEach(t->{
+    public TrainTicket addPrices(List<TrainInfo> trainInfos) {
+        trainInfos.forEach(t -> {
             t.setTrainTicket(this);
             infoList.add(t);
         });
+        return this;
+    }
+
+    public TrainTicket addPrice(TrainInfo busInfo) {
+        busInfo.setTrainTicket(this);
+        infoList.add(busInfo);
         return this;
     }
 }

@@ -2,7 +2,7 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
-import com.booking.app.entity.BusPriceInfo;
+import com.booking.app.entity.BusInfo;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -31,7 +31,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -134,7 +133,7 @@ public class BusforBusServiceImpl implements ScraperService {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
 
-        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
+        BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
 
         if (language.equals("eng"))
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
@@ -286,7 +285,7 @@ public class BusforBusServiceImpl implements ScraperService {
                 .arrivalTime(arrivalDateTime)
                 .arrivalDate(arrivalDate)
                 .travelTime(BigDecimal.valueOf(totalMinutes))
-                .carrier(carrier).build().addPrice(BusPriceInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build());
+                .carrier(carrier).build().addPrice(BusInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build());
     }
 
 }

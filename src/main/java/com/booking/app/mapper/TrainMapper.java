@@ -2,7 +2,7 @@ package com.booking.app.mapper;
 
 import com.booking.app.dto.TicketDto;
 import com.booking.app.dto.TrainComfortInfoDTO;
-import com.booking.app.entity.TrainComfortInfo;
+import com.booking.app.entity.TrainInfo;
 import com.booking.app.entity.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import org.mapstruct.*;
@@ -26,7 +26,7 @@ public interface TrainMapper {
     TicketDto toTrainTicketDto(TrainTicket ticket, @Context String language);
 
     @Mapping(source = "link", target = "url")
-    TrainComfortInfoDTO toTrainComfortInfoDTO(TrainComfortInfo ticket);
+    TrainComfortInfoDTO toTrainComfortInfoDTO(TrainInfo ticket);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {

@@ -1,13 +1,13 @@
 package com.booking.app.services.impl.scrape.bus;
 
-import com.booking.app.entity.BusPriceInfo;
-import com.booking.app.props.LinkProps;
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.BusInfo;
 import com.booking.app.entity.BusTicket;
 import com.booking.app.entity.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.props.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
@@ -156,7 +156,7 @@ public class ProizdBusServiceImpl implements ScraperService {
 
     private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> elements) throws IOException {
 
-        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
+        BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
 
         log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
@@ -322,7 +322,7 @@ public class ProizdBusServiceImpl implements ScraperService {
                 .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
                 .arrivalDate(formattedTime)
-                .carrier(carrier).build().addPrice(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build());
+                .carrier(carrier).build().addPrice(BusInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build());
     }
 
 }
