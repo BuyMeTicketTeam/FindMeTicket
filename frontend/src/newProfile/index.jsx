@@ -196,8 +196,9 @@ function Popup({
         <p className="notification-text">
           {t('notice')}
         </p>
-        <label className="switch">
+        <label htmlFor="notification" className="switch">
           <input
+            id="notification"
             type="checkbox"
             checked={notificationEnabled}
             onChange={() => setNotificationEnabled(() => {
