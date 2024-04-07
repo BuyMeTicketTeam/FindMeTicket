@@ -58,24 +58,29 @@ public class BusforBusServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException {
+
         WebDriver driver = webDriverFactory.createInstance();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        String url = determineBaseUri(language);
-        String fulfilledUrl = String.format(url, route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate());
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            String url = determineBaseUri(language);
+            String fulfilledUrl = String.format(url, route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate());
 
-        driver.get(fulfilledUrl);
+            driver.get(fulfilledUrl);
 
-        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        waitForTickets(driver);
+            waitForTickets(driver);
 
-        List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
+            List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
 
-        processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait);
-
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
+            processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait);
+            return CompletableFuture.completedFuture(true);
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(false);
+        } finally {
+            driver.quit();
+        }
     }
 
     @Async
@@ -128,12 +133,11 @@ public class BusforBusServiceImpl implements ScraperService {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
 
-        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t->t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
+        BusPriceInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
 
         if (language.equals("eng"))
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
         for (WebElement element : tickets) {
-
 
 
             List<WebElement> ticketInfo = element.findElements(By.cssSelector("div.Style__Item-yh63zd-7.kAreny"));

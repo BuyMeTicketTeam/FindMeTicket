@@ -54,34 +54,43 @@ public class ProizdTrainServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException {
+
         WebDriver driver = webDriverFactory.createInstance();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUri(language), language);
 
-        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUri(language), language);
 
-        waitForTickets(driver);
+            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+            waitForTickets(driver);
 
-        log.info("Train tickets on proizd: " + elements.size());
+            List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
-        for (int i = 0; i < elements.size() && i < 150; i++) {
-            TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
-            TrainTicket trainTicket = scrapedTicket;
+            log.info("Train tickets on proizd: " + elements.size());
 
-            if (route.getTickets().add(scrapedTicket)) {
-                if (BooleanUtils.isTrue(doDisplay))
-                    emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
+            for (int i = 0; i < elements.size() && i < 150; i++) {
+                TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+                TrainTicket trainTicket = scrapedTicket;
 
-            } else
-                scrapedTicket = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(trainTicket)).findFirst().get()).addPrices(trainTicket);
+                if (route.getTickets().add(scrapedTicket)) {
+                    if (BooleanUtils.isTrue(doDisplay))
+                        emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
 
-            trainRepository.save(scrapedTicket);
+                } else
+                    scrapedTicket = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(trainTicket)).findFirst().get()).addPrices(trainTicket);
+
+                trainRepository.save(scrapedTicket);
+            }
+
+
+            return CompletableFuture.completedFuture(true);
+        }catch (Exception e){
+            return CompletableFuture.completedFuture(false);
+        }finally {
+            driver.quit();
         }
 
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
     }
 
     @Override

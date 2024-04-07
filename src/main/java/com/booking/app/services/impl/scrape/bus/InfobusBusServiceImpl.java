@@ -56,21 +56,29 @@ public class InfobusBusServiceImpl implements ScraperService {
     @Async
     @Override
     public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+
         WebDriver driver = webDriverFactory.createInstance();
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-        String url = determineBaseUri(language);
-        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            String url = determineBaseUri(language);
+            requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        waitForTickets(driver);
+            waitForTickets(driver);
 
-        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        processScrapedTickets(emitter, route, language, doShow, elements);
+            List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+            processScrapedTickets(emitter, route, language, doShow, elements);
 
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
+
+            return CompletableFuture.completedFuture(true);
+        }catch (Exception e){
+            return CompletableFuture.completedFuture(false);
+        }finally {
+            driver.quit();
+        }
+
     }
 
     @Async
