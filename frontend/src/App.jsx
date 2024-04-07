@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import Header from './components/Header';
 import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
@@ -11,6 +12,7 @@ import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
 import ScrollButton from './scrollButton';
+import { initUsers } from './store/user/userSlice';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
@@ -22,6 +24,15 @@ function App() {
     ferry: false,
   });
   const [requestBody, setRequestBody] = useState({});
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const userDataFromStorage = localStorage.getItem('userData');
+    if (userDataFromStorage) {
+      dispatch(initUsers(JSON.parse(userDataFromStorage)));
+    }
+  }, []);
 
   return (
     <Router>

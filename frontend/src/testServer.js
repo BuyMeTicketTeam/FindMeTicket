@@ -121,7 +121,7 @@ createServer({
     // Responding to a POST request
     this.post('/login', () => {
       // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
-      return new Response(401, undefined, JSON.stringify({
+      return new Response(200, { rememberMe: true }, JSON.stringify({
         username: 'Max', email: 'user@gmail.com', basicPicture: null, googlePicture: 'https://lh3.googleusercontent.com/a/ACg8ocIyLV6grsACo0xFoxYN_AScMvUMXuW6TebrrnI1OwopQCzw6Q=s96-c',
       }));
     });

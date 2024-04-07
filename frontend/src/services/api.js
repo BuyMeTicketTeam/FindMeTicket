@@ -15,20 +15,21 @@ const baseQuery = fetchBaseQuery({
     }
     return headers;
   },
-  responseHandler: (response) => {
+  responseHandler: async (response) => {
+    const parsedJSON = await response.json();
     if (response.headers.has('Authorization')) {
       localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
     }
 
     if (response.headers.has('rememberme')) {
-      localStorage.setItem('userData', response.body);
+      localStorage.setItem('userData', JSON.stringify(parsedJSON));
     }
 
     if (response.headers.has('user_id')) {
       cookies.set('USER_ID', response.headers.get('user_id'));
     }
 
-    return response.json();
+    return parsedJSON;
   },
 });
 
