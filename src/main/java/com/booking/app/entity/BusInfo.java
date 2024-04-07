@@ -1,10 +1,7 @@
 package com.booking.app.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,8 +10,9 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class TrainComfortInfo {
+@Setter
+@Getter
+public class BusInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,11 +21,11 @@ public class TrainComfortInfo {
     @Column(columnDefinition = "varchar(1000)")
     private String link;
 
-    private String comfort;
+    private String sourceWebsite;
 
     private BigDecimal price;
 
     @ManyToOne
     @JoinColumn(name = "bus_ticket_Id")
-    private TrainTicket trainTicket;
+    private BusTicket busTicket;
 }
