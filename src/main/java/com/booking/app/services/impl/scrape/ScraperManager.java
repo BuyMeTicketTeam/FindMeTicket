@@ -2,10 +2,10 @@ package com.booking.app.services.impl.scrape;
 
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
-import com.booking.app.entity.Ticket;
-import com.booking.app.entity.TrainTicket;
+import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.entity.ticket.Route;
+import com.booking.app.entity.ticket.Ticket;
+import com.booking.app.entity.ticket.train.TrainTicket;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.mapper.RouteMapper;
 import com.booking.app.mapper.TrainMapper;

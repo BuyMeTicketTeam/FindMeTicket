@@ -1,5 +1,6 @@
-package com.booking.app.entity;
+package com.booking.app.entity.ticket.bus;
 
+import com.booking.app.entity.ticket.Ticket;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.booking.app.entity;
+package com.booking.app.entity.ticket;
 
 import jakarta.persistence.*;
 import lombok.*;

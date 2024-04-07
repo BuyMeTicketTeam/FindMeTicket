@@ -2,8 +2,8 @@ package com.booking.app.mapper;
 
 import com.booking.app.dto.TicketDto;
 import com.booking.app.dto.TrainComfortInfoDTO;
-import com.booking.app.entity.TrainInfo;
-import com.booking.app.entity.TrainTicket;
+import com.booking.app.entity.ticket.train.TrainInfo;
+import com.booking.app.entity.ticket.train.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import org.mapstruct.*;
 import org.springframework.http.HttpHeaders;

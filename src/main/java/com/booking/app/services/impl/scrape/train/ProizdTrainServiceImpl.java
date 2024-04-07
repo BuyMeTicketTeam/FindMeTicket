@@ -1,9 +1,9 @@
 package com.booking.app.services.impl.scrape.train;
 
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
-import com.booking.app.entity.TrainInfo;
-import com.booking.app.entity.TrainTicket;
+import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.entity.ticket.Route;
+import com.booking.app.entity.ticket.train.TrainInfo;
+import com.booking.app.entity.ticket.train.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.TrainMapper;
 import com.booking.app.props.LinkProps;

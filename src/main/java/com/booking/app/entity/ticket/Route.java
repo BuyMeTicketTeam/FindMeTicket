@@ -1,5 +1,6 @@
-package com.booking.app.entity;
+package com.booking.app.entity.ticket;
 
+import com.booking.app.entity.ticket.Ticket;
 import com.google.common.collect.Sets;
 import jakarta.persistence.*;
 import lombok.*;

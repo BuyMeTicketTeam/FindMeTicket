@@ -1,7 +1,7 @@
 package com.booking.app.mapper;
 
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.Route;
 import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @Builder(disableBuilder = true))

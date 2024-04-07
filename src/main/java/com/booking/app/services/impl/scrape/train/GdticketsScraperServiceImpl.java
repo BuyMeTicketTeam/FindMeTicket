@@ -1,8 +1,8 @@
 package com.booking.app.services.impl.scrape.train;
 
 import com.booking.app.props.LinkProps;
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.entity.ticket.Route;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;

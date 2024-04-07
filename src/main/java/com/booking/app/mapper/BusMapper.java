@@ -1,7 +1,7 @@
 package com.booking.app.mapper;
 
 import com.booking.app.dto.TicketDto;
-import com.booking.app.entity.BusTicket;
+import com.booking.app.entity.ticket.bus.BusTicket;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
