@@ -6,9 +6,10 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("TRAIN")
@@ -26,7 +27,12 @@ public class TrainTicket extends Ticket {
 
     @Override
     public BigDecimal getPrice() {
-        return infoList.stream().map(t -> t.getPrice()).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
+        return infoList.stream()
+                .map(t -> t.getPrice())
+                .filter(Objects::nonNull)
+                .min(BigDecimal::compareTo)
+                .map(price -> price.setScale(2, RoundingMode.UNNECESSARY))
+                .orElse(null);
     }
 
     @Override

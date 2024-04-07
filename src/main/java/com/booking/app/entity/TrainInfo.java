@@ -23,6 +23,7 @@ public class TrainInfo {
 
     private String comfort;
 
+    @Column(precision = 10, scale = 2)
     private BigDecimal price;
 
     @ManyToOne

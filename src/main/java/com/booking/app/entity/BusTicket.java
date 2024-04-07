@@ -8,9 +8,10 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("BUS")
@@ -42,7 +43,12 @@ public class BusTicket extends Ticket {
 
     @Override
     public BigDecimal getPrice() {
-        return infoList.stream().map(BusInfo::getPrice).min(Comparator.nullsLast(BigDecimal::compareTo)).get();
+        return infoList.stream()
+                .map(BusInfo::getPrice)
+                .filter(Objects::nonNull)
+                .min(BigDecimal::compareTo)
+                .map(price -> price.setScale(2, RoundingMode.UNNECESSARY))
+                .orElse(null);
     }
 
     public BusTicket addPrice(BusInfo busInfo) {
