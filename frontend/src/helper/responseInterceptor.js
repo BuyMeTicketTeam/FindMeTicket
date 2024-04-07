@@ -1,4 +1,7 @@
+/* eslint-disable no-shadow */
+/* eslint-disable import/no-cycle */
 import Cookies from 'universal-cookie';
+import makeQuerry from './querry';
 
 export default function responseInterceptor(response, bodyResponse) {
   const cookies = new Cookies(null, { path: '/' });
@@ -14,6 +17,20 @@ export default function responseInterceptor(response, bodyResponse) {
 
       if (key === 'user_id') {
         cookies.set('USER_ID', value);
+      }
+    });
+  }
+  if (response.status === 302) {
+    console.log('Location', response.headers.get('Location'));
+    makeQuerry(response.headers.get('Location') ?? 'logout', undefined, undefined, 'GET').then((response) => {
+      switch (response.status) {
+        case 200:
+          localStorage.removeItem('JWTtoken');
+          cookies.remove('rememberMe');
+          cookies.remove('USER_ID');
+          break;
+        default:
+          break;
       }
     });
   }

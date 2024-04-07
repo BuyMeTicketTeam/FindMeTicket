@@ -55,25 +55,25 @@ function Footer() {
                   leftArrow={<CarouselArrow direction="left" />}
                 >
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Київ&to=Харків&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Київ&to=Харків&endpoint=1" className="rectangle">
                       <img src={Kharkiv} alt="Icon 1" />
                       <p>{t('Kiev-Kharkiv')}</p>
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Дніпро&to=Чернівці&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Дніпро&to=Чернівці&endpoint=1" className="rectangle">
                       <img src={Chernivtsi} alt="Icon 2" />
                       <p>{t('Dnipro-Chernivtsi')}</p>
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Київ&to=Дніпро&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Київ&to=Дніпро&endpoint=1" className="rectangle">
                       <img src={Dnipro} alt="Icon 3" />
                       <p>{t('Kiev-Dnipro')}</p>
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Харків&to=Івано-Франківськ&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Харків&to=Івано-Франківськ&endpoint=1" className="rectangle">
                       <img src={IvanoFrankivsk} alt="Icon 4" />
                       <p className="word-space">
                         {t('Kharkiv-Ivano-Frankivsk')}
@@ -81,7 +81,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Львів&to=Київ&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Львів&to=Київ&endpoint=1" className="rectangle">
                       <img src={Kyiv} alt="Icon 4" />
                       <p>
                         {t('Lviv-Kiev')}
@@ -89,7 +89,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Дніпро&to=Одеса&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Дніпро&to=Одеса&endpoint=1" className="rectangle">
                       <img src={Odesa} alt="Icon 4" />
                       <p>
                         {t('Dnipro-Odessa')}
@@ -97,7 +97,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Київ&to=Полтава&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Київ&to=Полтава&endpoint=1" className="rectangle">
                       <img src={Poltava} alt="Icon 4" />
                       <p>
                         {t('Kiev-Poltava')}
@@ -105,7 +105,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Львів&to=Тернопіль&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Львів&to=Тернопіль&endpoint=1" className="rectangle">
                       <img src={Ternopil} alt="Icon 4" />
                       <p>
                         {t('Lviv-Ternopil')}
@@ -113,7 +113,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Харків&to=Запоріжжя&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Харків&to=Запоріжжя&endpoint=1" className="rectangle">
                       <img src={Zaporizhzhia} alt="Icon 4" />
                       <p>
                         {t('Kharkiv-Zaporizhzhya')}
@@ -121,7 +121,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Одеса&to=Херсон&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Одеса&to=Херсон&endpoint=1" className="rectangle">
                       <img src={Kherson} alt="Icon 4" />
                       <p>
                         {t('Odessa-Kherson')}
@@ -129,7 +129,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Запоріжжя&to=Кривий Ріг&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Запоріжжя&to=Кривий Ріг&endpoint=1" className="rectangle">
                       <img src={KryvyiRih} alt="Icon 4" />
                       <p className="word-space">
                         {t('Zaporizhzhya-Krivyi Rih')}
@@ -137,7 +137,7 @@ function Footer() {
                     </Link>
                   </div>
                   <div className="footer-column">
-                    <Link to="?&type=all&from=Віниця&to=Львів&endpoint=1" className="rectangle">
+                    <Link to="/?&type=all&from=Віниця&to=Львів&endpoint=1" className="rectangle">
                       <img src={Lviv} alt="Icon 4" />
                       <p>
                         {t('Vinnytsia-Lviv')}

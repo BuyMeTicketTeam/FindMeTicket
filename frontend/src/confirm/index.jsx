@@ -118,6 +118,7 @@ export default function Confirm() {
               className="link-success"
               data-testid=""
               to="/login"
+              state={{ successNavigate: '/', closeNavigate: '/' }}
             >
               {t('auth-link')}
             </Link>

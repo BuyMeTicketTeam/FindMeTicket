@@ -60,6 +60,7 @@
                   "register": "Sign up",
                   "or": "Or",
                   "google": "Google",
+                  "facebook": "Facebook",
                   "remember-me": "Remember me"
             },
             "profile": {
@@ -67,7 +68,15 @@
                   "exit": "Log out",
                   "privacy-policy": "Privacy Policy",
                   "delete-account": "Delete account",
-                  "hello": "Hi,"
+                  "hello": "Hi,",
+                  "notice": "Would you like to receive notifications about the availability of tickets?",
+                  "account": "Account",
+                  "email": "Email",
+                  "phone": "Phone number",
+                  "account-management": "Account management",
+                  "add": "Add",
+                  "history": "History",
+                  "no-items": "You have no search history"
             },
             "register": {
                   "error-email": "The user with this email address is already registered",
@@ -88,7 +97,8 @@
                   "privacy policy": "privacy policy",
                   "register": "Sign up",
                   "processing": "Processing...",
-                  "error-nickname-exist": "This nickname already exists, come up with something else"
+                  "error-nickname-exist": "This nickname already exists, come up with something else",
+                  "ticket-alerts-agreement": "Would you like to receive emails about new tickets?"
             },
             "tip": {
                   "nickname-tip-title": "Your nickname must meet the following requirements:",

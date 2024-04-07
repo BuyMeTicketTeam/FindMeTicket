@@ -1,5 +1,6 @@
 package com.booking.app.controller;
 
+import com.booking.app.constant.JwtTokenConstants;
 import com.booking.app.controller.api.TicketApi;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
@@ -8,7 +9,9 @@ import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SearchHistoryService;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
+import com.booking.app.services.impl.SearchHistoryServiceImpl;
 import com.booking.app.services.impl.scrape.ScraperManager;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

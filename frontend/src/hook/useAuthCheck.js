@@ -10,12 +10,15 @@ function useAuthCheck() {
     if (authValueCookie) {
       setAuth(authValueCookie);
     }
+    cookies.addChangeListener(({ name, value }) => {
+      if (name === 'rememberMe' && !value) {
+        setAuth(null);
+      }
+    });
   }, []);
   function updateAuthValue(value) {
     setAuth(value);
-    if (!cookies.get('rememberMe')) {
-      cookies.set('rememberMe', JSON.stringify(value));
-    }
+    cookies.set('rememberMe', JSON.stringify(value));
   }
   return { auth, updateAuthValue };
 }
