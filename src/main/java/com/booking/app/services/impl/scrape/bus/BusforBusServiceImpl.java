@@ -77,6 +77,7 @@ public class BusforBusServiceImpl implements ScraperService {
             processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait);
             return CompletableFuture.completedFuture(true);
         } catch (Exception e) {
+            log.error("Error in BUSFOR BUS service: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
         } finally {
             driver.quit();
@@ -193,7 +194,7 @@ public class BusforBusServiceImpl implements ScraperService {
                     emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
 
             } else
-                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrice(busTicket.getInfoList().get(0));
 
             ticketRepository.save(scrapedTicket);
         }
@@ -259,13 +260,13 @@ public class BusforBusServiceImpl implements ScraperService {
         return switch (language) {
             case "ua" -> {
                 formatter = DateTimeFormatter.ofPattern("d MMM u", new Locale("uk"));
-                resultFormatter = DateTimeFormatter.ofPattern("d.MM, EEE", new Locale("uk"));
+                resultFormatter = DateTimeFormatter.ofPattern("dd.MM, EEE", new Locale("uk"));
                 LocalDate date = LocalDate.parse(inputDate + " " + Year.now().getValue(), formatter);
                 yield date.format(resultFormatter);
             }
             case "eng" -> {
                 formatter = DateTimeFormatter.ofPattern("d MMM u", new Locale("en"));
-                resultFormatter = DateTimeFormatter.ofPattern("d.MM, EEE", new Locale("en"));
+                resultFormatter = DateTimeFormatter.ofPattern("dd.MM, EEE", new Locale("en"));
                 LocalDate date = LocalDate.parse(inputDate + " " + Year.now().getValue(), formatter);
                 yield date.format(resultFormatter);
             }
@@ -284,9 +285,8 @@ public class BusforBusServiceImpl implements ScraperService {
                 .departureTime(departureDateTime.substring(0, 5))
                 .arrivalTime(arrivalDateTime)
                 .arrivalDate(arrivalDate)
-                .infoList(List.of(BusPriceInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build()))
                 .travelTime(BigDecimal.valueOf(totalMinutes))
-                .carrier(carrier).build();
+                .carrier(carrier).build().addPrice(BusPriceInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build());
     }
 
 }

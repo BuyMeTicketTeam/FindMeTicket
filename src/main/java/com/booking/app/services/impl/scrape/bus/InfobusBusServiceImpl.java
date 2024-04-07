@@ -74,6 +74,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
             return CompletableFuture.completedFuture(true);
         }catch (Exception e){
+            log.error("Error in INFOBUS BUS service: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
         }finally {
             driver.quit();
@@ -135,7 +136,7 @@ public class InfobusBusServiceImpl implements ScraperService {
                 if (BooleanUtils.isTrue(doShow))
                     emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
             } else
-                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrice(busTicket.getInfoList().get(0));
 
             repository.save(scrapedTicket);
         }
@@ -222,7 +223,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         }
         if (carrier.indexOf('/') != -1) carrier = carrier.substring(0, carrier.indexOf('/'));
 
-        return createTicket(webTicket, route, price, carrier.trim(), totalMinutes, formattedTicketDate, date);
+        return createTicket(webTicket, route, price, carrier.trim(), totalMinutes, formattedTicketDate.format(date));
     }
 
 
@@ -282,18 +283,17 @@ public class InfobusBusServiceImpl implements ScraperService {
         actions.moveToElement(element).click().build().perform();
     }
 
-    private static BusTicket createTicket(WebElement webTicket, Route route, String price, String carrier, int totalMinutes, SimpleDateFormat formattedTicketDate, Date date) {
+    private static BusTicket createTicket(WebElement webTicket, Route route, String price, String carrier, int totalMinutes, String date) {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .infoList(List.of(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.INFOBUS).build()))
                 .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
                 .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
                 .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                .arrivalDate(formattedTicketDate.format(date))
-                .carrier(carrier.toUpperCase()).build();
+                .arrivalDate(date)
+                .carrier(carrier.toUpperCase()).build().addPrice(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.INFOBUS).build());
     }
 
 }

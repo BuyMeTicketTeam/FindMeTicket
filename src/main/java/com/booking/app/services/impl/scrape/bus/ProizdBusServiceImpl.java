@@ -75,6 +75,7 @@ public class ProizdBusServiceImpl implements ScraperService {
 
             return CompletableFuture.completedFuture(true);
         } catch (Exception e) {
+            log.error("Error in PROIZD BUS service: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
         } finally {
             driver.quit();
@@ -138,7 +139,7 @@ public class ProizdBusServiceImpl implements ScraperService {
                     emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
 
             } else
-                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrices(busTicket);
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrice(busTicket.getInfoList().get(0));
 
             repository.save(scrapedTicket);
         }
@@ -207,8 +208,8 @@ public class ProizdBusServiceImpl implements ScraperService {
                 : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
 
         LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
-        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"))
-                : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("dd.MM, EE", new Locale("en"))
+                : DateTimeFormatter.ofPattern("dd.MM, EE", new Locale("uk"));
         String formattedDate = date.format(ticketDate);
 
         String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
@@ -315,14 +316,13 @@ public class ProizdBusServiceImpl implements ScraperService {
         return BusTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .infoList(List.of(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build()))
                 .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
                 .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
                 .travelTime(BigDecimal.valueOf(totalMinutes))
                 .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
                 .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
                 .arrivalDate(formattedTime)
-                .carrier(carrier).build();
+                .carrier(carrier).build().addPrice(BusPriceInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build());
     }
 
 }

@@ -86,6 +86,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
             return CompletableFuture.completedFuture(true);
         }catch (Exception e){
+            log.error("Error in PROIZD TRAIN service: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
         }finally {
             driver.quit();

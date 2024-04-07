@@ -1,6 +1,7 @@
 package com.booking.app.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +21,9 @@ import java.util.List;
 //@EqualsAndHashCode(callSuper = true) --> doesn't work
 public class BusTicket extends Ticket {
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "bus_info", joinColumns = @JoinColumn(name = "bus_ticket_id"))
-    @Column(name = "bus_info")
+
+    @OneToMany(mappedBy = "busTicket" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @Builder.Default
     List<BusPriceInfo> infoList = new ArrayList<>();
 
     public boolean linksAreScraped() {
@@ -46,6 +47,12 @@ public class BusTicket extends Ticket {
 
     public BusTicket addPrices(BusTicket busPriceInfo) {
         infoList.addAll(busPriceInfo.getInfoList());
+        return this;
+    }
+
+    public BusTicket addPrice(BusPriceInfo busPriceInfo) {
+        busPriceInfo.setBusTicket(this);
+        infoList.add(busPriceInfo);
         return this;
     }
 }
