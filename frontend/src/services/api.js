@@ -1,6 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies(null, { path: '/' });
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${process.env.REACT_APP_SERVER_ADDRESS}`,
@@ -16,6 +19,15 @@ const baseQuery = fetchBaseQuery({
     if (response.headers.has('Authorization')) {
       localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
     }
+
+    if (response.headers.has('rememberme')) {
+      localStorage.setItem('userData', response.body);
+    }
+
+    if (response.headers.has('user_id')) {
+      cookies.set('USER_ID', response.headers.get('user_id'));
+    }
+
     return response.json();
   },
 });
