@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/prefer-default-export */
 import { createApi, fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 
@@ -13,8 +14,9 @@ const baseQuery = fetchBaseQuery({
   },
   responseHandler: (response) => {
     if (response.headers.has('Authorization')) {
-      localStorage.getItem('JWTtoken', response.headers.get('Authorization'));
+      localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
     }
+    return response.json();
   },
 });
 

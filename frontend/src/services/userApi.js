@@ -28,8 +28,10 @@ export const userApi = api.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useLoginFacebookMutation,
+  useLoginGoogleMutation,
 } = userApi;
 
 export const {
-  endpoints: { login },
+  endpoints: { login, loginFacebook, loginGoogle },
 } = userApi;

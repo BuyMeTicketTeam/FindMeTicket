@@ -121,7 +121,9 @@ createServer({
     // Responding to a POST request
     this.post('/login', () => {
       // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
-      return new Response(200, { rememberMe: process.env.REACT_APP_TEST_JWT_TOKEN, userId: 1231231421 }, JSON.stringify({ username: 'Max' }));
+      return new Response(401, undefined, JSON.stringify({
+        username: 'Max', email: 'user@gmail.com', basicPicture: null, googlePicture: 'https://lh3.googleusercontent.com/a/ACg8ocIyLV6grsACo0xFoxYN_AScMvUMXuW6TebrrnI1OwopQCzw6Q=s96-c',
+      }));
     });
     this.post('/register', () => new Response(200));
     this.post('/oauth2/authorize/google', () => new Response(200, undefined, JSON.stringify({ username: 'Max' })));

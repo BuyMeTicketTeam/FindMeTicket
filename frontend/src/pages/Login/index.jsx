@@ -1,38 +1,82 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GoogleLogin } from '@react-oauth/google';
 import { useForm } from 'react-hook-form';
 import FacebookLogin from '@greatsumini/react-facebook-login';
+import { useLoginMutation, useLoginGoogleMutation, useLoginFacebookMutation } from '../../services/userApi';
+
 import { PASSWORD_PATTERN, EMAIL_PATTERN } from '../../constants/regex';
+
+import Input from '../../components/Input';
+import Checkbox from '../../components/Checkbox';
+
 import facebookIcon from '../../images/facebook.png';
 
 import './login.scss';
 
 export default function Login() {
+  const [error, setError] = useState(null);
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  // const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'all' });
+  const [login, { isLoading }] = useLoginMutation();
+  const [loginGoogle] = useLoginGoogleMutation();
+  const [loginFacebook] = useLoginFacebookMutation();
+  const navigate = useNavigate();
 
-  console.log(errors);
+  async function handleQuery(data, queryFunc) {
+    try {
+      setError(null);
+      await queryFunc(data).unwrap();
+      navigate('/');
+    } catch (err) {
+      console.error({ error: err });
+      setError(err.status ?? 500);
+    }
+  }
 
-  function onSubmit(data, error) {
-    console.log(data, error);
+  async function onSubmit(data) {
+    handleQuery(data, login);
   }
 
   return (
     <div data-testid="login" className="background main">
       <form className="popup__body" onSubmit={handleSubmit(onSubmit)}>
         <Link to="/" className="close" aria-label="Close" />
+        {error && <p data-testid="error" className="error">{error}</p>}
+        <Input
+          id="email"
+          error={errors.email}
+          errorMessage="Email is invalid"
+          label="Email"
+          otherProps={{ ...register('email', { required: true, pattern: EMAIL_PATTERN }) }}
+        />
+        <Input
+          id="password"
+          error={errors.password}
+          errorMessage="Password is invalid"
+          label="Password"
+          type="password"
+          otherProps={{ ...register('password', { required: true, pattern: PASSWORD_PATTERN }) }}
+        />
 
-        <input className="input" type="text" {...register('email', { required: true, pattern: EMAIL_PATTERN })} />
-        {errors.email && <p data-testid="error" className="confirm__error">Email error</p>}
-        <input className="input" type="password" {...register('password', { required: true, pattern: PASSWORD_PATTERN })} />
-        {errors.password && <p data-testid="error" className="confirm__error">Password error</p>}
+        <Checkbox
+          id="rememberMe"
+          otherProps={{ ...register('rememberMe') }}
+        >
+          {t('remember-me')}
+        </Checkbox>
+        <div className="link">
+          <Link
+            to="/reset"
+          >
+            {t('forgot-password')}
+          </Link>
+        </div>
 
-        <button type="submit">Login</button>
+        <button disabled={isLoading} className="button btn-full" type="submit">{isLoading ? 'Loading...' : 'Login'}</button>
 
         <div className="login__another">
           <span className="login-another__line" />
@@ -40,12 +84,11 @@ export default function Login() {
           <span className="login-another__line" />
         </div>
         <GoogleLogin
-          onSuccess={() => {
-            // setError('');
-            // auth2Request('google', credentialResponse.credential);
+          onSuccess={(credentialResponse) => {
+            handleQuery({ idToken: credentialResponse.credential }, loginGoogle);
           }}
           onError={() => {
-            // setError('Помилка. Спробуйте ще раз');
+            setError('Помилка. Спробуйте ще раз');
           }}
           shape="circle"
           width={336}
@@ -53,19 +96,13 @@ export default function Login() {
         <FacebookLogin
           appId="927706882244929"
           className="login__google"
-          onSuccess={() => {
-            // setError('');
-            // auth2Request('facebook', response.userID);
-          }}
+          onSuccess={(response) => handleQuery({ idToken: response.userID }, loginFacebook)}
           onFail={() => {
-            // setError('Помилка. Спробуйте ще раз');
-          }}
-          onProfileSuccess={() => {
+            setError('Помилка. Спробуйте ще раз');
           }}
         >
           <img src={facebookIcon} alt="logo" />
           {t('facebook')}
-
         </FacebookLogin>
         <div className="link link-register">
           <Link

@@ -6,7 +6,7 @@ import Header from './components/Header';
 import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
-// import './testServer';
+import './testServer';
 import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
