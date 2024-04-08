@@ -1,8 +1,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-unresolved */
-import React, { useEffect, useState, useRef } from 'react';
-import { useSwiper } from 'swiper/react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import { useTranslation } from 'react-i18next';
@@ -10,9 +9,7 @@ import { useTranslation } from 'react-i18next';
 import noImage from './no-image.jpg';
 import lockIcon from './lock.svg';
 
-export default function ReviewsForm({ status, reviews, setReviews }) {
-  const swiper = useSwiper();
-  const didMount = useRef(false);
+export default function ReviewsForm({ status, setReviews }) {
   const [reviewText, setReviewText] = useState('');
   const [formError, setFormError] = useState({ inputError: false, ratingError: false });
   const [rating, setRating] = useState(0);
@@ -43,11 +40,6 @@ export default function ReviewsForm({ status, reviews, setReviews }) {
       useravatar: status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : noImage),
     }]);
   }
-
-  useEffect(() => {
-    if (didMount.current) swiper.slideTo(reviews.length);
-    else didMount.current = true;
-  }, [reviews.length]);
 
   return (
     <div className="reviews-form">

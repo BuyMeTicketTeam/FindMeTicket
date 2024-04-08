@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import ReviewsCard from './ReviewsCard';
 import ReviewsForm from './ReviewsForm';
+import ReviewsController from './ReviewsController';
 
 import 'swiper/scss';
 import './reviews.scss';
@@ -72,9 +73,10 @@ export default function Reviews({ status }) {
                 <ReviewsCard {...slide} />
               </SwiperSlide>
             ))}
-            <ReviewsForm status={status} reviews={reviews} setReviews={setReviews} />
+            <ReviewsController reviews={reviews} />
           </Swiper>
         </div>
+        <ReviewsForm status={status} setReviews={setReviews} />
       </div>
     </div>
   );
