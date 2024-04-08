@@ -2,9 +2,9 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.ticket.Route;
 import com.booking.app.entity.ticket.bus.BusInfo;
 import com.booking.app.entity.ticket.bus.BusTicket;
-import com.booking.app.entity.ticket.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.props.LinkProps;
@@ -270,7 +270,7 @@ public class ProizdBusServiceImpl implements ScraperService {
 
         String calendarMonth = driver.findElement(By.cssSelector("li.calmonth")).getText();
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         SimpleDateFormat outputMonthFormat = language.equals("eng") ? new SimpleDateFormat("MMMM", new Locale("en"))
                 : new SimpleDateFormat("MMMM", new Locale("uk"));

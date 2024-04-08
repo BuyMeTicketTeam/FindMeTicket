@@ -41,16 +41,16 @@ public interface TrainMapper {
 
     @Named("departureTimeMapping")
     static String departureTimeMapping(String departureDate, @Context String language) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return switch (language) {
             case ("ua") -> {
                 LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
+                formatter = DateTimeFormatter.ofPattern("dd.MM, E", new Locale("uk"));
                 yield date.format(formatter);
             }
             case ("eng") -> {
                 LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("en"));
+                formatter = DateTimeFormatter.ofPattern("dd.MM, E", new Locale("en"));
                 yield date.format(formatter);
             }
             default ->
