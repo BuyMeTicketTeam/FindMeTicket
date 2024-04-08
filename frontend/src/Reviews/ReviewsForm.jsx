@@ -68,8 +68,8 @@ export default function ReviewsForm({ status, reviews, setReviews }) {
         <h2 className="reviews-form__title">{t('form-title')}</h2>
         {(formError.inputError || formError.ratingError) && (
         <p className="error">
-          <span>{formError.inputError}</span>
-          <span>{formError.ratingError}</span>
+          <span>{formError.inputError && t('textarea_placeholder')}</span>
+          <span>{formError.ratingError && t('rating__error')}</span>
         </p>
         )}
         <textarea
