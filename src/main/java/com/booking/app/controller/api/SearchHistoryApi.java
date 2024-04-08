@@ -12,5 +12,5 @@ public interface SearchHistoryApi {
     @Operation(summary = "Searching history for user", description = "find search history by user id")
     @ApiResponse(responseCode = "200", description = "Returns history")
     @ApiResponse(responseCode = "404", description = "History not found")
-    public ResponseEntity<?> getHistory(@AuthenticationPrincipal UserCredentials userCredentials, HttpServletRequest request);
+    ResponseEntity<?> getHistory(@AuthenticationPrincipal UserCredentials userCredentials, HttpServletRequest request);
 }
