@@ -113,8 +113,9 @@ function Popup({
 
   function defineRoute(historyData) {
     let request = `/?from=${historyData.departureCity}&to=${historyData.arrivalCity}&endpoint=1`;
-    if (+new Date() <= Date.parse(historyData.departureDate)) {
-      request += `&departureDate=${Date.parse(historyData.departureDate)}`;
+    const dateParts = historyData.departureDate.split('.');
+    if (+new Date() <= Date.parse(`${+dateParts[2]}-${+dateParts[1]}-${+dateParts[0]}`)) {
+      request += `&departureDate=${Date.parse(`${+dateParts[2]}-${+dateParts[1]}-${+dateParts[0]}`)}`;
     }
     if (historyData.bus && historyData.train) {
       request += '&type=all';
