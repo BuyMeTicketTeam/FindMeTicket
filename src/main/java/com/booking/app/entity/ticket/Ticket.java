@@ -1,4 +1,4 @@
-package com.booking.app.entity;
+package com.booking.app.entity.ticket;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +11,8 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ticket")
@@ -99,26 +100,35 @@ public class Ticket {
     }
 
     private boolean carrierEquals(Ticket that) {
-        if (this.carrier == null || that.carrier == null) return false;
-        String carrierToCompare = that.carrier;
+        String thisCarrier = this.carrier;
+        String thatCarrier = that.carrier;
 
-        List<String> result1 = new ArrayList<>();
-        List<String> result2 = new ArrayList<>();
+        if (thisCarrier == null || thatCarrier == null) return false;
+        if (specificCarrierLanguage(thisCarrier, thatCarrier)) return true;
+        if (!specificCarrierEquality(thisCarrier, thatCarrier)) return false;
 
-        Arrays.stream(this.carrier.split(" ")).toList().forEach(e -> {
-            if (e.length() >= 4) result1.add(e);
-        });
-        Arrays.stream(carrierToCompare.split(" ")).toList().forEach(e -> {
-            if (e.length() >= 4) result2.add(e);
-        });
-        for (String word1 : result1) {
-            for (String word2 : result2) {
-                if (word2.startsWith(word1) || word1.startsWith(word2)) {
-                    return true;
-                }
-            }
+        char[] charArray = thatCarrier.toCharArray();
+        for (int i = 0; i < charArray.length - 4; i += 4) {
+            String quadruple = String.valueOf(charArray[i]) + charArray[i + 1] + charArray[i + 2] + charArray[i + 3];
+            if (thisCarrier.contains(quadruple)) return true;
         }
         return false;
+    }
+
+    // Context specific method, not useful in production!
+    private boolean specificCarrierEquality(String firstCarrier, String secondCarrier) {
+        if (!firstCarrier.equals(secondCarrier)) {
+            if (firstCarrier.equals("ПАВЛЮК В.І.") && secondCarrier.equals("ПАВЛЮК М.І.")) return false;
+            return !secondCarrier.equals("ПАВЛЮК В.І.") || !firstCarrier.equals("ПАВЛЮК М.І.");
+
+        }
+        return true;
+    }
+
+    // Context specific method, not useful in production!
+    private boolean specificCarrierLanguage(String firstCarrier, String secondCarrier) {
+        if (firstCarrier.equals("ПАВЛЮКС - ТРАНС") && secondCarrier.equals("PAVLUKS - TRANS")) return true;
+        return secondCarrier.equals("ПАВЛЮКС - ТРАНС") && firstCarrier.equals("PAVLUKS - TRANS");
     }
 
 }
