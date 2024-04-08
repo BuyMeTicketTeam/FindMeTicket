@@ -2,9 +2,9 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.ticket.Route;
 import com.booking.app.entity.ticket.bus.BusInfo;
 import com.booking.app.entity.ticket.bus.BusTicket;
-import com.booking.app.entity.ticket.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.props.LinkProps;
@@ -252,7 +252,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         WebElement dateFrom = driver.findElement(By.id("dateFrom"));
         dateFrom.click();
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat outputMonthFormat = new SimpleDateFormat("MMMM", new Locale("uk"));
         SimpleDateFormat outputYearFormat = new SimpleDateFormat("yyyy", new Locale("uk", "en"));
         SimpleDateFormat outputDayFormat = new SimpleDateFormat("d", new Locale("uk", "en"));

@@ -1,7 +1,7 @@
 package com.booking.app.services.impl.scrape.train;
 
-import com.booking.app.entity.ticket.bus.BusTicket;
 import com.booking.app.entity.ticket.Route;
+import com.booking.app.entity.ticket.bus.BusTicket;
 import com.booking.app.entity.ticket.train.TrainInfo;
 import com.booking.app.entity.ticket.train.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
@@ -86,7 +86,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
             return CompletableFuture.completedFuture(true);
         } catch (Exception e) {
-            log.error("Error in PROIZD TRAIN service: " + e.getMessage());
+            log.error("Error in PROIZD TRAIN service: " + e.getMessage() + e.getCause() + e.getStackTrace());
             return CompletableFuture.completedFuture(false);
         } finally {
             driver.quit();
@@ -238,7 +238,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
         String calendarMonth = driver.findElement(By.cssSelector("li.calmonth")).getText();
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy");
 
         SimpleDateFormat outputMonthFormat = language.equals("eng") ? new SimpleDateFormat("MMMM", new Locale("en"))
                 : new SimpleDateFormat("MMMM", new Locale("uk"));
