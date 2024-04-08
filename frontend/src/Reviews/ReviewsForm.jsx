@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-unresolved */
 import React, { useEffect, useState, useRef } from 'react';
@@ -13,10 +14,28 @@ export default function ReviewsForm({ status, reviews, setReviews }) {
   const swiper = useSwiper();
   const didMount = useRef(false);
   const [reviewText, setReviewText] = useState('');
+  const [formError, setFormError] = useState({ inputError: false, ratingError: false });
   const [rating, setRating] = useState(0);
   const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
 
+  function validateReview() {
+    let errorFlag = false;
+    setFormError({ inputError: false, ratingError: false });
+    if (reviewText.length < 5 || reviewText.length > 400) {
+      setFormError((prevErrors) => ({ ...prevErrors, inputError: true }));
+      errorFlag = true;
+    }
+    if (rating === 0) {
+      setFormError((prevErrors) => ({ ...prevErrors, ratingError: true }));
+      errorFlag = true;
+    }
+    return errorFlag;
+  }
+
   function submitReview() {
+    if (validateReview()) {
+      return;
+    }
     setReviews((prevData) => [...prevData, {
       rating,
       text: reviewText,
@@ -47,12 +66,30 @@ export default function ReviewsForm({ status, reviews, setReviews }) {
       )}
       <div className={`reviews-form__body ${!status ? 'blur' : ''}`}>
         <h2 className="reviews-form__title">{t('form-title')}</h2>
-        <textarea disabled={!status} value={reviewText} onChange={(event) => setReviewText(event.target.value)} className="reviews-form__textarea input" />
+        {(formError.inputError || formError.ratingError) && (
+        <p className="error">
+          <span>{formError.inputError}</span>
+          <span>{formError.ratingError}</span>
+        </p>
+        )}
+        <textarea
+          disabled={!status}
+          value={reviewText}
+          placeholder={t('textarea_placeholder')}
+          onChange={(event) => {
+            setReviewText(event.target.value);
+            setFormError((prevErrors) => ({ ...prevErrors, inputError: false }));
+          }}
+          className={`reviews-form__textarea input ${formError.inputError ? 'input-error' : ''}`}
+        />
         <div className="reviews-form__actions">
-          <div className="reviews-form__stars">
+          <div className={`reviews-form__stars ${formError.ratingError ? 'rating-error' : ''}`}>
             <Rating
               style={!status ? { visibility: 'hidden' } : {}}
-              onClick={setRating}
+              onClick={(rating) => {
+                setRating(rating);
+                setFormError((prevErrors) => ({ ...prevErrors, ratingError: false }));
+              }}
               initialValue={rating}
             />
           </div>

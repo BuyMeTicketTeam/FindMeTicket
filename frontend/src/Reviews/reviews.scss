@@ -62,7 +62,7 @@
     margin-bottom: 10px;
   }
 
-  &__textarea {
+  &__textarea.input {
     min-width: 500px;
     min-height: 150px;
     font-size: 16px;
@@ -79,6 +79,11 @@
     background: $semi-dark;
     padding: 5px 12px;
     border-radius: 8px;
+  }
+
+  &__stars.rating-error {
+    border: 2px solid $error;
+    box-shadow: 0px 0px 9px 2px $error;
   }
 
   .star-svg {
