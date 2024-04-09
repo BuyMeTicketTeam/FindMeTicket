@@ -116,6 +116,22 @@ const ticketsNew = [
     url: 'https://google.com',
   },
 ];
+
+const reviews = [
+  {
+    rating: 5, text: "I recently had the opportunity to use Findmeticket to look for tickets, and I must say, it exceeded my expectations in several ways. As a frequent traveler, I'm always on the lookout for convenient search propositions and efficient ways to plan my journeys, and Findmeticket certainly delivered on both fronts.", username: 'Mykhailo', useravatar: './image15.png',
+  },
+  {
+    rating: 5, text: 'Нещодавно я використав застосунок FindMeTicket, і можу сказати, що це дійсно зручний і корисний інструмент для тих, хто подорожує. Сайт пропонує широкий вибір квитків на автобуси та потяги, що дозволяє легко порівнювати ціни та вибирати найбільш вигідні пропозиції.', username: 'Степан', useravatar: './image 13.png',
+  },
+  {
+    rating: 5, text: 'Цей агрегатор - справжнє відкриття! Швидкий пошук, зручний інтерфейс, широкий вибір квитків. Рекомендую усім шукачам найзручніших способів подорожувати!', username: 'Максим', useravatar: './image14.png',
+  },
+  {
+    rating: 5, text: 'Ефективний і зручний агрегатор квитків. Заощаджує час і гроші. Ідеальний для планування подорожей. Відтепер - мій основний інструмент для планування подорожей!', username: 'Кирило', useravatar: './image16.png',
+  },
+];
+
 createServer({
   routes() {
     // Responding to a POST request
@@ -162,5 +178,6 @@ createServer({
         departureDate: '12.09.2024',
       },
     ])));
+    this.get('/reviews', () => new Response(200, undefined, reviews));
   },
 });
