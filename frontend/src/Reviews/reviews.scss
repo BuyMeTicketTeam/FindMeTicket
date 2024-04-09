@@ -1,13 +1,28 @@
 @import '../styles/variables.scss';
 
 .reviews {
+  .arrow {
+    background: transparent;
+    border: none;
+  }
+  button.arrow:disabled {
+    display: none;
+  }
   
+  .arrow-img {
+    width: 120px;
+  }
 }
 
 .reviews-title {
   text-align: center;
   margin-top: 35px;
   margin-bottom: 25px;
+}
+
+.reviews-swiper {
+  display: flex;
+  align-items: center;
 }
 
 .reviews-card {

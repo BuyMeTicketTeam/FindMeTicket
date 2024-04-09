@@ -1,16 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React, {
+  useState, useRef, useCallback, useEffect,
+} from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {
-  EffectCoverflow, Autoplay, Keyboard, Mousewheel, Navigation,
+  EffectCoverflow, Autoplay, Keyboard, Mousewheel,
 } from 'swiper/modules';
 import { v4 as uuidv4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
 
 import ReviewsCard from './ReviewsCard';
 import ReviewsForm from './ReviewsForm';
-import ReviewsController from './ReviewsController';
+import CarouselArrow from './carouselArrow';
 
 import 'swiper/scss';
 import './reviews.scss';
@@ -37,18 +39,38 @@ export default function Reviews({ status }) {
   ]);
 
   const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
+  const sliderRef = useRef();
+
+  const handlePrev = useCallback(() => {
+    if (!sliderRef.current) return;
+    sliderRef.current.swiper.slidePrev();
+  }, []);
+
+  const handleNext = useCallback(() => {
+    if (!sliderRef.current) return;
+    sliderRef.current.swiper.slideNext();
+  }, []);
+
+  const didMount = useRef(false);
+
+  useEffect(() => {
+    if (didMount.current) sliderRef.current.swiper.slideTo(reviews.length);
+    else didMount.current = true;
+  }, [reviews.length]);
 
   return (
     <div className="reviews main">
       <div className="container">
         <h1 className="reviews-title">{t('title')}</h1>
         <div className="reviews-swiper">
+          <CarouselArrow direction="left" onClick={handlePrev} />
           <Swiper
+            ref={sliderRef}
             effect="coverflow"
             spaceBetween={50}
             slidesPerView={3}
             centeredSlides
-            modules={[EffectCoverflow, Autoplay, Keyboard, Mousewheel, Navigation]}
+            modules={[EffectCoverflow, Autoplay, Keyboard, Mousewheel]}
             coverflowEffect={{
               rotate: 0,
               depth: 150,
@@ -73,8 +95,8 @@ export default function Reviews({ status }) {
                 <ReviewsCard {...slide} />
               </SwiperSlide>
             ))}
-            <ReviewsController reviews={reviews} />
           </Swiper>
+          <CarouselArrow direction="right" onClick={handleNext} />
         </div>
         <ReviewsForm status={status} setReviews={setReviews} />
       </div>
