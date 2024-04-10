@@ -19,6 +19,12 @@ import makeQuerry from '../../helper/querry';
 import useGetCities from '../../hook/useGetCities';
 import './searchField.scss';
 
+const dateFormat = new Intl.DateTimeFormat('ru', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
 export default function SearchField({
   setLoading, setTicketsData, setError, loading,
 }) {
@@ -54,7 +60,7 @@ export default function SearchField({
   function sendRequestEvents(body) {
     const requestBody = {
       ...body,
-      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+      departureDate: dateFormat.format(body.departureDate),
     };
     setLoading(true);
     setTicketsData([]);
@@ -93,16 +99,15 @@ export default function SearchField({
       handleError,
       handleClose,
       method: 'POST',
-      headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
   }
 
   function sendRequestHTTP(body) {
     const requestBody = {
       ...body,
-      departureDate: `${body.departureDate.getFullYear()}-${body.departureDate.getMonth() + 1}-${body.departureDate.getDate()}`,
+      departureDate: dateFormat.format(body.departureDate),
     };
-    makeQuerry('selectedTransport', JSON.stringify(requestBody), { 'Content-Language': i18n.language.toLowerCase() })
+    makeQuerry('selectedTransport', JSON.stringify(requestBody))
       .then((response) => {
         setTicketsData(response.body);
       })
@@ -111,15 +116,28 @@ export default function SearchField({
       });
   }
 
+  async function sendSortRequest(body) {
+    const requestBody = {
+      ...body,
+      departureDate: dateFormat.format(body.departureDate),
+      sortingBy: searchParams.get('sort'),
+      ascending: searchParams.get('ascending') === 'true',
+    };
+    const response = await makeQuerry('sortedBy', JSON.stringify(requestBody));
+
+    const responseBody = response.status === 200 ? response.body : null;
+    setTicketsData(responseBody);
+  }
+
   function handleRequest() {
     if (!validation()) {
       return;
     }
-    setError(null);
     navigate(`?type=${searchParams.get('type')}&from=${cityFrom.value}&to=${cityTo.value}&departureDate=${+date}&endpoint=1`);
   }
 
   useEffect(() => {
+    setError(null);
     let params = '';
     if (!(/^.*type=(bus|train|all).*$/).test(location.search)) {
       params += '&type=all';
@@ -148,6 +166,10 @@ export default function SearchField({
       sendRequestHTTP(body);
       return;
     }
+    if (endpoint === '3') {
+      sendSortRequest(body);
+      return;
+    }
     sendRequestEvents(body);
   }, [searchParams, location]);
 
@@ -170,7 +192,7 @@ export default function SearchField({
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
-          placeholder="Київ"
+          placeholder={t('from-placeholder')}
           onChange={setCityFrom}
           onInputChange={() => onErrorCityFrom(false)}
         />
@@ -194,7 +216,7 @@ export default function SearchField({
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
-          placeholder="Одеса"
+          placeholder={t('to-placeholder')}
           onChange={setCityTo}
           onInputChange={() => onErrorCityTo(false)}
         />
