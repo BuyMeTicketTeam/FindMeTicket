@@ -14,7 +14,7 @@ export default function Checkbox({
         {...otherProps}
       />
       <label htmlFor={id} className="checkbox">{children}</label>
-      {error && <p data-testid="error" className="confirm__error">{errorMessage}</p>}
+      {error && <p data-testid="error" className="checkbox__error confirm__error">{errorMessage}</p>}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import RouteController from './RouteController';
 import Reset from '../reset';
-import Register from '../register';
+import Register from '../pages/Register';
 import Confirm from '../confirm';
 import Index from '../main';
 import TicketPage from '../ticketPage';
