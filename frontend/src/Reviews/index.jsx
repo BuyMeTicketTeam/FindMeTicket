@@ -32,7 +32,7 @@ export default function Reviews({ status }) {
     if (reviewsData.status !== 200) {
       return;
     }
-    setReviews(reviewsData.body);
+    setReviews(reviewsData.body ?? []);
   }
 
   const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
