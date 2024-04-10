@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import { useTranslation } from 'react-i18next';
+import makeQuery from '../helper/querry';
 
 import noImage from './no-image.jpg';
 import lockIcon from './lock.svg';
@@ -13,6 +14,8 @@ export default function ReviewsForm({ status, setReviews }) {
   const [reviewText, setReviewText] = useState('');
   const [formError, setFormError] = useState({ inputError: false, ratingError: false });
   const [rating, setRating] = useState(0);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
 
   function validateReview() {
@@ -29,10 +32,25 @@ export default function ReviewsForm({ status, setReviews }) {
     return errorFlag;
   }
 
-  function submitReview() {
+  async function submitReview() {
     if (validateReview()) {
       return;
     }
+
+    const body = {
+      rating,
+      text: reviewText,
+    };
+    setLoading(true);
+    const response = await makeQuery('review', JSON.stringify(body));
+    setLoading(false);
+    if (response.status !== 200) {
+      setError(true);
+      return;
+    }
+
+    setReviewText('');
+    setRating(0);
     setReviews((prevData) => [...prevData, {
       rating,
       text: reviewText,
@@ -58,10 +76,11 @@ export default function ReviewsForm({ status, setReviews }) {
       )}
       <div className={`reviews-form__body ${!status ? 'blur' : ''}`}>
         <h2 className="reviews-form__title">{t('form-title')}</h2>
-        {(formError.inputError || formError.ratingError) && (
+        {(formError.inputError || formError.ratingError || error) && (
         <p className="error">
           <span>{formError.inputError && t('textarea_placeholder')}</span>
           <span>{formError.ratingError && t('rating__error')}</span>
+          <span>{error && t('error-add-review')}</span>
         </p>
         )}
         <textarea
@@ -85,7 +104,7 @@ export default function ReviewsForm({ status, setReviews }) {
               initialValue={rating}
             />
           </div>
-          <button disabled={!status} type="button" className="reviews-form__submit-btn button" onClick={submitReview}>{t('form-submit-btn')}</button>
+          <button disabled={!status || loading} type="button" className="reviews-form__submit-btn button" onClick={submitReview}>{loading ? t('loading-review') : t('form-submit-btn')}</button>
         </div>
       </div>
     </div>

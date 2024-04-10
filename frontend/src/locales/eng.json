@@ -281,7 +281,9 @@
                   "lock-button": "Log in",
                   "form-submit-btn": "Submit",
                   "textarea_placeholder": "Review must have at least 5 characters and no more than 400. ",
-                  "rating__error": "You have not rated our site. "
+                  "rating__error": "You have not rated our site. ",
+                  "error-add-review": "Error saving review. Try again.",
+                  "loading-review": "Sending..."
             }
 
       }

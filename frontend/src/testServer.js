@@ -179,5 +179,6 @@ createServer({
       },
     ])));
     this.get('/reviews', () => new Response(200, undefined, reviews));
+    this.post('/review', () => new Response(200));
   },
 });
