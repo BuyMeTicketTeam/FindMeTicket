@@ -6,9 +6,10 @@ import SearchField from './index';
 
 test('renders city selection fields', () => {
   const setTicketsData = jest.fn();
+  const setError = jest.fn();
   render(
     <Router>
-      <SearchField setTicketsData={setTicketsData} />
+      <SearchField setTicketsData={setTicketsData} setError={setError} />
     </Router>,
   );
 
@@ -21,9 +22,10 @@ test('renders city selection fields', () => {
 
 test('displays error message when city is not selected', async () => {
   const setTicketsData = jest.fn();
+  const setError = jest.fn();
   render(
     <Router>
-      <SearchField setTicketsData={setTicketsData} />
+      <SearchField setTicketsData={setTicketsData} setError={setError} />
     </Router>,
   );
 
@@ -40,9 +42,10 @@ test('displays error message when city is not selected', async () => {
 
 test('renders date picker', () => {
   const setTicketsData = jest.fn();
+  const setError = jest.fn();
   render(
     <Router>
-      <SearchField setTicketsData={setTicketsData} />
+      <SearchField setTicketsData={setTicketsData} setError={setError} />
     </Router>,
   );
 

@@ -26,7 +26,7 @@ export default function Calendar({ date, onDate }) {
       <DatePicker
         minDate={new Date()}
         locale={locale}
-        dateFormat="dd/MM/yyyy"
+        dateFormat="dd.MM.yyyy"
         closeOnScroll
         calendarClassName="calendar"
         className="input"

@@ -185,7 +185,9 @@
                   "where-t": "Куди",
                   "error": "За вашим запитом нічого не знайдено",
                   "error2": "Поле не повинно бути порожнім",
-                  "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено"
+                  "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено",
+                  "from-placeholder": "Kиїв",
+                  "to-placeholder": "Одеса"
             },
             "filters": {
                   "Price": "Ціна",
@@ -245,18 +247,19 @@
                  "partners": "Наші інформаційні партнери"
             },
             "cities": {
-                  "Kiev-Kharkiv": "Київ - Харків",
-                  "Dnipro-Chernivtsi": "Дніпро - Чернівці",
-                  "Kiev-Dnipro": "Київ - Дніпро",
-                  "Kharkiv-Ivano-Frankivsk": "Харків - Івано-Франківськ",
-                  "Lviv-Kiev": "Львів - Київ",
-                  "Dnipro-Odessa": "Дніпро - Одесса",
-                  "Kiev-Poltava": "Київ - Полтава",
-                  "Lviv-Ternopil": "Львів - Тернопіль",
-                  "Kharkiv-Zaporizhzhya": "Харків - Запоріжжя",
-                  "Odessa-Kherson": "Одеса - Херсон",
-                  "Zaporizhzhya-Krivyi Rih": "Запоріжжя - Кривий Ріг",
-                  "Vinnytsia-Lviv": "Вінниця - Львів",
+                  "Kiev": "Київ",
+                  "Kharkiv": "Харків",
+                  "Dnipro": "Дніпро",
+                  "Chernivtsi": "Чернівці",
+                  "Ivano-Frankivsk": "Івано-Франківськ",
+                  "Lviv": "Львів",
+                  "Odessa": "Одеса",
+                  "Poltava": "Полтава",
+                  "Ternopil": "Тернопіль",
+                  "Zaporizhzhya": "Запоріжжя",
+                  "Kherson": "Херсон",
+                  "Krivyi Rih": "Кривий Ріг",
+                  "Vinnytsya": "Вінниця",
                   "Privacy policy": "Політика конфіденційності"
              },
             "scroll-button": {

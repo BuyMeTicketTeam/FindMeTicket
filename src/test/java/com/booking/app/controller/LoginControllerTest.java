@@ -7,7 +7,7 @@ import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.enums.EnumRole;
-import com.booking.app.security.jwt.JwtProvider;
+import com.booking.app.security.filter.JwtProvider;
 import com.booking.app.services.GoogleAccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

@@ -5,7 +5,7 @@ import com.booking.app.dto.AuthorizedUserDTO;
 import com.booking.app.dto.LoginDTO;
 import com.booking.app.dto.OAuth2IdTokenDTO;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.security.jwt.JwtProvider;
+import com.booking.app.security.filter.JwtProvider;
 import com.booking.app.services.GoogleAccountService;
 import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -88,7 +88,7 @@ public class LoginController implements LoginAPI {
 
             AuthorizedUserDTO authorizedUserDTO = AuthorizedUserDTO.builder()
                     .email(userCredentials.getEmail())
-                    .notification(userCredentials.getUser().getNotification())
+                    .notification(userCredentials.getUser().isNotification())
                     .basicPicture(Base64.getEncoder().encodeToString(userCredentials.getUser().getProfilePicture()))
                     .username(userCredentials.getUsername()).build();
 
@@ -126,7 +126,7 @@ public class LoginController implements LoginAPI {
                             SecurityContextHolder.setContext(context);
                             authorizedUserDTO.set(AuthorizedUserDTO.builder()
                                     .email(userCredentials.getEmail())
-                                    .notification(userCredentials.getUser().getNotification())
+                                    .notification(userCredentials.getUser().isNotification())
                                     .username(userCredentials.getUsername())
                                     .googlePicture(userCredentials.getUser().getUrlPicture()).build());
 

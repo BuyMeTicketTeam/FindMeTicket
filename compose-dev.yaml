@@ -38,7 +38,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
     env_file:
-      - src/main/resources/.env.docker
+      - src/main/resources/.env
     depends_on:
       - db-postgres
 

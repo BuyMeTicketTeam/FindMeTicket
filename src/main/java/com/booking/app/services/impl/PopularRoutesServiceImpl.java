@@ -48,23 +48,23 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
                     = placesRepository.findById(routes.get(i).arrivalId());
 //
             if (departureCity.isPresent() && arrivalCity.isPresent()) {
-                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
+                runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameUa())
                         .arrivalCity(arrivalCity.get().getNameUa())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "ua"));
-                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
+                runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameEng())
                         .arrivalCity(arrivalCity.get().getNameEng())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "eng"));
 
-                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
+                runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(arrivalCity.get().getNameUa())
                         .arrivalCity(departureCity.get().getNameUa())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
                         .build(), null, "ua"));
-                runningRoutes.add(manager.scrapeTickets(RequestTicketsDTO.builder()
+                runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(arrivalCity.get().getNameEng())
                         .arrivalCity(departureCity.get().getNameEng())
                         .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))

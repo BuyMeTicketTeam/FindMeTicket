@@ -1,7 +1,7 @@
-package com.booking.app.security.jwt;
+package com.booking.app.security.filter;
 
 import com.booking.app.constant.JwtTokenConstants;
-import com.booking.app.entity.UserCredentials;
+import com.google.api.client.util.Strings;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -30,14 +30,12 @@ public class JwtProvider {
     @Value("${refreshTokenExpirationMs}")
     private int refreshTokenExpirationMs;
 
-    public boolean validateAccessToken(String accessToken, UserCredentials userCredentials) {
-        String email = extractEmail(accessToken);
-        return (email.equals(userCredentials.getEmail()) && validateToken(accessToken));
+    public boolean validateAccessToken(String accessToken) {
+        return validateToken(accessToken);
     }
 
-    public boolean validateRefreshToken(String refreshToken, UserCredentials userCredentials) {
-        String email = extractEmail(refreshToken);
-        return (email.equals(userCredentials.getEmail()) && validateToken(refreshToken));
+    public boolean validateRefreshToken(String refreshToken) {
+        return validateToken(refreshToken);
     }
 
     public String extractEmail(String token) {
@@ -100,18 +98,16 @@ public class JwtProvider {
         return false;
     }
 
-    public String extractAccessTokenFromRequest(HttpServletRequest request) {
+    public static String extractAccessToken(HttpServletRequest request) {
+        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorizationHeader != null && !authorizationHeader.equals("null") && authorizationHeader.startsWith(JwtTokenConstants.BEARER.trim())) {
-            return authorizationHeader.substring(7);
+        if (!Strings.isNullOrEmpty(token) && token.startsWith(JwtTokenConstants.BEARER.trim())) {
+            return token.substring(7);
         }
-
         return null;
     }
 
-    public String extractRefreshTokenFromRequest(HttpServletRequest request) {
+    public static String extractRefreshToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -120,7 +116,6 @@ public class JwtProvider {
                 }
             }
         }
-
         return null;
     }
 
