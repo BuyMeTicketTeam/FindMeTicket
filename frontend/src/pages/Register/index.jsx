@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import Checkbox from '../../components/Checkbox';
 import './register.scss';
 
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false);
   const [registerQuery, { isLoading, isError, error }] = useRegisterMutation();
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'all' });
   const { t } = useTranslation('translation', { keyPrefix: 'register' });
@@ -52,6 +53,8 @@ export default function Register() {
 
         <Input
           id="password"
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
           error={errors.password}
           errorMessage={t('login_error')}
           label={t('password')}
@@ -61,6 +64,8 @@ export default function Register() {
 
         <Input
           id="confirmPassword"
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
           error={errors.confirmPassword}
           errorMessage={t('login_error')}
           label={t('confirm-password')}

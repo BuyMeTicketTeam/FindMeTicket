@@ -20,6 +20,7 @@ import './login.scss';
 
 export default function Login() {
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'all' });
   const [login, { isLoading }] = useLoginMutation();
@@ -56,6 +57,8 @@ export default function Login() {
         />
         <Input
           id="password"
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
           error={errors.password}
           errorMessage={t('password_error')}
           label={t('password_name')}

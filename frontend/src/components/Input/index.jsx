@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React from 'react';
 
 import eyeIcon from '../../images/eye.svg';
 
 export default function Input({
-  id, label, error, errorMessage, otherProps, type = 'text', placeholder = '',
+  id, label, error, errorMessage, otherProps, showPassword, setShowPassword, type = 'text', placeholder = '',
 }) {
-  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="field">
       <label htmlFor={id} className="field__name">{label}</label>

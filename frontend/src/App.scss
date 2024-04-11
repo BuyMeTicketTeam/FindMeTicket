@@ -202,13 +202,16 @@ input[type='number'] {
 }
 
 .checkbox {
+  margin-bottom: 10px;
+}
+
+.checkbox-label {
   position: relative;
   font-size: 18px;
   font-weight: 500;
   display: flex;
   align-items: center;
   padding-left: 30px;
-  margin-bottom: 10px;
 
   a {
     margin-left: 5px;
@@ -230,7 +233,7 @@ input[type='number'] {
   position: absolute;
   visibility: hidden;
 
-  &:checked~.checkbox::before {
+  &:checked~.checkbox-label::before {
     left: 0px;
     top: -4px;
     position: absolute;
@@ -241,11 +244,11 @@ input[type='number'] {
     background: url('./utils/img/tick.svg');
   }
 
-  &.checkbox-error~.checkbox::after {
+  &.checkbox-error~.checkbox-label::after {
     border: 1px solid $error-bright;
   }
 
-  &.checkbox-error~.checkbox {
+  &.checkbox-error~.checkbox-label {
     color: $error-bright;
   }
 }
