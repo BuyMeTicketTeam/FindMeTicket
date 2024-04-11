@@ -22,7 +22,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'login' });
-  const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'all' });
+  const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onBlur' });
   const [login, { isLoading }] = useLoginMutation();
   const [loginGoogle] = useLoginGoogleMutation();
   const [loginFacebook] = useLoginFacebookMutation();

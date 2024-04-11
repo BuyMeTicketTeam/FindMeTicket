@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,14 +16,36 @@ import './register.scss';
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [registerQuery, { isLoading, isError, error }] = useRegisterMutation();
-  const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'all' });
-  const { t } = useTranslation('translation', { keyPrefix: 'register' });
+  const {
+    register, handleSubmit, setError, formState: { errors },
+  } = useForm({ mode: 'all' });
+  const { t } = useTranslation('translation', { keyPrefix: 'registration' });
   const navigate = useNavigate();
 
+  function passwordValidation(data) {
+    if (data.password !== data.confirmPassword) {
+      setError('confirmPassword', {
+        type: 'manual',
+      });
+      return false;
+    }
+    return true;
+  }
+
   async function onSubmit(data) {
+    if (!passwordValidation(data)) {
+      return;
+    }
     try {
-      await registerQuery(data).unwrap();
-      navigate('/');
+      const payload = {
+        email: data.email,
+        password: data.password,
+        username: data.username,
+        confirmPassword: data.confirmPassword,
+        notification: data.notification,
+      };
+      await registerQuery(payload).unwrap();
+      navigate('/confirm');
     } catch (err) {
       console.error({ error: err });
     }
@@ -33,20 +55,20 @@ export default function Register() {
     <div data-testid="register" className="register main">
       <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="title">{t('registration')}</h1>
-        {isError && <p data-testid="error" className="error">{error}</p>}
+        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
-          id="nickname"
-          error={errors.nickname}
-          errorMessage={t('login_error')}
-          label={t('nickname')}
+          id="username"
+          error={errors.username}
+          errorMessage={t('username_error')}
+          label={t('username')}
           placeholder="Svitlana2012"
-          otherProps={{ ...register('nickname', { required: true, pattern: NAME_PATTERN }) }}
+          otherProps={{ ...register('username', { required: true, pattern: NAME_PATTERN }) }}
         />
 
         <Input
           id="email"
           error={errors.email}
-          errorMessage={t('login_error')}
+          errorMessage={t('email_error')}
           label={t('email')}
           otherProps={{ ...register('email', { required: true, pattern: EMAIL_PATTERN }) }}
         />
@@ -56,7 +78,7 @@ export default function Register() {
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           error={errors.password}
-          errorMessage={t('login_error')}
+          errorMessage={t('password_error')}
           label={t('password')}
           type="password"
           otherProps={{ ...register('password', { required: true, pattern: PASSWORD_PATTERN }) }}
@@ -67,8 +89,8 @@ export default function Register() {
           showPassword={showPassword}
           setShowPassword={setShowPassword}
           error={errors.confirmPassword}
-          errorMessage={t('login_error')}
-          label={t('confirm-password')}
+          errorMessage={t('confirm_password_error')}
+          label={t('confirm_password')}
           type="password"
           otherProps={{ ...register('confirmPassword', { required: true }) }}
         />
@@ -76,17 +98,16 @@ export default function Register() {
         <Checkbox
           id="privacyPolicy"
           error={errors.privacyPolicy}
-          errorMessage={t('asd')}
+          errorMessage={t('privacy_policy')}
           otherProps={{ ...register('privacyPolicy', { required: true }) }}
         >
-          {t('agree')}
-          <a href="/">{t('privacy policy')}</a>
+          <Trans i18nKey="registration.privacy_policy_title"><a href="/">privacy_policy_title</a></Trans>
         </Checkbox>
         <Checkbox
           id="notifications"
           otherProps={{ ...register('notifications') }}
         >
-          {t('ticket-alerts-agreement')}
+          {t('ticket_alerts_agreement')}
         </Checkbox>
 
         <button disabled={isLoading} className="button btn-full" type="submit">{isLoading ? t('processing') : t('register')}</button>

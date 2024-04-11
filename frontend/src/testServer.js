@@ -125,7 +125,7 @@ createServer({
         username: 'Max', email: 'user@gmail.com', basicPicture: null, googlePicture: 'https://lh3.googleusercontent.com/a/ACg8ocIyLV6grsACo0xFoxYN_AScMvUMXuW6TebrrnI1OwopQCzw6Q=s96-c',
       }));
     });
-    this.post('/register', () => new Response(200));
+    this.post('/register', () => new Response(400));
     this.post('/oauth2/authorize/google', () => new Response(200, undefined, JSON.stringify({ username: 'Max' })));
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
