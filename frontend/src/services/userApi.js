@@ -30,6 +30,13 @@ export const userApi = api.injectEndpoints({
         body: userData,
       }),
     }),
+    confirm: builder.mutation({
+      query: (code) => ({
+        url: '/confirm-email',
+        method: 'POST',
+        body: code,
+      }),
+    }),
   }),
 });
 
@@ -38,10 +45,11 @@ export const {
   useLoginFacebookMutation,
   useLoginGoogleMutation,
   useRegisterMutation,
+  useConfirmMutation,
 } = userApi;
 
 export const {
   endpoints: {
-    login, loginFacebook, loginGoogle, register,
+    login, loginFacebook, loginGoogle, register, confirm,
   },
 } = userApi;
