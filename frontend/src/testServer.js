@@ -145,7 +145,7 @@ createServer({
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
     this.post('/resend-confirm-token', () => new Response(200));
-    this.post('/logout', () => new Response(200));
+    this.get('/logout', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/selectedTransport', () => new Response(200, undefined, JSON.stringify([])));
     this.post('/searchTickets', () => new Response(200, undefined, JSON.stringify([])));
