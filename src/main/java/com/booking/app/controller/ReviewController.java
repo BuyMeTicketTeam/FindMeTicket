@@ -7,10 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping
@@ -21,12 +18,13 @@ public class ReviewController implements ReviewAPI {
 
     @PostMapping("/saveReview")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
-    public ResponseEntity<?> saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request){
+    public ResponseEntity<?> saveReview(@RequestBody SaveReviewDto saveReviewDto, HttpServletRequest request){
 
         reviewService.saveReview(saveReviewDto, request);
 
         return ResponseEntity.ok().build();
     }
+
 
     @GetMapping("/getReviews")
     public ResponseEntity<?>getReviews(){

@@ -18,6 +18,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(columnDefinition = "varchar(1000)")
     private String reviewText;
 
     @Builder.Default
