@@ -1,0 +1,20 @@
+package com.booking.app.controller.api;
+
+import com.booking.app.dto.SaveReviewDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.http.ResponseEntity;
+
+public interface ReviewAPI {
+
+    @Operation(summary = "saving review of authorized user", description = "save review of authorized user")
+    @ApiResponse(responseCode = "200", description = "saves review")
+    ResponseEntity<?> saveReview(@NotNull @Valid SaveReviewDto saveReviewDto, HttpServletRequest request);
+
+    @Operation(summary = "get all reviews", description = "get all reviews")
+    @ApiResponse(responseCode = "200", description = "returns all reviews")
+    ResponseEntity<?>getReviews();
+}

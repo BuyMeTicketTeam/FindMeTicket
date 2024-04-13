@@ -50,4 +50,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserSearchHistory> history;
+
+    @OneToOne(mappedBy = "user")
+    private Review review;
+
 }

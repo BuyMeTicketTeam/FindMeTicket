@@ -31,7 +31,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     private final SearchHistoryRepository historyRepository;
 
-    private final UserCredentialsRepository userRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
 
     private final TypeAheadService typeAheadService;
 
@@ -44,7 +44,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     public void addToHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request) {
         Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
 
-        Optional<UserCredentials> user = uuid.flatMap(userRepository::findById);
+        Optional<UserCredentials> user = uuid.flatMap(userCredentialsRepository::findById);
         user.ifPresent(t -> historyRepository.save(UserSearchHistory.builder()
                 .user(t.getUser())
                 .departureCityId(typeAheadService.getCityId(requestTicketsDTO.getDepartureCity(), language))
