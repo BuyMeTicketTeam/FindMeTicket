@@ -61,7 +61,6 @@
             margin-top: 10px;
             font-size: 35px;
         }
-
     </style>
 </head>
 <body>
@@ -71,21 +70,21 @@
             <div class="logo">
                 <img src="  https://i.postimg.cc/MK2wn36c/logo.png" alt="Логотип компанії">
             </div>
-            <h2>Підтвердіть електрону пошту</h2>
-            <p>Ласкаво просимо, <b class="nickname" th:text="${nickname}"></b></p>
-            <p>Ми раді, що ви на борту.</p>
-            <p>Щоб завершити налаштування облікового запису,</p>
-            <p>скористайтеся кодом підтвердження нижче:</p>
+            <h2>Confirm Your Email</h2>
+            <p>Welcome, <b class="nickname" th:text="${nickname}"></b></p>
+            <p>We're glad you're on board.</p>
+            <p>To complete your account setup, </p>
+            <p>please use the confirmation code below:</p>
             <p class="code"><b th:text="${token}"></b></p>
             <br>
-            <p>Даний код дійсний <b>10 хвилин</b>.</p>
+            <p>This code is valid for <b>10 minutes</b>.</p>
             <br>
-            <p>Будь ласка, введіть цей код у поле верифікації під час реєстрації.</p>
-            <p>У разі спливу 10 хвилин Ви маєте можливість отримати код заново!</p>
-            <p>Якщо ви не зареєструвалися, ви можете <b>ігнорувати</b> цей лист.</p>
+            <p>Please enter this code in the verification field during registration.</p>
+            <p>If 10 minutes have passed, you can request a new code!</p>
+            <p>If you haven't registered, you can <b>ignore</b> this email.</p>
             <br>
-            <p>Дякуємо за вибір FindMeTicket!</p>
-            <p>Найкращі побажання, команда FindMeTicket</p>
+            <p>Thank you for choosing FindMeTicket!</p>
+            <p>Best regards, FindMeTicket Team</p>
             <br>
         </div>
     </main>
