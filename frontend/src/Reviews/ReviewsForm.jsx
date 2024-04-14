@@ -1,21 +1,24 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import { useTranslation } from 'react-i18next';
 import makeQuery from '../helper/querry';
 
-import noImage from './no-image.jpg';
+// import noImage from './no-image.jpg';
 import lockIcon from './lock.svg';
 
-export default function ReviewsForm({ status, setReviews }) {
+export default function ReviewsForm({ status, setReviews, getReviews }) {
   const [reviewText, setReviewText] = useState('');
   const [formError, setFormError] = useState({ inputError: false, ratingError: false });
   const [rating, setRating] = useState(0);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [haveReview, setHaveReview] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
 
   function validateReview() {
@@ -32,17 +35,42 @@ export default function ReviewsForm({ status, setReviews }) {
     return errorFlag;
   }
 
-  async function submitReview() {
+  function setSuccessMessage() {
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 1500);
+  }
+
+  async function submitReview(action) {
+    setError(false);
     if (validateReview()) {
       return;
     }
 
     const body = {
-      rating,
-      text: reviewText,
+      grade: rating,
+      reviewText,
     };
     setLoading(true);
-    const response = await makeQuery('review', JSON.stringify(body));
+    const response = await makeQuery(action === 'save' ? 'saveReview' : 'updateReview', JSON.stringify(body));
+    setLoading(false);
+    if (response.status !== 200) {
+      setError(true);
+      return;
+    }
+
+    // setReviewText('');
+    // setRating(0);
+    setSuccessMessage();
+    if (action === 'save') {
+      setReviews((prevData) => [...prevData, response.body]);
+      return;
+    }
+    getReviews();
+  }
+
+  async function deleteReview() {
+    setLoading(true);
+    const response = await makeQuery('deleteReview', undefined, undefined, 'DELETE');
     setLoading(false);
     if (response.status !== 200) {
       setError(true);
@@ -51,13 +79,26 @@ export default function ReviewsForm({ status, setReviews }) {
 
     setReviewText('');
     setRating(0);
-    setReviews((prevData) => [...prevData, {
-      rating,
-      text: reviewText,
-      username: status.username,
-      useravatar: status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : noImage),
-    }]);
+    getReviews();
   }
+
+  async function getUserReview() {
+    const response = await makeQuery('getUserReview', undefined, undefined, 'GET');
+
+    if (response.status !== 200) {
+      return;
+    }
+
+    setReviewText(response.body.reviewText);
+    setRating(response.body.grade);
+    setHaveReview(true);
+  }
+
+  useEffect(() => {
+    if (status) {
+      getUserReview();
+    }
+  }, [status]);
 
   return (
     <div className="reviews-form">
@@ -75,7 +116,8 @@ export default function ReviewsForm({ status, setReviews }) {
       </div>
       )}
       <div className={`reviews-form__body ${!status ? 'blur' : ''}`}>
-        <h2 className="reviews-form__title">{t('form-title')}</h2>
+        <h2 className="reviews-form__title">{haveReview ? 'Update comment' : t('form-title')}</h2>
+        {success && <p className="confirm__success">Review saved</p>}
         {(formError.inputError || formError.ratingError || error) && (
         <p className="error">
           <span>{formError.inputError && t('textarea_placeholder')}</span>
@@ -104,7 +146,8 @@ export default function ReviewsForm({ status, setReviews }) {
               initialValue={rating}
             />
           </div>
-          <button disabled={!status || loading} type="button" className="reviews-form__submit-btn button" onClick={submitReview}>{loading ? t('loading-review') : t('form-submit-btn')}</button>
+          {haveReview && <button disabled={!status || loading} type="button" className="reviews-form__submit-btn button delete_btn" onClick={deleteReview}>Delete</button>}
+          <button disabled={!status || loading} type="button" className="reviews-form__submit-btn button" onClick={() => (haveReview ? submitReview('update') : submitReview('save'))}>{loading ? t('loading-review') : (haveReview ? 'Update' : t('form-submit-btn'))}</button>
         </div>
       </div>
     </div>

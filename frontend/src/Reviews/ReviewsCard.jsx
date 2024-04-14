@@ -3,18 +3,21 @@ import React from 'react';
 import starIcon from './star.svg';
 
 export default function ReviewsCard({
-  rating, text, username, useravatar,
+  grade, reviewText, username, profilePicture, urlPicture, writingDate,
 }) {
   return (
     <div className="reviews-card">
       <div className="reviews-card__info">
-        <ul className="reviews-card__stars">
-          {[...Array(rating)].map((_, i) => <li key={i} className="reviews-card__star"><img src={starIcon} alt="Star" /></li>)}
-        </ul>
-        <p className="reviews-card__text">{text}</p>
+        <div className="reviews-card__row">
+          <ul className="reviews-card__stars">
+            {[...Array(grade)].map((_, i) => <li key={i} className="reviews-card__star"><img src={starIcon} alt="Star" /></li>)}
+          </ul>
+          <p className="reviews-card__date">{writingDate}</p>
+        </div>
+        <p className="reviews-card__text">{reviewText}</p>
       </div>
       <div className="reviews-card__user-data">
-        <img className="reviews-card__user-avatar" src={useravatar} alt="Avatar" referrerPolicy="no-referrer" />
+        <img className="reviews-card__user-avatar" src={urlPicture ?? `data:image/jpeg;base64,${profilePicture}`} alt="Avatar" referrerPolicy="no-referrer" />
         <h3 className="reviews-card__user-name">{username}</h3>
       </div>
     </div>
