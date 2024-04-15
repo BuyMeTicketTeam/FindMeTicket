@@ -18,16 +18,23 @@ public class ReviewController implements ReviewAPI {
 
     @PostMapping("/saveReview")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
-    public ResponseEntity<?> saveReview(@RequestBody SaveReviewDto saveReviewDto, HttpServletRequest request){
-
-        reviewService.saveReview(saveReviewDto, request);
-
-        return ResponseEntity.ok().build();
+    @Override
+    public ResponseEntity<?> saveReview(@RequestBody SaveReviewDto saveReviewDto, HttpServletRequest request) {
+        return ResponseEntity.ok().body(reviewService.saveReview(saveReviewDto, request));
     }
 
 
     @GetMapping("/getReviews")
-    public ResponseEntity<?>getReviews(){
+    @Override
+    public ResponseEntity<?> getReviews() {
         return ResponseEntity.ok().body(reviewService.getReviewList());
+    }
+
+    @DeleteMapping("deleteReview")
+    @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
+    @Override
+    public ResponseEntity<?> deleteReview(HttpServletRequest request) {
+
+        return reviewService.deleteReview(request) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

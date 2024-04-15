@@ -27,32 +27,55 @@ import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-   private final ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
     private final UserCredentialsRepository userCredentialsRepository;
 
+    @Override
+    public ReviewDTO saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request) {
 
-   public void saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request){
+        Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
 
-       Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
+        Optional<UserCredentials> userCredentials = uuid.flatMap(userCredentialsRepository::findById);
 
-       Optional<UserCredentials> userCredentials = uuid.flatMap(userCredentialsRepository::findById);
+        if (userCredentials.isPresent()) {
+            User user = userCredentials.get().getUser();
 
-       userCredentials.ifPresent(t->{
-           User user = t.getUser();
-           Review review = Review.builder()
-                   .reviewText(saveReviewDto.getReviewText())
-                   .grade(saveReviewDto.getGrade())
-                   .user(user).build();
-           user.setReview(review);
-           reviewRepository.save(review);
-       });
-   }
+            if (user.getReview() != null) {
+                reviewRepository.delete(user.getReview());
+            }
+            Review review = Review.builder()
+                    .reviewText(saveReviewDto.getReviewText())
+                    .grade(saveReviewDto.getGrade())
+                    .user(user).build();
+            user.setReview(review);
+            reviewRepository.save(review);
+            return ReviewDTO.createInstance(review);
+        } else return null;
 
-   public List<ReviewDTO> getReviewList(){
+    }
 
-       List<Review> reviewList = reviewRepository.findAll();
+    @Override
+    public List<ReviewDTO> getReviewList() {
 
-       return reviewList.stream().map(ReviewDTO::createInstance).toList();
-   }
+        List<Review> reviewList = reviewRepository.findAll();
+
+        return reviewList.stream().map(ReviewDTO::createInstance).toList();
+    }
+
+    @Override
+    public boolean deleteReview(HttpServletRequest request) {
+
+        Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
+
+        Optional<UserCredentials> userCredentials = uuid.flatMap(userCredentialsRepository::findById);
+
+        if (userCredentials.isPresent()) {
+            if (userCredentials.get().getUser().getReview() != null) {
+                reviewRepository.delete(userCredentials.get().getUser().getReview());
+                return true;
+            }
+        }
+        return false;
+    }
 }

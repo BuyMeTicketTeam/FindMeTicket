@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ReviewService {
 
-    void saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request);
+    ReviewDTO saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request);
 
     List<ReviewDTO> getReviewList();
+
+    boolean deleteReview(HttpServletRequest request);
 }

@@ -16,5 +16,10 @@ public interface ReviewAPI {
 
     @Operation(summary = "get all reviews", description = "get all reviews")
     @ApiResponse(responseCode = "200", description = "returns all reviews")
-    ResponseEntity<?>getReviews();
+    ResponseEntity<?> getReviews();
+
+    @Operation(summary = "delete review", description = "delete review of authorized user")
+    @ApiResponse(responseCode = "200", description = "review deleted")
+    @ApiResponse(responseCode = "404", description = "review not found")
+    ResponseEntity<?> deleteReview(HttpServletRequest request);
 }
