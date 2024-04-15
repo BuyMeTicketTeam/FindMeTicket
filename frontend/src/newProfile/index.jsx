@@ -16,6 +16,8 @@ import Address from './address.svg';
 import Ellipse from './Ellipse 9.png';
 import { busIcon, trainIcon, everythingIcon } from './transport-img/img';
 import loaderIcon from './spinning-loading.svg';
+import AvatarPopup from './avatarPopup';
+import mark from './image 12.svg';
 
 function Popup({
   // setIsProfilePopup,
@@ -30,6 +32,16 @@ function Popup({
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
   const navigate = useNavigate();
+  const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleAvatarClick = () => {
+    setIsAvatarPopupOpen(true);
+  };
+
+  const closeAvatarPopup = () => {
+    setIsAvatarPopupOpen(false);
+  };
 
   function handleLogoutButton() {
     makeQuerry('logout', undefined, undefined, 'GET').then((response) => {
@@ -165,13 +177,31 @@ function Popup({
   return (
     <div className="popup-content main">
       <div className="centered-block">
-        <div className="avatar" data-testid="avatar">
+        <div
+          className="avatar"
+          data-testid="avatar"
+          onClick={handleAvatarClick}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              handleAvatarClick();
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
           <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)} alt="Avatar" referrerPolicy="no-referrer" />
         </div>
         <p className="username">
           {t('hello')}
           {' '}
           {status.username}
+          {' '}
+          <div className="Lvl">Lvl 1</div>
+          <div className="mark-container" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+            <img src={mark} alt="mark" className="mark" />
+            {showTooltip && <div className="tooltip">Розблокування рівня відбувається автоматично під час використання наших послуг. Кожен рівень відповідає трьом місяцям використання.</div>}
+          </div>
+
         </p>
         <button
           type="button"
@@ -295,6 +325,7 @@ function Popup({
             )) : <div className="history-item no-items">{t('no-items')}</div>}
         </div>
       )}
+      {isAvatarPopupOpen && <AvatarPopup closeAvatarPopup={closeAvatarPopup} />}
     </div>
   );
 }
