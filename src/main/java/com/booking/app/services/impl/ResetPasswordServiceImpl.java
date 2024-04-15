@@ -5,19 +5,18 @@ import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
+import com.booking.app.exception.exception.ResourceNotFoundException;
 import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.ResetPasswordService;
 import com.booking.app.services.TokenService;
+import com.booking.app.util.HtmlTemplateUtils;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 /**
  * Service class for resetting passwords.
@@ -40,21 +39,22 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      * @throws MessagingException If there is an issue with sending the email.
      */
     @Transactional
-    public boolean hasEmailSent(String email) throws MessagingException {
-        UserCredentials userCredentials = userCredentialsRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("No such email"));
+    public boolean hasEmailSent(String email, String language) throws MessagingException {
+        UserCredentials userCredentials = userCredentialsRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("No such email"));
 
         if (!userCredentials.isEnabled()) {
             return false;
         } else {
             User user = userCredentials.getUser();
-
             verifyEmailRepository.delete(user.getConfirmToken());
 
-            ConfirmToken confirmToken = tokenService.createConfirmToken(user);
+            ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
+            confirmToken.setUser(user);
             user.setConfirmToken(confirmToken);
 
             verifyEmailRepository.save(confirmToken);
-            mailSenderService.sendEmail("resetPasswordUa", "Reset password", confirmToken.getToken(), userCredentials);
+            String htmlTemplate = HtmlTemplateUtils.getResetPasswordHtmlTemplate(language);
+            mailSenderService.sendEmail(htmlTemplate, "Reset password", confirmToken.getToken(), userCredentials);
             return true;
         }
 
@@ -69,12 +69,12 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Override
     @Transactional
     public boolean resetPassword(ResetPasswordDTO dto) {
-        Optional<UserCredentials> userFromDb = userCredentialsRepository.findByEmail(dto.getEmail());
+        UserCredentials userCredentials
+                = userCredentialsRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new ResourceNotFoundException("No such email"));
 
-        if (!userFromDb.isPresent() || !userFromDb.get().isEnabled()) {
+        if (!userCredentials.isEnabled()) {
             return false;
         } else {
-            UserCredentials userCredentials = userFromDb.orElseThrow(() -> new UsernameNotFoundException("No such email"));
             if (!tokenService.verifyToken(dto.getEmail(), dto.getToken())) return false;
 
             userCredentials.setPassword(passwordEncoder.encode(dto.getPassword()));

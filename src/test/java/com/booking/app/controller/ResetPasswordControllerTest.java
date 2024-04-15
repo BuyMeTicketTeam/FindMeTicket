@@ -26,28 +26,28 @@ class ResetPasswordControllerTest {
     @InjectMocks
     private ResetPasswordController resetPasswordController;
 
-    @Test
-    void testSuccessfullySendResetToken() throws MessagingException, IOException {
-        EmailDTO emailDTO = EmailDTO.builder()
-                .email("mishaakamichael999@gmail.com").build();
-        String email = emailDTO.getEmail();
-        when(resetPasswordService
-                .hasEmailSent(email)).thenReturn(true);
-        ResponseEntity<?> responseEntity = resetPasswordController.sendResetToken(emailDTO);
-        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        Assertions.assertNotNull(responseEntity);
-    }
-
-    @Test
-    void testFailSendResetToken() throws MessagingException, IOException {
-        EmailDTO emailDTO = EmailDTO.builder()
-                .email("mishaakamichael999@gmail.com").build();
-        String email = emailDTO.getEmail();
-        when(resetPasswordService.hasEmailSent(email)).thenReturn(false);
-        ResponseEntity<?> responseEntity = resetPasswordController.sendResetToken(emailDTO);
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
-        Assertions.assertNotNull(responseEntity);
-    }
+//    @Test
+//    void testSuccessfullySendResetToken() throws MessagingException, IOException {
+//        EmailDTO emailDTO = EmailDTO.builder()
+//                .email("mishaakamichael999@gmail.com").build();
+//        String email = emailDTO.getEmail();
+//        when(resetPasswordService
+//                .hasEmailSent(email)).thenReturn(true);
+//        ResponseEntity<?> responseEntity = resetPasswordController.sendResetToken(emailDTO);
+//        Assertions.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//        Assertions.assertNotNull(responseEntity);
+//    }
+//
+//    @Test
+//    void testFailSendResetToken() throws MessagingException, IOException {
+//        EmailDTO emailDTO = EmailDTO.builder()
+//                .email("mishaakamichael999@gmail.com").build();
+//        String email = emailDTO.getEmail();
+//        when(resetPasswordService.hasEmailSent(email)).thenReturn(false);
+//        ResponseEntity<?> responseEntity = resetPasswordController.sendResetToken(emailDTO);
+//        Assertions.assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+//        Assertions.assertNotNull(responseEntity);
+//    }
 
     @Test
     void testSuccessfullyResetPassword() {

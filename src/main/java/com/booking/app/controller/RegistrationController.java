@@ -4,18 +4,16 @@ import com.booking.app.controller.api.RegisterAPI;
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
-import com.booking.app.exception.exception.EmailAlreadyExistsException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
+import com.booking.app.util.HtmlTemplateUtils;
 import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -39,14 +37,13 @@ public class RegistrationController implements RegisterAPI {
      *
      * @param dto The RegistrationDTO containing user registration information.
      * @return ResponseDTO containing information about the registration process.
-     * @throws MessagingException          Thrown if an error occurs during email sending.
-     * @throws IOException                 Thrown if an I/O error occurs.
+     * @throws MessagingException Thrown if an error occurs during email sending.
+     * @throws IOException        Thrown if an I/O error occurs.
      */
-    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/register")
     @Override
-    public ResponseEntity<?> signUp(@RequestBody RegistrationDTO dto) throws MessagingException, IOException {
-        EmailDTO register = registrationService.register(dto);
+    public ResponseEntity<?> signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, @RequestBody RegistrationDTO dto) throws MessagingException, IOException {
+        EmailDTO register = registrationService.register(dto, siteLanguage);
         log.info(String.format("User %s has successfully registered!", dto.getEmail()));
         return ResponseEntity.ok().body(register);
     }
@@ -57,7 +54,6 @@ public class RegistrationController implements RegisterAPI {
      * @param dto The TokenConfirmationDTO containing the confirmation token.
      * @return ResponseEntity indicating the result of the email confirmation.
      */
-    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
     @PostMapping("/confirm-email")
     @Override
     public ResponseEntity<?> confirmEmailToken(@RequestBody TokenConfirmationDTO dto) {
@@ -69,19 +65,19 @@ public class RegistrationController implements RegisterAPI {
     }
 
     /**
-     * Handles the request to resend the confirmation email.
+     * Handles the request to resend the confirmation token email.
      *
      * @param dto The TokenConfirmationDTO containing the user's email.
      * @return ResponseEntity indicating the result of the resend operation.
      * @throws MessagingException Thrown if an error occurs during email sending.
      * @throws IOException        Thrown if an I/O error occurs.
      */
-    //@CrossOrigin(allowCredentials = CorsConfigConstants.allowCredentials, origins = CorsConfigConstants.allowedOrigin)
-    @PostMapping("/resend-confirm-email")
+    @PostMapping("/resend/confirm-token")
     @Override
-    public ResponseEntity<?> resendConfirmEmailToken(@RequestBody TokenConfirmationDTO dto) throws MessagingException, IOException {
-        if (mailSenderService.resendEmail(dto.getEmail())) {
-            return ResponseEntity.status(HttpStatus.OK).body("Confirm password token has been sent one more time");
+    public ResponseEntity<?> resendConfirmEmailToken(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, @RequestBody TokenConfirmationDTO dto) throws MessagingException, IOException {
+        String htmlTemplate = HtmlTemplateUtils.getConfirmationHtmlTemplate(siteLanguage);
+        if (mailSenderService.resendEmail(dto.getEmail(), htmlTemplate)) {
+            return ResponseEntity.status(HttpStatus.OK).body("Confirm token has been sent one more time");
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad input");
     }

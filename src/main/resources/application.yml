@@ -77,11 +77,6 @@ spring:
       schema: find_me_ticket_schema
 
 ##-------------------------
-## Email confirmation Properties
-##-------------------------
-TOKEN_SYMBOLS: ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
-
-##-------------------------
 ## JWT Properties
 ##-------------------------
 jwtSecret: fdsfsdgdryhgtrdfh45632542345fwdfsgdghfdhgdfh2FSDFGDFGffffa23
