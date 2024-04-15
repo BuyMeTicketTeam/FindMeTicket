@@ -66,27 +66,80 @@ users to the sellers of the best tickets available across multiple websites in U
   <img width="12" />
 </div>
 
+## The project has such controllers
+
+📝🔑**Login Controller** - endpoints with open access to authenticate users (JWT token).
+
+| HTTP method |       Endpoint           |           Description           |
+|:-----------:|:------------------------:|:-------------------------------:|
+|    POST     | `/oauth2/authorize/*`    |   OAuth 2.0 authentication.    |
+|    POST     |    `/login `             |     Basic authentication.       |
+
+**Registration Controller** - endpoints with open access for new users who want to register.
+
+| HTTP method |         Endpoint         |      Description          |
+|:-----------:|:------------------------:|:-------------------------:|
+|     POST    | `/resend/confirm-token ` | Resend email confirmation |
+|     POST    |     `/register`          |   Register User           |
+|     POST    |     `/confirm-email`     |    Email confirmation.    |
+
+**Notification Controller** - all endpoints requiers authentificated users.
+
+| HTTP method |         Endpoint         |      Description          |
+|:-----------:|:------------------------:|:-------------------------:|
+|     GET     | `/notifications/enable ` |   Enable notifications    |
+|     GET     | `/notifications/disable` |   Disable notifications   |
+
+**Reset Password Controller** - handles user password reset operations. This controller provides endpoints for sending a password reset token and confirming the reset.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |      `/update-password ` | update password                    |
+|     POST    |     `/reset`             | Send password reset token          |
+|     POST    | `/resend/reset-token`    |  Resend password reset token       |
+|     POST    |     `/new-password`      | Confirmation reset password token. |
+
+**Ticket Controller** 
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |      `/sortedBy`         |              Sort tickets          |
+|     POST    |  `/selectedTransport`    |    Send password reset token       |
+|     POST    |      `/searchTickets`    |     Searching tickets              |
+|     GET     |     `/get/ticket/{id}`   | Get detailed info about ticket     |
+
+**Logout Controller** - handling user logout functionality.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     GET     |     `/logout`            | Logout a user                      |
+
+**Type Ahead Controller** - handling type-ahead functionality for city search.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |     `/typeAhead`         |       Type ahead feature           |
+
+**Delete User Controller** 
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|   DELETE    |     `/delete-user`       |           Delete a user            |
+
+**Search History Controller**
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     GET     |     `/getHistory`        |     Searching history for user     |
+
 # Docker 🐳
-### Steps
-1. Clone the repository to your local machine:
-````
-git clone https://github.com/FindMeTicketTeam/FindMeTicket.git
-````
-2. Navigate to the Project Directory
-````
-cd FindMeTicket
-````
-3. Update Environment Variables
+This app is Docker ready!
 
-You need to provide these API keys in environment files. Set values in next files:
+Navigate to the main 'FindMeTicket' directory and execute:
 
-* frontend/.env.docker
-* src/main/resources/.env.docker
-4. Run Docker Compose
 ````
 docker-compose up
 ````
-This command will build and start the Docker container.
 
 ## Authors
 
@@ -96,7 +149,7 @@ This command will build and start the Docker container.
 Mentor* [[GitHub](https://github.com/VKuzmich) | [LinkedIn](https://www.linkedin.com/in/volodymyr-kuzmych-9915942a/)]
 
 👤 **Mykhailo Marchuk** - *Backend
-dev* [[GitHub](https://github.com/mishaakamichael999) | [LinkedIn](https://github.com/mishaakamichael999)]
+dev* [[GitHub](https://github.com/mishaakamichael999) | [LinkedIn](https://www.linkedin.com/in/mishaakamichael999/)]
 
 👤 **Kyrylo Peniaziev** - *Backend
 dev* [[GitHub](https://github.com/Stepan22-prog) | [LinkedIn](https://www.linkedin.com/in/kyrylo-peniaziev-9137a328a/)]
