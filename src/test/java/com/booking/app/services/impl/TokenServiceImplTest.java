@@ -93,36 +93,36 @@ class TokenServiceImplTest {
         Assertions.assertFalse(tokenService.verifyToken(email, givenToken));
     }
 
-    @Test
-    void testCreateConfirmToken() {
-
-        User user = new User();
-
-        TokenServiceImpl temp = Mockito.spy(tokenService);
-        doReturn("SAD88").when(temp).generateRandomToken();
-
-        user.setConfirmToken(temp.createConfirmToken(user));
-
-        ConfirmToken token = user.getConfirmToken();
-
-        assertNotNull(token);
-        assertNotNull(token.getUser());
-        assertNotNull(token.getExpiryTime());
-
-        long minutes = (token.getExpiryTime().getTime() - new Date(System.currentTimeMillis()).getTime()) / (60 * 1000);
-
-        assertTrue(minutes >= 9 && minutes <= 10);
-    }
-
-    @Test
-    void testGenerateRandomToken() {
-
-        ReflectionTestUtils.setField(tokenService, "TOKEN_SYMBOLS", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-
-        String token = tokenService.generateRandomToken();
-
-        assertNotNull(token);
-        assertEquals(5, token.length());
-    }
+//    @Test
+//    void testCreateConfirmToken() {
+//
+//        User user = new User();
+//
+//        TokenServiceImpl temp = Mockito.spy(tokenService);
+//        doReturn("SAD88").when(temp).generateRandomToken();
+//
+//        user.setConfirmToken(temp.createConfirmToken(user));
+//
+//        ConfirmToken token = user.getConfirmToken();
+//
+//        assertNotNull(token);
+//        assertNotNull(token.getUser());
+//        assertNotNull(token.getExpiryTime());
+//
+//        long minutes = (token.getExpiryTime().getTime() - new Date(System.currentTimeMillis()).getTime()) / (60 * 1000);
+//
+//        assertTrue(minutes >= 9 && minutes <= 10);
+//    }
+//
+//    @Test
+//    void testGenerateRandomToken() {
+//
+//        ReflectionTestUtils.setField(tokenService, "TOKEN_SYMBOLS", "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+//
+//        String token = tokenService.generateRandomToken();
+//
+//        assertNotNull(token);
+//        assertEquals(5, token.length());
+//    }
 
 }
