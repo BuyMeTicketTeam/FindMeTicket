@@ -5,6 +5,7 @@ import com.booking.app.dto.SearchHistoryDto;
 import com.booking.app.entity.UkrainianPlaces;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.entity.UserSearchHistory;
+import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.HistoryMapper;
 import com.booking.app.mapper.model.ArrivalCity;
 import com.booking.app.mapper.model.DepartureCity;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -41,16 +43,21 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
 
     @Override
-    public void addToHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request) {
+    public void addHistory(RequestTicketsDTO requestTicketsdto, String language, HttpServletRequest request) {
         Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
 
-        Optional<UserCredentials> user = uuid.flatMap(userRepository::findById);
-        user.ifPresent(t -> historyRepository.save(UserSearchHistory.builder()
-                .user(t.getUser())
-                .departureCityId(typeAheadService.getCityId(requestTicketsDTO.getDepartureCity(), language))
-                .arrivalCityId(typeAheadService.getCityId(requestTicketsDTO.getArrivalCity(), language))
-                .departureDate(requestTicketsDTO.getDepartureDate())
-                .build()));
+        Optional<UserCredentials> userCredentials = uuid.flatMap(userRepository::findById);
+
+        userCredentials.ifPresent(user -> {
+            Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(requestTicketsdto.getBus(), requestTicketsdto.getTrain(), requestTicketsdto.getAirplane(), requestTicketsdto.getFerry());
+            historyRepository.save(UserSearchHistory.builder()
+                    .user(user.getUser())
+                    .departureCityId(typeAheadService.getCityId(requestTicketsdto.getDepartureCity(), language))
+                    .arrivalCityId(typeAheadService.getCityId(requestTicketsdto.getArrivalCity(), language))
+                    .departureDate(requestTicketsdto.getDepartureDate())
+                    .typeTransport(types)
+                    .build());
+        });
     }
 
     @Override

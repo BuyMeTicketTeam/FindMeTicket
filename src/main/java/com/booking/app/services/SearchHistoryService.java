@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SearchHistoryService {
 
-    void addToHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request);
+    void addHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request);
 
     List<SearchHistoryDto> getUserHistory(UserCredentials userCredentials, String language);
 }

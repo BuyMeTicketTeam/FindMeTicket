@@ -1,9 +1,12 @@
 package com.booking.app.entity;
 
+import com.booking.app.enums.TypeTransportEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +33,12 @@ public class UserSearchHistory {
     @Column(name = "adding_time")
     @Builder.Default
     private LocalDateTime addingTime = LocalDateTime.now();
+
+    @ElementCollection(targetClass = TypeTransportEnum.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "type_transport")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private Set<TypeTransportEnum> typeTransport = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
