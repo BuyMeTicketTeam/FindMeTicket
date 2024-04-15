@@ -27,6 +27,7 @@
                   "time": "Відправити лист знову: {{minutes}}:{{seconds}}",
                   "auth-link": "Натисніть для того щоб авторизуватися",
                   "success-message": "Пароль змінено!"
+
             },
             "update-password": {
                   "error-server": "Спробуйте ще раз",
@@ -55,7 +56,7 @@
                   "email-name": "Електронна пошта",
                   "password-name": "Пароль",
                   "forgot-password": "Забули пароль",
-                  "login-buttom": "Логін",
+                  "login-buttom": "Увійти",
                   "processing": "Обробка...",
                   "register": "Зареєструватися",
                   "or": "Або",
@@ -67,8 +68,16 @@
                   "change-password": "Змінити пароль",
                   "exit": "Вийти",
                   "privacy-policy": "Політика конфіденційності",
-                  "delete-account": "Видалити аккаунт",
-                  "hello": "Привіт,"
+                  "delete-account": "Видалити акаунт",
+                  "hello": "Привіт,",
+                  "notice": "Бажаєте отримувати сповіщення про наявність квитків?",
+                  "account": "Акаунт",
+                  "email": "Електронна пошта",
+                  "phone": "Номер телефону",
+                  "account-management": "Керування обліковим записом",
+                  "add": "Додати",
+                  "history": "Історія",
+                  "no-items": "У вас немає історії пошуку"
             },
             "register": {
                   "error-email": "Користувач з ціїю електронною адресою вже зареєстрований",
@@ -89,7 +98,8 @@
                   "privacy policy": "політикою конфіденційності",
                   "register": "Зареєструватися",
                   "processing": "Обробка...",
-                  "error-nickname-exist": "Цей псевдонім вже існує, придумайте щось інше"
+                  "error-nickname-exist": "Цей псевдонім вже існує, придумайте щось інше",
+                  "ticket-alerts-agreement": "Бажаєте отримувати листи про нові квитки?"
             },
             "tip": {
                   "nickname-tip-title": "Ваш псевдонім повинен відповідати наступним вимогам:",
@@ -175,7 +185,9 @@
                   "where-t": "Куди",
                   "error": "За вашим запитом нічого не знайдено",
                   "error2": "Поле не повинно бути порожнім",
-                  "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено"
+                  "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено",
+                  "from-placeholder": "Kиїв",
+                  "to-placeholder": "Одеса"
             },
             "filters": {
                   "Price": "Ціна",
@@ -235,18 +247,19 @@
                  "partners": "Наші інформаційні партнери"
             },
             "cities": {
-                  "Kiev-Kharkiv": "Київ - Харків",
-                  "Dnipro-Chernivtsi": "Дніпро - Чернівці",
-                  "Kiev-Dnipro": "Київ - Дніпро",
-                  "Kharkiv-Ivano-Frankivsk": "Харків - Івано-Франківськ",
-                  "Lviv-Kiev": "Львів - Київ",
-                  "Dnipro-Odessa": "Дніпро - Одесса",
-                  "Kiev-Poltava": "Київ - Полтава",
-                  "Lviv-Ternopil": "Львів - Тернопіль",
-                  "Kharkiv-Zaporizhzhya": "Харків - Запоріжжя",
-                  "Odessa-Kherson": "Одеса - Херсон",
-                  "Zaporizhzhya-Krivyi Rih": "Запоріжжя - Кривий Ріг",
-                  "Vinnytsia-Lviv": "Вінниця - Львів",
+                  "Kiev": "Київ",
+                  "Kharkiv": "Харків",
+                  "Dnipro": "Дніпро",
+                  "Chernivtsi": "Чернівці",
+                  "Ivano-Frankivsk": "Івано-Франківськ",
+                  "Lviv": "Львів",
+                  "Odessa": "Одеса",
+                  "Poltava": "Полтава",
+                  "Ternopil": "Тернопіль",
+                  "Zaporizhzhya": "Запоріжжя",
+                  "Kherson": "Херсон",
+                  "Krivyi Rih": "Кривий Ріг",
+                  "Vinnytsya": "Вінниця",
                   "Privacy policy": "Політика конфіденційності"
              },
             "scroll-button": {

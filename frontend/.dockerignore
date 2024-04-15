@@ -4,3 +4,4 @@ coverage
 *zip
 .git
 Dockerfile
+.env

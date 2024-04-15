@@ -2,8 +2,8 @@ package com.booking.app.mapper;
 
 import com.booking.app.dto.TicketDto;
 import com.booking.app.dto.TrainComfortInfoDTO;
-import com.booking.app.entity.TrainComfortInfo;
-import com.booking.app.entity.TrainTicket;
+import com.booking.app.entity.ticket.train.TrainInfo;
+import com.booking.app.entity.ticket.train.TrainTicket;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import org.mapstruct.*;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +26,7 @@ public interface TrainMapper {
     TicketDto toTrainTicketDto(TrainTicket ticket, @Context String language);
 
     @Mapping(source = "link", target = "url")
-    TrainComfortInfoDTO toTrainComfortInfoDTO(TrainComfortInfo ticket);
+    TrainComfortInfoDTO toTrainComfortInfoDTO(TrainInfo ticket);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {
@@ -41,16 +41,16 @@ public interface TrainMapper {
 
     @Named("departureTimeMapping")
     static String departureTimeMapping(String departureDate, @Context String language) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return switch (language) {
             case ("ua") -> {
                 LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
+                formatter = DateTimeFormatter.ofPattern("dd.MM, E", new Locale("uk"));
                 yield date.format(formatter);
             }
             case ("eng") -> {
                 LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("en"));
+                formatter = DateTimeFormatter.ofPattern("dd.MM, E", new Locale("en"));
                 yield date.format(formatter);
             }
             default ->

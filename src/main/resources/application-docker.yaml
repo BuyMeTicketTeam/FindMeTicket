@@ -70,7 +70,7 @@ spring:
   ## Database configuration
   ##-------------------------
   datasource:
-    url: 'jdbc:postgresql://postgres:5432/db_ticket?'
+    url: 'jdbc:postgresql://db-postgres:5432/db_ticket?'
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver

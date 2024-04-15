@@ -6,9 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +16,6 @@ import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 
 /**
  * Controller handling user logout functionality.
- * Implements the LogoutAPI interface.
  */
 @RestController
 @RequestMapping
@@ -26,20 +23,17 @@ import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 public class LogoutController implements LogoutAPI {
 
     /**
-     * Handles HTTP POST request to '/logout'.
+     * Handles HTTP GET request to '/logout'.
      * Clears the security context and invalidates the user's authentication.
      *
      * @return ResponseEntity with an HTTP status representing successful logout
      */
     @Override
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        CookieUtils.deleteCookie(request,response, REFRESH_TOKEN);
-        CookieUtils.deleteCookie(request,response, USER_ID);
-        CookieUtils.deleteCookie(request,response, REMEMBER_ME);
-        SecurityContext context = SecurityContextHolder.getContext();
-        SecurityContextHolder.clearContext();
-        context.setAuthentication(null);
+        CookieUtils.deleteCookie(request, response, REFRESH_TOKEN);
+        CookieUtils.deleteCookie(request, response, USER_ID);
+        CookieUtils.deleteCookie(request, response, REMEMBER_ME);
 
         return ResponseEntity.ok().build();
     }

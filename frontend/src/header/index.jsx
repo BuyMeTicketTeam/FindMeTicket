@@ -1,10 +1,9 @@
 /* eslint-disable no-shadow */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
 import LoginBtn from './LoginBtn';
-import Popup from './profile';
 import './header.scss';
 import logo from './logo.svg';
 import globys from './language.svg';
@@ -13,8 +12,6 @@ export default function Header({
   authorization, updateAuthValue, language, setLanguage,
 }) {
   const { t, i18n } = useTranslation('translation', { keyPrefix: 'header' });
-  const [isprofilePopup, setIsProfilePopup] = useState(false);
-  const [userAvatar, setUserAvatar] = useState(null);
   const languages = [
     { value: 'UA', label: 'Укр' },
     { value: 'ENG', label: 'Eng' },
@@ -57,24 +54,8 @@ export default function Header({
   }
 
   useEffect(() => {
-    if (authorization && authorization.status === 200) {
-      setIsProfilePopup(true);
-    } else {
-      setIsProfilePopup(false);
-    }
-  }, [authorization, setIsProfilePopup]);
-
-  useEffect(() => {
     displayLanguage();
   }, []);
-
-  useEffect(() => {
-    if (authorization && authorization.status === 200 && authorization.image) {
-      setUserAvatar(authorization.image);
-    } else {
-      setUserAvatar(null);
-    }
-  }, [authorization, setUserAvatar]);
 
   return (
     <header data-testid="header" className="header">
@@ -95,22 +76,10 @@ export default function Header({
         onChange={(lang) => handleLanguageChange(lang)}
       />
       <LoginBtn
-        setIsProfilePopup={setIsProfilePopup}
         status={authorization}
         updateAuthValue={updateAuthValue}
         username={authorization ? authorization.username : null}
       />
-
-      {isprofilePopup && (
-      <Popup
-        setIsProfilePopup={setIsProfilePopup}
-        updateAuthValue={updateAuthValue}
-        status={authorization}
-        username={authorization.username}
-        userAvatar={userAvatar}
-        setUserAvatar={setUserAvatar}
-      />
-      )}
 
     </header>
   );

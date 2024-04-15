@@ -17,7 +17,7 @@ function TicketPage() {
   const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketError, setTicketError] = useState(false);
   const [connection, setConnection] = useState(true);
-  const { t, i18n } = useTranslation('translation', { keyPrefix: 'ticket-page' });
+  const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
   async function serverRequest() {
     function handleOpen(res) {
@@ -57,7 +57,6 @@ function TicketPage() {
       handleError,
       handleOpen,
       handleClose,
-      headers: { 'Content-Language': i18n.language.toLowerCase() },
     });
   }
 

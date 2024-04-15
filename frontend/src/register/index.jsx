@@ -21,6 +21,7 @@ export default function Register() {
   const [confirmPasswordError, onConfirmPasswordError] = useState(false);
   const [error, onError] = useState('');
   const [policy, onPolicy] = useState(false);
+  const [notification, setNotification] = useState(false);
   const [policyError, onErrorPolicy] = useState(false);
   const [send, onSend] = useState(false);
   const [show, onShow] = useState(false);
@@ -87,6 +88,7 @@ export default function Register() {
       password,
       username: nickname,
       confirmPassword,
+      notification,
     };
     makeQuerry('register', JSON.stringify(body))
       .then((response) => {
@@ -173,9 +175,17 @@ export default function Register() {
           dataTestid="checkbox"
           policyError={policyError}
           onChange={() => { onPolicy(!policy); onErrorPolicy(false); }}
+          id="remember"
         >
           {t('agree')}
           <a href="/">{t('privacy policy')}</a>
+        </Checkbox>
+        <Checkbox
+          dataTestId="ticket-alerts-checkbox"
+          onChange={() => setNotification(!notification)}
+          id="notification"
+        >
+          {t('ticket-alerts-agreement')}
         </Checkbox>
         <Button
           dataTestId="register-btn"

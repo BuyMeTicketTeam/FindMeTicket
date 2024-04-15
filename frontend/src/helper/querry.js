@@ -1,3 +1,5 @@
+/* eslint-disable import/no-cycle */
+import { getI18n } from 'react-i18next';
 import responseInterceptor from './responseInterceptor';
 
 /* eslint-disable quotes */
@@ -5,10 +7,11 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
   const token = localStorage.getItem('JWTtoken');
   let response;
   try {
-    response = await fetch(`http://localhost:${process.env.REACT_APP_PORT}/${address}`, {
+    response = await fetch(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/${address}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token || null,
+        'Content-Language': getI18n().language.toLowerCase(),
+        Authorization: token ?? '',
         ...headers,
       },
       credentials: "include",
@@ -16,6 +19,7 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
       body,
     });
   } catch (error) {
+    console.log(error);
     return { status: 500, error };
   }
   let bodyResponse;

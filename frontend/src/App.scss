@@ -16,6 +16,11 @@ html {
   overflow-x: hidden;
 }
 
+// overlay
+iframe {
+    display: none;
+}
+
 @media (max-width: 1200px) {
   html {
     overflow-x: auto;
@@ -28,6 +33,7 @@ body {
   background: url('./Frame 4.1.jpg');
   overflow-y: auto;
   min-width: 1200px;
+  position: relative;
 }
 .body{
   display: flex;
@@ -214,6 +220,7 @@ input[type='number'] {
   &::after {
     position: absolute;
     left: 0;
+    top: 0;
     content: '';
     display: block;
     width: 15px;
@@ -228,7 +235,7 @@ input[type='number'] {
 
   &:checked~.checkbox::before {
     left: 0px;
-    top: -3px;
+    top: -4px;
     position: absolute;
     content: '';
     display: block;
@@ -280,14 +287,20 @@ input[type='number'] {
   margin-top: 15px;
 }
 
-
 body #bmc-wbtn {
   left: 20px;
   width: 50px !important;
   height: 50px !important;
+  position: absolute !important;
+  bottom: 35px !important;
+}
+
+body > div:nth-of-type(2) {
+  position: absolute !important;
 }
 
 body #bmc-iframe {
+  position: absolute !important;
   left: 45px;
   bottom: 85px !important;
   transform-origin: left bottom !important;
