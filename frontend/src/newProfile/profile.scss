@@ -34,6 +34,7 @@
 .popup-content .username {
   margin-right: auto;
   font-size: 25px;
+  display: block;
 }
 
 .popup-content .change-password {
@@ -57,6 +58,7 @@
   width: 80px;
   height: auto;
   border-radius: 50%;
+  cursor: pointer;
 }
 
 .popup-content input {
@@ -467,4 +469,33 @@ a.history-item {
 
 .column-header {
   display: flex;
+}
+
+.Lvl {
+  font-size: 15px;
+display: contents;
+color: $bright;
+}
+
+.mark-container {
+  position: relative;
+  display: contents;
+}
+
+.mark {
+  width: 16px;
+  margin-left: 5px;
+  margin-bottom: -3px;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 34px;
+  left: 35%;
+  padding: 5px;
+  background-color: $font-color;
+  color: $dark;
+  font-size: 12px;
+  border-radius: 5px;
 }
