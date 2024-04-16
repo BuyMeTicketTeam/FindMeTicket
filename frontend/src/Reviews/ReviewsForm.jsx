@@ -59,7 +59,7 @@ export default function ReviewsForm({ status, setReviews }) {
     setSuccessMessage();
     setReviewText('');
     setRating(0);
-    setReviews(response.body);
+    setReviews((prevData) => [...prevData, response.body]);
   }
 
   return (
