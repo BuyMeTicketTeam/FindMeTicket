@@ -84,7 +84,7 @@ export default function Confirm() {
 
   function handleResendButton() {
     const body = { email: sessionStorage.getItem('email') };
-    makeQuerry('resend-confirm-token', JSON.stringify(body))
+    makeQuerry('/resend/confirm-token', JSON.stringify(body))
       .then((response) => {
         setResend(false);
         statusChecksForResend(response);

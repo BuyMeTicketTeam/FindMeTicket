@@ -15,6 +15,7 @@ import ChangePassword from '../changePassword';
 import PrivacyPolicy from '../privacyPolicy';
 import TouristPlaces from '../TouristPlaces';
 import ProfilePage from '../newProfile';
+import Reviews from '../Reviews';
 
 export default function Routers({
   updateAuthValue, ticketsData,
@@ -77,7 +78,7 @@ export default function Routers({
       <Route
         path="/change-password"
         element={(
-          <RouteController access={!auth}>
+          <RouteController access={auth}>
             <ChangePassword />
           </RouteController>
       )}
@@ -93,6 +94,7 @@ export default function Routers({
       />
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
+      <Route path="/reviews" element={<Reviews status={auth} />} />
       <Route
         path="/profile-page"
         element={(

@@ -19,6 +19,8 @@ function PriceTrain({ ticketUrls, connection }) {
   }
 
   useEffect(() => {
+    setTicketsuaTickets([]);
+    setProizdTickets([]);
     if (ticketUrls.length > 0) {
       ticketUrls.map((ticketUrl) => groupTickets(ticketUrl.resource, ticketUrl));
     }
