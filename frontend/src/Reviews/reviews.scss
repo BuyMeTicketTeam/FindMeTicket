@@ -38,8 +38,22 @@
   background: $semi-dark;
   border-radius: 10px;
   min-height: 300px;
+  width: 300px;
   display: flex;
   flex-direction: column;
+  overflow-wrap: break-word;
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__date {
+    font-size: 14px;
+    color: $grey;
+  }
 
   .reviews-card__info {
     padding: 20px;
@@ -48,7 +62,6 @@
   
   .reviews-card__stars {
     display: flex;
-    margin-bottom: 8px;
     gap: 4px;
   }
 
@@ -118,6 +131,14 @@
   &__submit-btn.button {
     min-width: 150px;
   }
+
+  &__submit-btn.delete_btn {
+    background: $error-bright;
+    border-color: $error-bright;
+    &:hover {
+      box-shadow: 0px 0px 8px 1px $error-bright;
+    }
+  }
 }
 
 .reviews-lock {
@@ -147,4 +168,8 @@
     text-align: center;
     padding: 5px 20px;
   }
+}
+
+.success {
+  background: $success;
 }

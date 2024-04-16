@@ -1,13 +1,14 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-unresolved */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import { useTranslation } from 'react-i18next';
 import makeQuery from '../helper/querry';
 
-import noImage from './no-image.jpg';
+// import noImage from './no-image.jpg';
 import lockIcon from './lock.svg';
 
 export default function ReviewsForm({ status, setReviews }) {
@@ -16,6 +17,7 @@ export default function ReviewsForm({ status, setReviews }) {
   const [rating, setRating] = useState(0);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'reviews' });
 
   function validateReview() {
@@ -38,8 +40,8 @@ export default function ReviewsForm({ status, setReviews }) {
     }
 
     const body = {
-      rating,
-      text: reviewText,
+      grade: rating,
+      reviewText,
     };
     setLoading(true);
     const response = await makeQuery('review', JSON.stringify(body));
@@ -76,6 +78,7 @@ export default function ReviewsForm({ status, setReviews }) {
       )}
       <div className={`reviews-form__body ${!status ? 'blur' : ''}`}>
         <h2 className="reviews-form__title">{t('form-title')}</h2>
+        {success && <p className="confirm__success">Review saved</p>}
         {(formError.inputError || formError.ratingError || error) && (
         <p className="error">
           <span>{formError.inputError && t('textarea_placeholder')}</span>
