@@ -6,4 +6,4 @@ databaseChangeLog:
   - include:
       file: data/init-ukrainian_places.yaml
   - include:
-      file: data/static/admin.sql
+      file: data/init-admin.sql
