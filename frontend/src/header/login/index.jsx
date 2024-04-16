@@ -121,7 +121,7 @@ export default function Popup({ updateAuthValue }) {
           name={t('email-name')}
           tip={t('login-tip')}
           value={login}
-          type="text"
+          type="email"
           onInputChange={(value) => handleLoginChange(value)}
           placeholder="mail@mail.com"
         />

@@ -78,7 +78,7 @@ export default function Routers({
       <Route
         path="/change-password"
         element={(
-          <RouteController access={!auth}>
+          <RouteController access={auth}>
             <ChangePassword />
           </RouteController>
       )}

@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-unresolved */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Rating } from 'react-simple-star-rating';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,13 @@ export default function ReviewsForm({ status, setReviews }) {
     return errorFlag;
   }
 
+  function setSuccessMessage() {
+    setSuccess(true);
+    setTimeout(() => setSuccess(false), 1500);
+  }
+
   async function submitReview() {
+    setError(false);
     if (validateReview()) {
       return;
     }
@@ -44,21 +50,16 @@ export default function ReviewsForm({ status, setReviews }) {
       reviewText,
     };
     setLoading(true);
-    const response = await makeQuery('review', JSON.stringify(body));
+    const response = await makeQuery('saveReview', JSON.stringify(body));
     setLoading(false);
     if (response.status !== 200) {
       setError(true);
       return;
     }
-
+    setSuccessMessage();
     setReviewText('');
     setRating(0);
-    setReviews((prevData) => [...prevData, {
-      rating,
-      text: reviewText,
-      username: status.username,
-      useravatar: status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : noImage),
-    }]);
+    setReviews(response.body);
   }
 
   return (
