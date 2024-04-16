@@ -18,6 +18,7 @@ import { busIcon, trainIcon, everythingIcon } from './transport-img/img';
 import loaderIcon from './spinning-loading.svg';
 import AvatarPopup from './avatarPopup';
 import mark from './image 12.svg';
+import rank1 from './rank1.png';
 
 function Popup({
   // setIsProfilePopup,
@@ -189,7 +190,8 @@ function Popup({
           role="button"
           tabIndex={0}
         >
-          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)} alt="Avatar" referrerPolicy="no-referrer" />
+          <img src={rank1} alt="rank1" className="image-rank1-profile" />
+          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)} alt="Avatar" referrerPolicy="no-referrer" className="ava" />
         </div>
         <p className="username">
           {t('hello')}
@@ -325,7 +327,12 @@ function Popup({
             )) : <div className="history-item no-items">{t('no-items')}</div>}
         </div>
       )}
-      {isAvatarPopupOpen && <AvatarPopup closeAvatarPopup={closeAvatarPopup} />}
+      {isAvatarPopupOpen && (
+      <AvatarPopup
+        closeAvatarPopup={closeAvatarPopup}
+        avatar={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)}
+      />
+      )}
     </div>
   );
 }

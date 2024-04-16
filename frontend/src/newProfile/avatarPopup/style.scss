@@ -43,23 +43,61 @@
 
 .image-card {
   width: 150px;
-  height: 200px;
   margin: 15px; 
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3), 
+  0px 0px 20px rgba(255, 255, 255, 0.5); 
+  position: relative;
+}
+
+.image-card-rank1 {
+  width: 150px;
+  margin: 15px; 
+  height: 200px;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3), 
   0px 0px 20px rgba(255, 255, 255, 0.5); 
   position: relative;
   display: flex;
-  justify-content: center;
+    justify-content: space-between;
   align-items: center;
+  padding: 10px 0;
   flex-direction: column;
 }
 
-.image {
+
+.image-rank1 {
+  max-width: 66%;
+  max-height: 100%;
+  margin-top: 30px;
+}
+.image-rank2 {
+  max-width: 80%;
+  max-height: 100%;
+  margin-top: 18px;
+}
+
+.image-rank3 {
+  max-width: 80%;
+  max-height: 100%;
+  margin-top: 18px;
+}
+
+.image-rank4 {
   max-width: 100%;
   max-height: 100%;
+  margin-top: 5px;
 }
+
+.image-rank5 {
+  max-width: 100%;
+  max-height: 100%;
+  margin-top: 5px;
+}
+
 
 .level-text {
   font-size: 14px;
@@ -74,8 +112,19 @@
   color: #ffffff;
 }
 
-.image-card:not(:first-child) {
+// .image-card:not(:first-child) {
+//   filter: brightness(50%);
+// }
+
+.image-dark-body{
   filter: brightness(50%);
+  display: flex;
+    justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  flex-direction: column;
+  height: 100%;
+  
 }
 
 .lock-image {
@@ -87,52 +136,14 @@
   width: 50px;
 }
 
-.image-rank6{
-  max-width: 100%;
-}
 
-.avatar-overlay-s {
+
+.avatar-overlay {
   position: absolute;
   top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 119px;
-  width: 200px;
-}
-
-.avatar-overlay-a {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 80%; /* Установите желаемую ширину */
-  max-height: 80%; /* Установите желаемую высоту */
-}
-
-.avatar-overlay-b {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 80%; /* Установите желаемую ширину */
-  max-height: 80%; /* Установите желаемую высоту */
-}
-
-.avatar-overlay-c {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 80%; /* Установите желаемую ширину */
-  max-height: 80%; /* Установите желаемую высоту */
-}
-
-.avatar-overlay-d {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 80%; /* Установите желаемую ширину */
-  max-height: 80%; /* Установите желаемую высоту */
+  height: 78px;
+     border-radius: 100%;
 }
 
