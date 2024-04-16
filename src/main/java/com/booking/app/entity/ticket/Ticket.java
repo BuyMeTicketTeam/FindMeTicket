@@ -104,7 +104,10 @@ public class Ticket {
         String thatCarrier = that.carrier;
 
         if (thisCarrier == null || thatCarrier == null) return false;
+
+        // Context specific methods checks (not recommendable in prod)
         if (specificCarrierLanguage(thisCarrier, thatCarrier)) return true;
+        if (specificCarrierLanguages(thisCarrier, thatCarrier)) return true;
         if (!specificCarrierEquality(thisCarrier, thatCarrier)) return false;
 
         char[] charArray = thatCarrier.toCharArray();
@@ -129,6 +132,12 @@ public class Ticket {
     private boolean specificCarrierLanguage(String firstCarrier, String secondCarrier) {
         if (firstCarrier.equals("ПАВЛЮКС - ТРАНС") && secondCarrier.equals("PAVLUKS - TRANS")) return true;
         return secondCarrier.equals("ПАВЛЮКС - ТРАНС") && firstCarrier.equals("PAVLUKS - TRANS");
+    }
+
+    // Context specific method, not useful in production!
+    private boolean specificCarrierLanguages(String firstCarrier, String secondCarrier) {
+        if (firstCarrier.equals("ДЕНИСІВКА") && secondCarrier.equals("DENYSIVKA")) return true;
+        return secondCarrier.equals("ДЕНИСІВКА") && firstCarrier.equals("DENYSIVKA");
     }
 
 }
