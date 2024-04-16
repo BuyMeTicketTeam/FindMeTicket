@@ -182,7 +182,7 @@ width: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 110px;
+  height: 120px;
   width: 80%;
   max-width: 1000px; 
   background-color: $semi-dark;
@@ -424,7 +424,7 @@ a.history-item {
 .contact-text {
   font-size: 25px;
   margin: 10px 0;
-  padding-left: 50px;
+  padding-left: 23px;
 }
 
 .contact-item {
@@ -501,10 +501,26 @@ color: $bright;
 .tooltip {
   position: absolute;
   bottom: 34px;
-  left: 35%;
+  left: 46%;
   padding: 5px;
   background-color: $font-color;
   color: $dark;
   font-size: 12px;
   border-radius: 5px;
+}
+
+.email-two{
+  display: flex;
+    width: 281px;
+}
+
+.email-data{
+  margin-right: 81px;
+}
+
+.account {
+  width: 24px;
+    height: 24px;
+    margin-left: 15px;
+    margin-top: 5px;
 }

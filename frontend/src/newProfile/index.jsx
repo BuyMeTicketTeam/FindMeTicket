@@ -246,11 +246,15 @@ function Popup({
         <div className="contact-item">
           <div className="column">
             <div className="column-header">
-              <img src={Email} className="contact-icon" alt="Email" />
-              <p className="contact-info-two email-info">{t('email')}</p>
+              <div className="email-two">
+                <img src={Email} className="contact-icon" alt="Email" />
+                <p className="contact-info-two email-info">{t('email')}</p>
+              </div>
             </div>
             <div className="contact-info-data">
-              {status.email}
+              <div className="email-data">
+                {status.email}
+              </div>
             </div>
           </div>
           <div className="column">
