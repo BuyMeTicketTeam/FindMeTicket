@@ -1,10 +1,10 @@
 package com.booking.app.entity;
 
+import com.booking.app.util.TokenUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -39,20 +39,8 @@ public class ConfirmToken {
         Date dateExpiryTime = Date.from(tenMinutes.atZone(ZoneId.systemDefault()).toInstant());
         return ConfirmToken.builder()
                 .expiryTime(dateExpiryTime)
-                .token(generateRandomToken())
+                .token(TokenUtils.generateRandomToken())
                 .build();
-    }
-
-    private static String generateRandomToken() {
-        String tokenSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        final SecureRandom random = new SecureRandom();
-        StringBuilder stringBuilder = new StringBuilder(5);
-        for (int i = 0; i < 5; i++) {
-            int randomIndex = random.nextInt(tokenSymbols.length());
-            char randomChar = tokenSymbols.charAt(randomIndex);
-            stringBuilder.append(randomChar);
-        }
-        return stringBuilder.toString();
     }
 
 }
