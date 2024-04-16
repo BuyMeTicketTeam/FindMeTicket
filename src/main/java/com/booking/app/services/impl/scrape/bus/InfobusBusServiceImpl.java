@@ -165,13 +165,13 @@ public class InfobusBusServiceImpl implements ScraperService {
 
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
-                    priceInfo.getPrice().equals(new BigDecimal(price))) {
+                    priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
 
                 WebElement button = element.findElement(By.cssSelector("button.btn"));
                 Actions actions = new Actions(driver);
                 actions.moveToElement(button).doubleClick().build().perform();
 
-                wait.until(ExpectedConditions.urlContains("deeplink"));
+//                wait.until(ExpectedConditions.urlContains("deeplink"));
                 priceInfo.setLink(driver.getCurrentUrl());
                 log.info("INFOBUS URL: " + driver.getCurrentUrl());
                 break;
@@ -207,7 +207,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
         Date date = ticketDate.parse(arrivalDate);
 
-        String price = webTicket.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
+        String price = webTicket.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "").split("-")[0].trim();
         String travelTime = webTicket.findElement(By.className("duration-time")).getText().toLowerCase().replace(" г", "год.").replace(" хв", "хв");
 
         String[] parts = travelTime.split("[^\\d]+");

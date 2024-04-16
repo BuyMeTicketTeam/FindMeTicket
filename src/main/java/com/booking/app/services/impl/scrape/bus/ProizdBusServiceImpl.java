@@ -171,7 +171,7 @@ public class ProizdBusServiceImpl implements ScraperService {
 
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
-                    priceInfo.getPrice().equals(new BigDecimal(price))) {
+                    priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
                 priceInfo.setLink(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 break;
@@ -197,7 +197,6 @@ public class ProizdBusServiceImpl implements ScraperService {
             return false;
         }
     }
-
 
     private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
         String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
@@ -229,7 +228,8 @@ public class ProizdBusServiceImpl implements ScraperService {
         } catch (Exception e) {
 
         }
-        if (carrier.isEmpty()) carrier = "LIKEBUS";
+        // There's no carrier on site... insert most predictable
+        if (carrier.isEmpty()) carrier = "Стецик Т.В. Гречанюк В.І.";
         return createTicket(element, route, price, totalMinutes, formattedDate, carrier);
     }
 
