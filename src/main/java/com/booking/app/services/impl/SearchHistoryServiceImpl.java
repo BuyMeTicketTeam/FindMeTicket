@@ -33,7 +33,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     private final SearchHistoryRepository historyRepository;
 
-    private final UserCredentialsRepository userRepository;
+    private final UserCredentialsRepository userCredentialsRepository;
 
     private final TypeAheadService typeAheadService;
 
@@ -46,7 +46,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     public void addHistory(RequestTicketsDTO requestTicketsdto, String language, HttpServletRequest request) {
         Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
 
-        Optional<UserCredentials> userCredentials = uuid.flatMap(userRepository::findById);
+        Optional<UserCredentials> userCredentials = uuid.flatMap(userCredentialsRepository::findById);
 
         userCredentials.ifPresent(user -> {
             Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(requestTicketsdto.getBus(), requestTicketsdto.getTrain(), requestTicketsdto.getAirplane(), requestTicketsdto.getFerry());

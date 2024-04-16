@@ -30,7 +30,7 @@ public class UserCredentials implements UserDetails {
     @Column
     private String password;
 
-    @Column(unique = true)
+    @Column
     private String username;
 
     @JoinColumn(referencedColumnName = "id", name = "user_id")
@@ -54,25 +54,5 @@ public class UserCredentials implements UserDetails {
         return user.getRole().getEnumRole().getSimpleGrantedAuthorities();
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return accountNonExpired;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return credentialsNonExpired;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-    
 }
 

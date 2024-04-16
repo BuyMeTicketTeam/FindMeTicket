@@ -51,6 +51,10 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserSearchHistory> history;
 
+
+    @OneToOne(mappedBy = "user")
+    private Review review;
+
     public static User createUser(UserCredentials userCredentials, Role role, ConfirmToken confirmToken, Boolean notification, byte[] profilePicture) {
         User user = User.builder()
                 .role(role)

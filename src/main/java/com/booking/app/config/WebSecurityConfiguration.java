@@ -58,7 +58,8 @@ public class WebSecurityConfiguration {
             "/sortedBy",
             "/searchTickets",
             "/get/ticket/**",
-            "/selectedTransport"
+            "/selectedTransport",
+            "/getReviews"
     };
 
     @Bean
