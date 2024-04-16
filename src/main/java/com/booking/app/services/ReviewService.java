@@ -13,4 +13,6 @@ public interface ReviewService {
     List<ReviewDTO> getReviewList();
 
     boolean deleteReview(HttpServletRequest request);
+
+    ReviewDTO getUserReview(HttpServletRequest request);
 }

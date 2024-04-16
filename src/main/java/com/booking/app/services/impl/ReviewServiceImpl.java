@@ -78,4 +78,16 @@ public class ReviewServiceImpl implements ReviewService {
         }
         return false;
     }
+
+    @Override
+    public ReviewDTO getUserReview(HttpServletRequest request) {
+
+        Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
+
+        Optional<UserCredentials> userCredentials = uuid.flatMap(userCredentialsRepository::findById);
+
+        Review review = userCredentials.get().getUser().getReview();
+
+        return review == null ? null : ReviewDTO.createInstance(review);
+    }
 }

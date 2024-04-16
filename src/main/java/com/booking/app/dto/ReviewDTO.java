@@ -9,12 +9,15 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ReviewDTO {
+
+    private UUID id;
 
     private String reviewText;
 
@@ -31,6 +34,7 @@ public class ReviewDTO {
     public static ReviewDTO createInstance(Review review){
         User user = review.getUser();
         ReviewDTO reviewDTO = ReviewDTO.builder()
+                .id(user.getReview().getId())
                 .writingDate(review.getWritingDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 .grade(review.getGrade())
                 .reviewText(review.getReviewText())

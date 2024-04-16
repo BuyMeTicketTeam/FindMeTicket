@@ -22,4 +22,9 @@ public interface ReviewAPI {
     @ApiResponse(responseCode = "200", description = "review deleted")
     @ApiResponse(responseCode = "404", description = "review not found")
     ResponseEntity<?> deleteReview(HttpServletRequest request);
+
+    @Operation(summary = "get user review", description = "get authorized user review")
+    @ApiResponse(responseCode = "200", description = "returns review")
+    @ApiResponse(responseCode = "404", description = "review not present")
+    ResponseEntity<?>getReview(HttpServletRequest request);
 }

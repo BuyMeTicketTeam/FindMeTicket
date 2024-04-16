@@ -1,6 +1,7 @@
 package com.booking.app.controller;
 
 import com.booking.app.controller.api.ReviewAPI;
+import com.booking.app.dto.ReviewDTO;
 import com.booking.app.dto.SaveReviewDto;
 import com.booking.app.services.impl.ReviewServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,11 +31,20 @@ public class ReviewController implements ReviewAPI {
         return ResponseEntity.ok().body(reviewService.getReviewList());
     }
 
-    @DeleteMapping("deleteReview")
+    @DeleteMapping("/deleteReview")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Override
     public ResponseEntity<?> deleteReview(HttpServletRequest request) {
 
         return reviewService.deleteReview(request) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/getUserReview")
+    @Override
+    public ResponseEntity<?> getReview(HttpServletRequest request) {
+
+        ReviewDTO reviewDTO = reviewService.getUserReview(request);
+
+        return reviewDTO == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(reviewDTO);
     }
 }
