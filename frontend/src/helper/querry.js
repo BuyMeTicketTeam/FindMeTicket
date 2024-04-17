@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import { getI18n } from 'react-i18next';
 import responseInterceptor from './responseInterceptor';
 
 /* eslint-disable quotes */
@@ -9,7 +10,8 @@ export default async function makeQuerry(address, body, headers, method = 'POST'
     response = await fetch(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/${address}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: token ?? "",
+        'Content-Language': getI18n().language.toLowerCase(),
+        Authorization: token ?? '',
         ...headers,
       },
       credentials: "include",

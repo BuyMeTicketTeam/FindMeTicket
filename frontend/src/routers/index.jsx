@@ -1,7 +1,9 @@
+/* eslint-disable import/no-named-as-default-member */
 import React from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
+import RouteController from './RouteController';
 import Reset from '../reset';
 import Register from '../register';
 import Confirm from '../confirm';
@@ -32,24 +34,79 @@ export default function Routers({
             setSelectedTransport={setSelectedTransport}
           />
         )}
-      >
-        <Route path="login" element={<Login updateAuthValue={updateAuthValue} />} />
-      </Route>
-      <Route path="/register" element={<Register />} />
-      <Route path="/confirm" element={<Confirm />} />
-      <Route path="/reset" element={<Reset />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/change-password" element={<ChangePassword />} />
+      />
+      <Route
+        path="/login"
+        element={(
+          <RouteController access={!auth}>
+            <Login updateAuthValue={updateAuthValue} />
+          </RouteController>
+      )}
+      />
+      <Route
+        path="/register"
+        element={(
+          <RouteController access={!auth}>
+            <Register />
+          </RouteController>
+      )}
+      />
+      <Route
+        path="/confirm"
+        element={(
+          <RouteController access={!auth}>
+            <Confirm />
+          </RouteController>
+      )}
+      />
+      <Route
+        path="/reset"
+        element={(
+          <RouteController access={!auth}>
+            <Reset />
+          </RouteController>
+      )}
+      />
+      <Route
+        path="/reset-password"
+        element={(
+          <RouteController access={!auth}>
+            <ResetPassword />
+          </RouteController>
+      )}
+      />
+      <Route
+        path="/change-password"
+        element={(
+          <RouteController access={!auth}>
+            <ChangePassword />
+          </RouteController>
+      )}
+      />
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
-      <Route path="/change-password" element={<ChangePassword />} />
-      <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
-      <Route path="/profile-page" element={<ProfilePage status={auth} updateAuthValue={updateAuthValue} />} />
+      <Route
+        path="/change-password"
+        element={(
+          <RouteController access={!auth}>
+            <ChangePassword />
+          </RouteController>
+      )}
+      />
       {language.value === 'UA' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyUa />} />
       )}
       {language.value === 'ENG' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyEng />} />
       )}
+      <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
+      <Route
+        path="/profile-page"
+        element={(
+          <RouteController access={auth}>
+            <ProfilePage status={auth} updateAuthValue={updateAuthValue} />
+          </RouteController>
+    )}
+      />
     </Routes>
   );
 }
