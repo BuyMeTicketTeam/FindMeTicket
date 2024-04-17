@@ -9,8 +9,8 @@ import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.enums.EnumProvider;
 import com.booking.app.enums.EnumRole;
-import com.booking.app.exception.exception.EmailExistsException;
-import com.booking.app.exception.exception.UsernameExistsException;
+import com.booking.app.exception.exception.EmailAlreadyExistsException;
+import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserCredentialsRepository;
@@ -28,9 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.awt.*;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -54,24 +51,24 @@ public class RegistrationServiceImpl implements RegistrationService {
      *
      * @param registrationDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO Returns an EmailDTO containing information about the registration confirmation email.
-     * @throws EmailExistsException    If a user with the provided email already exists.
-     * @throws UsernameExistsException If a user with the provided username already exists.
-     * @throws MessagingException      If there is an issue with sending the confirmation email.
+     * @throws EmailAlreadyExistsException    If a user with the provided email already exists.
+     * @throws UsernameAlreadyExistsException If a user with the provided username already exists.
+     * @throws MessagingException             If there is an issue with sending the confirmation email.
      */
     @Override
-    public EmailDTO register(RegistrationDTO registrationDTO) throws EmailExistsException, MessagingException, UsernameExistsException {
+    public EmailDTO register(RegistrationDTO registrationDTO) throws MessagingException {
         Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername());
         if (userCredentials.isPresent()
                 && userCredentials.get().getEmail().equals(registrationDTO.getEmail())
                 && userCredentials.get().isEnabled()) {
 
-            throw new EmailExistsException("We’re sorry. This email already exists");
+            throw new EmailAlreadyExistsException("We’re sorry. This email already exists");
         }
 
         if (userCredentials.isPresent()
                 && userCredentials.get().getUsername().equals(registrationDTO.getUsername())
                 && userCredentials.get().isEnabled()) {
-            throw new UsernameExistsException("We’re sorry. This username already exists");
+            throw new UsernameAlreadyExistsException("We’re sorry. This username already exists");
         }
         if (userCredentials.isPresent()) {
             deleteUserIfNotConfirmed(userCredentials.get());
@@ -95,17 +92,17 @@ public class RegistrationServiceImpl implements RegistrationService {
      * Creates user, token
      * Sends email
      *
-     * @param securityDTO The RegistrationDTO containing user registration details.
+     * @param registrationDTO The RegistrationDTO containing user registration details.
      * @return EmailDTO containing email
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
     //    @Transactional
-    public EmailDTO performRegistration(RegistrationDTO securityDTO) throws MessagingException {
-        UserCredentials securityEntity = mapper.toUserSecurity(securityDTO);
+    public EmailDTO performRegistration(RegistrationDTO registrationDTO) throws MessagingException {
+        UserCredentials securityEntity = mapper.toUserSecurity(registrationDTO);
         securityEntity.setProvider(EnumProvider.LOCAL);
-        securityEntity.setPassword(passwordEncoder.encode(securityDTO.getPassword()));
+        securityEntity.setPassword(passwordEncoder.encode(registrationDTO.getPassword()));
 
-        User user = createNewRegisteredUser(securityEntity);
+        User user = createNewRegisteredUser(securityEntity, registrationDTO.getNotification());
 
         mailService.sendEmail("confirmMailUa", "Email confirmation", user.getConfirmToken().getToken(), securityEntity);
 
@@ -119,13 +116,14 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @return User that was saved
      */
     @Transactional
-    public User createNewRegisteredUser(UserCredentials userCredentials) {
+    public User createNewRegisteredUser(UserCredentials userCredentials, Boolean notification) {
         Role role = roleRepository.findRoleByEnumRole(EnumRole.USER);
 
         Avatar avatar = GitHubAvatar.newAvatarBuilder().layers(new ColorPaintBackgroundLayer(Color.WHITE)).build();
         byte[] asPngBytes = avatar.createAsPngBytes(new Random().nextLong());
 
         User user = User.builder()
+                .notification(notification)
                 .security(userCredentials)
                 .profilePicture(asPngBytes)
                 .role(role)

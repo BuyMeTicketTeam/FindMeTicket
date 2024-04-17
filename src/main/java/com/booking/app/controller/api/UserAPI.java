@@ -6,12 +6,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
+
 import java.util.List;
 import java.util.UUID;
 
 @Validated
+@Tag(name = "User operations")
 public interface UserAPI {
 
     @Operation(summary = "Get user by Id")

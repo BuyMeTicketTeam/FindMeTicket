@@ -71,8 +71,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private void saveAuthenticationDataToResponse(HttpServletResponse response, String accessToken, String refreshToken, UserDetails userDetails) {
         CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
+        CookieUtils.addCookie(response, USER_ID, ((UserCredentials) userDetails).getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
         response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
-        response.setHeader(USER_ID, ((UserCredentials) userDetails).getId().toString());
     }
 
     private void setSecurityContext(UserDetails userDetails) {

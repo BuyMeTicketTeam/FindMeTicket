@@ -1,0 +1,65 @@
+@import '../../styles/variables.scss';
+.search-field {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 10px;
+    background: $dark;
+    border-radius: 20px;
+    padding: 25px;
+
+    .field {
+        margin-bottom: 0;
+        position: relative;
+        flex: auto;
+    }
+
+    .tip {
+        position: absolute;
+        width: 100%;
+        max-height: max-content;
+        opacity: 1;
+        top: 43px;
+        left: 0;
+        background: $main;
+        border-radius: 10px;
+        z-index: 1;
+        padding-top: 0;
+    }
+
+    .button {
+        min-width: 180px;
+    }
+}
+
+.search_index {
+    margin-top: 60px;
+}
+
+.search-field__input-long {
+    min-width: 300px;
+}
+
+.search-field .field__name {
+    margin-bottom: 5px;
+    padding-left: 3px;
+}
+
+.search-field__error {
+    position: absolute;
+    left: 3px;
+    color: $error-bright;
+    padding-top: 1px;
+}
+
+.search-field__img {
+    background: transparent;
+    border: none;
+    transition: 0.3s;
+
+    &:hover {
+        cursor: pointer;
+        transform: scale(0.9);
+        transition: 0.3s
+    }
+}
