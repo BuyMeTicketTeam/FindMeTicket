@@ -2,9 +2,9 @@ package com.booking.app.services.impl.scrape;
 
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.UrlAndPriceDTO;
-import com.booking.app.entity.ticket.bus.BusTicket;
 import com.booking.app.entity.ticket.Route;
 import com.booking.app.entity.ticket.Ticket;
+import com.booking.app.entity.ticket.bus.BusTicket;
 import com.booking.app.entity.ticket.train.TrainTicket;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.mapper.RouteMapper;
@@ -38,8 +38,6 @@ import static com.booking.app.constant.SiteConstants.*;
 @Log4j2
 @RequiredArgsConstructor
 public class ScraperManager {
-
-    private final TrainTicketRepository trainTicketRepository;
 
     @Qualifier("busforBusService")
     private final ScraperService busforBusService;
@@ -92,7 +90,9 @@ public class ScraperManager {
     private CompletableFuture<Boolean> extractTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language, Route route) throws IOException {
         if (route.getTickets().isEmpty()) return CompletableFuture.completedFuture(false);
 
-        for (Ticket ticket : route.getTickets()) {
+        List<Ticket> tickets = ticketRepository.findByRouteId(route.getId());
+
+        for (Ticket ticket : tickets) {
             if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
                 emitter.send(SseEmitter.event().name("Ticket bus data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
             }
@@ -195,7 +195,7 @@ public class ScraperManager {
     }
 
 
-    private CompletableFuture<Void> scrapeBusLink( BusTicket busTicket, SseEmitter emitter, String language){
+    private CompletableFuture<Void> scrapeBusLink(BusTicket busTicket, SseEmitter emitter, String language) {
 
         List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
 
@@ -217,8 +217,8 @@ public class ScraperManager {
     }
 
 
-    private void extractBusPriceAndLink(BusTicket busTicket, SseEmitter emitter){
-        busTicket.getInfoList().forEach(t->{
+    private void extractBusPriceAndLink(BusTicket busTicket, SseEmitter emitter) {
+        busTicket.getInfoList().forEach(t -> {
             try {
                 emitter.send(SseEmitter.event().name(t.getSourceWebsite()).data(UrlAndPriceDTO.builder()
                         .price(t.getPrice())
