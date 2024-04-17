@@ -36,7 +36,7 @@ export default function PriceBlock({ ticketUrl }) {
           {t('uan')}
         </div>
       </div>
-      <a href={ticketUrl.url} className="button buy-button">{t('buy')}</a>
+      <a href={ticketUrl.url} className="button buy-button" target="_blank">{t('buy')}</a>
     </div>
   );
 }
