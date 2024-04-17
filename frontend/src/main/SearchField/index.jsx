@@ -26,10 +26,10 @@ const dateFormat = new Intl.DateTimeFormat('ru', {
 });
 
 export default function SearchField({
-  setLoading, setTicketsData, setError, loading,
+  setLoading, setTicketsData, setError, loading, urlSearch, setUrlSearch,
 }) {
   const [searchParams] = useSearchParams();
-  const { t, i18n } = useTranslation('translation', { keyPrefix: 'search' });
+  const { t } = useTranslation('translation', { keyPrefix: 'search' });
   const [cityFrom, setCityFrom] = useState('');
   const [cityTo, setCityTo] = useState('');
   const [errorCityFrom, onErrorCityFrom] = useState(false);
@@ -158,6 +158,10 @@ export default function SearchField({
     onDate(body.departureDate);
     setCityFrom(body.departureCity ? { value: body.departureCity, label: body.departureCity } : '');
     setCityTo(body.arrivalCity ? { value: body.arrivalCity, label: body.arrivalCity } : '');
+    if (urlSearch === location.search) {
+      return;
+    }
+    setUrlSearch(location.search);
     if (searchParams.size < 3 || !body.departureCity || !body.arrivalCity || !endpoint) {
       setTicketsData([]);
       return;

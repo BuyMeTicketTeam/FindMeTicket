@@ -20,7 +20,7 @@ import Reviews from '../Reviews';
 export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
-  setSelectedTransport, auth,
+  setSelectedTransport, auth, urlSearch, setUrlSearch,
 }) {
   return (
     <Routes>
@@ -32,6 +32,8 @@ export default function Routers({
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
+            urlSearch={urlSearch}
+            setUrlSearch={setUrlSearch}
           />
         )}
       />
