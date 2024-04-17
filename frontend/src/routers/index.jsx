@@ -16,11 +16,12 @@ import PrivacyPolicyEng from '../privacyPolicy/index-eng';
 import PrivacyPolicyUa from '../privacyPolicy/index-ua';
 import TouristPlaces from '../TouristPlaces';
 import ProfilePage from '../newProfile';
+import Reviews from '../Reviews';
 
 export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
-  setSelectedTransport, auth, language,
+  setSelectedTransport, auth, urlSearch, setUrlSearch, language,
 }) {
   return (
     <Routes>
@@ -32,6 +33,8 @@ export default function Routers({
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
+            urlSearch={urlSearch}
+            setUrlSearch={setUrlSearch}
           />
         )}
       />
@@ -78,7 +81,7 @@ export default function Routers({
       <Route
         path="/change-password"
         element={(
-          <RouteController access={!auth}>
+          <RouteController access={auth}>
             <ChangePassword />
           </RouteController>
       )}
@@ -99,6 +102,7 @@ export default function Routers({
         <Route path="/privacy-policy" element={<PrivacyPolicyEng />} />
       )}
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
+      <Route path="/reviews" element={<Reviews status={auth} />} />
       <Route
         path="/profile-page"
         element={(

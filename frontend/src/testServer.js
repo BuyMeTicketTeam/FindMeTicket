@@ -116,6 +116,27 @@ const ticketsNew = [
     url: 'https://google.com',
   },
 ];
+
+const reviews = [
+  {
+    grade: 5, writingDate: '12-01-2002', reviewText: "I recently had the opportunity to use Findmeticket to look for tickets, and I must say, it exceeded my expectations in several ways. As a frequent traveler, I'm always on the lookout for convenient search propositions and efficient ways to plan my journeys, and Findmeticket certainly delivered on both fronts.", username: 'Mykhailo', urlPicture: './image15.png',
+  },
+  {
+    grade: 5, reviewText: 'НещодавноявикориставзастосунокFindMeTicket,можу сказати,щоцедійснозручний і корисний інструмент для тих, хто подорожує. Сайт пропонує широкий вибір квитків на автобуси та потяги, що дозволяє легко порівнювати ціни та вибирати найбільш вигідні пропозиції.', username: 'Степан', useravatar: './image 13.png',
+  },
+  {
+    grade: 5, reviewText: 'Цей агрегатор - справжнє відкриття! Швидкий пошук, зручний інтерфейс, широкий вибір квитків. Рекомендую усім шукачам найзручніших способів подорожувати!', username: 'Максим', useravatar: './image14.png',
+  },
+  {
+    grade: 5, reviewText: 'Ефективний і зручний агрегатор квитків. Заощаджує час і гроші. Ідеальний для планування подорожей. Відтепер - мій основний інструмент для планування подорожей!', username: 'Кирило', useravatar: './image16.png',
+  },
+];
+
+const userReview = {
+  reviewText: 'sdfdfsdflksdflsfsfkslfsl',
+  grade: 4,
+};
+
 createServer({
   routes() {
     // Responding to a POST request
@@ -129,7 +150,7 @@ createServer({
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
     this.post('/resend-confirm-token', () => new Response(200));
-    this.post('/logout', () => new Response(200));
+    this.get('/logout', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/selectedTransport', () => new Response(200, undefined, JSON.stringify([])));
     this.post('/searchTickets', () => new Response(200, undefined, JSON.stringify([])));
@@ -162,5 +183,9 @@ createServer({
         departureDate: '12.09.2024',
       },
     ])));
+    this.get('/getReviews', () => new Response(200, undefined, reviews));
+    this.get('/getUserReview', () => new Response(200, undefined, userReview));
+    this.post('/saveReview', () => new Response(200));
+    this.post('/updateReview', () => new Response(200));
   },
 });

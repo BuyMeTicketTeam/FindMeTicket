@@ -76,7 +76,8 @@
                   "account-management": "Account management",
                   "add": "Add",
                   "history": "History",
-                  "no-items": "You have no search history"
+                  "no-items": "You have no search history",
+                  "lvl": "The unblocking of the level will occur automatically when our services become available. Skin rhubarb provides three months of vigor."
             },
             "register": {
                   "error-email": "The user with this email address is already registered",
@@ -277,6 +278,17 @@
                   "unauthorized-text": "The map of tourist places is available only to authorized users",
                   "unauthorized-button": "Log in",
                   "load-more": "Load more"
+            },
+            "reviews": {
+                  "title": "Many amazing people are using our service daily",
+                  "form-title": "Leave your comment",
+                  "lock-message": "Only authorized users can leave comments",
+                  "lock-button": "Log in",
+                  "form-submit-btn": "Submit",
+                  "textarea_placeholder": "Review must have at least 5 characters and no more than 400. ",
+                  "rating__error": "You have not rated our site. ",
+                  "error-add-review": "Error saving review. Try again.",
+                  "loading-review": "Sending..."
             }
 
       }
