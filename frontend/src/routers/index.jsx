@@ -10,14 +10,15 @@ import TicketPage from '../ticketPage';
 import Login from '../header/login/index';
 import ResetPassword from '../resetPassword';
 import ChangePassword from '../changePassword';
-import PrivacyPolicy from '../privacyPolicy';
+import PrivacyPolicyEng from '../privacyPolicy/index-eng';
+import PrivacyPolicyUa from '../privacyPolicy/index-ua';
 import TouristPlaces from '../TouristPlaces';
 import ProfilePage from '../newProfile';
 
 export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
-  setSelectedTransport, auth,
+  setSelectedTransport, auth, language,
 }) {
   return (
     <Routes>
@@ -41,9 +42,14 @@ export default function Routers({
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
       <Route path="/change-password" element={<ChangePassword />} />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
       <Route path="/profile-page" element={<ProfilePage status={auth} updateAuthValue={updateAuthValue} />} />
+      {language.value === 'UA' && (
+        <Route path="/privacy-policy" element={<PrivacyPolicyUa />} />
+      )}
+      {language.value === 'ENG' && (
+        <Route path="/privacy-policy" element={<PrivacyPolicyEng />} />
+      )}
     </Routes>
   );
 }
