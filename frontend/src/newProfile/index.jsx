@@ -201,7 +201,7 @@ function Popup({
           <div className="Lvl">Lvl 1</div>
           <div className="mark-container" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
             <img src={mark} alt="mark" className="mark" />
-            {showTooltip && <div className="tooltip">Розблокування рівня відбувається автоматично під час використання наших послуг. Кожен рівень відповідає трьом місяцям використання.</div>}
+            {showTooltip && <div className="tooltip">{t('lvl')}</div>}
           </div>
 
         </p>

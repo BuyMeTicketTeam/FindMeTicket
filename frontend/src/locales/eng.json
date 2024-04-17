@@ -76,7 +76,8 @@
                   "account-management": "Account management",
                   "add": "Add",
                   "history": "History",
-                  "no-items": "You have no search history"
+                  "no-items": "You have no search history",
+                  "lvl": "The unblocking of the level will occur automatically when our services become available. Skin rhubarb provides three months of vigor."
             },
             "register": {
                   "error-email": "The user with this email address is already registered",
