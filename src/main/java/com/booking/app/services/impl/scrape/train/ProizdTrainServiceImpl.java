@@ -13,6 +13,7 @@ import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -53,7 +54,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, MutableBoolean emitterNotExpired) throws ParseException, IOException {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -74,7 +75,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
                 TrainTicket trainTicket = scrapedTicket;
 
                 if (route.getTickets().add(scrapedTicket)) {
-                    if (BooleanUtils.isTrue(doDisplay))
+                    if (BooleanUtils.isTrue(doDisplay) && emitterNotExpired.booleanValue())
                         emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
 
                 } else

@@ -12,10 +12,10 @@ import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
-import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.ScraperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -80,35 +80,40 @@ public class ScraperManager {
 
         Route route = routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(requestTicketDTO.getDepartureCity(), requestTicketDTO.getArrivalCity(), requestTicketDTO.getDepartureDate());
 
+        MutableBoolean emitterNotExpired = new MutableBoolean(true);
+        configureEmitter(emitter, emitterNotExpired);
+
         if (route == null) {
-            return scrapeTickets(requestTicketDTO, emitter, language);
+            return scrapeTickets(requestTicketDTO, emitter, language, emitterNotExpired);
         } else {
-            return extractTickets(requestTicketDTO, emitter, language, route);
+            return extractTickets(requestTicketDTO, emitter, language, route, emitterNotExpired);
         }
     }
 
-    private CompletableFuture<Boolean> extractTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language, Route route) throws IOException {
+    private CompletableFuture<Boolean> extractTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language, Route route, MutableBoolean emitterNotExpired) throws IOException {
         if (route.getTickets().isEmpty()) return CompletableFuture.completedFuture(false);
 
         List<Ticket> tickets = ticketRepository.findByRouteId(route.getId());
 
         for (Ticket ticket : tickets) {
-            if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
-                emitter.send(SseEmitter.event().name("Ticket bus data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
-            }
-            if (ticket instanceof TrainTicket && requestTicketDTO.getTrain()) {
-                emitter.send(SseEmitter.event().name("Ticket train data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
+            if (emitterNotExpired.booleanValue()) {
+                if (ticket instanceof BusTicket && requestTicketDTO.getBus()) {
+                    emitter.send(SseEmitter.event().name("Ticket bus data: ").data(busMapper.ticketToTicketDto((BusTicket) ticket, language)));
+                }
+                if (ticket instanceof TrainTicket && requestTicketDTO.getTrain()) {
+                    emitter.send(SseEmitter.event().name("Ticket train data: ").data(trainMapper.toTrainTicketDto((TrainTicket) ticket, language)));
+                }
             }
         }
         return CompletableFuture.completedFuture(true);
     }
 
-    private CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language) throws ParseException, IOException {
+    private CompletableFuture<Boolean> scrapeTickets(RequestTicketsDTO requestTicketDTO, SseEmitter emitter, String language, MutableBoolean emitterNotExpired) throws ParseException, IOException {
 
         Route route = routeMapper.toRoute(requestTicketDTO);
         routeRepository.save(route);
 
-        List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(emitter, route, language, requestTicketDTO.getBus(), requestTicketDTO.getTrain());
+        List<CompletableFuture<Boolean>> completableFutureListBus = completableFutureListBuses(emitter, route, language, requestTicketDTO.getBus(), requestTicketDTO.getTrain(), emitterNotExpired);
 
         CompletableFuture<Void> allOf = CompletableFuture.allOf(completableFutureListBus.toArray(CompletableFuture[]::new));
 
@@ -130,6 +135,15 @@ public class ScraperManager {
             }
         }).filter(t -> !t.booleanValue()).findFirst().isEmpty());
 
+    }
+
+    private void configureEmitter(SseEmitter emitter, MutableBoolean emitterNotExpired) {
+
+        Runnable expire = () -> emitterNotExpired.setValue(false);
+
+        emitter.onCompletion(expire);
+//        emitter.onError(t->expire.run());
+        emitter.onTimeout(expire);
     }
 
     @Async
@@ -233,13 +247,13 @@ public class ScraperManager {
 
 
     private List<CompletableFuture<Boolean>> completableFutureListBuses(SseEmitter emitter, Route newRoute, String
-            language, Boolean doDisplay, Boolean doTrain) throws ParseException, IOException {
+            language, Boolean doDisplay, Boolean doTrain, MutableBoolean emitterNotExpired) throws ParseException, IOException {
         return Arrays.asList(
-                infobusBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
-                proizdBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
-                busforBusService.scrapeTickets(emitter, newRoute, language, doDisplay),
+                infobusBusService.scrapeTickets(emitter, newRoute, language, doDisplay, emitterNotExpired),
+                proizdBusService.scrapeTickets(emitter, newRoute, language, doDisplay, emitterNotExpired),
+                busforBusService.scrapeTickets(emitter, newRoute, language, doDisplay, emitterNotExpired),
 //                  gdticketsBusService.scrapeTickets(emitter, newRoute, language, doDisplay)
-                proizdTrainService.scrapeTickets(emitter, newRoute, language, doTrain)
+                proizdTrainService.scrapeTickets(emitter, newRoute, language, doTrain, emitterNotExpired)
         );
     }
 

@@ -13,6 +13,7 @@ import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -56,7 +57,7 @@ public class ProizdBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws ParseException, IOException {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -70,7 +71,7 @@ public class ProizdBusServiceImpl implements ScraperService {
             waitForTickets(driver);
 
             List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-            processScrapedTickets(emitter, route, language, doShow, elements);
+            processScrapedTickets(emitter, route, language, doShow, elements, emitterNotExpired);
 
 
             return CompletableFuture.completedFuture(true);
@@ -125,7 +126,7 @@ public class ProizdBusServiceImpl implements ScraperService {
         }
     }
 
-    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements) throws IOException {
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
         log.info("Bus tickets on proizd: " + elements.size());
 
         for (int i = 0; i < elements.size() && i < 150; i++) {
@@ -135,7 +136,7 @@ public class ProizdBusServiceImpl implements ScraperService {
             BusTicket busTicket = scrapedTicket;
 
             if (route.getTickets().add(scrapedTicket)) {
-                if (BooleanUtils.isTrue(doShow))
+                if (BooleanUtils.isTrue(doShow) && emitterNotExpired.booleanValue())
                     emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
 
             } else

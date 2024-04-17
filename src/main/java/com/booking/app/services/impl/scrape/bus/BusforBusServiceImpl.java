@@ -2,9 +2,9 @@ package com.booking.app.services.impl.scrape.bus;
 
 import com.booking.app.constant.SiteConstants;
 import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.entity.ticket.Route;
 import com.booking.app.entity.ticket.bus.BusInfo;
 import com.booking.app.entity.ticket.bus.BusTicket;
-import com.booking.app.entity.ticket.Route;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.mapper.BusMapper;
 import com.booking.app.props.LinkProps;
@@ -15,6 +15,7 @@ import com.booking.app.util.ExchangeRateUtils;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.Range;
 import org.openqa.selenium.*;
@@ -56,7 +57,7 @@ public class BusforBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws IOException {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -73,7 +74,7 @@ public class BusforBusServiceImpl implements ScraperService {
 
             List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
 
-            processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait);
+            processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait, emitterNotExpired);
             return CompletableFuture.completedFuture(true);
         } catch (Exception e) {
             log.error("Error in BUSFOR BUS service: " + e.getMessage());
@@ -176,7 +177,7 @@ public class BusforBusServiceImpl implements ScraperService {
         } else log.info("BUSFOR URL NOT FOUND");
     }
 
-    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> tickets, WebDriver driver, WebDriverWait wait) throws IOException {
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> tickets, WebDriver driver, WebDriverWait wait, MutableBoolean emitterNotExpired) throws IOException {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
         if (language.equals("eng"))
@@ -189,7 +190,7 @@ public class BusforBusServiceImpl implements ScraperService {
             BusTicket busTicket = scrapedTicket;
 
             if (route.getTickets().add(scrapedTicket)) {
-                if (BooleanUtils.isTrue(doShow))
+                if (BooleanUtils.isTrue(doShow) && emitterNotExpired.booleanValue())
                     emitter.send(SseEmitter.event().name("Busfor bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
 
             } else
