@@ -142,7 +142,7 @@ public class ScraperManager {
         Runnable expire = () -> emitterNotExpired.setValue(false);
 
         emitter.onCompletion(expire);
-//        emitter.onError(t->expire.run());
+        emitter.onError(t->expire.run());
         emitter.onTimeout(expire);
     }
 
