@@ -1,7 +1,7 @@
 package com.booking.app.services;
 
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.entity.ticket.Route;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;

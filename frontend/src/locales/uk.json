@@ -186,7 +186,9 @@
                   "where-t": "Куди",
                   "error": "За вашим запитом нічого не знайдено",
                   "error2": "Поле не повинно бути порожнім",
-                  "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено"
+                  "ticket-not-found": "Нажаль квитків за цим маршрутом не знайдено",
+                  "from-placeholder": "Kиїв",
+                  "to-placeholder": "Одеса"
             },
             "filters": {
                   "Price": "Ціна",
@@ -246,18 +248,19 @@
                  "partners": "Наші інформаційні партнери"
             },
             "cities": {
-                  "Kiev-Kharkiv": "Київ - Харків",
-                  "Dnipro-Chernivtsi": "Дніпро - Чернівці",
-                  "Kiev-Dnipro": "Київ - Дніпро",
-                  "Kharkiv-Ivano-Frankivsk": "Харків - Івано-Франківськ",
-                  "Lviv-Kiev": "Львів - Київ",
-                  "Dnipro-Odessa": "Дніпро - Одесса",
-                  "Kiev-Poltava": "Київ - Полтава",
-                  "Lviv-Ternopil": "Львів - Тернопіль",
-                  "Kharkiv-Zaporizhzhya": "Харків - Запоріжжя",
-                  "Odessa-Kherson": "Одеса - Херсон",
-                  "Zaporizhzhya-Krivyi Rih": "Запоріжжя - Кривий Ріг",
-                  "Vinnytsia-Lviv": "Вінниця - Львів",
+                  "Kiev": "Київ",
+                  "Kharkiv": "Харків",
+                  "Dnipro": "Дніпро",
+                  "Chernivtsi": "Чернівці",
+                  "Ivano-Frankivsk": "Івано-Франківськ",
+                  "Lviv": "Львів",
+                  "Odessa": "Одеса",
+                  "Poltava": "Полтава",
+                  "Ternopil": "Тернопіль",
+                  "Zaporizhzhya": "Запоріжжя",
+                  "Kherson": "Херсон",
+                  "Krivyi Rih": "Кривий Ріг",
+                  "Vinnytsya": "Вінниця",
                   "Privacy policy": "Політика конфіденційності"
              },
             "scroll-button": {
@@ -275,6 +278,17 @@
                   "unauthorized-text": "Карта туристичних місць доступна тільки авторизованим користувачам",
                   "unauthorized-button": "Авторизуватися",
                   "load-more": "Завантажити більше"
+            },
+            "reviews": {
+                  "title": "Багато чудових людей щодня користуються нашим сервісом",
+                  "form-title": "Залиште свій коментар",
+                  "lock-message": "Тільки авторизовані користувачі можуть залишати коментарі",
+                  "lock-button": "Увійти",
+                  "form-submit-btn": "Надіслати",
+                  "textarea_placeholder": "Відгук повинен мати не менше 5 символів і не більше 400. ",
+                  "rating__error": "Ви не поставили оцінку нашому сайту. ",
+                  "error-add-review": "Помилка збереження відгуку. Спробуйте ще раз.",
+                  "loading-review": "Відправка..."
             }
 
       }

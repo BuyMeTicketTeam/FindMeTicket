@@ -21,7 +21,6 @@ import mark from './image 12.svg';
 import rank1 from './rank1.png';
 
 function Popup({
-  // setIsProfilePopup,
   updateAuthValue,
   status,
 }) {
@@ -127,8 +126,9 @@ function Popup({
 
   function defineRoute(historyData) {
     let request = `/?from=${historyData.departureCity}&to=${historyData.arrivalCity}&endpoint=1`;
-    if (+new Date() <= Date.parse(historyData.departureDate)) {
-      request += `&departureDate=${Date.parse(historyData.departureDate)}`;
+    const dateParts = historyData.departureDate.split('.');
+    if (+new Date() <= Date.parse(`${+dateParts[2]}-${+dateParts[1]}-${+dateParts[0]}`)) {
+      request += `&departureDate=${Date.parse(`${+dateParts[2]}-${+dateParts[1]}-${+dateParts[0]}`)}`;
     }
     if (historyData.bus && historyData.train) {
       request += '&type=all';
@@ -229,8 +229,9 @@ function Popup({
         <p className="notification-text">
           {t('notice')}
         </p>
-        <label className="switch">
+        <label htmlFor="notification" className="switch">
           <input
+            id="notification"
             type="checkbox"
             checked={notificationEnabled}
             onChange={() => setNotificationEnabled(() => {

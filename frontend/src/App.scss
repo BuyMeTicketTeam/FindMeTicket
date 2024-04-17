@@ -16,6 +16,11 @@ html {
   overflow-x: hidden;
 }
 
+// overlay
+// iframe#webpack-dev-server-client-overlay {
+//     display: none;
+// }
+
 @media (max-width: 1200px) {
   html {
     overflow-x: auto;
@@ -57,17 +62,21 @@ img {
   font-weight: 500;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* display: none; <- Crashes Chrome on hover */
-  -webkit-appearance: none;
-  margin: 0;
-  /* <-- Apparently some margin are still there even though it's hidden */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: $font-color;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
-input[type='number'] {
-  -moz-appearance: textfield;
-}
+
 
 .field {
   margin-bottom: 15px;
@@ -250,7 +259,7 @@ input[type='number'] {
 
 .confirm__success {
   min-width: 300px;
-  background: $succes;
+  background: $success;
   padding: 10px;
   color: $font-color;
   border-radius: 5px;
@@ -286,16 +295,16 @@ body #bmc-wbtn {
   left: 20px;
   width: 50px !important;
   height: 50px !important;
-  position: absolute !important;
+  position: fixed !important;
   bottom: 35px !important;
 }
 
 body > div:nth-of-type(2) {
-  position: absolute !important;
+  position: fixed !important;
 }
 
 body #bmc-iframe {
-  position: absolute !important;
+  position: fixed !important;
   left: 45px;
   bottom: 85px !important;
   transform-origin: left bottom !important;

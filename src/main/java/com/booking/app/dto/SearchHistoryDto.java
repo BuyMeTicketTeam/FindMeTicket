@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
 public class SearchHistoryDto {
 
     @NotNull
-    private Long departureCity;
+    private String departureCity;
 
     @NotNull
-    private Long arrivalCity;
+    private String arrivalCity;
 
     @NotNull
     private String departureDate;

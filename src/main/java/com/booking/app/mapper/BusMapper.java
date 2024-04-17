@@ -1,8 +1,10 @@
 package com.booking.app.mapper;
 
 import com.booking.app.dto.TicketDto;
-import com.booking.app.entity.BusTicket;
+import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.exception.exception.UndefinedLanguageException;
 import org.mapstruct.*;
+import org.springframework.http.HttpHeaders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -32,23 +34,20 @@ public interface BusMapper {
 
     @Named("departureTimeMapping")
     static String departureTimeMapping(String departureDate, @Context String language) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return switch (language) {
             case ("ua") -> {
                 LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
+                formatter = DateTimeFormatter.ofPattern("dd.MM, E", new Locale("uk"));
                 yield date.format(formatter);
             }
             case ("eng") -> {
                 LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("en"));
+                formatter = DateTimeFormatter.ofPattern("dd.MM, E", new Locale("en"));
                 yield date.format(formatter);
             }
-            default -> {
-                LocalDate date = LocalDate.parse(departureDate, formatter);
-                formatter = DateTimeFormatter.ofPattern("d.MM, E", new Locale("uk"));
-                yield date.format(formatter);
-            }
+            default ->
+                    throw new UndefinedLanguageException("Incomprehensible language passed into " + HttpHeaders.CONTENT_LANGUAGE);
         };
     }
 

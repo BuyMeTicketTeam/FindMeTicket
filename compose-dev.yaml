@@ -1,0 +1,62 @@
+services:
+  db-postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db_ticket
+    restart: unless-stopped
+    volumes:
+      - ./src/main/resources/data:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.admin
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LIST_PORT: 5050
+    depends_on:
+      - db-postgres
+
+  react-app:
+    image: findmeticket/react-app
+    ports:
+      - "81:81"
+    env_file:
+      - frontend/.env
+
+  spring-boot-app:
+    image: findmeticket/spring-boot-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    env_file:
+      - src/main/resources/.env
+    depends_on:
+      - db-postgres
+
+  selenium-hub:
+    image: selenium/hub:4.2
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
+  driver-chrome:
+    image: selenium/node-chrome:4.2
+    ports:
+      - "5900"
+    scale: 7
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    depends_on:
+      - selenium-hub

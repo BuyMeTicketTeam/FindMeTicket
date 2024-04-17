@@ -23,7 +23,7 @@ function App() {
     airplane: false,
     ferry: false,
   });
-  const [requestBody, setRequestBody] = useState({});
+  const [urlSearch, setUrlSearch] = useState(null);
 
   return (
     <Router>
@@ -43,8 +43,8 @@ function App() {
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
-            requestBody={requestBody}
-            setRequestBody={setRequestBody}
+            urlSearch={urlSearch}
+            setUrlSearch={setUrlSearch}
           />
           <CookieBanner />
           <ScrollButton />

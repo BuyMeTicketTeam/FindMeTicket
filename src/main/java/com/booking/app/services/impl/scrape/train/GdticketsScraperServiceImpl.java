@@ -1,9 +1,9 @@
 package com.booking.app.services.impl.scrape.train;
 
-import com.booking.app.props.LinkProps;
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.Route;
+import com.booking.app.entity.ticket.bus.BusTicket;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.props.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
@@ -123,7 +123,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
         }
 
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat outputMonthFormat = new SimpleDateFormat("MMMM", new Locale("uk"));
         SimpleDateFormat outputYearFormat = new SimpleDateFormat("yyyy", new Locale("uk", "en"));
         SimpleDateFormat outputDayFormat = new SimpleDateFormat("d", new Locale("uk", "en"));

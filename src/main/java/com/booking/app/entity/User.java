@@ -35,7 +35,7 @@ public class User {
 
     private String urlPicture;
 
-    private Boolean notification;
+    private boolean notification = false;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "role_id")
@@ -48,6 +48,6 @@ public class User {
     @OneToOne(mappedBy = "user")
     private UserCredentials security;
 
-    @OneToMany(mappedBy = "user" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserSearchHistory> history;
 }

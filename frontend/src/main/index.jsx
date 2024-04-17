@@ -9,7 +9,7 @@ import TicketsBody from './Body';
 import Partner from './Partner';
 
 export default function Index({
-  ticketsData, setTicketsData, selectedTransport, setSelectedTransport,
+  ticketsData, setTicketsData, selectedTransport, setSelectedTransport, urlSearch, setUrlSearch,
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -30,6 +30,8 @@ export default function Index({
             loading={loading}
             setLoading={setLoading}
             setTicketsData={setTicketsData}
+            urlSearch={urlSearch}
+            setUrlSearch={setUrlSearch}
             setError={setError}
             ticketsData={ticketsData}
             selectedTransport={selectedTransport}
