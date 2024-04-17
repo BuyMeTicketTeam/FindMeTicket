@@ -96,7 +96,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) {
         throw new java.lang.UnsupportedOperationException();
     }
 

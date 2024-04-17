@@ -177,7 +177,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         throw new java.lang.UnsupportedOperationException();
     }
 
