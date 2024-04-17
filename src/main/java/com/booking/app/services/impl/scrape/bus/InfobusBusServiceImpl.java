@@ -85,7 +85,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         Route route = ticket.getRoute();
@@ -100,7 +100,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        processTicketInfo(emitter, ticket, elements, driver, wait);
+        processTicketInfo(emitter, ticket, elements, driver, wait, emitterNotExpired);
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
@@ -152,7 +152,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         };
     }
 
-    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait) throws IOException {
+    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait, MutableBoolean emitterNotExpired) throws IOException {
 
         BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.INFOBUS)).findFirst().get();
 
@@ -180,11 +180,13 @@ public class InfobusBusServiceImpl implements ScraperService {
         }
 
         if (priceInfo.getLink() != null) {
-            emitter.send(SseEmitter.event().name(SiteConstants.INFOBUS).data(
-                    UrlAndPriceDTO.builder()
-                            .price(priceInfo.getPrice())
-                            .url(priceInfo.getLink())
-                            .build()));
+            if(emitterNotExpired.booleanValue()) {
+                emitter.send(SseEmitter.event().name(SiteConstants.INFOBUS).data(
+                        UrlAndPriceDTO.builder()
+                                .price(priceInfo.getPrice())
+                                .url(priceInfo.getLink())
+                                .build()));
+            }
         } else log.info("INFOBUS URL NOT FOUND");
     }
 

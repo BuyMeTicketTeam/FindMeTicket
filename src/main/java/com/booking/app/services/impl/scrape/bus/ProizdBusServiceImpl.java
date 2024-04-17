@@ -86,7 +86,7 @@ public class ProizdBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -100,7 +100,7 @@ public class ProizdBusServiceImpl implements ScraperService {
         waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        processTicketInfo(emitter, ticket, language, elements);
+        processTicketInfo(emitter, ticket, language, elements, emitterNotExpired);
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
@@ -155,7 +155,7 @@ public class ProizdBusServiceImpl implements ScraperService {
         };
     }
 
-    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> elements) throws IOException {
+    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
 
         BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
 
@@ -180,10 +180,12 @@ public class ProizdBusServiceImpl implements ScraperService {
         }
 
         if (priceInfo.getLink() != null) {
-            emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(UrlAndPriceDTO.builder()
-                    .price(priceInfo.getPrice())
-                    .url(priceInfo.getLink())
-                    .build()));
+            if(emitterNotExpired.booleanValue()) {
+                emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(UrlAndPriceDTO.builder()
+                        .price(priceInfo.getPrice())
+                        .url(priceInfo.getLink())
+                        .build()));
+            }
         } else log.info("PROIZD URL NOT FOUND");
     }
 
