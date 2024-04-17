@@ -203,9 +203,12 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
         driver.get(url);
         if (language.equals("ua"))
-            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "//li[@class='station-item active ng-star-inserted']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "li[@class='station-item station-item--user-location active ng-star-inserted']", driver);
         else
-            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "//li[@class='station-item active ng-star-inserted']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "li[@class='station-item station-item--user-location active ng-star-inserted']", driver);
+
+        ////li[@class='station-item station-item--user-location active ng-star-inserted']
+        ////li[@class='station-item active ng-star-inserted']
 
         if (language.equals("ua"))
             selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
