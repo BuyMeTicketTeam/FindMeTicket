@@ -1,0 +1,30 @@
+@import '../../styles/variables.scss';
+.reset {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.reset__btn {
+    margin-top: 10px;
+}
+
+.reset__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reset__error {
+    color: $error-bright;
+    align-self: baseline;
+    margin-bottom: 5px;
+    min-width: 300px;
+    text-align: left;
+    font-weight: 500;
+}
+
+.reset__text {
+    margin-bottom: 10px;
+}

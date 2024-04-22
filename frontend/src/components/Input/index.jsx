@@ -8,7 +8,7 @@ export default function Input({
 }) {
   return (
     <div className="field">
-      <label htmlFor={id} className="field__name">{label}</label>
+      {label && <label htmlFor={id} className="field__name">{label}</label>}
       <input
         id={id}
         className={error ? 'input input-error' : 'input'}

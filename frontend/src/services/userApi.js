@@ -44,6 +44,13 @@ export const userApi = api.injectEndpoints({
         body: code,
       }),
     }),
+    reset: builder.mutation({
+      query: (email) => ({
+        url: '/reset-password',
+        method: 'POST',
+        body: email,
+      }),
+    }),
   }),
 });
 
@@ -54,10 +61,11 @@ export const {
   useRegisterMutation,
   useConfirmMutation,
   useResendConfirmTokenMutation,
+  useResetMutation,
 } = userApi;
 
 export const {
   endpoints: {
-    login, loginFacebook, loginGoogle, register, confirm, resendConfirmToken,
+    login, loginFacebook, loginGoogle, register, confirm, resendConfirmToken, reset,
   },
 } = userApi;
