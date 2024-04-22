@@ -1,61 +1,114 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-return-assign */
+/* eslint-disable import/named */
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
 
-import { useConfirmMutation } from '../../services/userApi';
+import useTimeout from '../../hook/useTimeout';
+import { useConfirmMutation, useResendConfirmTokenMutation } from '../../services/userApi';
+import { CODE_PATTERN } from '../../constants/regex';
+
+import Input from '../../components/Input';
+
+import './confirm.scss';
 
 export default function Confirm() {
-  const [confirm, { isSuccess, isLoading, isError, error }] = useConfirmMutation();
+  const [confirm, {
+    isSuccess, isLoading, isError, error,
+  }] = useConfirmMutation();
+  const [resendConfirmToken, { isLoading: isResendLoading }] = useResendConfirmTokenMutation();
+  const {
+    register, handleSubmit, formState: { errors },
+  } = useForm({ mode: 'onBlur' });
+  const { state } = useLocation();
   const { t } = useTranslation('translation', { keyPrefix: 'confirm' });
+  const { minutes, seconds, restart } = useTimeout(1, 30);
+
+  const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || isSuccess || isResendLoading;
+
+  async function onSubmit(data) {
+    try {
+      const payload = {
+        token: data.token,
+        email: state.email,
+      };
+      await confirm(payload).unwrap();
+    } catch (err) {
+      console.error({ error: err });
+    }
+  }
+
+  async function handleResendToken() {
+    try {
+      const payload = {
+        email: state.email,
+      };
+      await resendConfirmToken(payload).unwrap();
+      restart();
+    } catch (err) {
+      console.error({ error: err });
+    }
+  }
 
   return (
     <div data-testid="confirm" className="confirm main">
-      <div className="form-body">
-        <h1 className="title">{t('confirm-email')}</h1>
+      <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="title">{t('confirm_email')}</h1>
         {isSuccess && (
-        <div className="confirm__success">
-          {t('success-message')}
-          {' '}
-          <p>
+          <div className="confirm__success">
+            {t('success_message')}
+            {' '}
             <Link
               className="link-success"
               data-testid=""
               to="/login"
             >
-              {t('auth-link')}
+              {t('auth_link')}
             </Link>
-          </p>
-        </div>
+          </div>
         )}
-        <p>{t('confirm-code')}</p>
-        <p className="confirm__text"><b>{t('confirm-ten')}</b></p>
+        <p>{t('confirm_code')}</p>
+        <p className="confirm__text"><b>{t('confirm_ten')}</b></p>
         <Input
-          error={codeError}
-          dataTestId="confirm-input"
-          value={code}
-          onInputChange={(value) => handleCodeChange(value)}
-          type="text"
+          id="code"
+          error={errors.token}
+          errorMessage={t('error_400')}
+          label={t('code')}
+          otherProps={{
+            ...register('token', {
+              required: true,
+              pattern: CODE_PATTERN,
+            }),
+            onChange: (event) => event.target.value = event.target.value.toUpperCase(),
+          }}
         />
-        {error !== '' && <p data-testid="error" className="confirm__error">{error}</p>}
+        {isError && <p data-testid="error" className="confirm__error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
         <div className="row">
-          <Button
-            name={send ? t('processing') : t('send')}
-            disabled={sendButtonIsDisabled}
-            onButton={setSend}
-            dataTestId="confirm-btn"
-          />
-
+          <button
+            disabled={isLoading || isSuccess}
+            className="button"
+            type="submit"
+          >
+            {isLoading ? t('processing') : t('send')}
+          </button>
           <button
             data-testid="send-again-btn"
             className="confirm__send-again"
             disabled={resendButtonIsDisabled}
-            onClick={setResend}
+            onClick={handleResendToken}
             type="button"
           >
-            {resend ? t('processing') : t('time', { minutes, seconds })}
+            {isResendLoading
+              ? t('processing')
+              : ((minutes === 0 && seconds === 0)
+                ? t('send_letter')
+                : t('time', { minutes, seconds }))}
           </button>
         </div>
-      </div>
+      </form>
     </div>
-  )
+  );
 }

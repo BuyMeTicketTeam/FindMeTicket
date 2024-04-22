@@ -6,7 +6,7 @@ import {
 import RouteController from './RouteController';
 import Reset from '../reset';
 import Register from '../pages/Register';
-import Confirm from '../confirm';
+import Confirm from '../pages/Confirm';
 import Index from '../main';
 import TicketPage from '../ticketPage';
 import Login from '../pages/Login';

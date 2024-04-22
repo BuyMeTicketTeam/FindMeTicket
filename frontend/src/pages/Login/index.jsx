@@ -35,7 +35,7 @@ export default function Login() {
       navigate('/');
     } catch (err) {
       console.error({ error: err });
-      setError(err.status ?? 500);
+      setError(err.originalStatus ?? 500);
     }
   }
 

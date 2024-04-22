@@ -37,6 +37,13 @@ export const userApi = api.injectEndpoints({
         body: code,
       }),
     }),
+    resendConfirmToken: builder.mutation({
+      query: (code) => ({
+        url: '/resend/confirm-token',
+        method: 'POST',
+        body: code,
+      }),
+    }),
   }),
 });
 
@@ -46,10 +53,11 @@ export const {
   useLoginGoogleMutation,
   useRegisterMutation,
   useConfirmMutation,
+  useResendConfirmTokenMutation,
 } = userApi;
 
 export const {
   endpoints: {
-    login, loginFacebook, loginGoogle, register, confirm,
+    login, loginFacebook, loginGoogle, register, confirm, resendConfirmToken,
   },
 } = userApi;

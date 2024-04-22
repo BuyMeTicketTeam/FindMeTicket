@@ -18,7 +18,7 @@ export default function Register() {
   const [registerQuery, { isLoading, isError, error }] = useRegisterMutation();
   const {
     register, handleSubmit, setError, formState: { errors },
-  } = useForm({ mode: 'all' });
+  } = useForm({ mode: 'onBlur' });
   const { t } = useTranslation('translation', { keyPrefix: 'registration' });
   const navigate = useNavigate();
 
@@ -42,10 +42,10 @@ export default function Register() {
         password: data.password,
         username: data.username,
         confirmPassword: data.confirmPassword,
-        notification: data.notification,
+        notification: data.notifications,
       };
       await registerQuery(payload).unwrap();
-      navigate('/confirm');
+      navigate('/confirm', { state: { email: data.email } });
     } catch (err) {
       console.error({ error: err });
     }
@@ -55,7 +55,7 @@ export default function Register() {
     <div data-testid="register" className="register main">
       <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="title">{t('registration')}</h1>
-        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
+        {isError && <p data-testid="error" className="error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
         <Input
           id="username"
           error={errors.username}
@@ -110,7 +110,13 @@ export default function Register() {
           {t('ticket_alerts_agreement')}
         </Checkbox>
 
-        <button disabled={isLoading} className="button btn-full" type="submit">{isLoading ? t('processing') : t('register')}</button>
+        <button
+          disabled={isLoading}
+          className="button btn-full"
+          type="submit"
+        >
+          {isLoading ? t('processing') : t('register')}
+        </button>
       </form>
     </div>
   );
