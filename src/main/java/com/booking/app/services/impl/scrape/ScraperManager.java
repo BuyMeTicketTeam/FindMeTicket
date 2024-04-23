@@ -23,10 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -140,10 +137,11 @@ public class ScraperManager {
     private void configureEmitter(SseEmitter emitter, MutableBoolean emitterNotExpired) {
 
         Runnable expire = () -> emitterNotExpired.setValue(false);
-
-        emitter.onCompletion(expire);
-        emitter.onError(t->expire.run());
-        emitter.onTimeout(expire);
+        if (Objects.nonNull(emitter)) {
+            emitter.onCompletion(expire);
+            emitter.onError(t -> expire.run());
+            emitter.onTimeout(expire);
+        }
     }
 
     @Async
