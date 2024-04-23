@@ -31,7 +31,7 @@ public class DeleteTicketServiceImpl implements DeleteTicketService {
 
         routeRepository.deleteRouteByAddingTimeBefore(fifteenMinutesAgo);
 
-        //popularRoutesService.findRoutes();
+        popularRoutesService.findRoutes();
     }
 
 }

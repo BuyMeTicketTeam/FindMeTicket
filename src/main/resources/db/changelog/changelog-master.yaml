@@ -1,9 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: data/create-table.yaml
-  - include:
-      file: data/init-role.yaml
-  - include:
-      file: data/init-ukrainian_places.yaml
-  - include:
-      file: data/init-admin.sql

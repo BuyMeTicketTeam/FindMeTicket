@@ -63,15 +63,15 @@ spring:
   ## Liquibase
   ##-------------------------
   liquibase:
-    change-log: classpath:/db/changelog/changelog-master.yaml
+    change-log: classpath:/liquibase/master.yaml
     liquibase-schema: find_me_ticket_schema
   ##-------------------------
   ## Database configuration
   ##-------------------------
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/db_ticket?'
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5432/db_ticket?
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driverClassName: org.postgresql.Driver
     hikari:
       schema: find_me_ticket_schema
@@ -79,7 +79,7 @@ spring:
 ##-------------------------
 ## JWT Properties
 ##-------------------------
-jwtSecret: fdsfsdgdryhgtrdfh45632542345fwdfsgdghfdhgdfh2FSDFGDFGffffa23
+jwtSecret: ${JWT_SECRET}
 accessTokenExpirationMs: '1440'
 refreshTokenExpirationMs: '43200'
 ##-------------------------
