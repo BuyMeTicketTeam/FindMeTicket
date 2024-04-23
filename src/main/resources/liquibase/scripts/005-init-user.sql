@@ -9,7 +9,7 @@ VALUES ('282cd4b3-240c-4483-811c-3625e1795626', NOW(),
         'https://lh3.googleusercontent.com/pw/AP1GczN1kT8-ubvv3taOi2bnDP2cBvQ2Ai1IWxbulSqPa-P39hJhWQ7OeRDwm2iUVItk6UKsrlTt3wWt4Yta8signLfUPb6zt8JbjuouAVeeJ-WkP99Z2zbC5DiXklze5wShuwKEzEnTYYgPkBbNUnONKRA=w945-h945-s-no-gm?authuser=0',
         TRUE, 2),
        ('1523babf-4ede-4a3f-9920-9795c228091b', now(),
-        'https://lh3.googleusercontent.com/pw/AP1GczMLk92iWoH58-G68Cv4-ms8Pn78blPHrDgIbJwmGOPZaxgUV6euZIOBxkqok9RHJZjCdzqpW7mdAqnspw9wff_FbDg857gQvScq-VD_9I3aUKkxSmrWhtkJk2pp5yv5U9HPhHeZZd500T8hTPAdtRs=w198-h198-s-no-gm?authuser=0',
+        'https://lh3.googleusercontent.com/pw/AP1GczMG03AiH9CHR4fkgAMOWLO8rj4xVN9kn0mN07LJ9oFQqeUd61LavwCeyUrJSk_gXmYkB0-6IHpnNZVhXAtxKsWNmoRRFhCQnq8BtcmfBG4IkYRhpfSOTDhJxBxiVTJX-6zHcDvGm_-wjZre8CNJmlM=w643-h643-s-no-gm?authuser=0',
         TRUE, 2);
 
 INSERT INTO find_me_ticket_schema.user_credentials (id, email, password, username, user_id, provider,
