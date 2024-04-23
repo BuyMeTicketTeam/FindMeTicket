@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 1712510666382-1
-      author: misha (generated)
+      id: 1713269883800-1
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -27,8 +27,37 @@ databaseChangeLog:
                   type: UUID
             tableName: bus_info
   - changeSet:
-      id: 1712510666382-2
-      author: misha (generated)
+      id: 1713269883800-2
+      author: Marchuk Mykhailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_review
+                  name: id
+                  type: UUID
+              - column:
+                  name: review_text
+                  type: varchar(1000)
+              - column:
+                  name: writing_date
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: grade
+                  type: INT
+              - column:
+                  name: user_id
+                  type: UUID
+            tableName: review
+  - changeSet:
+      id: 1713269883800-3
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -46,8 +75,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1712510666382-3
-      author: misha (generated)
+      id: 1713269883800-4
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -73,8 +102,8 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1712510666382-4
-      author: misha (generated)
+      id: 1713269883800-5
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -115,8 +144,8 @@ databaseChangeLog:
                   type: UUID
             tableName: ticket
   - changeSet:
-      id: 1712510666382-5
-      author: misha (generated)
+      id: 1713269883800-6
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -140,8 +169,8 @@ databaseChangeLog:
                   type: DATETIME
             tableName: token
   - changeSet:
-      id: 1712510666382-6
-      author: misha (generated)
+      id: 1713269883800-7
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -167,8 +196,24 @@ databaseChangeLog:
                   type: UUID
             tableName: train_info
   - changeSet:
-      id: 1712510666382-7
-      author: misha (generated)
+      id: 1713269883800-8
+      author: Marchuk Mykhailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_search_history_id
+                  type: UUID
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+            tableName: type_transport
+  - changeSet:
+      id: 1713269883800-9
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -201,8 +246,8 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_places
   - changeSet:
-      id: 1712510666382-8
-      author: misha (generated)
+      id: 1713269883800-10
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -251,8 +296,8 @@ databaseChangeLog:
                   type: BOOLEAN
             tableName: user_credentials
   - changeSet:
-      id: 1712510666382-9
-      author: misha (generated)
+      id: 1713269883800-11
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -281,8 +326,8 @@ databaseChangeLog:
                   type: UUID
             tableName: user_search_history
   - changeSet:
-      id: 1712510666382-10
-      author: misha (generated)
+      id: 1713269883800-12
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
@@ -319,8 +364,17 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1712510666382-11
-      author: misha (generated)
+      id: 1713269883800-13
+      author: Marchuk Mykhailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: user_id
+            constraintName: uc_review_user
+            tableName: review
+  - changeSet:
+      id: 1713269883800-14
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -328,8 +382,8 @@ databaseChangeLog:
             constraintName: uc_user_credentials_email
             tableName: user_credentials
   - changeSet:
-      id: 1712510666382-12
-      author: misha (generated)
+      id: 1713269883800-15
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -337,17 +391,8 @@ databaseChangeLog:
             constraintName: uc_user_credentials_user
             tableName: user_credentials
   - changeSet:
-      id: 1712510666382-13
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            columnNames: username
-            constraintName: uc_user_credentials_username
-            tableName: user_credentials
-  - changeSet:
-      id: 1712510666382-14
-      author: misha (generated)
+      id: 1713269883800-16
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -355,8 +400,8 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1712510666382-15
-      author: misha (generated)
+      id: 1713269883800-17
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
@@ -364,8 +409,8 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1712510666382-16
-      author: misha (generated)
+      id: 1713269883800-18
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -375,8 +420,19 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1712510666382-17
-      author: misha (generated)
+      id: 1713269883800-19
+      author: Marchuk Mykhailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: review
+            constraintName: FK_REVIEW_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1713269883800-20
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -386,8 +442,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1712510666382-18
-      author: misha (generated)
+      id: 1713269883800-21
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -397,8 +453,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1712510666382-19
-      author: misha (generated)
+      id: 1713269883800-22
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -408,8 +464,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1712510666382-20
-      author: misha (generated)
+      id: 1713269883800-23
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -419,8 +475,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1712510666382-21
-      author: misha (generated)
+      id: 1713269883800-24
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -430,8 +486,8 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: token
   - changeSet:
-      id: 1712510666382-22
-      author: misha (generated)
+      id: 1713269883800-25
+      author: Marchuk Mykhailo
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
@@ -440,4 +496,15 @@ databaseChangeLog:
             constraintName: FK_USER_CREDENTIALS_ON_USER
             referencedColumnNames: id
             referencedTableName: users
+  - changeSet:
+      id: 1713269883800-26
+      author: Marchuk Mykhailo
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_search_history_id
+            baseTableName: type_transport
+            constraintName: fk_type_transport_on_user_search_history
+            referencedColumnNames: id
+            referencedTableName: user_search_history
 

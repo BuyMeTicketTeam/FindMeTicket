@@ -13,6 +13,7 @@ import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -53,7 +54,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, MutableBoolean emitterNotExpired) throws ParseException, IOException {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -74,7 +75,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
                 TrainTicket trainTicket = scrapedTicket;
 
                 if (route.getTickets().add(scrapedTicket)) {
-                    if (BooleanUtils.isTrue(doDisplay))
+                    if (BooleanUtils.isTrue(doDisplay) && emitterNotExpired.booleanValue())
                         emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
 
                 } else
@@ -95,7 +96,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) {
         throw new java.lang.UnsupportedOperationException();
     }
 
@@ -202,9 +203,12 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
         driver.get(url);
         if (language.equals("ua"))
-            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "//li[@class='station-item active ng-star-inserted']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "li[@class='station-item station-item--user-location active ng-star-inserted']", driver);
         else
-            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "//li[@class='station-item active ng-star-inserted']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "li[@class='station-item station-item--user-location active ng-star-inserted']", driver);
+
+        ////li[@class='station-item station-item--user-location active ng-star-inserted']
+        ////li[@class='station-item active ng-star-inserted']
 
         if (language.equals("ua"))
             selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);

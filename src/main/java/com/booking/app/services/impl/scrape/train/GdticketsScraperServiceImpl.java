@@ -9,6 +9,7 @@ import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,7 +48,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -176,7 +177,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         throw new java.lang.UnsupportedOperationException();
     }
 

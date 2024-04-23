@@ -6,18 +6,17 @@ import com.booking.app.entity.UserCredentials;
 import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.TokenService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Optional;
 
 /**
@@ -25,13 +24,13 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(propagation = Propagation.REQUIRED)
 public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final UserCredentialsRepository userCredentialsRepository;
     private final VerifyEmailRepository verifyEmailRepository;
-    private final TokenService tokenService;
 
     /**
      * This method sending email with specified token.
@@ -42,7 +41,6 @@ public class MailSenderServiceImpl implements MailSenderService {
      * @param user     UserSecurity recipient
      * @throws MessagingException If there is an issue with sending the confirmation email.
      */
-    @Transactional
     @Override
     public void sendEmail(String htmlPage, String subject, String token, UserCredentials user) throws MessagingException {
 
@@ -67,24 +65,24 @@ public class MailSenderServiceImpl implements MailSenderService {
      *
      * @param email String recipient
      * @return Boolean returns true if the message was sent successfully either returns false
-     * @throws UserPrincipalNotFoundException If there is no such user
-     * @throws MessagingException             If there is an issue with sending the confirmation email.
+     * @throws MessagingException If there is an issue with sending the confirmation email.
      */
-    @Transactional
     @Override
-    public boolean resendEmail(String email) throws MessagingException, UserPrincipalNotFoundException {
-        Optional<UserCredentials> userByEmailFromDb = userCredentialsRepository.findByEmail(email);
+    public boolean resendEmail(String email, String htmlPage) throws MessagingException {
+        Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmail(email);
 
-        if (userByEmailFromDb.isEmpty()) return false;
+        if (userCredentials.isEmpty()) return false;
 
-        User user = userByEmailFromDb.get().getUser();
+        User user = userCredentials.get().getUser();
         verifyEmailRepository.delete(user.getConfirmToken());
 
-        ConfirmToken confirmToken = tokenService.createConfirmToken(user);
+        ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
+        confirmToken.setUser(user);
         user.setConfirmToken(confirmToken);
 
         verifyEmailRepository.save(confirmToken);
-        sendEmail("confirmMailUa", "Email confirmation", confirmToken.getToken(), userByEmailFromDb.get());
+
+        sendEmail(htmlPage, "Email confirmation", confirmToken.getToken(), userCredentials.get());
         return true;
     }
 

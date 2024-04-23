@@ -2,15 +2,13 @@ package com.booking.app.services.impl;
 
 
 import com.booking.app.constant.PopularRoutesConstants;
+import com.booking.app.dto.City;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.entity.UkrainianPlaces;
 import com.booking.app.repositories.UkrPlacesRepository;
 import com.booking.app.services.PopularRoutesService;
 import com.booking.app.services.impl.scrape.ScraperManager;
-import com.booking.app.dto.City;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +21,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static com.booking.app.constant.DateFormatConstants.DATE_FORMAT_PATTERN;
+
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PopularRoutesServiceImpl implements PopularRoutesService {
 
-    public static final String PATTERN = "yyyy-M-d";
     private final ScraperManager manager;
 
     private final UkrPlacesRepository placesRepository;
@@ -51,23 +49,23 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
                 runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameUa())
                         .arrivalCity(arrivalCity.get().getNameUa())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)))
                         .build(), null, "ua"));
                 runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(departureCity.get().getNameEng())
                         .arrivalCity(arrivalCity.get().getNameEng())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)))
                         .build(), null, "eng"));
 
                 runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(arrivalCity.get().getNameUa())
                         .arrivalCity(departureCity.get().getNameUa())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)))
                         .build(), null, "ua"));
                 runningRoutes.add(manager.findTickets(RequestTicketsDTO.builder()
                         .departureCity(arrivalCity.get().getNameEng())
                         .arrivalCity(departureCity.get().getNameEng())
-                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(PATTERN)))
+                        .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)))
                         .build(), null, "eng"));
 
 

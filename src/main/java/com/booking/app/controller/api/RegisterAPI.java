@@ -1,6 +1,7 @@
 package com.booking.app.controller.api;
 
-import com.booking.app.dto.*;
+import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.exception.exception.EmailAlreadyExistsException;
 import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,10 +14,11 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
+
 import java.io.IOException;
 
 @Validated
-@Tag(name = "Registering user",description = "Endpoints for registration and confirmation")
+@Tag(name = "Registering user", description = "Endpoints for registration and confirmation")
 public interface RegisterAPI {
 
     @Operation(summary = "Register User")
@@ -25,7 +27,7 @@ public interface RegisterAPI {
             @ApiResponse(responseCode = "409", description = "We’re sorry. This email already exists"),
             @ApiResponse(responseCode = "418", description = "We’re sorry. This username already exists")
     })
-    ResponseEntity<?> signUp(@Valid @NotNull RegistrationDTO dto) throws EmailAlreadyExistsException, MessagingException, IOException, UsernameAlreadyExistsException;
+    ResponseEntity<?> signUp(String siteLanguage, @Valid @NotNull RegistrationDTO dto) throws EmailAlreadyExistsException, MessagingException, IOException, UsernameAlreadyExistsException;
 
     @Operation(summary = "Email confirmation")
     @ApiResponses(value = {
@@ -38,6 +40,6 @@ public interface RegisterAPI {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email is confirmed"),
     })
-    ResponseEntity<?> resendConfirmEmailToken(@NotNull @Valid TokenConfirmationDTO dto) throws MessagingException, IOException;
+    ResponseEntity<?> resendConfirmEmailToken(String siteLanguage, @NotNull @Valid TokenConfirmationDTO dto) throws MessagingException, IOException;
 
 }

@@ -31,6 +31,7 @@ public class RegistrationDTO implements ConfirmPasswordUtil {
 
     private String confirmPassword;
 
+    @NotNull(message = "Boolean notification is required")
     private Boolean notification;
 
 }

@@ -13,6 +13,7 @@ import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -55,7 +56,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws ParseException, IOException {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -69,7 +70,7 @@ public class InfobusBusServiceImpl implements ScraperService {
             waitForTickets(driver);
 
             List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-            processScrapedTickets(emitter, route, language, doShow, elements);
+            processScrapedTickets(emitter, route, language, doShow, elements, emitterNotExpired);
 
 
             return CompletableFuture.completedFuture(true);
@@ -84,7 +85,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         WebDriver driver = webDriverFactory.createInstance();
 
         Route route = ticket.getRoute();
@@ -99,7 +100,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         waitForTickets(driver);
 
         List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        processTicketInfo(emitter, ticket, elements, driver, wait);
+        processTicketInfo(emitter, ticket, elements, driver, wait, emitterNotExpired);
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
@@ -125,7 +126,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         }
     }
 
-    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements) throws ParseException, IOException {
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements, MutableBoolean emitterNotExpired) throws ParseException, IOException {
         log.info("Bus tickets on infobus: " + elements.size());
         for (int i = 0; i < elements.size() && i < 150; i++) {
             BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route);
@@ -133,7 +134,7 @@ public class InfobusBusServiceImpl implements ScraperService {
             BusTicket busTicket = scrapedTicket;
 
             if (route.getTickets().add(scrapedTicket)) {
-                if (BooleanUtils.isTrue(doShow))
+                if (BooleanUtils.isTrue(doShow) && emitterNotExpired.booleanValue())
                     emitter.send(SseEmitter.event().name("Infobus bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
             } else
                 scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrice(busTicket.getInfoList().get(0));
@@ -151,7 +152,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         };
     }
 
-    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait) throws IOException {
+    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, List<WebElement> elements, WebDriver driver, WebDriverWait wait, MutableBoolean emitterNotExpired) throws IOException {
 
         BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.INFOBUS)).findFirst().get();
 
@@ -165,13 +166,13 @@ public class InfobusBusServiceImpl implements ScraperService {
 
             if (ticket.getDepartureTime().equals(departureTime) &&
                     ticket.getArrivalTime().equals(arrivalTime) &&
-                    priceInfo.getPrice().equals(new BigDecimal(price))) {
+                    priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
 
                 WebElement button = element.findElement(By.cssSelector("button.btn"));
                 Actions actions = new Actions(driver);
                 actions.moveToElement(button).doubleClick().build().perform();
 
-                wait.until(ExpectedConditions.urlContains("deeplink"));
+//                wait.until(ExpectedConditions.urlContains("deeplink"));
                 priceInfo.setLink(driver.getCurrentUrl());
                 log.info("INFOBUS URL: " + driver.getCurrentUrl());
                 break;
@@ -179,11 +180,13 @@ public class InfobusBusServiceImpl implements ScraperService {
         }
 
         if (priceInfo.getLink() != null) {
-            emitter.send(SseEmitter.event().name(SiteConstants.INFOBUS).data(
-                    UrlAndPriceDTO.builder()
-                            .price(priceInfo.getPrice())
-                            .url(priceInfo.getLink())
-                            .build()));
+            if(emitterNotExpired.booleanValue()) {
+                emitter.send(SseEmitter.event().name(SiteConstants.INFOBUS).data(
+                        UrlAndPriceDTO.builder()
+                                .price(priceInfo.getPrice())
+                                .url(priceInfo.getLink())
+                                .build()));
+            }
         } else log.info("INFOBUS URL NOT FOUND");
     }
 
@@ -207,7 +210,7 @@ public class InfobusBusServiceImpl implements ScraperService {
 
         Date date = ticketDate.parse(arrivalDate);
 
-        String price = webTicket.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "");
+        String price = webTicket.findElement(By.cssSelector("span.price-number")).getText().replace(" UAH", "").split("-")[0].trim();
         String travelTime = webTicket.findElement(By.className("duration-time")).getText().toLowerCase().replace(" г", "год.").replace(" хв", "хв");
 
         String[] parts = travelTime.split("[^\\d]+");

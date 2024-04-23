@@ -1,6 +1,5 @@
 package com.booking.app.controller;
 
-import com.booking.app.constant.JwtTokenConstants;
 import com.booking.app.controller.api.TicketApi;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
@@ -9,9 +8,7 @@ import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SearchHistoryService;
 import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
-import com.booking.app.services.impl.SearchHistoryServiceImpl;
 import com.booking.app.services.impl.scrape.ScraperManager;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +22,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -49,14 +45,14 @@ public class TicketController implements TicketApi {
 
         validateLanguage(siteLanguage);
 
-        searchHistoryService.addToHistory(ticketsDTO, siteLanguage, request);
+        searchHistoryService.addHistory(ticketsDTO, siteLanguage, request);
 
         SseEmitter emitter = new SseEmitter();
 
         CompletableFuture<Boolean> isTicketScraped = scrapingService.findTickets(ticketsDTO, emitter, siteLanguage);
 
         isTicketScraped.thenAccept(isFound -> {
-            if (isFound) response.setStatus(HttpStatus.OK.value());
+            if (Boolean.TRUE.equals(isFound)) response.setStatus(HttpStatus.OK.value());
             else response.setStatus(HttpStatus.NOT_FOUND.value());
         });
         return emitter;
@@ -69,7 +65,7 @@ public class TicketController implements TicketApi {
         SseEmitter emitter = new SseEmitter();
         CompletableFuture<Boolean> isTicketFound = scrapingService.getTicket(id, emitter, siteLanguage);
 
-        isTicketFound.thenAccept(isFound -> response.setStatus(isFound ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value()));
+        isTicketFound.thenAccept(isFound -> response.setStatus(Boolean.TRUE.equals(isFound) ? HttpStatus.OK.value() : HttpStatus.NOT_FOUND.value()));
         return emitter;
     }
 

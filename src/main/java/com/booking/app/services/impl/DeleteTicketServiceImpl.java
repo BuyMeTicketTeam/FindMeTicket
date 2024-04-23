@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,14 +24,14 @@ public class DeleteTicketServiceImpl implements DeleteTicketService {
 
     @Override
     @Async
-    @Scheduled(fixedRate = 1800000)
+    @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 30)
     @Transactional
     public void deleteOldTickets() throws IOException, ParseException {
         LocalDateTime fifteenMinutesAgo = LocalDateTime.now();
 
         routeRepository.deleteRouteByAddingTimeBefore(fifteenMinutesAgo);
 
-        //popularRoutesService.findRoutes();
+        popularRoutesService.findRoutes();
     }
 
 }

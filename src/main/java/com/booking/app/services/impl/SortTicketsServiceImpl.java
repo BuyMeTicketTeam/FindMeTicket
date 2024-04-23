@@ -41,10 +41,7 @@ public class SortTicketsServiceImpl implements SortTicketsService {
             default -> throw new UnsupportedOperationException();
         };
 
-        if(dto.isAscending()) {
-            tickets.sort(comparator);
-        }else tickets.sort(comparator.reversed());
-
+        tickets.sort(dto.isAscending()? comparator:comparator.reversed());
 
         for (Ticket ticket : tickets) {
             switch (ticket) {
@@ -61,17 +58,6 @@ public class SortTicketsServiceImpl implements SortTicketsService {
             }
 
         }
-
-//        Comparator<TicketDto> comparator = switch (dto.getSortingBy()) {
-//            case "Price" -> Comparator.comparing(TicketDto::getPrice);
-//            case "DepartureTime" -> Comparator.comparing(TicketDto::getDepartureTime);
-//            case "ArrivalTime" -> Comparator.comparing(TicketDto::formatArrivalDateTime);
-//            case "TravelTime" -> Comparator.comparing(TicketDto::getTravelTime);
-//            default -> throw new UnsupportedOperationException();
-//        };
-//
-//
-//        result.sort(dto.isAscending()? comparator:comparator.reversed());
 
         return result;
     }

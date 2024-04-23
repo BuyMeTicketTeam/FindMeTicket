@@ -11,23 +11,22 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import java.io.IOException;
 
 @Validated
-@Tag(name = "Resetting password",description = "Endpoints for resetting and confirming new password")
+@Tag(name = "Resetting password", description = "Endpoints for resetting and confirming new password")
 public interface ResetPasswordAPI {
 
     @Operation(summary = "Send password reset token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Reset token has been sent")
     })
-    ResponseEntity<?> sendResetToken( @NotNull @Valid EmailDTO dto) throws MessagingException, IOException;
+    ResponseEntity<?> sendResetToken(@NotNull @Valid EmailDTO dto, String siteLanguage) throws MessagingException;
 
     @Operation(summary = "Confirmation reset password token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Password has been reset"),
             @ApiResponse(responseCode = "400", description = "Token from email is not right")
     })
-    ResponseEntity<?> confirmResetPassword( @NotNull @Valid ResetPasswordDTO dto);
+    ResponseEntity<?> confirmResetPassword(@NotNull @Valid ResetPasswordDTO dto);
 
 }

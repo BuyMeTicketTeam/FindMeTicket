@@ -45,7 +45,8 @@ public class WebSecurityConfiguration {
             "/error",
             "/register",
             "/confirm-email",
-            "/resend-confirm-email",
+            "/resend/confirm-token",
+            "/resend/reset-token",
             "/confirm-email",
             "/reset",
             "/new-password",
@@ -57,7 +58,8 @@ public class WebSecurityConfiguration {
             "/sortedBy",
             "/searchTickets",
             "/get/ticket/**",
-            "/selectedTransport"
+            "/selectedTransport",
+            "/getReviews"
     };
 
     @Bean
