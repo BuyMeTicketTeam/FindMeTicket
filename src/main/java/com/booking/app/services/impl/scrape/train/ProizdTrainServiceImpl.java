@@ -203,17 +203,17 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
         driver.get(url);
         if (language.equals("ua"))
-            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "li[@class='station-item station-item--user-location active ng-star-inserted']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Звідки виїзд?']", "//ul[@class='station-completer redesigned not-adaptive padding show is-departure ng-star-inserted']", driver);
         else
-            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "li[@class='station-item station-item--user-location active ng-star-inserted']", driver);
+            selectCity(wait, departureCity, "//input[@placeholder='Departure station']", "//ul[@class='station-completer redesigned not-adaptive padding show is-departure ng-star-inserted']", driver);
 
         ////li[@class='station-item station-item--user-location active ng-star-inserted']
         ////li[@class='station-item active ng-star-inserted']
 
         if (language.equals("ua"))
-            selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
+            selectCity(wait, arrivalCity, "//input[@placeholder='Куди прямуєте?']", "//ul[@class='station-completer redesigned not-adaptive padding show is-departure ng-star-inserted']", driver);
         else
-            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", "//li[@class='station-item active station-item--arrival ng-star-inserted']", driver);
+            selectCity(wait, arrivalCity, "//input[@placeholder='Arrival station']", "//ul[@class='station-completer redesigned not-adaptive padding show is-departure ng-star-inserted']", driver);
 
         selectDate(departureDate, driver, wait, language);
 
@@ -228,11 +228,11 @@ public class ProizdTrainServiceImpl implements ScraperService {
         inputCity.clear();
         inputCity.sendKeys(city);
 
-        synchronized (driver) {
-            driver.wait(1000);
-        }
-
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
+//        synchronized (driver) {
+//            driver.wait(1000);
+//        }
+//
+//        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
     }
 
     private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
