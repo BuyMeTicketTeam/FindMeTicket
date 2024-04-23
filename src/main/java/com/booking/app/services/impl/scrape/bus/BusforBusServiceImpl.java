@@ -86,7 +86,7 @@ public class BusforBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -104,7 +104,7 @@ public class BusforBusServiceImpl implements ScraperService {
         waitForTickets(driver);
 
         List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
-        processTicketInfo(emitter, ticket, language, tickets, wait, driver);
+        processTicketInfo(emitter, ticket, language, tickets, wait, driver, emitterNotExpired);
 
         driver.quit();
         return CompletableFuture.completedFuture(true);
@@ -130,7 +130,7 @@ public class BusforBusServiceImpl implements ScraperService {
         }
     }
 
-    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> tickets, WebDriverWait wait, WebDriver driver) throws IOException {
+    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> tickets, WebDriverWait wait, WebDriver driver, MutableBoolean emitterNotExpired) throws IOException {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
 
@@ -170,10 +170,12 @@ public class BusforBusServiceImpl implements ScraperService {
         }
 
         if (priceInfo.getLink() != null) {
-            emitter.send(SseEmitter.event().name(SiteConstants.BUSFOR_UA).data(UrlAndPriceDTO.builder()
-                    .price(priceInfo.getPrice())
-                    .url(priceInfo.getLink())
-                    .build()));
+            if (emitterNotExpired.booleanValue()) {
+                emitter.send(SseEmitter.event().name(SiteConstants.BUSFOR_UA).data(UrlAndPriceDTO.builder()
+                        .price(priceInfo.getPrice())
+                        .url(priceInfo.getLink())
+                        .build()));
+            }
         } else log.info("BUSFOR URL NOT FOUND");
     }
 

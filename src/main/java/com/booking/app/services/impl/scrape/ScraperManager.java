@@ -150,8 +150,11 @@ public class ScraperManager {
 
         Ticket ticket = ticketRepository.findById(id).orElseGet(Ticket::new);
 
+        MutableBoolean emitterNotExpired = new MutableBoolean(true);
+        configureEmitter(emitter, emitterNotExpired);
+
         return switch (ticket) {
-            case BusTicket e -> getBusTicket(e, emitter, language);
+            case BusTicket e -> getBusTicket(e, emitter, language, emitterNotExpired);
             case TrainTicket e -> getTrainTicket(e, emitter, language);
             default -> {
                 emitter.complete();
@@ -177,14 +180,14 @@ public class ScraperManager {
         return CompletableFuture.completedFuture(true);
     }
 
-    private CompletableFuture<Boolean> getBusTicket(BusTicket busTicket, SseEmitter emitter, String language) throws
+    private CompletableFuture<Boolean> getBusTicket(BusTicket busTicket, SseEmitter emitter, String language, MutableBoolean emitterNotExpired) throws
             IOException, ParseException {
 
         emitter.send(SseEmitter.event().name("ticket info").data(busMapper.ticketToTicketDto(busTicket, language)));
 
         if (!busTicket.linksAreScraped()) {
 
-            CompletableFuture<Void> allOf = scrapeBusLink(busTicket, emitter, language);
+            CompletableFuture<Void> allOf = scrapeBusLink(busTicket, emitter, language, emitterNotExpired);
 
             try {
                 allOf.join();
@@ -207,7 +210,7 @@ public class ScraperManager {
     }
 
 
-    private CompletableFuture<Void> scrapeBusLink(BusTicket busTicket, SseEmitter emitter, String language) {
+    private CompletableFuture<Void> scrapeBusLink(BusTicket busTicket, SseEmitter emitter, String language, MutableBoolean emitterNotExpired) {
 
         List<CompletableFuture<Boolean>> completableFutureListBus = new LinkedList<>();
 
@@ -215,11 +218,11 @@ public class ScraperManager {
             try {
                 switch (t.getSourceWebsite()) {
                     case PROIZD_UA ->
-                            completableFutureListBus.add(proizdBusService.scrapeTicketUri(emitter, busTicket, language));
+                            completableFutureListBus.add(proizdBusService.scrapeTicketUri(emitter, busTicket, language, emitterNotExpired));
                     case BUSFOR_UA ->
-                            completableFutureListBus.add(busforBusService.scrapeTicketUri(emitter, busTicket, language));
+                            completableFutureListBus.add(busforBusService.scrapeTicketUri(emitter, busTicket, language, emitterNotExpired));
                     case INFOBUS ->
-                            completableFutureListBus.add(infobusBusService.scrapeTicketUri(emitter, busTicket, language));
+                            completableFutureListBus.add(infobusBusService.scrapeTicketUri(emitter, busTicket, language, emitterNotExpired));
                 }
             } catch (IOException | ParseException e) {
             }

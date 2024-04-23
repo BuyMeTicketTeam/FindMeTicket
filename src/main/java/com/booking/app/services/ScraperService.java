@@ -13,6 +13,6 @@ public interface ScraperService {
 
     CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doSend, MutableBoolean emitterNotExpired) throws ParseException, IOException;
 
-    CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException;
+    CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException;
 
 }
