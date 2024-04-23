@@ -11,6 +11,7 @@ public class ChromeOptionsConfiguration {
     ChromeOptions chromeOptions() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
+        options.addArguments("--disable-geolocation");
         options.addArguments("--window-size=800,1000");
         options.addArguments("--disable-extensions");
         options.addArguments("--proxy-server='direct://'");
