@@ -198,7 +198,6 @@ export default function SearchField({
           loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
           placeholder={t('from-placeholder')}
           onChange={setCityFrom}
-          onInputChange={() => onErrorCityFrom(false)}
         />
         {errorCityFrom && <p data-testid="errorCityFrom" className="search-field__error">{t('error2')}</p>}
       </div>
@@ -222,7 +221,6 @@ export default function SearchField({
           loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
           placeholder={t('to-placeholder')}
           onChange={setCityTo}
-          onInputChange={() => onErrorCityTo(false)}
         />
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
