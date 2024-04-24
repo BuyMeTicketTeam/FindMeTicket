@@ -3,54 +3,33 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import FiltersBtn from './FiltersBtn';
-import makeQuerry from '../../helper/querry';
 import './filters.scss';
 
-export default function Filters({
-  setTicketsData, loading,
-}) {
-  const [sort, setSort] = useState('');
-  const [ascending, setAscending] = useState(false);
-  const { t, i18n } = useTranslation('translation', { keyPrefix: 'filters' });
+export default function Filters({ loading }) {
+  const { t } = useTranslation('translation', { keyPrefix: 'filters' });
   const [searchParams] = useSearchParams();
+  const [sort, setSort] = useState(searchParams.get('sort'));
+  const [ascending, setAscending] = useState(false);
+  const navigate = useNavigate();
 
   const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
 
-  async function sendRequest(sortArg, reverse) {
-    const date = new Date(+searchParams.get('departureDate'));
-    const body = {
-      departureCity: searchParams.get('from'),
-      arrivalCity: searchParams.get('to'),
-      departureDate: `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-      bus: searchParams.get('type') === 'bus' || searchParams.get('type') === 'all',
-      train: searchParams.get('type') === 'train' || searchParams.get('type') === 'all',
-      ferry: false,
-      airplane: false,
-      sortingBy: sortArg,
-      ascending: reverse,
-    };
-    const response = await makeQuerry('sortedBy', JSON.stringify(body), { 'Content-Language': i18n.language.toLowerCase() });
-
-    const responseBody = response.status === 200 ? response.body : null;
-    setTicketsData(responseBody);
-  }
-
   function handleSort(sortType) {
+    const date = searchParams.get('departureDate') ? new Date(+searchParams.get('departureDate')) : new Date();
     if (sortType === sort) {
-      setAscending((prevAscending) => !prevAscending);
+      const ascendingBoolean = searchParams.get('ascending') === 'true';
+      navigate(`?type=${searchParams.get('type')}&from=${searchParams.get('from')}&to=${searchParams.get('to')}&departureDate=${+date}&sort=${sortType}&ascending=${!ascendingBoolean}&endpoint=3`);
       return;
     }
-    setSort(sortType);
-    setAscending(false);
+    navigate(`?type=${searchParams.get('type')}&from=${searchParams.get('from')}&to=${searchParams.get('to')}&departureDate=${+date}&sort=${sortType}&ascending=false&endpoint=3`);
   }
 
   useEffect(() => {
-    if (sort !== '') {
-      sendRequest(sort, ascending);
-    }
-  }, [sort, ascending]);
+    setSort(searchParams.get('sort'));
+    setAscending(searchParams.get('ascending') === 'true');
+  }, [searchParams]);
 
   return (
     <div data-testid="filters" className="main-filters">

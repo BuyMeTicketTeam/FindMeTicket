@@ -1,14 +1,15 @@
 package com.booking.app.services.impl.scrape.train;
 
-import com.booking.app.props.LinkProps;
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.Route;
+import com.booking.app.entity.ticket.bus.BusTicket;
 import com.booking.app.mapper.BusMapper;
+import com.booking.app.props.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.services.ScraperService;
 import com.booking.app.util.WebDriverFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.mutable.MutableBoolean;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -47,7 +48,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws ParseException, IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -55,7 +56,6 @@ public class GdticketsScraperServiceImpl implements ScraperService {
         if (!requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, "https://gd.tickets.ua/", language))
             return CompletableFuture.completedFuture(false);
         ;
-
 //        try {
 //            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
 //            driver.findElement(By.cssSelector(DIV_TICKET));
@@ -124,7 +124,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
         }
 
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd.MM.yyyy");
         SimpleDateFormat outputMonthFormat = new SimpleDateFormat("MMMM", new Locale("uk"));
         SimpleDateFormat outputYearFormat = new SimpleDateFormat("yyyy", new Locale("uk", "en"));
         SimpleDateFormat outputDayFormat = new SimpleDateFormat("d", new Locale("uk", "en"));
@@ -177,7 +177,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         throw new java.lang.UnsupportedOperationException();
     }
 

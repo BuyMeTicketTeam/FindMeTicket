@@ -6,6 +6,8 @@
   background: $semi-dark;
   align-items: center;
   font-size: 18px;
+  position: relative;
+  z-index: 2;
 }
 
 .buycoffee{

@@ -1,36 +1,64 @@
 services:
-  postgres:
-    container_name: db_postgres
+  db-postgres:
     image: postgres
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_DB: db_ticket
-    networks:
-      - ticket_network
-    restart: unless-stopped
+    env_file:
+      - .env.docker
     volumes:
-      - ./src/main/resources/data:/docker-entrypoint-initdb.d
-  react_app:
-    container_name: react_app
-    image: stepanstadniuk/react-app
+      - ./src/main/resources/liquibase/scripts:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_DB: db_ticket
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
     ports:
-      - "81:8079"
-    networks:
-      - ticket_network
-  spring_boot_app:
-    container_name: spring_boot_app
-    image: findmeticket/backend-findmeticket
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.admin
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LIST_PORT: 5050
+    depends_on:
+      - db-postgres
+
+  react-app:
+    image: findmeticket/react-app
+    ports:
+      - "81:81"
+    env_file:
+      - frontend/.env.docker
+
+  spring-boot-app:
+    image: findmeticket/spring-boot-app
+    restart: always
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-    networks:
-      - ticket_network
+    env_file:
+      - src/main/resources/.env.docker
     depends_on:
-      - postgres
-networks:
-  ticket_network:
-    driver: bridge
+      - db-postgres
+
+  selenium-hub:
+    image: selenium/hub:4.2
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
+  driver-chrome:
+    image: selenium/node-chrome:4.2
+    ports:
+      - "5900"
+    scale: 7
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    depends_on:
+      - selenium-hub

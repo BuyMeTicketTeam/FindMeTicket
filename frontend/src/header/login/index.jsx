@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GoogleLogin } from '@react-oauth/google';
 import FacebookLogin from '@greatsumini/react-facebook-login';
@@ -22,12 +22,11 @@ export default function Popup({ updateAuthValue }) {
   const [send, setSend] = useState(false);
   const [remember, rememberMe] = useState(false);
   const [show, onShow] = useState(false);
-  const navigate = useNavigate();
+  const { state } = useLocation();
 
   function statusChecks(response) {
     switch (response.status) {
       case 200:
-        navigate('/');
         updateAuthValue(response.body);
         break;
       case 401:
@@ -76,7 +75,8 @@ export default function Popup({ updateAuthValue }) {
     const response = await makeQuerry(`oauth2/authorize/${provider}`, bodyJSON);
     switch (response.status) {
       case 200:
-        navigate('/');
+        // navigate(-2);
+        // window.history.back();
         updateAuthValue(response.body);
         break;
       case 401:
@@ -111,9 +111,9 @@ export default function Popup({ updateAuthValue }) {
   }
 
   return (
-    <div data-testid="login" className="background">
+    <div data-testid="login" className="background main">
       <div className="popup__body">
-        <Link to="/" className="close" aria-label="Close" />
+        <Link to={state.closeNavigate ?? '/'} className="close" aria-label="Close" />
         {error !== '' && <p data-testid="error" className="error">{error}</p>}
         <Field
           error={loginError}
@@ -121,7 +121,7 @@ export default function Popup({ updateAuthValue }) {
           name={t('email-name')}
           tip={t('login-tip')}
           value={login}
-          type="text"
+          type="email"
           onInputChange={(value) => handleLoginChange(value)}
           placeholder="mail@mail.com"
         />
@@ -138,7 +138,7 @@ export default function Popup({ updateAuthValue }) {
           onShow={onShow}
         />
 
-        <Checkbox onClick={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
+        <Checkbox id="rememberMe" onChange={() => handleRememberMeChange()}>{t('remember-me')}</Checkbox>
         <div className="link">
           <Link
             to="/reset"

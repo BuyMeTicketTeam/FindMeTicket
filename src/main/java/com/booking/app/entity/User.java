@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,6 +35,8 @@ public class User {
 
     private String urlPicture;
 
+    private boolean notification = false;
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "role_id")
     private Role role;
@@ -44,5 +47,24 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private UserCredentials security;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<UserSearchHistory> history;
+
+
+    @OneToOne(mappedBy = "user")
+    private Review review;
+
+    public static User createUser(UserCredentials userCredentials, Role role, ConfirmToken confirmToken, Boolean notification, byte[] profilePicture) {
+        User user = User.builder()
+                .role(role)
+                .confirmToken(confirmToken)
+                .security(userCredentials)
+                .notification(notification)
+                .profilePicture(profilePicture).build();
+        userCredentials.setUser(user);
+        confirmToken.setUser(user);
+        return user;
+    }
 
 }

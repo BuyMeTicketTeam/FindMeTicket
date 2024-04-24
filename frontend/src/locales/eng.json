@@ -60,6 +60,7 @@
                   "register": "Sign up",
                   "or": "Or",
                   "google": "Google",
+                  "facebook": "Facebook",
                   "remember-me": "Remember me"
             },
             "profile": {
@@ -67,7 +68,16 @@
                   "exit": "Log out",
                   "privacy-policy": "Privacy Policy",
                   "delete-account": "Delete account",
-                  "hello": "Hi,"
+                  "hello": "Hi,",
+                  "notice": "Would you like to receive notifications about the availability of tickets?",
+                  "account": "Account",
+                  "email": "Email",
+                  "phone": "Phone number",
+                  "account-management": "Account management",
+                  "add": "Add",
+                  "history": "History",
+                  "no-items": "You have no search history",
+                  "lvl": "The unblocking of the level will occur automatically when our services become available. Skin rhubarb provides three months of vigor."
             },
             "register": {
                   "error-email": "The user with this email address is already registered",
@@ -88,7 +98,8 @@
                   "privacy policy": "privacy policy",
                   "register": "Sign up",
                   "processing": "Processing...",
-                  "error-nickname-exist": "This nickname already exists, come up with something else"
+                  "error-nickname-exist": "This nickname already exists, come up with something else",
+                  "ticket-alerts-agreement": "Would you like to receive emails about new tickets?"
             },
             "tip": {
                   "nickname-tip-title": "Your nickname must meet the following requirements:",
@@ -174,7 +185,10 @@
                   "where-t": "To",
                   "error": "Nothing was found for your request",
                   "error2": "The field must not be empty",
-                  "ticket-not-found": "Sorry, no tickets found for this route"
+                  "ticket-not-found": "Sorry, no tickets found for this route",
+                  "from-placeholder": "Kyiv",
+                  "to-placeholder": "Odesa"
+
             },
             "filters": {
                   "Price": "Price",
@@ -234,20 +248,48 @@
                   "partners": "Our informative partners"
              },
              "cities": {
-                  "Kiev-Kharkiv": "Kyiv - Kharkiv",
-                  "Dnipro-Chernivtsi": "Dnipro - Chernivtsi",
-                  "Kiev-Dnipro": "Kyiv - Dnipro",
-                  "Kharkiv-Ivano-Frankivsk": "Kharkiv -     Ivano-Frankivsk",
-                  "Lviv-Kiev": "Lviv - Kyiv",
-                  "Dnipro-Odessa": "Dnipro - Odesa",
-                  "Kiev-Poltava": "Kyiv - Poltava",
-                  "Lviv-Ternopil": "Lviv - Ternopil",
-                  "Kharkiv-Zaporizhzhya": "Kharkiv - Zaporizhzhya",
-                  "Odessa-Kherson": "Odesa - Kherson",
-                  "Zaporizhzhya-Krivyi Rih": "Zaporizhzhya - Krivyi Rih",
-                  "Vinnytsia-Lviv": "Vinnitsa - Lviv",
-                  "Site support": "Site support",
+                  "Kiev": "Kyiv",
+                  "Dnipro": "Dnipro",
+                  "Kharkiv": "Kharkiv",
+                  "Chernivtsi": "Chernivtsi",
+                  "Ivano-Frankivsk": "Ivano-Frankivsk",
+                  "Lviv": "Lviv",
+                  "Odessa": "Odesa",
+                  "Poltava": "Poltava",
+                  "Ternopil": "Ternopil",
+                  "Zaporizhzhya": "Zaporizhzhya",
+                  "Kherson": "Kherson",
+                  "Krivyi Rih": "Krivyi Rih",
+                  "Vinnytsya": "Vinnytsya",
                   "Privacy policy": "Privacy policy"
-             }
+            },
+            "scroll-button": {
+                 "up": "Up"
+            },
+            "tourist-places": {
+                  "title": "Tourist places in ",
+                  "error": "Nothing was found for your request",
+                  "error2": "The field must not be empty",
+                  "loading": "Loading...",
+                  "search": "Search",
+                  "search-title": "Search for tourist places",
+                  "placeholder": "Odesa",
+                  "unauthorized-attention": "Warning",
+                  "unauthorized-text": "The map of tourist places is available only to authorized users",
+                  "unauthorized-button": "Log in",
+                  "load-more": "Load more"
+            },
+            "reviews": {
+                  "title": "Many amazing people are using our service daily",
+                  "form-title": "Leave your comment",
+                  "lock-message": "Only authorized users can leave comments",
+                  "lock-button": "Log in",
+                  "form-submit-btn": "Submit",
+                  "textarea_placeholder": "Review must have at least 5 characters and no more than 400. ",
+                  "rating__error": "You have not rated our site. ",
+                  "error-add-review": "Error saving review. Try again.",
+                  "loading-review": "Sending..."
+            }
+
       }
 }

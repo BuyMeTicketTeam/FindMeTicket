@@ -23,6 +23,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
@@ -251,7 +257,7 @@
                             <username>${env.DOCKER_LOGIN}</username>
                             <password>${env.DOCKER_PASSWORD}</password>
                         </auth>
-                        <image>findmeticket/backend-findmeticket</image>
+                        <image>findmeticket/spring-boot-app</image>
                     </to>
                 </configuration>
                 <executions>

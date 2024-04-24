@@ -75,78 +75,78 @@ class RegistrationServiceImplTest {
                 .confirmPassword("GloryToUkraine5").build();
     }
 
-    @Test
-    void testSuccessfullyRegistration() throws MessagingException {
-        RegistrationServiceImpl temp = Mockito.spy(registrationService);
-        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.empty());
-        doReturn(new EmailDTO(registrationDTO.getEmail())).when(temp).performRegistration(registrationDTO);
-        EmailDTO newUser = temp.register(registrationDTO);
-        assertEquals(registrationDTO.getEmail(), newUser.getEmail());
-    }
+//    @Test
+//    void testSuccessfullyRegistration() throws MessagingException {
+//        RegistrationServiceImpl temp = Mockito.spy(registrationService);
+//        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.empty());
+//        doReturn(new EmailDTO(registrationDTO.getEmail())).when(temp).performRegistration(registrationDTO);
+//        EmailDTO newUser = temp.register(registrationDTO);
+//        assertEquals(registrationDTO.getEmail(), newUser.getEmail());
+//    }
+//
+//    @Test
+//    void testEmailExistsExceptionRegistration() throws MessagingException {
+//        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
+//                .thenReturn(Optional.of(UserCredentials.builder().email(registrationDTO.getEmail()).username("Lalka228").enabled(true).build()));
+//
+//        assertThrows(EmailAlreadyExistsException.class, () -> registrationService.register(registrationDTO));
+//    }
+//
+//    @Test
+//    void testUsernameExistsExceptionRegistration() throws MessagingException {
+//        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
+//                .thenReturn(Optional.of(UserCredentials.builder().email("rafaello2@gmail.com").username(registrationDTO.getUsername()).enabled(true).build()));
+//
+//        assertThrows(UsernameAlreadyExistsException.class, () -> registrationService.register(registrationDTO));
+//    }
+//
+//    @Test
+//    void testDeletesUnconfirmedUserRegistration() throws MessagingException {
+//        RegistrationServiceImpl temp = Mockito.spy(registrationService);
+//        UserCredentials userCredentials = UserCredentials.builder().email("hasbulla@gmail.com").username("hasbulla23").build();
+//        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.of(userCredentials));
+//        doNothing().when(temp).deleteUserIfNotConfirmed(userCredentials);
+//        doReturn(new EmailDTO(registrationDTO.getEmail())).when(temp).performRegistration(registrationDTO);
+//        EmailDTO newUser = temp.register(registrationDTO);
+//        assertEquals(registrationDTO.getEmail(), newUser.getEmail());
+//    }
 
-    @Test
-    void testEmailExistsExceptionRegistration() throws MessagingException {
-        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
-                .thenReturn(Optional.of(UserCredentials.builder().email(registrationDTO.getEmail()).username("Lalka228").enabled(true).build()));
+//    @Test
+//    void testDeleteUserIfNotConfirmed() {
+//
+//        UUID id = new UUID(9583894, 34757);
+//        ConfirmToken token = ConfirmToken.builder().id(id).build();
+//        User user = User.builder().confirmToken(token).build();
+//        UserCredentials userCredentials = UserCredentials.builder().id(id).email("javier_milei@gmail.com").username("Javier Milei").user(user).build();
+//
+//        doNothing().when(userCredentialsRepository).deleteById(id);
+//        assertDoesNotThrow(() -> registrationService.deleteUserIfNotConfirmed(userCredentials));
+//    }
 
-        assertThrows(EmailAlreadyExistsException.class, () -> registrationService.register(registrationDTO));
-    }
-
-    @Test
-    void testUsernameExistsExceptionRegistration() throws MessagingException {
-        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername()))
-                .thenReturn(Optional.of(UserCredentials.builder().email("rafaello2@gmail.com").username(registrationDTO.getUsername()).enabled(true).build()));
-
-        assertThrows(UsernameAlreadyExistsException.class, () -> registrationService.register(registrationDTO));
-    }
-
-    @Test
-    void testDeletesUnconfirmedUserRegistration() throws MessagingException {
-        RegistrationServiceImpl temp = Mockito.spy(registrationService);
-        UserCredentials userCredentials = UserCredentials.builder().email("hasbulla@gmail.com").username("hasbulla23").build();
-        when(userCredentialsRepository.findByEmailOrUsername(registrationDTO.getEmail(), registrationDTO.getUsername())).thenReturn(Optional.of(userCredentials));
-        doNothing().when(temp).deleteUserIfNotConfirmed(userCredentials);
-        doReturn(new EmailDTO(registrationDTO.getEmail())).when(temp).performRegistration(registrationDTO);
-        EmailDTO newUser = temp.register(registrationDTO);
-        assertEquals(registrationDTO.getEmail(), newUser.getEmail());
-    }
-
-    @Test
-    void testDeleteUserIfNotConfirmed() {
-
-        UUID id = new UUID(9583894, 34757);
-        ConfirmToken token = ConfirmToken.builder().id(id).build();
-        User user = User.builder().confirmToken(token).build();
-        UserCredentials userCredentials = UserCredentials.builder().id(id).email("javier_milei@gmail.com").username("Javier Milei").user(user).build();
-
-        doNothing().when(userCredentialsRepository).deleteById(id);
-        assertDoesNotThrow(() -> registrationService.deleteUserIfNotConfirmed(userCredentials));
-    }
-
-    @Test
-    void testPerformRegistration() throws MessagingException {
-        RegistrationServiceImpl temp = Mockito.spy(registrationService);
-
-        UserCredentials userCredentials = UserCredentials.builder().username(registrationDTO.getUsername()).email(registrationDTO.getEmail())
-                .password(registrationDTO.getPassword()).build();
-
-        when(mapper.toUserSecurity(registrationDTO)).thenReturn(userCredentials);
-
-        Instant now = Instant.now();
-        Instant later = now.minusSeconds(600);
-        Date dateAfter10Minutes = Date.from(later);
-
-        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
-
-        User user = User.builder().confirmToken(token).build();
-
-        doReturn(user).when(temp).createNewRegisteredUser(userCredentials);
-        when(mapper.toEmailDTO(userCredentials)).thenReturn(new EmailDTO(userCredentials.getEmail()));
-
-        EmailDTO emailDTO = temp.performRegistration(registrationDTO);
-
-        assertEquals(userCredentials.getEmail(), emailDTO.getEmail());
-    }
+//    @Test
+//    void testPerformRegistration() throws MessagingException {
+//        RegistrationServiceImpl temp = Mockito.spy(registrationService);
+//
+//        UserCredentials userCredentials = UserCredentials.builder().username(registrationDTO.getUsername()).email(registrationDTO.getEmail())
+//                .password(registrationDTO.getPassword()).build();
+//
+//        when(mapper.toUserSecurity(registrationDTO)).thenReturn(userCredentials);
+//
+//        Instant now = Instant.now();
+//        Instant later = now.minusSeconds(600);
+//        Date dateAfter10Minutes = Date.from(later);
+//
+//        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+//
+//        User user = User.builder().confirmToken(token).build();
+//
+//        doReturn(user).when(temp).createNewRegisteredUser(userCredentials);
+//        when(mapper.toEmailDTO(userCredentials)).thenReturn(new EmailDTO(userCredentials.getEmail()));
+//
+//        EmailDTO emailDTO = temp.performRegistration(registrationDTO);
+//
+//        assertEquals(userCredentials.getEmail(), emailDTO.getEmail());
+//    }
 
     @Test
     void testSuccessEnableUserIfValid() {

@@ -1,7 +1,7 @@
 package com.booking.app.repositories;
 
-import com.booking.app.entity.BusTicket;
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.entity.ticket.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

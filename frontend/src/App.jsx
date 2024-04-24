@@ -11,10 +11,11 @@ import CookieBanner from './cookieBanner/cookie';
 import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
+import ScrollButton from './scrollButton';
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
-  const [language, setLanguage] = useState({ value: 'UA', label: 'УКР' });
+  const [language, setLanguage] = useState({ value: 'UA', label: 'Укр' });
   const [ticketsData, setTicketsData] = useState([]);
   const [selectedTransport, setSelectedTransport] = useState({
     bus: true,
@@ -22,12 +23,12 @@ function App() {
     airplane: false,
     ferry: false,
   });
-  const [requestBody, setRequestBody] = useState({});
+  const [urlSearch, setUrlSearch] = useState(null);
 
   return (
     <Router>
       <div className="body">
-        <GoogleOAuthProvider clientId="827464600699-8u8q3ota4v062r6j6b96l682n2sfapqq.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_KEY}>
           <Header
             language={language}
             setLanguage={setLanguage}
@@ -35,16 +36,18 @@ function App() {
             updateAuthValue={updateAuthValue}
           />
           <Routers
+            auth={auth}
             updateAuthValue={updateAuthValue}
             language={language}
             ticketsData={ticketsData}
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
-            requestBody={requestBody}
-            setRequestBody={setRequestBody}
+            urlSearch={urlSearch}
+            setUrlSearch={setUrlSearch}
           />
           <CookieBanner />
+          <ScrollButton />
           <Footer />
         </GoogleOAuthProvider>
       </div>

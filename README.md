@@ -66,6 +66,72 @@ users to the sellers of the best tickets available across multiple websites in U
   <img width="12" />
 </div>
 
+## The project has such controllers
+
+📝🔑**Login Controller** - endpoints with open access to authenticate users (JWT token).
+
+| HTTP method |       Endpoint           |           Description           |
+|:-----------:|:------------------------:|:-------------------------------:|
+|    POST     | `/oauth2/authorize/*`    |   OAuth 2.0 authentication.    |
+|    POST     |    `/login `             |     Basic authentication.       |
+
+**Registration Controller** - endpoints with open access for new users who want to register.
+
+| HTTP method |         Endpoint         |      Description          |
+|:-----------:|:------------------------:|:-------------------------:|
+|     POST    | `/resend/confirm-token ` | Resend email confirmation |
+|     POST    |     `/register`          |   Register User           |
+|     POST    |     `/confirm-email`     |    Email confirmation.    |
+
+**Notification Controller** - all endpoints requiers authentificated users.
+
+| HTTP method |         Endpoint         |      Description          |
+|:-----------:|:------------------------:|:-------------------------:|
+|     GET     | `/notifications/enable ` |   Enable notifications    |
+|     GET     | `/notifications/disable` |   Disable notifications   |
+
+**Reset Password Controller** - handles user password reset operations. This controller provides endpoints for sending a password reset token and confirming the reset.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |      `/update-password ` | update password                    |
+|     POST    |     `/reset`             | Send password reset token          |
+|     POST    | `/resend/reset-token`    |  Resend password reset token       |
+|     POST    |     `/new-password`      | Confirmation reset password token. |
+
+**Ticket Controller** 
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |      `/sortedBy`         |              Sort tickets          |
+|     POST    |  `/selectedTransport`    |    Send password reset token       |
+|     POST    |      `/searchTickets`    |     Searching tickets              |
+|     GET     |     `/get/ticket/{id}`   | Get detailed info about ticket     |
+
+**Logout Controller** - handling user logout functionality.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     GET     |     `/logout`            | Logout a user                      |
+
+**Type Ahead Controller** - handling type-ahead functionality for city search.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |     `/typeAhead`         |       Type ahead feature           |
+
+**Delete User Controller** 
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|   DELETE    |     `/delete-user`       |           Delete a user            |
+
+**Search History Controller**
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     GET     |     `/getHistory`        |     Searching history for user     |
+
 # Docker 🐳
 This app is Docker ready!
 

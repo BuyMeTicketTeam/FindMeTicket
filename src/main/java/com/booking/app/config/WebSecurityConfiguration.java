@@ -2,7 +2,7 @@ package com.booking.app.config;
 
 import com.booking.app.security.CustomUserDetailsService;
 import com.booking.app.security.RestAuthenticationEntryPoint;
-import com.booking.app.security.jwt.JwtAuthFilter;
+import com.booking.app.security.filter.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,8 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,34 +45,35 @@ public class WebSecurityConfiguration {
             "/error",
             "/register",
             "/confirm-email",
-            "/resend-confirm-email",
+            "/resend/confirm-token",
+            "/resend/reset-token",
             "/confirm-email",
             "/reset",
             "/new-password",
             "/typeAhead",
             "/fail",
             "/login",
+            "/logout",
             "/oauth2/authorize/**",
             "/sortedBy",
             "/searchTickets",
             "/get/ticket/**",
-            "/selectedTransport"
+            "/selectedTransport",
+            "/getReviews"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.httpBasic().disable();
-        http.formLogin().disable();
-        http.logout().disable();
-        http.cors();
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.logout(AbstractHttpConfigurer::disable);
+        http.cors(Customizer.withDefaults());
 
-        http.authorizeHttpRequests()
-                .requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated();
+        http.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_PATHS).permitAll().anyRequest().authenticated());
 
         http.addFilterBefore(jwtAuthFilter, ExceptionTranslationFilter.class);
-        http.exceptionHandling()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint());
+        http.exceptionHandling(ex -> ex.authenticationEntryPoint(new RestAuthenticationEntryPoint()));
 
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

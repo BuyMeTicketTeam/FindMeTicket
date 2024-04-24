@@ -67,7 +67,7 @@ export default function Index() {
   function handleResendButton() {
     setError('');
     const body = { email: sessionStorage.getItem('email') };
-    makeQuerry('resend-confirm-token', JSON.stringify(body))
+    makeQuerry('/resend/reset-token', JSON.stringify(body))
       .then((response) => {
         checkResponseForResend(response);
         setResend(false);
@@ -147,6 +147,7 @@ export default function Index() {
               className="link-success"
               data-testid=""
               to="/login"
+              state={{ successNavigate: '/', closeNavigate: '/' }}
             >
               {t('auth-link')}
             </Link>
