@@ -3,6 +3,7 @@ import React from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import RouteController from './RouteController';
 import Reset from '../pages/Reset';
 import Register from '../pages/Register';
@@ -19,8 +20,9 @@ import ProfilePage from '../newProfile';
 export default function Routers({
   updateAuthValue, ticketsData,
   setTicketsData, selectedTransport,
-  setSelectedTransport, auth,
+  setSelectedTransport,
 }) {
+  const auth = useSelector((state) => state.user.isAuthenticated);
   return (
     <Routes>
       <Route
