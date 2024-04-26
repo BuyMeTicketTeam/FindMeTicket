@@ -17,6 +17,7 @@ users to the sellers of the best tickets available across multiple websites in U
 
 <details lang="java">
 <summary>
+ 
 # TechStack
 </summary>
 
@@ -75,6 +76,7 @@ users to the sellers of the best tickets available across multiple websites in U
 
 <details lang="java">
 <summary>
+ 
 # Docker 🐳
 </summary>
 
@@ -89,6 +91,7 @@ docker-compose up
 
 <details lang="java">
 <summary>
+ 
 # Api controllers description
 </summary>
 
