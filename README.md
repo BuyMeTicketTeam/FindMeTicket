@@ -14,7 +14,12 @@ users to the sellers of the best tickets available across multiple websites in U
 <img src="src/main/resources/image/app.gif?raw=true" alt="animation">
 </div>
 
-## TechStack
+
+<details lang="java">
+<summary>
+# TechStack
+</summary>
+
 
 <div>
 <div>
@@ -66,8 +71,26 @@ users to the sellers of the best tickets available across multiple websites in U
   <img width="12" />
 </div>
 
+</details>
+
 <details lang="java">
-<summary>Api controllers description</summary>
+<summary>
+# Docker 🐳
+</summary>
+
+This app is Docker ready!
+
+Navigate to the main 'FindMeTicket' directory and execute:
+
+````
+docker-compose up
+````
+</details>
+
+<details lang="java">
+<summary>
+# Api controllers description
+</summary>
 
 📝🔑**Login Controller** - handle sign-in (jwt tokens).
 
@@ -142,18 +165,7 @@ users to the sellers of the best tickets available across multiple websites in U
 |     DELETE  |      `/deleteReview`     |    Delete review                   |
 |     GET     |     `/getUserReview`     |   Get authorized user review       |
 
-</details>
-
-# Docker 🐳
-This app is Docker ready!
-
-Navigate to the main 'FindMeTicket' directory and execute:
-
-````
-docker-compose up
-````
-
-## Authors
+# Authors
 
 👤 **Aleksandra Poichenko** - *Project Manager* [[LinkedIn](https://www.linkedin.com/in/aleksandra-poichenko/)]
 
@@ -171,7 +183,7 @@ dev* [[GitHub](https://github.com/Stepan22-prog) | [LinkedIn](https://www.linked
 👤 **Maksim Denisenko** - *Frontend
 dev* [[GitHub](https://github.com/maks2708) | [LinkedIn](https://www.linkedin.com/in/%D0%BC%D0%B0%D0%BA%D1%81%D0%B8%D0%BC-%D0%B4%D0%B5%D0%BD%D0%B8%D1%81%D0%B5%D0%BD%D0%BA%D0%BE-ba4b932b9/)]
 
-## Support
+# Support
 
 Give a ⭐️ if this project helped you!
 
