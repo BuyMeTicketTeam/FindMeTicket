@@ -13,9 +13,11 @@ import TicketPage from '../ticketPage';
 import Login from '../pages/Login';
 import ConfirmReset from '../pages/ConfirmReset';
 import ChangePassword from '../changePassword';
-import PrivacyPolicy from '../privacyPolicy';
+import PrivacyPolicyEng from '../privacyPolicy/index-eng';
+import PrivacyPolicyUa from '../privacyPolicy/index-ua';
 import TouristPlaces from '../TouristPlaces';
 import ProfilePage from '../newProfile';
+import Reviews from '../Reviews';
 
 export default function Routers({
   updateAuthValue, ticketsData,
@@ -33,6 +35,8 @@ export default function Routers({
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
+            urlSearch={urlSearch}
+            setUrlSearch={setUrlSearch}
           />
         )}
       />
@@ -93,8 +97,14 @@ export default function Routers({
           </RouteController>
       )}
       />
-      <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      {language.value === 'UA' && (
+        <Route path="/privacy-policy" element={<PrivacyPolicyUa />} />
+      )}
+      {language.value === 'ENG' && (
+        <Route path="/privacy-policy" element={<PrivacyPolicyEng />} />
+      )}
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />
+      <Route path="/reviews" element={<Reviews status={auth} />} />
       <Route
         path="/profile-page"
         element={(

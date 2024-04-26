@@ -23,7 +23,7 @@ public class PopularRoutesConstants {
         popularRoutes.add(new City(706483L, 687700L));// Kharkiv-Zaporizhzhia
         popularRoutes.add(new City(698740L, 706448L));// Odesa-Kherson
         popularRoutes.add(new City(687700L, 703845L));// Zaporizhzhia-Kryvyi Rih
-        popularRoutes.add(new City(689558L, 703448L));// Vinnitsa-Lviv
+        popularRoutes.add(new City(689558L, 702550L));// Vinnitsa-Lviv
     }
 
     public static List<City> getPopularRoutes() {

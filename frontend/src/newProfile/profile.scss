@@ -1,25 +1,7 @@
 @import '../styles/variables.scss';
 
-.popup {
-  position: fixed;
-  z-index: 3;
-  top: 20px;
-  right: 20px;
-  width: 400px;
-  background-color: $main;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  display: none;
-  border-radius: 10px;
-}
-
-.popup.open {
-  display: flex;
-  align-items: left;
-  justify-content: left;
-}
-
-
 .popup-content .avatar  {
+  position: relative;
   width: 100px;
   height: 100px;
   overflow: hidden;
@@ -30,33 +12,41 @@
  align-items: center;
 }
 
+.image-rank1-profile {
+  position: absolute;
+  width: 100px;
+  z-index: 1; 
+}
+
+.avatar img {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.ava{
+width: 80px;
+}
+
 
 .popup-content .username {
   margin-right: auto;
   font-size: 25px;
+  display: block;
 }
 
 .popup-content .change-password {
   cursor: pointer;
-  transition: 0.3s;
   border: 2px solid $main;
   border-radius: 10px;
   background-color: $main;
   font-size: 14px;
   color: #fff;
-  flex: 0 0 50%;
   margin-right: 10px;
   padding: 6px;
   box-shadow: -1px 1px 12px 0px  rgba(0, 0, 0, 0.5) ;
 }
 .popup-content .change-password:hover {
   box-shadow: 0px 0px 8px 1px $main ;
-}
-
-.popup-content .avatar img {
-  width: 80px;
-  height: auto;
-  border-radius: 50%;
 }
 
 .popup-content input {
@@ -78,10 +68,7 @@
 }
 
 
-.popup-content p {
-  display: flex;
-  flex-direction: column;
-}
+
 
 .popup-content a {
   text-decoration: none;
@@ -99,14 +86,10 @@
 
 .popup-content .delete-account {
   font-size: 14px;
-  color: #fff;
-  background-color: transparent;
   border-radius: 10px;
   border: 2px solid $main;
   padding: 6px;
   background-color: $main;
-  align-self: flex-end;
-  margin-left: auto;
   color: #fff;
   box-shadow: -1px 1px 12px 0px  rgba(0, 0, 0, 0.5) ;
 }
@@ -168,10 +151,8 @@
 
 
 .centered-block {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100px;
+  height: 120px;
   width: 80%;
   max-width: 1000px; 
   background-color: $semi-dark;
@@ -240,9 +221,6 @@ input:checked + .slider:before {
   transform: translateX(21px);
 }
 
-.slider.round {
-  border-radius: 34px;
-}
 
 .slider.round:before {
   border-radius: 50%;
@@ -255,10 +233,8 @@ input:checked + .slider:before {
 }
 
 .notification-wrapper {
-  display: flex;
   align-items: center;
   display: flex;
-  justify-content: flex-start;
   height: 100px;
   width: 80%;
   max-width: 1000px;
@@ -399,7 +375,6 @@ a.history-item {
 .contact-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: center;
   height: 150px;
   width: 80%;
@@ -407,13 +382,12 @@ a.history-item {
   background-color: $semi-dark;
   margin: 20px auto;
   border-radius: 10px;
-  position: relative;
 }
 
 .contact-text {
   font-size: 25px;
   margin: 10px 0;
-  padding-left: 50px;
+  padding-left: 23px;
 }
 
 .contact-item {
@@ -434,7 +408,6 @@ a.history-item {
 .column{
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   gap: 15px;
   width: 33.33333%;
   justify-content: center;
@@ -455,7 +428,6 @@ a.history-item {
 
 .custom-button {
   cursor: pointer;
-  transition: 0.3s;
   border: 2px ;
   border-radius: 10px;
   background-color: $grey;
@@ -467,4 +439,50 @@ a.history-item {
 
 .column-header {
   display: flex;
+}
+
+.Lvl {
+  font-size: 15px;
+display: contents;
+color: $bright;
+}
+
+.mark-container {
+  position: relative;
+  display: contents;
+}
+
+.mark {
+  width: 16px;
+  margin-left: 5px;
+  margin-bottom: -3px;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 34px;
+  left: 46%;
+  padding: 5px;
+  background-color: $font-color;
+  color: $dark;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.email-two{
+  display: flex;
+  width: 281px;
+}
+
+.email-data{
+  width: 281px;
+  text-align: left;
+}
+
+.account {
+  width: 24px;
+    height: 24px;
+    margin-left: 15px;
+    margin-top: 5px;
 }

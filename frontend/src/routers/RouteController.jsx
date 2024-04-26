@@ -1,11 +1,12 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function RouteController({ access, children }) {
+  const navigate = useNavigate();
+  console.log('controller');
   if (!access) {
-    return <Navigate to="/" replace />;
+    navigate(-1);
   }
   return children;
 }

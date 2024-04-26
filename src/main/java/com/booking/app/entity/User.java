@@ -35,7 +35,7 @@ public class User {
 
     private String urlPicture;
 
-    private Boolean notification;
+    private boolean notification = false;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "role_id")
@@ -48,6 +48,23 @@ public class User {
     @OneToOne(mappedBy = "user")
     private UserCredentials security;
 
-    @OneToMany(mappedBy = "user" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserSearchHistory> history;
+
+
+    @OneToOne(mappedBy = "user")
+    private Review review;
+
+    public static User createUser(UserCredentials userCredentials, Role role, ConfirmToken confirmToken, Boolean notification, byte[] profilePicture) {
+        User user = User.builder()
+                .role(role)
+                .confirmToken(confirmToken)
+                .security(userCredentials)
+                .notification(notification)
+                .profilePicture(profilePicture).build();
+        userCredentials.setUser(user);
+        confirmToken.setUser(user);
+        return user;
+    }
+
 }

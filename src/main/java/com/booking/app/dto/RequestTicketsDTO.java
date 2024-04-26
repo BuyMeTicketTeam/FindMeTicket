@@ -1,6 +1,7 @@
 package com.booking.app.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class RequestTicketsDTO {
     @NotNull
     private String arrivalCity;
     @NotNull
+    @Pattern(regexp = "\\d{2}\\.\\d{2}\\.\\d{4}", message = "Date must be in the format dd.MM.yyyy")
     private String departureDate;
     @NotNull
     @Builder.Default

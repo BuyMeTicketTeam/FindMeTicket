@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-size: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo_text {
+            text-align: center;
+        }
+
+        .welcome-message {
+            padding-top: 70px;
+            text-align: center;
+        }
+
+        .nickname {
+            font-size: 22px;
+        }
+
+        .blue-button {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .blue-button:hover {
+            background-color: darkblue;
+        }
+
+        p, h2 {
+            color: #ffffff;
+        }
+
+        .code {
+            background-color: white;
+            width: max-content;
+            padding: 5px;
+            margin: 0 auto;
+            color: #D0781B;
+            margin-top: 10px;
+            font-size: 35px;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <main>
+        <div class="welcome-message" style="background-color: #214977; border-radius: 100px; padding: 30px;">
+            <div class="logo">
+                <img src="  https://i.postimg.cc/MK2wn36c/logo.png" alt="Логотип компанії">
+            </div>
+            <h2>Confirm Your Email</h2>
+            <p>Welcome, <b class="nickname" th:text="${nickname}"></b></p>
+            <p>We're glad you're on board.</p>
+            <p>To complete your account setup, </p>
+            <p>please use the confirmation code below:</p>
+            <p class="code"><b th:text="${token}"></b></p>
+            <br>
+            <p>This code is valid for <b>10 minutes</b>.</p>
+            <br>
+            <p>Please enter this code in the verification field during registration.</p>
+            <p>If 10 minutes have passed, you can request a new code!</p>
+            <p>If you haven't registered, you can <b>ignore</b> this email.</p>
+            <br>
+            <p>Thank you for choosing FindMeTicket!</p>
+            <p>Best regards, FindMeTicket Team</p>
+            <br>
+        </div>
+    </main>
+</div>
+</body>
+</html>

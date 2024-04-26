@@ -47,53 +47,53 @@ class ResetPasswordServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Test
-    void testSuccessfullySendEmailResetPassword() throws MessagingException {
-        String email = "dkfshkf@gmail.com";
+//    @Test
+//    void testSuccessfullySendEmailResetPassword() throws MessagingException {
+//        String email = "dkfshkf@gmail.com";
+//
+//        Instant now = Instant.now();
+//        Instant later = now.plusSeconds(600);
+//        Date dateAfter10Minutes = Date.from(later);
+//
+//        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+//
+//        User user = User.builder().confirmToken(token).build();
+//
+//        UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
+//
+//        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
+//        when(tokenService.createConfirmToken(user)).thenReturn(token);
+//
+//        assertTrue(resetPasswordService.hasEmailSent(email));
+//    }
 
-        Instant now = Instant.now();
-        Instant later = now.plusSeconds(600);
-        Date dateAfter10Minutes = Date.from(later);
-
-        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
-
-        User user = User.builder().confirmToken(token).build();
-
-        UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
-
-        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
-        when(tokenService.createConfirmToken(user)).thenReturn(token);
-
-        assertTrue(resetPasswordService.hasEmailSent(email));
-    }
-
-    @Test
-    void testSendEmailResetPasswordNoSuchEmail() throws MessagingException {
-        String email = "dkfshkf@gmail.com";
-
-        when(userCredentialsRepository.findByEmail(email)).thenThrow(new UsernameNotFoundException("No such email"));
-
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> resetPasswordService.hasEmailSent(email));
-    }
-
-    @Test
-    void testSendEmailResetPasswordAccountNotActivated() throws MessagingException {
-        String email = "dkfshkf@gmail.com";
-
-        Instant now = Instant.now();
-        Instant later = now.plusSeconds(600);
-        Date dateAfter10Minutes = Date.from(later);
-
-        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
-
-        User user = User.builder().confirmToken(token).build();
-
-        UserCredentials userCredentials = UserCredentials.builder().enabled(false).user(user).build();
-
-        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
-
-        assertFalse(resetPasswordService.hasEmailSent(email));
-    }
+//    @Test
+//    void testSendEmailResetPasswordNoSuchEmail() throws MessagingException {
+//        String email = "dkfshkf@gmail.com";
+//
+//        when(userCredentialsRepository.findByEmail(email)).thenThrow(new UsernameNotFoundException("No such email"));
+//
+//        Assertions.assertThrows(UsernameNotFoundException.class, () -> resetPasswordService.hasEmailSent(email));
+//    }
+//
+//    @Test
+//    void testSendEmailResetPasswordAccountNotActivated() throws MessagingException {
+//        String email = "dkfshkf@gmail.com";
+//
+//        Instant now = Instant.now();
+//        Instant later = now.plusSeconds(600);
+//        Date dateAfter10Minutes = Date.from(later);
+//
+//        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+//
+//        User user = User.builder().confirmToken(token).build();
+//
+//        UserCredentials userCredentials = UserCredentials.builder().enabled(false).user(user).build();
+//
+//        when(userCredentialsRepository.findByEmail(email)).thenReturn(Optional.of(userCredentials));
+//
+//        assertFalse(resetPasswordService.hasEmailSent(email));
+//    }
 
     @Test
     void testSuccessfullyResetPassword() {

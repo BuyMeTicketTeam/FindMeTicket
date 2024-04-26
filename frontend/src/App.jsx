@@ -23,7 +23,7 @@ function App() {
     airplane: false,
     ferry: false,
   });
-  const [requestBody, setRequestBody] = useState({});
+  const [urlSearch, setUrlSearch] = useState(null);
 
   const dispatch = useDispatch();
 

@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,14 +14,26 @@ import java.time.LocalDateTime;
 public class SearchHistoryDto {
 
     @NotNull
-    private Long departureCity;
+    private String departureCity;
 
     @NotNull
-    private Long arrivalCity;
+    private String arrivalCity;
 
     @NotNull
     private String departureDate;
 
     @NotNull
     private String addingTime;
+
+    @NotNull
+    private Boolean bus;
+
+    @NotNull
+    private Boolean train;
+
+    @NotNull
+    private Boolean airplane;
+
+    @NotNull
+    private Boolean ferry;
 }

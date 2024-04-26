@@ -1,9 +1,10 @@
 package com.booking.app.services;
 
-import jakarta.servlet.http.Cookie;
+import com.booking.app.entity.User;
 
 public interface NotificationService {
-    void disable(Cookie id);
 
-    void enable(Cookie id);
+    void disable(User user);
+
+    void enable(User user);
 }

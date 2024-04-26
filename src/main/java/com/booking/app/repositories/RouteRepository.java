@@ -1,6 +1,6 @@
 package com.booking.app.repositories;
 
-import com.booking.app.entity.Route;
+import com.booking.app.entity.ticket.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

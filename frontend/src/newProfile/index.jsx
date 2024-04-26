@@ -16,6 +16,9 @@ import Address from './address.svg';
 import Ellipse from './Ellipse 9.png';
 import { busIcon, trainIcon, everythingIcon } from './transport-img/img';
 import loaderIcon from './spinning-loading.svg';
+import AvatarPopup from './avatarPopup';
+import mark from './image 12.svg';
+import rank1 from './rank1.png';
 
 function Popup({
   updateAuthValue,
@@ -29,6 +32,16 @@ function Popup({
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
   const navigate = useNavigate();
+  const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  const handleAvatarClick = () => {
+    setIsAvatarPopupOpen(true);
+  };
+
+  const closeAvatarPopup = () => {
+    setIsAvatarPopupOpen(false);
+  };
 
   function handleLogoutButton() {
     makeQuerry('logout', undefined, undefined, 'GET').then((response) => {
@@ -113,8 +126,9 @@ function Popup({
 
   function defineRoute(historyData) {
     let request = `/?from=${historyData.departureCity}&to=${historyData.arrivalCity}&endpoint=1`;
-    if (+new Date() <= Date.parse(historyData.departureDate)) {
-      request += `&departureDate=${Date.parse(historyData.departureDate)}`;
+    const dateParts = historyData.departureDate.split('.');
+    if (+new Date() <= Date.parse(`${+dateParts[2]}-${+dateParts[1]}-${+dateParts[0]}`)) {
+      request += `&departureDate=${Date.parse(`${+dateParts[2]}-${+dateParts[1]}-${+dateParts[0]}`)}`;
     }
     if (historyData.bus && historyData.train) {
       request += '&type=all';
@@ -164,13 +178,32 @@ function Popup({
   return (
     <div className="popup-content main">
       <div className="centered-block">
-        <div className="avatar" data-testid="avatar">
-          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)} alt="Avatar" referrerPolicy="no-referrer" />
+        <div
+          className="avatar"
+          data-testid="avatar"
+          onClick={handleAvatarClick}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              handleAvatarClick();
+            }
+          }}
+          role="button"
+          tabIndex={0}
+        >
+          <img src={rank1} alt="rank1" className="image-rank1-profile" />
+          <img src={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)} alt="Avatar" referrerPolicy="no-referrer" className="ava" />
         </div>
         <p className="username">
           {t('hello')}
           {' '}
           {status.username}
+          {' '}
+          <div className="Lvl">Lvl 1</div>
+          <div className="mark-container" onMouseEnter={() => setShowTooltip(true)} onMouseLeave={() => setShowTooltip(false)}>
+            <img src={mark} alt="mark" className="mark" />
+            {showTooltip && <div className="tooltip">{t('lvl')}</div>}
+          </div>
+
         </p>
         <button
           type="button"
@@ -196,8 +229,9 @@ function Popup({
         <p className="notification-text">
           {t('notice')}
         </p>
-        <label className="switch">
+        <label htmlFor="notification" className="switch">
           <input
+            id="notification"
             type="checkbox"
             checked={notificationEnabled}
             onChange={() => setNotificationEnabled(() => {
@@ -213,11 +247,15 @@ function Popup({
         <div className="contact-item">
           <div className="column">
             <div className="column-header">
-              <img src={Email} className="contact-icon" alt="Email" />
-              <p className="contact-info-two email-info">{t('email')}</p>
+              <div className="email-two">
+                <img src={Email} className="contact-icon" alt="Email" />
+                <p className="contact-info-two email-info">{t('email')}</p>
+              </div>
             </div>
             <div className="contact-info-data">
-              {status.email}
+              <div className="email-data">
+                {status.email}
+              </div>
             </div>
           </div>
           <div className="column">
@@ -293,6 +331,12 @@ function Popup({
               </Link>
             )) : <div className="history-item no-items">{t('no-items')}</div>}
         </div>
+      )}
+      {isAvatarPopupOpen && (
+      <AvatarPopup
+        closeAvatarPopup={closeAvatarPopup}
+        avatar={status.googlePicture || (status.basicPicture ? `data:image/jpeg;base64,${status.basicPicture}` : Ellipse)}
+      />
       )}
     </div>
   );
