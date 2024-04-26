@@ -82,11 +82,14 @@ users to the sellers of the best tickets available across multiple websites in U
 
 
 **This app is Docker ready**
-**It required lots of enviromnets variables to fill in files *.env.docker* ** 
-**Backend file lies in main directory and frontend in * /frontend* directory**
+**It requires several environment variables to be filled in the .env.docker files** 
+**The backend files are located in the main directory, while the frontend files are located in the /frontend directory**
+
+To run use command:
 ````
-docker-compose up
+docker.exe compose -f compose.yaml  up 
 ````
+
 </details>
 
 <details lang="java">
