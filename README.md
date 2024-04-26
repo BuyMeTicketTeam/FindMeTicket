@@ -66,16 +66,23 @@ users to the sellers of the best tickets available across multiple websites in U
   <img width="12" />
 </div>
 
-## The project has such controllers
+<details lang="java">
+<summary>Api controllers description</summary>
 
-📝🔑**Login Controller** - endpoints with open access to authenticate users (JWT token).
+📝🔑**Login Controller** - handle sign-in (jwt tokens).
 
-| HTTP method |       Endpoint           |           Description           |
-|:-----------:|:------------------------:|:-------------------------------:|
-|    POST     | `/oauth2/authorize/*`    |   OAuth 2.0 authentication.    |
-|    POST     |    `/login `             |     Basic authentication.       |
+| HTTP method |       Endpoint                            |           Description               |
+|:-----------:|:-----------------------------------------:|:-----------------------------------:|
+|    POST     | `/oauth2/authorize/(google or facebook)*` |  Third party service authentication |
+|    POST     |    `/login `                              |  Plain authentication.              |
 
-**Registration Controller** - endpoints with open access for new users who want to register.
+**Logout Controller** - handle sign-out.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     GET     |     `/logout`            | Logout a user                      |
+
+**Registration Controller** - handle sign-up.
 
 | HTTP method |         Endpoint         |      Description          |
 |:-----------:|:------------------------:|:-------------------------:|
@@ -83,54 +90,59 @@ users to the sellers of the best tickets available across multiple websites in U
 |     POST    |     `/register`          |   Register User           |
 |     POST    |     `/confirm-email`     |    Email confirmation.    |
 
-**Notification Controller** - all endpoints requiers authentificated users.
+**Notification Controller** - handle operations on notifications.
 
 | HTTP method |         Endpoint         |      Description          |
 |:-----------:|:------------------------:|:-------------------------:|
 |     GET     | `/notifications/enable ` |   Enable notifications    |
 |     GET     | `/notifications/disable` |   Disable notifications   |
 
-**Reset Password Controller** - handles user password reset operations. This controller provides endpoints for sending a password reset token and confirming the reset.
+**Reset Password Controller** - handle operations on password.
 
 | HTTP method |         Endpoint         |            Description             |
 |:-----------:|:------------------------:|:----------------------------------:|
-|     POST    |      `/update-password ` | update password                    |
-|     POST    |     `/reset`             | Send password reset token          |
+|     POST    |      `/update-password ` | Creates new password               |
+|     POST    |     `/reset`             | Request for new password           |
 |     POST    | `/resend/reset-token`    |  Resend password reset token       |
 |     POST    |     `/new-password`      | Confirmation reset password token. |
 
-**Ticket Controller** 
+**Ticket Controller** - handle operations on tickets.
 
 | HTTP method |         Endpoint         |            Description             |
 |:-----------:|:------------------------:|:----------------------------------:|
 |     POST    |      `/sortedBy`         |              Sort tickets          |
-|     POST    |  `/selectedTransport`    |    Send password reset token       |
-|     POST    |      `/searchTickets`    |     Searching tickets              |
+|     POST    |  `/selectedTransport`    |    Select desired transport type   |
+|     POST    |      `/searchTickets`    |     Search tickets                 |
 |     GET     |     `/get/ticket/{id}`   | Get detailed info about ticket     |
 
-**Logout Controller** - handling user logout functionality.
+**Type Ahead Controller** - handle type-ahead functionality for city search.
 
 | HTTP method |         Endpoint         |            Description             |
 |:-----------:|:------------------------:|:----------------------------------:|
-|     GET     |     `/logout`            | Logout a user                      |
+|     POST    |     `/typeAhead`         |       Request cities               |
 
-**Type Ahead Controller** - handling type-ahead functionality for city search.
+**Delete User Controller** - handle user deletion.
 
-| HTTP method |         Endpoint         |            Description             |
-|:-----------:|:------------------------:|:----------------------------------:|
-|     POST    |     `/typeAhead`         |       Type ahead feature           |
-
-**Delete User Controller** 
-
-| HTTP method |         Endpoint         |            Description             |
+| HTTP method |         URL              |            Description             |
 |:-----------:|:------------------------:|:----------------------------------:|
 |   DELETE    |     `/delete-user`       |           Delete a user            |
 
-**Search History Controller**
+**Search History Controller** - user's history search.
 
 | HTTP method |         Endpoint         |            Description             |
 |:-----------:|:------------------------:|:----------------------------------:|
-|     GET     |     `/getHistory`        |     Searching history for user     |
+|     GET     |     `/getHistory`        |        Request history             |
+
+**Review Controller** - handle reviews operations.
+
+| HTTP method |         Endpoint         |            Description             |
+|:-----------:|:------------------------:|:----------------------------------:|
+|     POST    |      `/saveReview`       |          Saves review              |
+|     GET     |  `/getReviews`           |    Receive all reviews             |
+|     DELETE  |      `/deleteReview`     |    Delete review                   |
+|     GET     |     `/getUserReview`     |   Get authorized user review       |
+
+</details>
 
 # Docker 🐳
 This app is Docker ready!
