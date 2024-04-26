@@ -18,7 +18,7 @@ users to the sellers of the best tickets available across multiple websites in U
 <details lang="java">
 <summary>
  
-# TechStack
+# TechStack 🛠️
 </summary>
 
 
@@ -77,13 +77,13 @@ users to the sellers of the best tickets available across multiple websites in U
 <details lang="java">
 <summary>
  
-# Docker 🐳
+## Run 🐳
 </summary>
 
-This app is Docker ready!
 
-Navigate to the main 'FindMeTicket' directory and execute:
-
+**This app is Docker ready**
+**It required lots of enviromnets variables to fill in files *.env.docker* ** 
+**Backend file lies in main directory and frontend in * /frontend* directory**
 ````
 docker-compose up
 ````
@@ -92,10 +92,10 @@ docker-compose up
 <details lang="java">
 <summary>
  
-# Api controllers description
+## Api controllers description 📋
 </summary>
 
-📝🔑**Login Controller** - handle sign-in (jwt tokens).
+**Login Controller** - handle sign-in (jwt tokens).
 
 | HTTP method |       Endpoint                            |           Description               |
 |:-----------:|:-----------------------------------------:|:-----------------------------------:|
@@ -168,7 +168,9 @@ docker-compose up
 |     DELETE  |      `/deleteReview`     |    Delete review                   |
 |     GET     |     `/getUserReview`     |   Get authorized user review       |
 
-# Authors
+</details>
+
+## Authors 🙋‍♂️
 
 👤 **Aleksandra Poichenko** - *Project Manager* [[LinkedIn](https://www.linkedin.com/in/aleksandra-poichenko/)]
 
@@ -186,7 +188,7 @@ dev* [[GitHub](https://github.com/Stepan22-prog) | [LinkedIn](https://www.linked
 👤 **Maksim Denisenko** - *Frontend
 dev* [[GitHub](https://github.com/maks2708) | [LinkedIn](https://www.linkedin.com/in/%D0%BC%D0%B0%D0%BA%D1%81%D0%B8%D0%BC-%D0%B4%D0%B5%D0%BD%D0%B8%D1%81%D0%B5%D0%BD%D0%BA%D0%BE-ba4b932b9/)]
 
-# Support
+## Support
 
 Give a ⭐️ if this project helped you!
 
