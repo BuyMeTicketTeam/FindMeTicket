@@ -18,7 +18,7 @@ users to the sellers of the best tickets available across multiple websites in U
 <details lang="java">
 <summary>
  
-# TechStack 🛠️
+## TechStack 🛠️
 </summary>
 
 
@@ -82,7 +82,9 @@ users to the sellers of the best tickets available across multiple websites in U
 
 
 **This app is Docker ready**
+
 **It requires several environment variables to be filled in the .env.docker files** 
+
 **The backend files are located in the main directory, while the frontend files are located in the /frontend directory**
 
 To run use command:
