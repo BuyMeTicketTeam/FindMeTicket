@@ -3,6 +3,7 @@ import { login } from './login';
 import { registration } from './registration';
 import { confirm } from './confirm';
 import { reset } from './reset';
+import { confirmReset } from './confirmReset';
 
 export const eng = {
   header,
@@ -10,4 +11,5 @@ export const eng = {
   registration,
   confirm,
   reset,
+  confirmReset,
 };

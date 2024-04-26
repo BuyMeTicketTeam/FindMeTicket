@@ -10,7 +10,7 @@ import Confirm from '../pages/Confirm';
 import Index from '../main';
 import TicketPage from '../ticketPage';
 import Login from '../pages/Login';
-import ResetPassword from '../resetPassword';
+import ConfirmReset from '../pages/ConfirmReset';
 import ChangePassword from '../changePassword';
 import PrivacyPolicy from '../privacyPolicy';
 import TouristPlaces from '../TouristPlaces';
@@ -70,7 +70,7 @@ export default function Routers({
         path="/reset-password"
         element={(
           <RouteController access={!auth}>
-            <ResetPassword />
+            <ConfirmReset />
           </RouteController>
       )}
       />

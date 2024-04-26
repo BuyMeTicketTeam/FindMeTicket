@@ -38,15 +38,29 @@ export const userApi = api.injectEndpoints({
       }),
     }),
     resendConfirmToken: builder.mutation({
-      query: (code) => ({
+      query: (email) => ({
         url: '/resend/confirm-token',
         method: 'POST',
-        body: code,
+        body: email,
       }),
     }),
     reset: builder.mutation({
       query: (email) => ({
         url: '/reset-password',
+        method: 'POST',
+        body: email,
+      }),
+    }),
+    newPassword: builder.mutation({
+      query: (userData) => ({
+        url: '/new-password',
+        method: 'POST',
+        body: userData,
+      }),
+    }),
+    resendConfirmResetToken: builder.mutation({
+      query: (email) => ({
+        url: '/resend/reset-token',
         method: 'POST',
         body: email,
       }),
@@ -62,10 +76,13 @@ export const {
   useConfirmMutation,
   useResendConfirmTokenMutation,
   useResetMutation,
+  useNewPasswordMutation,
+  useResendConfirmResetTokenMutation,
 } = userApi;
 
 export const {
   endpoints: {
-    login, loginFacebook, loginGoogle, register, confirm, resendConfirmToken, reset,
+    login, loginFacebook, loginGoogle, register, confirm,
+    resendConfirmToken, reset, newPassword, resendConfirmResetToken,
   },
 } = userApi;

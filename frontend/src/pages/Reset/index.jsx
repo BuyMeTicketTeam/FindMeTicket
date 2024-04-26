@@ -25,7 +25,7 @@ export default function Reset() {
   async function onSubmit(data) {
     try {
       await reset(data).unwrap();
-      navigate('/reset-password');
+      navigate('/reset-password', { state: { email: data.email } });
     } catch (err) {
       console.error({ error: err });
     }
