@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useResetMutation } from '../../services/userApi';
 import { EMAIL_PATTERN } from '../../constants/regex';
 
-import Input from '../../components/Input';
+import Input from '../../common/Input';
 
 import './reset.scss';
 

@@ -8,8 +8,8 @@ import { useRegisterMutation } from '../../services/userApi';
 
 import { NAME_PATTERN, EMAIL_PATTERN, PASSWORD_PATTERN } from '../../constants/regex';
 
-import Input from '../../components/Input';
-import Checkbox from '../../components/Checkbox';
+import Input from '../../common/Input';
+import Checkbox from '../../common/Checkbox';
 
 import './register.scss';
 

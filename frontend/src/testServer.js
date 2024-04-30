@@ -147,12 +147,19 @@ createServer({
       }));
     });
     this.post('/register', () => new Response(400));
-    this.post('/oauth2/authorize/google', () => new Response(200, undefined, JSON.stringify({ username: 'Max' })));
+    this.post('/oauth2/authorize/google', () => {
+      // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
+      return new Response(200, { rememberMe: true }, JSON.stringify({
+        username: 'Max', email: 'user@gmail.com', basicPicture: null, googlePicture: 'https://lh3.googleusercontent.com/a/ACg8ocIyLV6grsACo0xFoxYN_AScMvUMXuW6TebrrnI1OwopQCzw6Q=s96-c',
+      }));
+    });
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
     this.post('/resend-confirm-token', () => new Response(200));
     this.get('/logout', () => new Response(200));
+    this.get('/notifications/enable', () => new Response(200));
+    this.get('/notifications/disable', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/selectedTransport', () => new Response(200, undefined, JSON.stringify([])));
     this.post('/searchTickets', () => new Response(200, undefined, JSON.stringify([])));

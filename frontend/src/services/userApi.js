@@ -65,6 +65,36 @@ export const userApi = api.injectEndpoints({
         body: email,
       }),
     }),
+    logout: builder.query({
+      query: () => ({
+        url: '/logout',
+        method: 'GET',
+      }),
+    }),
+    deleteUser: builder.mutation({
+      query: () => ({
+        url: '/delete-user',
+        method: 'DELETE',
+      }),
+    }),
+    getHistory: builder.query({
+      query: () => ({
+        url: '/getHistory',
+        method: 'GET',
+      }),
+    }),
+    notificationEnable: builder.query({
+      query: () => ({
+        url: '/notifications/enable',
+        method: 'GET',
+      }),
+    }),
+    notificationDisable: builder.query({
+      query: () => ({
+        url: '/notifications/disable',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -78,11 +108,17 @@ export const {
   useResetMutation,
   useNewPasswordMutation,
   useResendConfirmResetTokenMutation,
+  useDeleteUserMutation,
+  useLazyLogoutQuery,
+  useLazyNotificationDisableQuery,
+  useLazyNotificationEnableQuery,
+  useGetHistoryQuery,
 } = userApi;
 
 export const {
   endpoints: {
     login, loginFacebook, loginGoogle, register, confirm,
     resendConfirmToken, reset, newPassword, resendConfirmResetToken,
+    getHistory, logout, notificationDisable, notificationEnable, deleteUser,
   },
 } = userApi;

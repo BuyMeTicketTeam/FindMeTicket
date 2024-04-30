@@ -4,6 +4,7 @@ import {
   Routes, Route,
 } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import RouteController from './RouteController';
 import Reset from '../pages/Reset';
 import Register from '../pages/Register';
@@ -16,7 +17,7 @@ import ChangePassword from '../changePassword';
 import PrivacyPolicyEng from '../privacyPolicy/index-eng';
 import PrivacyPolicyUa from '../privacyPolicy/index-ua';
 import TouristPlaces from '../TouristPlaces';
-import ProfilePage from '../newProfile';
+import ProfilePage from '../pages/Profile';
 import Reviews from '../Reviews';
 
 export default function Routers({
@@ -24,7 +25,9 @@ export default function Routers({
   setTicketsData, selectedTransport,
   setSelectedTransport,
 }) {
+  const { language } = useTranslation().i18n;
   const auth = useSelector((state) => state.user.isAuthenticated);
+  console.log(auth);
   return (
     <Routes>
       <Route
@@ -35,8 +38,8 @@ export default function Routers({
             setTicketsData={setTicketsData}
             selectedTransport={selectedTransport}
             setSelectedTransport={setSelectedTransport}
-            urlSearch={urlSearch}
-            setUrlSearch={setUrlSearch}
+            // urlSearch={urlSearch}
+            // setUrlSearch={setUrlSearch}
           />
         )}
       />
@@ -97,10 +100,10 @@ export default function Routers({
           </RouteController>
       )}
       />
-      {language.value === 'UA' && (
+      {language === 'Ua' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyUa />} />
       )}
-      {language.value === 'ENG' && (
+      {language === 'Eng' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyEng />} />
       )}
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />

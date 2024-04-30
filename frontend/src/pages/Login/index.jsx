@@ -11,8 +11,8 @@ import { useLoginMutation, useLoginGoogleMutation, useLoginFacebookMutation } fr
 
 import { PASSWORD_PATTERN, EMAIL_PATTERN } from '../../constants/regex';
 
-import Input from '../../components/Input';
-import Checkbox from '../../components/Checkbox';
+import Input from '../../common/Input';
+import Checkbox from '../../common/Checkbox';
 
 import facebookIcon from '../../images/facebook.png';
 

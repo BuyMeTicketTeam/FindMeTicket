@@ -12,7 +12,7 @@ import useTimeout from '../../hook/useTimeout';
 import { useConfirmMutation, useResendConfirmTokenMutation } from '../../services/userApi';
 import { CODE_PATTERN } from '../../constants/regex';
 
-import Input from '../../components/Input';
+import Input from '../../common/Input';
 
 import './confirm.scss';
 

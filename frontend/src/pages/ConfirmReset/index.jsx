@@ -8,7 +8,7 @@ import { useNewPasswordMutation, useResendConfirmResetTokenMutation } from '../.
 import useTimeout from '../../hook/useTimeout';
 import { CODE_PATTERN, PASSWORD_PATTERN } from '../../constants/regex';
 
-import Input from '../../components/Input';
+import Input from '../../common/Input';
 
 export default function ConfirmReset() {
   const [showPassword, setShowPassword] = useState();

@@ -22,7 +22,14 @@ const baseQuery = fetchBaseQuery({
     }
 
     if (response.headers.has('rememberme')) {
-      localStorage.setItem('userData', JSON.stringify(parsedJSON));
+      const userData = {
+        isAuthenticated: true,
+        username: parsedJSON.username,
+        notification: parsedJSON.notification,
+        userEmail: parsedJSON.email,
+        userPhoto: parsedJSON.googlePicture ?? `data:image/jpeg;base64,${parsedJSON.basicPicture}`,
+      };
+      localStorage.setItem('userData', JSON.stringify(userData));
     }
 
     if (response.headers.has('user_id')) {
