@@ -33,6 +33,11 @@ width: 80px;
   font-size: 25px;
   display: block;
 }
+.error-container {
+  width: 80%;
+  max-width: 1000px; 
+  margin: 10px auto;
+}
 
 .popup-content .change-password {
   cursor: pointer;

@@ -42,9 +42,14 @@ export default function Profile() {
   const [notificationValue] = useDebounce(notificationState, 2000);
   const { data: history, isLoading } = useGetHistoryQuery();
   const [logout] = useLazyLogoutQuery();
-  const [enableNotification] = useLazyNotificationEnableQuery();
-  const [disableNotification] = useLazyNotificationDisableQuery();
-  const [deleteUser] = useDeleteUserMutation();
+  const [
+    enableNotification, { isError: enableNotificationError },
+  ] = useLazyNotificationEnableQuery();
+  const [
+    disableNotification, { isError: disableNotificationError },
+  ] = useLazyNotificationDisableQuery();
+  const [deleteUser, { isError: deleteError }] = useDeleteUserMutation();
+  // const [showNotificationAlert, callNotificationAlert] = useAlert();
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
 
   const getIcon = (historyData) => {
@@ -68,8 +73,17 @@ export default function Profile() {
     }
   }, [notificationValue]);
 
+  useEffect(() => {
+    setNotificationState(notification);
+  }, [enableNotificationError, disableNotificationError]);
+
   return (
     <div className="popup-content main">
+      <div className="error-container">
+        {enableNotificationError && <p className="error">Помилка активації повідомлень</p>}
+        {disableNotificationError && <p className="error">{t()}</p>}
+        {deleteError && <p className="error">{t()}</p>}
+      </div>
       <div className="centered-block">
         <button
           className="avatar"
@@ -89,6 +103,7 @@ export default function Profile() {
           <Popup
             trigger={<img src={mark} alt="mark" className="mark" />}
             position="right center"
+            on={['hover']}
           >
             {t('lvl')}
           </Popup>
@@ -113,7 +128,7 @@ export default function Profile() {
           <input
             id="notification"
             type="checkbox"
-            checked={notification}
+            checked={notificationState}
             onChange={() => setNotificationState((prevState) => !prevState)}
           />
           <span className="slider round" />

@@ -33,6 +33,12 @@ const slice = createSlice({
     builder.addMatcher(userApi.endpoints.loginFacebook.matchFulfilled, setUser);
     builder.addMatcher(userApi.endpoints.logout.matchFulfilled, logoutUser);
     builder.addMatcher(userApi.endpoints.deleteUser.matchFulfilled, logoutUser);
+    builder.addMatcher(userApi.endpoints.notificationEnable.matchFulfilled, (state) => {
+      state.notification = true;
+    });
+    builder.addMatcher(userApi.endpoints.notificationDisable.matchFulfilled, (state) => {
+      state.notification = false;
+    });
   },
 });
 

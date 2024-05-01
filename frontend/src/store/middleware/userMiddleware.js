@@ -2,11 +2,11 @@ import { createListenerMiddleware, isAnyOf } from '@reduxjs/toolkit';
 import Cookies from 'universal-cookie';
 import { userApi } from '../../services/userApi';
 
-const authListenerMiddleware = createListenerMiddleware();
+const userListenerMiddleware = createListenerMiddleware();
 
 const cookies = new Cookies(null, { path: '/' });
 
-authListenerMiddleware.startListening({
+userListenerMiddleware.startListening({
   matcher: isAnyOf(
     userApi.endpoints.logout.matchFulfilled,
     userApi.endpoints.deleteUser.matchFulfilled,
@@ -19,7 +19,7 @@ authListenerMiddleware.startListening({
   },
 });
 
-authListenerMiddleware.startListening({
+userListenerMiddleware.startListening({
   matcher: isAnyOf(
     userApi.endpoints.login.matchFulfilled,
     userApi.endpoints.loginGoogle.matchFulfilled,
@@ -37,4 +37,27 @@ authListenerMiddleware.startListening({
   },
 });
 
-export { authListenerMiddleware };
+function updateNotificationInStorage(notification) {
+  const userDataLocal = localStorage.getItem('userData');
+  const userDataSession = sessionStorage.getItem('userData');
+  if (userDataLocal) {
+    const parsedData = JSON.parse(userDataLocal);
+    localStorage.setItem('userData', JSON.stringify({ ...parsedData, notification }));
+  }
+  if (userDataSession) {
+    const parsedData = JSON.parse(userDataSession);
+    sessionStorage.setItem('userData', JSON.stringify({ ...parsedData, notification }));
+  }
+}
+
+userListenerMiddleware.startListening({
+  matcher: userApi.endpoints.notificationDisable.matchFulfilled,
+  effect: () => updateNotificationInStorage(false),
+});
+
+userListenerMiddleware.startListening({
+  matcher: userApi.endpoints.notificationEnable.matchFulfilled,
+  effect: () => updateNotificationInStorage(true),
+});
+
+export { userListenerMiddleware };

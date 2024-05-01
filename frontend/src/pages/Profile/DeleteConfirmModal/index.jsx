@@ -1,6 +1,8 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
 
+import './deleteConfirmationModal.scss';
+
 function DeleteConfirmationModal({ open, closeModal, deleteUser }) {
   return (
     <Popup Popup open={open} onClose={closeModal} position="right center" modal>

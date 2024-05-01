@@ -4,7 +4,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { api } from '../services/api';
 import user from './user/userSlice';
-import { authListenerMiddleware } from './middleware/authMiddleware';
+import { userListenerMiddleware } from './middleware/userMiddleware';
 
 const userDataFromStorage = localStorage.getItem('userData') ?? sessionStorage.getItem('userData');
 const initUserState = userDataFromStorage ? JSON.parse(userDataFromStorage) : {};
@@ -15,7 +15,7 @@ export const store = configureStore({
     user,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
-    .concat(api.middleware, authListenerMiddleware.middleware),
+    .concat(api.middleware, userListenerMiddleware.middleware),
   preloadedState: {
     user: initUserState,
   },
