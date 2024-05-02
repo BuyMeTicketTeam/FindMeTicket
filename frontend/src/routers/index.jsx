@@ -13,7 +13,7 @@ import Index from '../main';
 import TicketPage from '../ticketPage';
 import Login from '../pages/Login';
 import ConfirmReset from '../pages/ConfirmReset';
-import ChangePassword from '../changePassword';
+import ChangePassword from '../pages/ChangePassword';
 import PrivacyPolicyEng from '../privacyPolicy/index-eng';
 import PrivacyPolicyUa from '../privacyPolicy/index-ua';
 import TouristPlaces from '../TouristPlaces';
@@ -85,11 +85,7 @@ export default function Routers({
       />
       <Route
         path="/change-password"
-        element={(
-          <RouteController access={!auth}>
-            <ChangePassword />
-          </RouteController>
-      )}
+        element={(<ChangePassword />)}
       />
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
       <Route

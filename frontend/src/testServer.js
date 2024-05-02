@@ -156,6 +156,7 @@ createServer({
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
+    this.post('/update-password', () => new Response(200));
     this.post('/resend-confirm-token', () => new Response(200));
     this.get('/logout', () => new Response(200));
     this.get('/notifications/enable', () => new Response(200));

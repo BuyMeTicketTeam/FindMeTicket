@@ -4,7 +4,8 @@ import { registration } from './uk/registration';
 import { confirm } from './uk/confirm';
 import { reset } from './uk/reset';
 import { confirmReset } from './uk/confirmReset';
-import { profile } from './uk/porfile';
+import { profile } from './uk/profile';
+import { changePassword } from './uk/changePassword';
 
 export const uk = {
   header,
@@ -14,4 +15,5 @@ export const uk = {
   reset,
   confirmReset,
   profile,
+  changePassword,
 };

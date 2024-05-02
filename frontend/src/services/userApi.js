@@ -65,6 +65,13 @@ export const userApi = api.injectEndpoints({
         body: email,
       }),
     }),
+    changePassword: builder.mutation({
+      query: (passwords) => ({
+        url: '/update-password',
+        method: 'POST',
+        body: passwords,
+      }),
+    }),
     logout: builder.query({
       query: () => ({
         url: '/logout',
@@ -113,6 +120,7 @@ export const {
   useLazyNotificationDisableQuery,
   useLazyNotificationEnableQuery,
   useGetHistoryQuery,
+  useChangePasswordMutation,
 } = userApi;
 
 export const {

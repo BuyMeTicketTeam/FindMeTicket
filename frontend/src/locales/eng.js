@@ -5,6 +5,7 @@ import { confirm } from './eng/confirm';
 import { reset } from './eng/reset';
 import { confirmReset } from './eng/confirmReset';
 import { profile } from './eng/profile';
+import { changePassword } from './eng/changePassword';
 
 export const eng = {
   header,
@@ -14,4 +15,5 @@ export const eng = {
   reset,
   confirmReset,
   profile,
+  changePassword,
 };
