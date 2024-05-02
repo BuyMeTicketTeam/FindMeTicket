@@ -49,7 +49,6 @@ export default function Profile() {
     disableNotification, { isError: disableNotificationError },
   ] = useLazyNotificationDisableQuery();
   const [deleteUser, { isError: deleteError }] = useDeleteUserMutation();
-  // const [showNotificationAlert, callNotificationAlert] = useAlert();
   const { t } = useTranslation('translation', { keyPrefix: 'profile' });
 
   const getIcon = (historyData) => {
@@ -80,9 +79,9 @@ export default function Profile() {
   return (
     <div className="popup-content main">
       <div className="error-container">
-        {enableNotificationError && <p className="error">Помилка активації повідомлень</p>}
-        {disableNotificationError && <p className="error">{t()}</p>}
-        {deleteError && <p className="error">{t()}</p>}
+        {enableNotificationError && <p className="error">{t('error_enable_notification')}</p>}
+        {disableNotificationError && <p className="error">{t('error_disable_notification')}</p>}
+        {deleteError && <p className="error">{t('error_delete_user')}</p>}
       </div>
       <div className="centered-block">
         <button
@@ -122,7 +121,7 @@ export default function Profile() {
       </div>
       <div className="notification-wrapper">
         <p className="notification-text">
-          {t('notice')}
+          {t('notification')}
         </p>
         <label htmlFor="notification" className="switch">
           <input
@@ -168,7 +167,7 @@ export default function Profile() {
           <div className="column">
             <div className="column-header">
               <img src={addressIcon} className="contact-icon" alt="Dia" />
-              <p className="contact-info-two actions-info">{t('account-management')}</p>
+              <p className="contact-info-two actions-info">{t('account_management')}</p>
             </div>
             <div className="contact-info-data">
               <Link
@@ -177,7 +176,7 @@ export default function Profile() {
                 className="change-password"
                 data-testid="change-password-link"
               >
-                {t('change-password')}
+                {t('change_password')}
               </Link>
               <button
                 type="button"
@@ -185,7 +184,7 @@ export default function Profile() {
                 onClick={() => setOpenDeleteModal(true)}
                 data-testid="delete-account-button"
               >
-                {t('delete-account')}
+                {t('delete_account')}
               </button>
             </div>
           </div>
@@ -215,7 +214,7 @@ export default function Profile() {
                 </div>
                 <span className="history-to">{historyItem.arrivalCity}</span>
               </Link>
-            )) : <div className="history-item no-items">{t('no-items')}</div>}
+            )) : <div className="history-item no-items">{t('no_items')}</div>}
         </div>
       )}
       <AvatarPopup open={openAvatarModal} closeModal={closeAvatarModal} userAvatar={userPhoto} />

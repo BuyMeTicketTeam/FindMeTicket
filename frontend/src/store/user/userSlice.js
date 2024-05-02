@@ -31,7 +31,7 @@ const slice = createSlice({
     builder.addMatcher(userApi.endpoints.login.matchFulfilled, setUser);
     builder.addMatcher(userApi.endpoints.loginGoogle.matchFulfilled, setUser);
     builder.addMatcher(userApi.endpoints.loginFacebook.matchFulfilled, setUser);
-    builder.addMatcher(userApi.endpoints.logout.matchFulfilled, logoutUser);
+    builder.addMatcher(userApi.endpoints.logout.matchPending, logoutUser);
     builder.addMatcher(userApi.endpoints.deleteUser.matchFulfilled, logoutUser);
     builder.addMatcher(userApi.endpoints.notificationEnable.matchFulfilled, (state) => {
       state.notification = true;

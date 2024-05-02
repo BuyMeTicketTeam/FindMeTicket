@@ -8,7 +8,7 @@ const cookies = new Cookies(null, { path: '/' });
 
 userListenerMiddleware.startListening({
   matcher: isAnyOf(
-    userApi.endpoints.logout.matchFulfilled,
+    userApi.endpoints.logout.matchPending,
     userApi.endpoints.deleteUser.matchFulfilled,
   ),
   effect: () => {
