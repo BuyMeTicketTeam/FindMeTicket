@@ -13,8 +13,6 @@ export const initialState = {
 };
 
 function setUser(state, action) {
-  console.log(state);
-  console.log(action);
   state.isAuthenticated = true;
   state.username = action.payload.username;
   state.notification = action.payload.notification;
