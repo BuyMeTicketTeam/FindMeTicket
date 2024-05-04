@@ -4,7 +4,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { userApi } from '../../services/userApi';
 
-const initialState = {
+export const initialState = {
   isAuthenticated: false,
   username: null,
   userPhoto: null,
@@ -13,6 +13,8 @@ const initialState = {
 };
 
 function setUser(state, action) {
+  console.log(state);
+  console.log(action);
   state.isAuthenticated = true;
   state.username = action.payload.username;
   state.notification = action.payload.notification;

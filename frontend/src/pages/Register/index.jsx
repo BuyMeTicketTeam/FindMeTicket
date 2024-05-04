@@ -18,7 +18,7 @@ export default function Register() {
   const [registerQuery, { isLoading, isError, error }] = useRegisterMutation();
   const {
     register, handleSubmit, setError, formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm({ mode: 'onTouched' });
   const { t } = useTranslation('translation', { keyPrefix: 'registration' });
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export default function Register() {
     <div data-testid="register" className="register main">
       <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="title">{t('registration')}</h1>
-        {isError && <p data-testid="error" className="error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
+        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
           id="username"
           error={errors.username}

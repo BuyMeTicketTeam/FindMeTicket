@@ -202,7 +202,7 @@ export default function Profile() {
       {isHistoryExpanded && (
         <div className="history-content">
           {isLoading && <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
-          {(history.length > 0 && !isLoading)
+          {(!isLoading && history)
             ? history.map((historyItem) => (
               <Link to="/" key={uuidv4()} className="history-item">
                 <span className="history-date">{historyItem.addingTime}</span>

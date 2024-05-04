@@ -7,11 +7,13 @@ import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <Provider store={store}>
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_KEY}>
-      <App />
-    </GoogleOAuthProvider>
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_AUTH_KEY}>
+        <App />
+      </GoogleOAuthProvider>
+    </Provider>
+  </React.StrictMode>,
 );
 
 // I left this to use in the future for optimization.

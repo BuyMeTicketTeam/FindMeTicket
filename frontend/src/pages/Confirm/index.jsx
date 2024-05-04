@@ -23,7 +23,7 @@ export default function Confirm() {
   const [resendConfirmToken, { isLoading: isResendLoading }] = useResendConfirmTokenMutation();
   const {
     register, handleSubmit, formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm({ mode: 'onTouched' });
   const { state } = useLocation();
   const { t } = useTranslation('translation', { keyPrefix: 'confirm' });
   const { minutes, seconds, restart } = useTimeout(1, 30);
@@ -86,7 +86,7 @@ export default function Confirm() {
             onChange: (event) => event.target.value = event.target.value.toUpperCase(),
           }}
         />
-        {isError && <p data-testid="error" className="confirm__error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
+        {isError && <p data-testid="error" className="confirm__error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <div className="row">
           <button
             disabled={isLoading || isSuccess}

@@ -12,7 +12,7 @@ export default function ChangePassword() {
   const [showPassword, setShowPassword] = useState(false);
   const {
     register, handleSubmit, setError, formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm({ mode: 'onTouched' });
   const [changePassword, {
     isSuccess, isLoading, isError, error,
   }] = useChangePasswordMutation();
@@ -58,7 +58,7 @@ export default function ChangePassword() {
           </Link>
         </p>
         )}
-        {isError && <p data-testid="error" className="error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
+        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
           id="lastPassword"
           error={errors.lastPassword}

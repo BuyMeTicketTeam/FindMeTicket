@@ -21,7 +21,7 @@ export default function ConfirmReset() {
   const { t } = useTranslation('translation', { keyPrefix: 'confirmReset' });
   const {
     register, handleSubmit, setError, formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm({ mode: 'onTouched' });
 
   const resendButtonIsDisabled = (minutes > 0 || seconds > 0) || isSuccess || isResendLoading;
 
@@ -84,7 +84,7 @@ export default function ConfirmReset() {
         )}
         <p className="confirm__text">{t('confirm_text1')}</p>
         <p className="confirm__text"><b>{t('confirm_text2')}</b></p>
-        {isError && <p data-testid="error" className="error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
+        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
 
         <Input
           id="code"

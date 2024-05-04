@@ -1,5 +1,25 @@
 import { api } from './api';
 
+async function loginResponseHandler(response) {
+  if (response.headers.has('Authorization')) {
+    localStorage.setItem('JWTtoken', response.headers.get('Authorization'));
+  }
+
+  const parsedJSON = await response.json();
+  if (response.headers.has('rememberme')) {
+    const userData = {
+      isAuthenticated: true,
+      username: parsedJSON.username,
+      notification: parsedJSON.notification,
+      userEmail: parsedJSON.email,
+      userPhoto: parsedJSON.googlePicture ?? `data:image/jpeg;base64,${parsedJSON.basicPicture}`,
+    };
+    localStorage.setItem('userData', JSON.stringify(userData));
+  }
+
+  return parsedJSON;
+}
+
 export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
@@ -7,6 +27,7 @@ export const userApi = api.injectEndpoints({
         url: '/login',
         method: 'POST',
         body: userData,
+        responseHandler: loginResponseHandler,
       }),
     }),
     loginGoogle: builder.mutation({
@@ -35,6 +56,7 @@ export const userApi = api.injectEndpoints({
         url: '/confirm-email',
         method: 'POST',
         body: code,
+        responseHandler: 'text',
       }),
     }),
     resendConfirmToken: builder.mutation({
@@ -88,18 +110,21 @@ export const userApi = api.injectEndpoints({
       query: () => ({
         url: '/getHistory',
         method: 'GET',
+        responseHandler: 'text',
       }),
     }),
     notificationEnable: builder.query({
       query: () => ({
         url: '/notifications/enable',
         method: 'GET',
+        responseHandler: 'text',
       }),
     }),
     notificationDisable: builder.query({
       query: () => ({
         url: '/notifications/disable',
         method: 'GET',
+        responseHandler: 'text',
       }),
     }),
   }),

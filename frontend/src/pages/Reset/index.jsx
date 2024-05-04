@@ -18,7 +18,7 @@ export default function Reset() {
   }] = useResetMutation();
   const {
     register, handleSubmit, formState: { errors },
-  } = useForm({ mode: 'onBlur' });
+  } = useForm({ mode: 'onTouched' });
   const { t } = useTranslation('translation', { keyPrefix: 'reset' });
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ export default function Reset() {
           otherProps={{ ...register('email', { required: true, pattern: EMAIL_PATTERN }) }}
         />
 
-        {isError && <p data-testid="error" className="reset__error">{t([`error_${error.originalStatus}`, 'error_500'])}</p>}
+        {isError && <p data-testid="error" className="reset__error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <button
           disabled={isLoading || isSuccess}
           className="button"
