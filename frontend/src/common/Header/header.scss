@@ -1,4 +1,5 @@
-@import '../../styles/variables.scss';
+@import '../../styles/colorsVar.scss';
+@import '../../styles/mediaQueryVar.scss';
 
 .header {
   display: flex;
@@ -9,65 +10,55 @@
   position: relative;
   z-index: 2;
 
-  .language-select {
-    display: flex;
+  @media (max-width: $mobile) {
+    padding: 0 15px;
   }
 }
 
 .logo {
   width: 275px;
   margin-right: 30px;
+  @media (max-width: $tablet) {
+   margin-right: auto;
+   width: 220px;
+  }
 }
 
-.menu {
+.header-menu {
   flex: auto;
   display: flex;
   list-style: none;
   align-items: center;
-}
 
-.menu__item {
-  margin-right: 15px;
-
-  a {
-    display: inline-block;
-    color: inherit;
-    text-decoration: none;
-    padding: 20px 0;
+  &__item {
+    margin-right: 15px;
+  
+    a {
+      display: inline-block;
+      color: inherit;
+      text-decoration: none;
+      padding: 20px 0;
+    }
+  
+    &:hover {
+      text-decoration: underline;
+      color: $bright;
+      transition: 0.3s;
+    }
   }
-
-  &:hover {
-    text-decoration: underline;
-    color: $bright;
-    transition: 0.3s;
-  }
-}
-
-.select {
-  font-size: inherit;
-  border: none;
-  margin-right: 15px;
-  background: $dark;
-  color: $bright;
-
-  &:focus-visible {
-    outline: none;
-  }  
-}
-
-.login {
-  font-size: inherit;
-  background: transparent;
-  border: none;
-  color: inherit;
-
-  &:hover {
-    cursor: pointer;
-    text-decoration: underline;
+  @media (max-width: $tablet) {
+    display: none;
   }
 }
 
 //select
+.language-select {
+  display: flex;
+  @media (max-width: $tablet) {
+    display: none;
+  }
+}
+
 .header .react-select__control {
   background: transparent;
   margin-right: 10px;
@@ -115,6 +106,69 @@
   }
 }
 
+//login-btn
 .login-link {
   text-decoration: none;
+  padding: 20px 0;
+
+  &__icon {
+    width: 30px;
+  }
+
+  @media (max-width: $tablet) {
+    padding: 13px 0;
+  }
+}
+
+.header-menu-toggler {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 20px;
+  width: 35px;
+  background: transparent;
+  border: none;
+  margin-left: 15px;
+
+  &::before, &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: $font-color;
+    left: 0;
+    border-radius: 2px;
+    transition: 0.3s;
+  }
+
+  &::before {
+    top: 0;
+  }
+
+  &::after {
+    bottom: 0;
+  }
+
+  span {
+    width: 100%;
+    height: 3px;
+    background: $font-color;
+    border-radius: 2px;
+  }
+
+  &.toggler_open {
+    span {
+      display: none;
+    }
+    &::before {
+      top: 10px;
+      transform: rotate(45deg);
+    }
+  
+    &::after {
+      bottom: 6px;
+      transform: rotate(-45deg);
+    }
+  }
 }

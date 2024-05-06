@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getI18n } from 'react-i18next';
 
-export default function useLanguage(languagesList) {
+import { languagesList } from '../locales/languagesList';
+
+export default function useLanguage() {
   const [language, setLanguage] = useState(languagesList[0]);
 
   function getSystemLanguage() {
@@ -30,5 +32,5 @@ export default function useLanguage(languagesList) {
     setLanguageValue(getSystemLanguage());
   }, []);
 
-  return { language, setLanguageValue };
+  return { language, setLanguageValue, languagesList };
 }

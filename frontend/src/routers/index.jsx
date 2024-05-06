@@ -88,14 +88,6 @@ export default function Routers({
         element={(<ChangePassword />)}
       />
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
-      <Route
-        path="/change-password"
-        element={(
-          <RouteController access={!auth}>
-            <ChangePassword />
-          </RouteController>
-      )}
-      />
       {language === 'Ua' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyUa />} />
       )}

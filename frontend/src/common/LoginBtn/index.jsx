@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { selectIsAuthenticated } from '../../store/user/userSlice';
 
-export default function LoginBtn() {
+import profileIcon from '../../images/user.svg';
+import loginIcon from '../../images/logout.svg';
+
+export default function LoginBtn({ isMediumDevice }) {
   const isAuth = useSelector(selectIsAuthenticated);
   const { t } = useTranslation('translation', { keyPrefix: 'header' });
 
@@ -15,7 +18,7 @@ export default function LoginBtn() {
         className="login-link"
         to="/profile-page"
       >
-        {t('profile')}
+        {!isMediumDevice ? t('profile') : <img className="login-link__icon" src={profileIcon} alt="Profile" />}
       </Link>
     );
   }
@@ -25,7 +28,7 @@ export default function LoginBtn() {
       className="login-link"
       to="/login"
     >
-      {t('login')}
+      {!isMediumDevice ? t('login') : <img className="login-link__icon" src={loginIcon} alt="Login" />}
     </Link>
   );
 }
