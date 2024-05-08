@@ -7,7 +7,7 @@ import useAuthCheck from './hook/useAuthCheck';
 import Routers from './routers';
 import CookieBanner from './cookieBanner/cookie';
 // import './testServer';
-import Footer from './footer';
+// import Footer from './footer';
 import './App.scss';
 import './locales/i18n';
 import ScrollButton from './scrollButton';
@@ -35,7 +35,7 @@ function App() {
       />
       <CookieBanner />
       <ScrollButton />
-      <Footer />
+      {/* <Footer /> */}
     </Router>
   );
 }

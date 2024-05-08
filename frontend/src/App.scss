@@ -1,5 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,regular,italic,500,500italic,700,700italic,900,900italic);
 @import './styles/colorsVar.scss';
+@import './styles/mediaQueryVar.scss';
 
 * {
   margin: 0;
@@ -72,15 +73,27 @@ select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-
-
 .field {
   margin-bottom: 15px;
   position: relative;
+
+  @media (max-width: $mobile) {
+    margin-bottom: 10px;
+  }
+
+  &__name {
+    display: inline-block;
+    margin-bottom: 7px;
+    font-size: 20px;
+    font-weight: 500;
+
+    @media (max-width: $mobile) {
+      font-size: 16px;
+    }
+  }
 }
 
 .input {
-  position: relative;
   width: 100%;
   border-radius: 10px;
   border: 2px solid $bright;
@@ -89,6 +102,11 @@ select:-webkit-autofill:focus {
   background: $dark;
   color: inherit;
   z-index: 1;
+
+  @media (max-width: $mobile) {
+    padding: 5px;
+    font-size: 16px;
+  }
 
   &:focus {
     outline: none;
@@ -99,56 +117,93 @@ select:-webkit-autofill:focus {
     color: $grey;
   }
 
-  &.input-error {
+  &.input_error {
     border: 2px solid $error;
     outline-color: $error;
     box-shadow: 0px 0px 9px 2px $error;
   }
-}
 
-.input-wrapper {
-  width: 100%;
-  position: relative;
-}
-
-.show-password {
-  z-index: 2;
-  position: absolute;
-  top: 36px;
-  right: 4px;
-  background: transparent;
-  border: none;
-  padding: 3px 3px 0 3px;
-
-  &.hide::before {
+  &__toggle-value-visibility {
+    z-index: 2;
     position: absolute;
-    top: 13px;
-    left: 5px;
-    display: inline-block;
-    content: '';
-    width: 21px;
-    height: 2px;
-    background: $font-color;
-    transform: rotate(45deg);
+    top: 36px;
+    right: 4px;
+    background: transparent;
+    border: none;
+    padding: 3px 3px 0 3px;
+
+    @media (max-width: $mobile) {
+      top: 28px;
+    }
+
+    &.hide::before {
+      position: absolute;
+      top: 13px;
+      left: 5px;
+      display: inline-block;
+      content: '';
+      width: 21px;
+      height: 2px;
+      background: $font-color;
+      transform: rotate(45deg);
+    }
   }
 }
 
-.tip {
-  position: relative;
-  max-height: 0;
-  opacity: 0;
-  padding-top: 5px;
-  max-width: 350px;
-  color: $bright;
+.input-error {
+  color: $error-bright;
+  max-width: 100%;
   font-weight: 500;
-  transition: 0.8s;
-  z-index: 0;
+  padding-top: 4px;
+
+  @media (max-width: $mobile) {
+    font-size: 14px;
+  }
 }
 
-.input:focus~.tip {
-  max-height: 200px;
-  opacity: 1;
-  transition: 0.8s;
+.block-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: $tablet) {
+    flex-direction: column;
+    align-items: baseline;
+  }
+
+  &__body {
+    position: relative;
+    background: $semi-dark;
+    border-radius: 20px;
+    padding: 35px;
+    width: 450px;
+    margin: 20px 0;
+
+    @media (max-width: $tablet) {
+      width: 100%;
+      min-height: fill;
+      border-radius: 0;
+      margin: 0;
+      border-top: 2px solid $dark;
+      padding: 15% 10% 35px 10%;
+      flex: 100%;
+    }
+
+    @media (max-width: $mobile) {
+      padding: 10% 35px 35px 15px;
+    }
+  }
+
+  &__title {
+    margin-bottom: 20px;
+    text-align: center;
+
+    @media (max-width: $mobile) {
+      font-size: 20px;
+    }
+  }
 }
 
 .button {
@@ -156,13 +211,17 @@ select:-webkit-autofill:focus {
   color: $font-color;
   font-weight: 700;
   font-size: 18px;
-  min-width: 226px;
   border-radius: 10px;
   border: 2px solid $bright;
   padding: 8px 20px;
   transition: 0.3s;
 
-  &.btn-full {
+  @media (max-width: $mobile) {
+    font-size: 16px;
+    padding: 5px 15px;
+  }
+
+  &.button_long {
     width: 100%;
   }
 
@@ -192,7 +251,7 @@ select:-webkit-autofill:focus {
 }
 
 .error {
-  min-width: 300px;
+  width: 100%;
   background: $error;
   padding: 10px;
   color: inherit;
@@ -200,65 +259,64 @@ select:-webkit-autofill:focus {
   margin: 8px 0;
 }
 
-.title {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 .checkbox {
   margin-bottom: 10px;
-}
 
-.checkbox-label {
-  position: relative;
-  font-size: 18px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  padding-left: 30px;
+  &__label {
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
 
-  a {
-    margin-left: 5px;
+    @media (max-width: $mobile) {
+      font-size: 16px;
+    }
+
+    a {
+      margin-left: 5px;
+    }
+
+    &::after {
+      position: absolute;
+      left: 0;
+      top: 0;
+      content: '';
+      display: block;
+      width: 15px;
+      height: 15px;
+      border: 2px solid $bright;
+    }
   }
 
-  &::after {
+  &__input {
     position: absolute;
-    left: 0;
-    top: 0;
-    content: '';
-    display: block;
-    width: 15px;
-    height: 15px;
-    border: 2px solid $bright;
-  }
-}
+    visibility: hidden;
 
-.checkbox__field {
-  position: absolute;
-  visibility: hidden;
+    &:checked~.checkbox__label::before {
+      left: 0px;
+      top: -4px;
+      position: absolute;
+      content: '';
+      display: block;
+      width: 15px;
+      height: 20px;
+      background: url('./utils/img/tick.svg');
+    }
 
-  &:checked~.checkbox-label::before {
-    left: 0px;
-    top: -4px;
-    position: absolute;
-    content: '';
-    display: block;
-    width: 15px;
-    height: 20px;
-    background: url('./utils/img/tick.svg');
+    &.checkbox_error~.checkbox__label::after {
+      border: 1px solid $error-bright;
+    }
+
+    &.checkbox_error~.checkbox__label {
+      color: $error-bright;
+    }
   }
 
-  &.checkbox-error~.checkbox-label::after {
-    border: 1px solid $error-bright;
+  &__error {
+    margin-top: 3px;
   }
-
-  &.checkbox-error~.checkbox-label {
-    color: $error-bright;
-  }
-}
-
-.checkbox__error {
-  margin-top: 3px;
 }
 
 .confirm__success {
@@ -269,11 +327,6 @@ select:-webkit-autofill:focus {
   border-radius: 5px;
   margin: 8px 0;
 }
-
-/* For future usage
- .main-block {
-  height: calc(100vh - 60px);
-} */
 
 .link-success {
   font-size: 18px;

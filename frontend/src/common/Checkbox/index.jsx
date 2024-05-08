@@ -10,11 +10,11 @@ export default function Checkbox({
         data-testid={dataTestid}
         id={id}
         type="checkbox"
-        className={error ? 'checkbox__field checkbox-error' : 'checkbox__field'}
+        className={error ? 'checkbox__input checkbox_error' : 'checkbox__input'}
         {...otherProps}
       />
-      <label htmlFor={id} className="checkbox-label">{children}</label>
-      {error && <p data-testid="error" className="checkbox__error confirm__error">{errorMessage}</p>}
+      <label htmlFor={id} className="checkbox__label">{children}</label>
+      {error && <p data-testid="error" className="checkbox__error input-error">{errorMessage}</p>}
     </div>
   );
 }

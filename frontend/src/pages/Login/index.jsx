@@ -44,9 +44,10 @@ export default function Login() {
   }
 
   return (
-    <div data-testid="login" className="background main">
-      <form className="popup__body" onSubmit={handleSubmit(onSubmit)}>
-        <Link to="/" className="close" aria-label="Close" />
+    <div data-testid="login" className="login block-center main">
+      <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="block-center__title">Авторизація</h1>
+        <Link to="/" className="login__close" aria-label="Close" />
         {error && <p data-testid="error" className="error">{t([`error_${error}`, 'error_500'])}</p>}
         <Input
           id="email"
@@ -72,7 +73,7 @@ export default function Login() {
         >
           {t('remember_me')}
         </Checkbox>
-        <div className="link">
+        <div className="login__link">
           <Link
             to="/reset"
           >
@@ -80,12 +81,12 @@ export default function Login() {
           </Link>
         </div>
 
-        <button disabled={isLoading} className="button btn-full" type="submit">{isLoading ? t('processing') : t('login_button')}</button>
+        <button disabled={isLoading} className="button button_long" type="submit">{isLoading ? t('processing') : t('login_button')}</button>
 
-        <div className="login__another">
-          <span className="login-another__line" />
-          <span className="login-another__content">{t('or')}</span>
-          <span className="login-another__line" />
+        <div className="login-separator">
+          <span className="login-separator__line" />
+          <span className="login-separator__content">{t('or')}</span>
+          <span className="login-separator__line" />
         </div>
         <GoogleLogin
           onSuccess={(credentialResponse) => {
@@ -99,7 +100,7 @@ export default function Login() {
         />
         <FacebookLogin
           appId="927706882244929"
-          className="login__google"
+          className="login-services"
           onSuccess={(response) => handleQuery({ idToken: response.userID }, loginFacebook)}
           onFail={() => {
             setError('facebook');
@@ -108,7 +109,7 @@ export default function Login() {
           <img src={facebookIcon} alt="logo" />
           {t('facebook')}
         </FacebookLogin>
-        <div className="link link-register">
+        <div className="login__link align_center">
           <Link
             data-testid="to-register-btn"
             to="/register"

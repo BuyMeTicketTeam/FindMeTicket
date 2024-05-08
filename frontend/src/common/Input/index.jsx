@@ -11,21 +11,21 @@ export default function Input({
       {label && <label htmlFor={id} className="field__name">{label}</label>}
       <input
         id={id}
-        className={error ? 'input input-error' : 'input'}
+        className={error ? 'input input_error' : 'input'}
         type={showPassword ? 'text' : type}
         placeholder={placeholder}
         {...otherProps}
       />
       {type === 'password' && (
         <button
-          className={!showPassword ? 'show-password hide' : 'show-password'}
+          className={`input__toggle-value-visibility ${!showPassword ? 'hide' : ''}`}
           type="button"
           onClick={() => setShowPassword((prevState) => !prevState)}
         >
           <img src={eyeIcon} alt="showPassword" />
         </button>
       )}
-      {error && <p data-testid="error" className="confirm__error">{errorMessage}</p>}
+      {error && <p data-testid="error" className="input-error">{errorMessage}</p>}
     </div>
   );
 }
