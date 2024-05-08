@@ -68,9 +68,10 @@ export const userApi = api.injectEndpoints({
     }),
     reset: builder.mutation({
       query: (email) => ({
-        url: '/reset-password',
+        url: '/reset',
         method: 'POST',
         body: email,
+        responseHandler: 'text',
       }),
     }),
     newPassword: builder.mutation({
@@ -78,6 +79,7 @@ export const userApi = api.injectEndpoints({
         url: '/new-password',
         method: 'POST',
         body: userData,
+        responseHandler: 'text',
       }),
     }),
     resendConfirmResetToken: builder.mutation({
