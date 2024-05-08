@@ -263,11 +263,10 @@ select:-webkit-autofill:focus {
   margin-bottom: 10px;
 
   &__label {
+    display: inline-block;
     position: relative;
     font-size: 18px;
     font-weight: 500;
-    display: flex;
-    align-items: center;
     padding-left: 30px;
 
     @media (max-width: $mobile) {
@@ -306,7 +305,7 @@ select:-webkit-autofill:focus {
     }
 
     &.checkbox_error~.checkbox__label::after {
-      border: 1px solid $error-bright;
+      border: 2px solid $error-bright;
     }
 
     &.checkbox_error~.checkbox__label {
@@ -316,6 +315,7 @@ select:-webkit-autofill:focus {
 
   &__error {
     margin-top: 3px;
+    padding-left: 30px;
   }
 }
 

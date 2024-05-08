@@ -52,9 +52,9 @@ export default function Register() {
   }
 
   return (
-    <div data-testid="register" className="register main">
-      <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="title">{t('registration')}</h1>
+    <div data-testid="register" className="register block-center main">
+      <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="block-center__title">{t('registration')}</h1>
         {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
           id="username"
@@ -112,7 +112,7 @@ export default function Register() {
 
         <button
           disabled={isLoading}
-          className="button btn-full"
+          className="button button_long"
           type="submit"
         >
           {isLoading ? t('processing') : t('register')}
