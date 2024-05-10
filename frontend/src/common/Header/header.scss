@@ -106,20 +106,6 @@
   }
 }
 
-//login-btn
-.login-link {
-  text-decoration: none;
-  padding: 20px 0;
-
-  &__icon {
-    width: 30px;
-  }
-
-  @media (max-width: $tablet) {
-    padding: 13px 0;
-  }
-}
-
 .header-menu-toggler {
   display: flex;
   align-items: center;

@@ -1,0 +1,14 @@
+@import '../../styles/colorsVar.scss';
+
+.success-popup {
+  min-width: 300px;
+  background: $success;
+  padding: 10px;
+  color: $font-color;
+  border-radius: 5px;
+  margin: 8px 0;
+
+  &__link {
+    font-size: 18px;
+  }
+}

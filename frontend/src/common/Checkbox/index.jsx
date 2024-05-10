@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 
+import './checkbox.scss';
+
 export default function Checkbox({
   children, error, errorMessage, dataTestid, id, otherProps,
 }) {

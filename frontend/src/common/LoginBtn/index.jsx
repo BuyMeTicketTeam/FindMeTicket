@@ -7,6 +7,8 @@ import { selectIsAuthenticated } from '../../store/user/userSlice';
 import profileIcon from '../../images/user.svg';
 import loginIcon from '../../images/logout.svg';
 
+import './loginBtn.scss';
+
 export default function LoginBtn({ isMediumDevice }) {
   const isAuth = useSelector(selectIsAuthenticated);
   const { t } = useTranslation('translation', { keyPrefix: 'header' });

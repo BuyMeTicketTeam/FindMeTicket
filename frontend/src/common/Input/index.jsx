@@ -3,6 +3,8 @@ import React from 'react';
 
 import eyeIcon from '../../images/eye.svg';
 
+import './input.scss';
+
 export default function Input({
   id, label, error, errorMessage, otherProps, showPassword, setShowPassword, type = 'text', placeholder = '',
 }) {

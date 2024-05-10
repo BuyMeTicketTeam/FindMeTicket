@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import { useChangePasswordMutation, useLazyLogoutQuery } from '../../services/userApi';
 import { PASSWORD_PATTERN } from '../../constants/regex';
 
 import Input from '../../common/Input';
+import SuccessPopup from '../../common/SuccessPopup';
 
 export default function ChangePassword() {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,19 +45,7 @@ export default function ChangePassword() {
     <div className="confirm main">
       <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="title">{t('title')}</h1>
-        {isSuccess && (
-        <p className="confirm__success">
-          {t('success_message')}
-          {' '}
-          <Link
-            className="link-success"
-            data-testid=""
-            to="/login"
-          >
-            {t('auth_link')}
-          </Link>
-        </p>
-        )}
+        {isSuccess && <SuccessPopup t={t} />}
         {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
           id="lastPassword"

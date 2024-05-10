@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable import/named */
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 
@@ -13,6 +13,7 @@ import { useConfirmMutation, useResendConfirmTokenMutation } from '../../service
 import { CODE_PATTERN } from '../../constants/regex';
 
 import Input from '../../common/Input';
+import SuccessPopup from '../../common/SuccessPopup';
 
 import './confirm.scss';
 
@@ -55,24 +56,12 @@ export default function Confirm() {
   }
 
   return (
-    <div data-testid="confirm" className="confirm main">
-      <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="title">{t('confirm_email')}</h1>
-        {isSuccess && (
-          <div className="confirm__success">
-            {t('success_message')}
-            {' '}
-            <Link
-              className="link-success"
-              data-testid=""
-              to="/login"
-            >
-              {t('auth_link')}
-            </Link>
-          </div>
-        )}
-        <p>{t('confirm_code')}</p>
-        <p className="confirm__text"><b>{t('confirm_ten')}</b></p>
+    <div data-testid="confirm" className="confirm block-center main">
+      <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="block-center__title">{t('confirm_email')}</h1>
+        {isSuccess && <SuccessPopup t={t} />}
+        <p className="block-center__text">{t('confirm_code')}</p>
+        <p className="block-center__text margin_bottom"><b>{t('confirm_ten')}</b></p>
         <Input
           id="code"
           error={errors.token}
@@ -87,7 +76,7 @@ export default function Confirm() {
           }}
         />
         {isError && <p data-testid="error" className="confirm__error">{t([`error_${error.status}`, 'error_500'])}</p>}
-        <div className="row">
+        <div className="block-center__row">
           <button
             disabled={isLoading || isSuccess}
             className="button"
@@ -97,7 +86,7 @@ export default function Confirm() {
           </button>
           <button
             data-testid="send-again-btn"
-            className="confirm__send-again"
+            className="button type_link"
             disabled={resendButtonIsDisabled}
             onClick={handleResendToken}
             type="button"

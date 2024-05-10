@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 
@@ -9,6 +9,7 @@ import useTimeout from '../../hook/useTimeout';
 import { CODE_PATTERN, PASSWORD_PATTERN } from '../../constants/regex';
 
 import Input from '../../common/Input';
+import SuccessPopup from '../../common/SuccessPopup';
 
 export default function ConfirmReset() {
   const [showPassword, setShowPassword] = useState();
@@ -68,20 +69,7 @@ export default function ConfirmReset() {
     <div className="confirm main">
       <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="title">{t('title')}</h1>
-        {isSuccess && (
-        <p className="confirm__success">
-          {t('success_message')}
-          {' '}
-          <Link
-            className="link-success"
-            data-testid=""
-            to="/login"
-            state={{ successNavigate: '/', closeNavigate: '/' }}
-          >
-            {t('auth_link')}
-          </Link>
-        </p>
-        )}
+        {isSuccess && <SuccessPopup t={t} />}
         <p className="confirm__text">{t('confirm_text1')}</p>
         <p className="confirm__text"><b>{t('confirm_text2')}</b></p>
         {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
