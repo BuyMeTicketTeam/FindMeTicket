@@ -42,9 +42,9 @@ export default function ChangePassword() {
   }
 
   return (
-    <div className="confirm main">
-      <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="title">{t('title')}</h1>
+    <div className="confirm block-center main">
+      <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="block-center__title">{t('title')}</h1>
         {isSuccess && <SuccessPopup t={t} />}
         {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
@@ -79,7 +79,7 @@ export default function ChangePassword() {
 
         <button
           disabled={isLoading || isSuccess}
-          className="button"
+          className="button button_long"
           type="submit"
         >
           {isLoading ? t('processing') : t('send')}

@@ -4,7 +4,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable import/named */
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 
@@ -53,6 +53,10 @@ export default function Confirm() {
     } catch (err) {
       console.error({ error: err });
     }
+  }
+
+  if (!state || !state.email) {
+    return <Navigate to="/" />;
   }
 
   return (
