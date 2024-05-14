@@ -66,12 +66,12 @@ export default function ConfirmReset() {
   }
 
   return (
-    <div className="confirm main">
-      <form className="form-body" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="title">{t('title')}</h1>
+    <div className="block-center main">
+      <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="block-center__title">{t('title')}</h1>
         {isSuccess && <SuccessPopup t={t} />}
-        <p className="confirm__text">{t('confirm_text1')}</p>
-        <p className="confirm__text"><b>{t('confirm_text2')}</b></p>
+        <p className="block-center__text">{t('confirm_text1')}</p>
+        <p className="block-center__text margin_bottom"><b>{t('confirm_text2')}</b></p>
         {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
 
         <Input
@@ -112,7 +112,7 @@ export default function ConfirmReset() {
 
         <button
           data-testid="confirm-send-btn"
-          className="confirm__send-again"
+          className="button type_link"
           disabled={resendButtonIsDisabled}
           onClick={handleResendToken}
           type="button"

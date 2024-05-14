@@ -42,7 +42,7 @@ export default function ChangePassword() {
   }
 
   return (
-    <div className="confirm block-center main">
+    <div className="block-center main">
       <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="block-center__title">{t('title')}</h1>
         {isSuccess && <SuccessPopup t={t} />}
