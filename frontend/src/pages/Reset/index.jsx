@@ -32,21 +32,22 @@ export default function Reset() {
   }
 
   return (
-    <div className="reset main">
-      <form className="form-body reset__body" onSubmit={handleSubmit(onSubmit)}>
-        <h1 className="title">{t('password_reset')}</h1>
-        <p className="reset__text">{t('email')}</p>
+    <div className="reset block-center main">
+      <form className="block-center__body" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="block-center__title">{t('password_reset')}</h1>
+        <p className="block-center__text margin_bottom">{t('email')}</p>
+
+        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
+
         <Input
           id="email"
           error={errors.email}
           errorMessage={t('email_error')}
           otherProps={{ ...register('email', { required: true, pattern: EMAIL_PATTERN }) }}
         />
-
-        {isError && <p data-testid="error" className="reset__error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <button
           disabled={isLoading || isSuccess}
-          className="button"
+          className="button button_long"
           type="submit"
         >
           {isLoading ? t('processing') : t('send')}

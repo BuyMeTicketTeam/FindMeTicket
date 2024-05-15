@@ -222,7 +222,7 @@ select:-webkit-autofill:focus {
     color: $bright;
     font-weight: 600;
     font-size: 16px;
-    margin-left: 15px;
+    margin-left: 8px;
     padding: 0;
 
     &:hover {
@@ -246,6 +246,10 @@ select:-webkit-autofill:focus {
   color: inherit;
   border-radius: 5px;
   margin: 8px 0;
+
+  @media (max-width: $mobile) {
+    padding: 8px;
+  }
 }
 
 .form-body {

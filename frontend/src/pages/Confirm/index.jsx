@@ -66,6 +66,7 @@ export default function Confirm() {
         {isSuccess && <SuccessPopup t={t} />}
         <p className="block-center__text">{t('confirm_code')}</p>
         <p className="block-center__text margin_bottom"><b>{t('confirm_ten')}</b></p>
+        {isError && <p data-testid="error" className="error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <Input
           id="code"
           error={errors.token}
@@ -79,7 +80,6 @@ export default function Confirm() {
             onChange: (event) => event.target.value = event.target.value.toUpperCase(),
           }}
         />
-        {isError && <p data-testid="error" className="confirm__error">{t([`error_${error.status}`, 'error_500'])}</p>}
         <div className="block-center__row">
           <button
             disabled={isLoading || isSuccess}
