@@ -1,5 +1,84 @@
 @import '../../styles/colorsVar.scss';
 
+.profile {
+}
+
+.container.type_profile {
+  max-width: 1000px;
+}
+
+.profile-block {
+  display: flex;
+  background-color: $semi-dark;
+  margin: 20px 0;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.gen-info {
+  align-items: center;
+
+  &__username {
+    margin-left: 20px;
+    font-size: 24px;
+  }
+
+  &__exit-button {
+    background: transparent;
+    border: none;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.gen-info-level {
+  display: flex;
+  align-items: center;
+  flex: auto;
+
+  &__text {
+    color: $bright;
+    margin-left: 8px;
+  }
+
+  &__tip-img {
+    width: 20px;
+  }
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  background: transparent;
+  border: none;
+
+  &__rank {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &__img {
+    width: 85%;
+    border-radius: 50%;
+  }
+}
+
+.profile-tip-arrow {
+  display: none;
+}
+
+.profile-tip-content {
+  background: $dark;
+  font-size: 14px;
+  padding: 7px;
+  border-radius: 6px;
+  margin-right: 20px;
+}
+
 .popup-content .avatar  {
   position: relative;
   width: 100px;
@@ -33,10 +112,9 @@ width: 80px;
   font-size: 25px;
   display: block;
 }
+
 .error-container {
-  width: 80%;
-  max-width: 1000px; 
-  margin: 10px auto;
+  
 }
 
 .popup-content .change-password {

@@ -77,129 +77,133 @@ export default function Profile() {
   }, [enableNotificationError, disableNotificationError]);
 
   return (
-    <div className="popup-content main">
-      <div className="error-container">
-        {enableNotificationError && <p className="error">{t('error_enable_notification')}</p>}
-        {disableNotificationError && <p className="error">{t('error_disable_notification')}</p>}
-        {deleteError && <p className="error">{t('error_delete_user')}</p>}
-      </div>
-      <div className="centered-block">
-        <button
-          className="avatar"
-          data-testid="avatar"
-          onClick={() => setOpenAvatarModal(true)}
-          type="button"
-        >
-          <img src={rank1} alt="rank1" className="image-rank1-profile" />
-          <img src={userPhoto} alt="Avatar" referrerPolicy="no-referrer" className="ava" />
-        </button>
-        <p className="username">
-          {t('hello')}
-          {' '}
-          {username}
-          {' '}
-          <div className="Lvl">Lvl 1</div>
-          <Popup
-            trigger={<img src={mark} alt="mark" className="mark" />}
-            position="right center"
-            on={['hover']}
+    <div className="profile main">
+      <div className="container type_profile">
+        <div className="profile-error-container">
+          {enableNotificationError && <p className="error">{t('error_enable_notification')}</p>}
+          {disableNotificationError && <p className="error">{t('error_disable_notification')}</p>}
+          {deleteError && <p className="error">{t('error_delete_user')}</p>}
+        </div>
+        <div className="profile-block gen-info">
+          <button
+            className="profile-avatar"
+            data-testid="avatar"
+            onClick={() => setOpenAvatarModal(true)}
+            type="button"
           >
-            {t('lvl')}
-          </Popup>
-        </p>
-        <button
-          type="button"
-          onClick={() => logout()}
-          className="exit-button"
-        >
-          <img
-            src={logoutImg}
-            alt="Exit"
-            className="exit-icon"
-          />
-        </button>
-      </div>
-      <div className="notification-wrapper">
-        <p className="notification-text">
-          {t('notification')}
-        </p>
-        <label htmlFor="notification" className="switch">
-          <input
-            id="notification"
-            type="checkbox"
-            checked={notificationState}
-            onChange={() => setNotificationState((prevState) => !prevState)}
-          />
-          <span className="slider round" />
-        </label>
-      </div>
-      <div className="contact-wrapper">
-        <p className="contact-text">{t('account')}</p>
-        <div className="contact-item">
-          <div className="column">
-            <div className="column-header">
-              <div className="email-two">
-                <img src={emailIcon} className="contact-icon" alt="Email" />
-                <p className="contact-info-two email-info">{t('email')}</p>
-              </div>
-            </div>
-            <div className="contact-info-data">
-              <div className="email-data">
-                {userEmail}
-              </div>
-            </div>
+            <img src={rank1} alt="rank1" className="profile-avatar__rank" />
+            <img src={userPhoto} alt="Avatar" referrerPolicy="no-referrer" className="profile-avatar__img" />
+          </button>
+          <p className="gen-info__username">
+            {t('hello')}
+            {' '}
+            {username}
+            {' '}
+          </p>
+          <div className="gen-info-level">
+            <div className="gen-info-level__text">Lvl 1</div>
+            <Popup
+              trigger={<img src={mark} alt="mark" className="gen-info-level__tip-img" />}
+              position="right center"
+              className="profile-tip"
+              on={['hover']}
+            >
+              {t('lvl')}
+            </Popup>
           </div>
-          <div className="column">
-            <div className="column-header">
-              <img src={phoneIcon} className="contact-icon phone" alt="Phone" />
-              <p className="contact-info-two phone-info">{t('phone')}</p>
+          <button
+            type="button"
+            onClick={() => logout()}
+            className="gen-info__exit-button"
+          >
+            <img
+              src={logoutImg}
+              alt="Exit"
+              className="gen-info__exit-icon"
+            />
+          </button>
+        </div>
+        <div className="notification-wrapper">
+          <p className="notification-text">
+            {t('notification')}
+          </p>
+          <label htmlFor="notification" className="switch">
+            <input
+              id="notification"
+              type="checkbox"
+              checked={notificationState}
+              onChange={() => setNotificationState((prevState) => !prevState)}
+            />
+            <span className="slider round" />
+          </label>
+        </div>
+        <div className="contact-wrapper">
+          <p className="contact-text">{t('account')}</p>
+          <div className="contact-item">
+            <div className="column">
+              <div className="column-header">
+                <div className="email-two">
+                  <img src={emailIcon} className="contact-icon" alt="Email" />
+                  <p className="contact-info-two email-info">{t('email')}</p>
+                </div>
+              </div>
+              <div className="contact-info-data">
+                <div className="email-data">
+                  {userEmail}
+                </div>
+              </div>
             </div>
-            <div className="contact-info-data">
-              <button
-                type="button"
-                className="custom-button"
-              >
-                {t('add')}
-              </button>
+            <div className="column">
+              <div className="column-header">
+                <img src={phoneIcon} className="contact-icon phone" alt="Phone" />
+                <p className="contact-info-two phone-info">{t('phone')}</p>
+              </div>
+              <div className="contact-info-data">
+                <button
+                  type="button"
+                  className="custom-button"
+                >
+                  {t('add')}
+                </button>
 
+              </div>
             </div>
-          </div>
-          <div className="column">
-            <div className="column-header">
-              <img src={addressIcon} className="contact-icon" alt="Dia" />
-              <p className="contact-info-two actions-info">{t('account_management')}</p>
-            </div>
-            <div className="contact-info-data">
-              <Link
-                type="button"
-                to="/change-password"
-                className="change-password"
-                data-testid="change-password-link"
-              >
-                {t('change_password')}
-              </Link>
-              <button
-                type="button"
-                className="delete-account"
-                onClick={() => setOpenDeleteModal(true)}
-                data-testid="delete-account-button"
-              >
-                {t('delete_account')}
-              </button>
+            <div className="column">
+              <div className="column-header">
+                <img src={addressIcon} className="contact-icon" alt="Dia" />
+                <p className="contact-info-two actions-info">{t('account_management')}</p>
+              </div>
+              <div className="contact-info-data">
+                <Link
+                  type="button"
+                  to="/change-password"
+                  className="change-password"
+                  data-testid="change-password-link"
+                >
+                  {t('change_password')}
+                </Link>
+                <button
+                  type="button"
+                  className="delete-account"
+                  onClick={() => setOpenDeleteModal(true)}
+                  data-testid="delete-account-button"
+                >
+                  {t('delete_account')}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <button
-        className={`history-wrapper ${isHistoryExpanded ? 'expanded' : ''}`}
-        onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
-        type="button"
-      >
-        <img src={historyIcon} alt="History" className="new-icon" />
-        <p className="history-text">{t('history')}</p>
-        <div className={`history-arrow ${isHistoryExpanded ? 'arrow-down' : ''}`} />
-      </button>
-      {isHistoryExpanded && (
+        <button
+          className={`history-wrapper ${isHistoryExpanded ? 'expanded' : ''}`}
+          onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
+          type="button"
+        >
+          <img src={historyIcon} alt="History" className="new-icon" />
+          <p className="history-text">{t('history')}</p>
+          <div className={`history-arrow ${isHistoryExpanded ? 'arrow-down' : ''}`} />
+        </button>
+        {isHistoryExpanded && (
         <div className="history-content">
           {isLoading && <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
           {(!isLoading && history)
@@ -216,7 +220,8 @@ export default function Profile() {
               </Link>
             )) : <div className="history-item no-items">{t('no_items')}</div>}
         </div>
-      )}
+        )}
+      </div>
       <AvatarPopup open={openAvatarModal} closeModal={closeAvatarModal} userAvatar={userPhoto} />
       <DeleteConfirmationModal
         open={openDeleteModal}
