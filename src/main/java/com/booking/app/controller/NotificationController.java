@@ -14,6 +14,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST controller for managing notifications.
+ */
 @RestController
 @RequiredArgsConstructor
 @Log4j2
@@ -22,6 +25,12 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+    /**
+     * Disables notifications for the authenticated user.
+     *
+     * @param userCredentials the credentials of the authenticated user
+     * @return a ResponseEntity indicating the outcome of the disable operation
+     */
     @GetMapping("/notifications/disable")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Disable")
@@ -34,6 +43,12 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Enables notifications for the authenticated user.
+     *
+     * @param userCredentials the credentials of the authenticated user
+     * @return a ResponseEntity indicating the outcome of the enable operation
+     */
     @GetMapping("/notifications/enable")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Enable")
