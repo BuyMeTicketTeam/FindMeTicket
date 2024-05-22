@@ -117,4 +117,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenDeleteUserException.class)
+    public ResponseEntity<ErrorDetails> forbiddenDeleteUser(ForbiddenDeleteUserException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.FORBIDDEN
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDetails> userNotFound(UserNotFoundException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.NOT_FOUND
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
 }
