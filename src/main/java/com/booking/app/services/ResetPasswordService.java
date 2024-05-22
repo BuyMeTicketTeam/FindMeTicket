@@ -5,27 +5,33 @@ import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.entity.UserCredentials;
 import jakarta.mail.MessagingException;
 
-/**
- * Service interface for resetting passwords.
- */
+
 public interface ResetPasswordService {
 
     /**
-     * Generates a new token for resetting the password and sends an email to the specified recipient.
+     * Sends a reset password code to the specified email.
      *
-     * @param email The email address of the recipient.
-     * @return Returns true if the email with the reset password link was sent successfully; otherwise, returns false.
-     * @throws MessagingException If there is an issue with sending the email.
+     * @param email    the email to which the reset code will be sent
+     * @param language the language preference for the email content
+     * @return true if the code was successfully sent, false otherwise
+     * @throws MessagingException if there is an error while sending the email
      */
-    boolean hasEmailSent(String email, String language) throws MessagingException;
+    boolean sendCode(String email, String language) throws MessagingException;
 
     /**
-     * Resets the password to a new one using the information provided in the ResetPasswordDTO.
+     * Resets the password for a user based on the provided reset token and new password.
      *
-     * @param dto The ResetPasswordDTO containing the email and the new password.
-     * @return Returns true if the password was successfully changed; otherwise, returns false.
+     * @param dto the data transfer object containing the reset token, email, and the new password
+     * @return true if the password was successfully reset, false otherwise
      */
     boolean resetPassword(ResetPasswordDTO dto);
 
+    /**
+     * Changes the password for a given user if the provided last password matches the current password.
+     *
+     * @param updatePasswordDTO the data transfer object containing the last password and the new password
+     * @param userCredentials   the user's credentials containing the current password
+     * @return true if the password was successfully changed, false otherwise
+     */
     boolean changePassword(RequestUpdatePasswordDTO updatePasswordDTO, UserCredentials userCredentials);
 }
