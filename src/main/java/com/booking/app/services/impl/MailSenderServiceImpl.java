@@ -9,6 +9,7 @@ import com.booking.app.services.MailSenderService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.Optional;
+import static com.booking.app.constant.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
 
 /**
  * Service class for sending email.
@@ -25,6 +26,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.REQUIRED)
+@Log4j2
 public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
@@ -32,18 +34,9 @@ public class MailSenderServiceImpl implements MailSenderService {
     private final UserCredentialsRepository userCredentialsRepository;
     private final VerifyEmailRepository verifyEmailRepository;
 
-    /**
-     * This method sending email with specified token.
-     *
-     * @param htmlPage String html representation of the letter
-     * @param subject  String subject of the letter
-     * @param token    String generated token that is needed to confirm email
-     * @param user     UserSecurity recipient
-     * @throws MessagingException If there is an issue with sending the confirmation email.
-     */
-    @Override
-    public void sendEmail(String htmlPage, String subject, String token, UserCredentials user) throws MessagingException {
 
+    @Override
+    public void sendEmail(String htmlPage, String subject, String token, UserCredentials user) {
         Context context = new Context();
         context.setVariable("token", token);
         context.setVariable("nickname", user.getUsername());
@@ -52,38 +45,34 @@ public class MailSenderServiceImpl implements MailSenderService {
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setSubject(subject);
-        helper.setText(process, true);
-        helper.setTo(user.getEmail());
+        try {
+            helper.setSubject(subject);
+            helper.setText(process, true);
+            helper.setTo(user.getEmail());
+        } catch (MessagingException e) {
+            log.error("Failed to send confirmation email to {}, reason: {}", user.getEmail(), e);
+        }
 
         mailSender.send(mimeMessage);
     }
 
-    /**
-     * This method generates new token end sends it
-     * on specified email
-     *
-     * @param email String recipient
-     * @return Boolean returns true if the message was sent successfully either returns false
-     * @throws MessagingException If there is an issue with sending the confirmation email.
-     */
+
     @Override
-    public boolean resendEmail(String email, String htmlPage) throws MessagingException {
-        Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmail(email);
+    public boolean resendEmail(String email, String htmlPage) {
+        return userCredentialsRepository.findByEmail(email)
+                .map(userCredentials -> {
+                    User user = userCredentials.getUser();
+                    verifyEmailRepository.delete(userCredentials.getUser().getConfirmToken());
 
-        if (userCredentials.isEmpty()) return false;
+                    ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
+                    confirmToken.setUser(user);
+                    user.setConfirmToken(confirmToken);
 
-        User user = userCredentials.get().getUser();
-        verifyEmailRepository.delete(user.getConfirmToken());
+                    verifyEmailRepository.save(confirmToken);
 
-        ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
-        confirmToken.setUser(user);
-        user.setConfirmToken(confirmToken);
-
-        verifyEmailRepository.save(confirmToken);
-
-        sendEmail(htmlPage, "Email confirmation", confirmToken.getToken(), userCredentials.get());
-        return true;
+                    sendEmail(htmlPage, EMAIL_CONFIRMATION_SUBJECT, confirmToken.getToken(), userCredentials);
+                    return true;
+                }).orElse(false);
     }
 
 }
