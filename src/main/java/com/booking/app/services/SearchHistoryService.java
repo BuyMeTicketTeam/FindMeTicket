@@ -9,7 +9,22 @@ import java.util.List;
 
 public interface SearchHistoryService {
 
-    void addHistory(RequestTicketsDTO requestTicketsDTO, String language, HttpServletRequest request);
+    /**
+     * Adds a search history entry for the user.
+     *
+     * @param dto      The DTO containing search details.
+     * @param language The language of the search.
+     * @param request  The HTTP request.
+     */
+    void addHistory(RequestTicketsDTO dto, String language, HttpServletRequest request);
 
+    /**
+     * Retrieves the search history of a user.
+     *
+     * @param userCredentials The user credentials.
+     * @param language        The language for city names.
+     * @return List of search history DTOs.
+     */
     List<SearchHistoryDto> getUserHistory(UserCredentials userCredentials, String language);
+
 }

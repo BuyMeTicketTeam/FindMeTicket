@@ -17,6 +17,7 @@ import com.booking.app.services.TypeAheadService;
 import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,18 +44,14 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
 
     @Override
-    public void addHistory(RequestTicketsDTO requestTicketsdto, String language, HttpServletRequest request) {
-        Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID).map(cookie -> UUID.fromString(cookie.getValue()));
-
-        Optional<UserCredentials> userCredentials = uuid.flatMap(userCredentialsRepository::findById);
-
-        userCredentials.ifPresent(user -> {
-            Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(requestTicketsdto.getBus(), requestTicketsdto.getTrain(), requestTicketsdto.getAirplane(), requestTicketsdto.getFerry());
+    public void addHistory(RequestTicketsDTO dto, String language, HttpServletRequest request) {
+        findUser(request).ifPresent(user -> {
+            Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
             historyRepository.save(UserSearchHistory.builder()
                     .user(user.getUser())
-                    .departureCityId(typeAheadService.getCityId(requestTicketsdto.getDepartureCity(), language))
-                    .arrivalCityId(typeAheadService.getCityId(requestTicketsdto.getArrivalCity(), language))
-                    .departureDate(requestTicketsdto.getDepartureDate())
+                    .departureCityId(typeAheadService.getCityId(dto.getDepartureCity(), language))
+                    .arrivalCityId(typeAheadService.getCityId(dto.getArrivalCity(), language))
+                    .departureDate(dto.getDepartureDate())
                     .typeTransport(types)
                     .build());
         });
@@ -72,10 +69,31 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
                 .toList().reversed();
     }
 
+    /**
+     * Retrieves the name of a city based on its ID and language.
+     *
+     * @param id       The ID of the city.
+     * @param language The language for the city name.
+     * @return The name of the city.
+     */
     private String getCity(Long id, String language) {
-        Optional<String> city = language.equals("eng") ? ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameEng)
+        Optional<String> city = language.equals("eng")
+                ? ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameEng)
                 : ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameUa);
         return city.orElse(null);
+    }
+
+    /**
+     * Finds the user credentials based on the HTTP request.
+     *
+     * @param request The HTTP request.
+     * @return Optional of UserCredentials.
+     */
+    @NotNull
+    private Optional<UserCredentials> findUser(HttpServletRequest request) {
+        Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID)
+                .map(cookie -> UUID.fromString(cookie.getValue()));
+        return uuid.flatMap(userCredentialsRepository::findById);
     }
 
 }
