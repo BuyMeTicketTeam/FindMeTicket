@@ -19,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.booking.app.constant.MailConstants.RESET_PASSWORD_SUBJECT;
 import static com.booking.app.constant.ResetPasswordConstantMessages.THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED;
-
 
 /**
  * Service class of management over user's password
@@ -51,11 +51,11 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
     @Transactional
     public boolean resetPassword(ResetPasswordDTO dto) {
         UserCredentials userCredentials = checkUserEnablement(dto.getEmail());
-        if (Boolean.FALSE.equals(isCodeValid(dto))) {
-            return false;
+        if (isCodeValid(dto)) {
+            updatePassword(dto, userCredentials);
+            return true;
         }
-        updatePassword(dto, userCredentials);
-        return true;
+        return false;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
      */
     private void sendMail(String language, ConfirmToken newCode, UserCredentials userCredentials) throws MessagingException {
         String htmlTemplate = HtmlTemplateUtils.getResetPasswordHtmlTemplate(language);
-        mailSenderService.sendEmail(htmlTemplate, "Reset password", newCode.getToken(), userCredentials);
+        mailSenderService.sendEmail(htmlTemplate, RESET_PASSWORD_SUBJECT, newCode.getToken(), userCredentials);
     }
 
     /**
@@ -97,7 +97,6 @@ public class ResetPasswordServiceImpl implements ResetPasswordService {
         user.setConfirmToken(newCode);
         return newCode;
     }
-
 
     /**
      * Retrieves UserCredentials by email.

@@ -34,4 +34,5 @@ public interface ResetPasswordService {
      * @return true if the password was successfully changed, false otherwise
      */
     boolean changePassword(RequestUpdatePasswordDTO updatePasswordDTO, UserCredentials userCredentials);
+
 }
