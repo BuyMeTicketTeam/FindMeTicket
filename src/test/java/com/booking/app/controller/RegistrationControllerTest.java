@@ -1,13 +1,8 @@
 package com.booking.app.controller;
 
-import com.booking.app.dto.EmailDTO;
-import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
-import com.booking.app.exception.exception.EmailAlreadyExistsException;
-import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
-import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +11,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import java.io.IOException;
-import static org.mockito.Mockito.*;
+
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RegistrationControllerTest {

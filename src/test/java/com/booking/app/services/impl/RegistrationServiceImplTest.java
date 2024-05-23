@@ -1,37 +1,30 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.entity.ConfirmToken;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.exception.exception.EmailAlreadyExistsException;
-import com.booking.app.exception.exception.UsernameAlreadyExistsException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserCredentialsRepository;
 import com.booking.app.repositories.VerifyEmailRepository;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.TokenService;
-import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RegistrationServiceImplTest {
