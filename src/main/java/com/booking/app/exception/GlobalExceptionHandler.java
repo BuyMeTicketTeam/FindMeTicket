@@ -78,30 +78,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ResponseEntity<ErrorDetails> emailExists(EmailAlreadyExistsException exception, WebRequest webRequest) {
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(EmailAlreadyTakenException.class)
+    public ResponseEntity<ErrorDetails> emailExists(EmailAlreadyTakenException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),
                 webRequest.getDescription(false),
-                HttpStatus.CONFLICT
+                HttpStatus.OK
         );
 
-        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
-    }
-
-    @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
-    @ExceptionHandler(UsernameAlreadyExistsException.class)
-    public ResponseEntity<ErrorDetails> usernameExists(UsernameAlreadyExistsException exception, WebRequest webRequest) {
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                webRequest.getDescription(false),
-                HttpStatus.I_AM_A_TEAPOT
-        );
-
-        return new ResponseEntity<>(errorDetails, HttpStatus.I_AM_A_TEAPOT);
+        return new ResponseEntity<>(errorDetails, HttpStatus.OK);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
