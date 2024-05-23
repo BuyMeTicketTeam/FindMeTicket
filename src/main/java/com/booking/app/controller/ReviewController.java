@@ -4,6 +4,8 @@ import com.booking.app.dto.ReviewDTO;
 import com.booking.app.dto.SaveReviewDto;
 import com.booking.app.services.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +29,9 @@ public class ReviewController {
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Save review", description = "Add user's review")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully saved")
+            @ApiResponse(responseCode = "200",
+                    description = "Successfully saved",
+                    content = {@Content(schema = @Schema(implementation = ReviewDTO.class), mediaType = "application/json")})
     })
     public ResponseEntity<?> saveReview(@RequestBody @NotNull @Valid SaveReviewDto saveReviewDto, HttpServletRequest request) {
         return ResponseEntity.ok().body(reviewService.saveReview(saveReviewDto, request));
@@ -36,8 +40,11 @@ public class ReviewController {
     @GetMapping("/getReviews")
     @Operation(summary = "Get reviews", description = "All reviews")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully returned all reviews")
+            @ApiResponse(responseCode = "200",
+                    description = "Successfully returned all reviews",
+                    content = {@Content(schema = @Schema(implementation = ReviewDTO.class), mediaType = "application/json")})
     })
+
     public ResponseEntity<?> getReviews() {
         return ResponseEntity.ok().body(reviewService.getReviewList());
     }
@@ -56,9 +63,12 @@ public class ReviewController {
     @GetMapping("/getUserReview")
     @Operation(summary = "Get user's review", description = "Get authorized user review")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully returned review"),
+            @ApiResponse(responseCode = "200",
+                    description = "Successfully returned review",
+                    content = {@Content(schema = @Schema(implementation = ReviewDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Review is not found")
     })
+
     public ResponseEntity<?> getReview(HttpServletRequest request) {
         ReviewDTO reviewDTO = reviewService.getUserReview(request);
         return reviewDTO == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(reviewDTO);
