@@ -1,11 +1,17 @@
 package com.booking.app.controller;
 
-import com.booking.app.controller.api.TypeAheadAPI;
 import com.booking.app.dto.CitiesDTO;
 import com.booking.app.dto.StartLettersDTO;
 import com.booking.app.services.TypeAheadService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,11 +26,12 @@ import java.util.List;
  * Controller handling type-ahead functionality for city search.
  */
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping
-public class TypeAheadController implements TypeAheadAPI {
+@Tag(name = "Typing ahead", description = "Endpoint for the type-ahead feature for the search field")
+public class TypeAheadController {
 
-    private TypeAheadService typeAheadService;
+    private final TypeAheadService typeAheadService;
 
     /**
      * Endpoint to fetch cities based on provided start letters.
@@ -33,12 +40,14 @@ public class TypeAheadController implements TypeAheadAPI {
      * @return ResponseEntity with a list of CitiesDTO as the response body.
      */
     @PostMapping(path = "/typeAhead")
-    @Override
-    public ResponseEntity<List<CitiesDTO>> getCities(@RequestBody StartLettersDTO startLetters, HttpServletRequest request) throws IOException {
+    @Operation(summary = "Type ahead feature", description = "Find cities based on type-ahead search")
+    @ApiResponse(responseCode = "200",
+            description = "Successful operation. Returns a list of cities",
+            content = {@Content(schema = @Schema(implementation = CitiesDTO.class), mediaType = "application/json")}
+    )
+    public ResponseEntity<List<CitiesDTO>> getCities(@RequestBody @NotNull @Valid StartLettersDTO startLetters, HttpServletRequest request) throws IOException {
         String siteLanguage = request.getHeader(HttpHeaders.CONTENT_LANGUAGE);
-
-        return ResponseEntity.ok().
-                body(typeAheadService.findMatches(startLetters, siteLanguage));
+        return ResponseEntity.ok().body(typeAheadService.findMatches(startLetters, siteLanguage));
     }
 
 }

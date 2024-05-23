@@ -28,19 +28,12 @@ public class TypeAheadServiceImpl implements TypeAheadService {
 
     private final UkrainianPlacesMapper ukrainianPlacesMapper;
 
-    /**
-     * Find matching cities in Ukraine based on start letters and site language.
-     *
-     * @param startLetters DTO containing the start letters for matching cities.
-     * @param siteLanguage Language of the site.
-     * @return List of CitiesDTO representing matching cities.
-     * @throws IOException If an I/O error occurs during the process.
-     */
     @Override
     public List<CitiesDTO> findMatches(StartLettersDTO startLetters, String siteLanguage) throws IOException {
         String inputLanguage = languageDetectorService.detectLanguage(startLetters.getStartLetters()).orElse(null);
-
-        if (inputLanguage == null) return Collections.emptyList();
+        if (inputLanguage == null) {
+            return Collections.emptyList();
+        }
 
         Optional<List<UkrainianPlaces>> listOfPlaces = getListOfPlaces(startLetters.getStartLetters(), inputLanguage);
 
@@ -56,13 +49,12 @@ public class TypeAheadServiceImpl implements TypeAheadService {
     }
 
     /**
-     * Get the list of places based on start letters and input language.
+     * Retrieves a list of UkrainianPlaces based on start letters and language.
      *
-     * @param startLetters  DTO containing the start letters for matching places.
-     * @param inputLanguage Detected input language.
-     * @return Optional list of UkrainianPlaces matching the criteria.
+     * @param startLetters  The start letters of the city name.
+     * @param inputLanguage The language of the city name.
+     * @return Optional list of UkrainianPlaces.
      */
-
     private Optional<List<UkrainianPlaces>> getListOfPlaces(String startLetters, String inputLanguage) {
         return (inputLanguage.equals("eng"))
                 ? ukrPlacesRepository.findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContainingIgnoreCase(startLetters, "oblast")
