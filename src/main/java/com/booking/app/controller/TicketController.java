@@ -110,8 +110,8 @@ public class TicketController {
             @ApiResponse(responseCode = "200", description = "Successfully returned"),
             @ApiResponse(responseCode = "404", description = "No tickets of the requested type were found")
     })
-    public ResponseEntity<List<TicketDto>> getSelectedTransportTicket(@RequestBody @NotNull @Valid RequestTicketsDTO requestTicketsDTO) throws IOException {
-        return ticketService.getBusTickets(requestTicketsDTO)
+    public ResponseEntity<List<TicketDto>> getTicketByType(@RequestBody @NotNull @Valid RequestTicketsDTO requestTicketsDTO) throws IOException {
+        return ticketService.getTickets(requestTicketsDTO)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
