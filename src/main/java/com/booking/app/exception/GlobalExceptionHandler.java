@@ -1,6 +1,7 @@
 package com.booking.app.exception;
 
 import com.booking.app.exception.exception.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, HttpHeaders headers, HttpStatusCode status, WebRequest webRequest) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, @NotNull HttpHeaders headers, @NotNull HttpStatusCode status, @NotNull WebRequest webRequest) {
         BindingResult bindingResult = exception.getBindingResult();
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         StringJoiner stringJoiner = new StringJoiner(", ");
@@ -118,8 +119,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorDetails> userNotFound(UserNotFoundException exception, WebRequest webRequest) {
+    @ExceptionHandler(UserIsNotFoundException.class)
+    public ResponseEntity<ErrorDetails> userNotFound(UserIsNotFoundException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.NOT_FOUND
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidConfirmationCodeException.class)
+    public ResponseEntity<ErrorDetails> invalidConfirmationCode(InvalidConfirmationCodeException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserIsDisabledException.class)
+    public ResponseEntity<ErrorDetails> userIsDisabled(UserIsDisabledException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),
