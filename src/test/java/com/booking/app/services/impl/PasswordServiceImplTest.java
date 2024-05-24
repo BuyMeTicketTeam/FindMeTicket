@@ -1,36 +1,30 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.ResetPasswordDTO;
-import com.booking.app.entity.ConfirmToken;
+import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.repositories.UserCredentialsRepository;
-import com.booking.app.repositories.VerifyEmailRepository;
+import com.booking.app.repositories.ConfirmationCodeRepository;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.TokenService;
-import jakarta.mail.MessagingException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ResetPasswordServiceImplTest {
+class PasswordServiceImplTest {
 
     @InjectMocks
-    ResetPasswordServiceImpl resetPasswordService;
+    PasswordServiceImpl resetPasswordService;
 
     @Mock
     private MailSenderService mailSenderService;
@@ -39,7 +33,7 @@ class ResetPasswordServiceImplTest {
     private UserCredentialsRepository userCredentialsRepository;
 
     @Mock
-    private VerifyEmailRepository verifyEmailRepository;
+    private ConfirmationCodeRepository confirmationCodeRepository;
 
     @Mock
     private TokenService tokenService;
@@ -98,20 +92,20 @@ class ResetPasswordServiceImplTest {
     @Test
     void testSuccessfullyResetPassword() {
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder().email("dkfshkf@gmail.com")
-                .token("SAD88").password("12345").confirmPassword("12345").build();
+                .code("SAD88").password("12345").confirmPassword("12345").build();
 
         Instant now = Instant.now();
         Instant later = now.plusSeconds(600);
         Date dateAfter10Minutes = Date.from(later);
 
-        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+        ConfirmationCode token = ConfirmationCode.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
 
-        User user = User.builder().confirmToken(token).build();
+        User user = User.builder().confirmationCode(token).build();
 
         UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
 
         when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userCredentials));
-        when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getToken())).thenReturn(true);
+        when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getCode())).thenReturn(true);
 
         assertTrue(resetPasswordService.resetPassword(resetPasswordDTO));
     }
@@ -119,20 +113,20 @@ class ResetPasswordServiceImplTest {
     @Test
     void testResetPasswordTokenNotMatches() {
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder().email("dkfshkf@gmail.com")
-                .token("SAD88").password("12345").confirmPassword("12345").build();
+                .code("SAD88").password("12345").confirmPassword("12345").build();
 
         Instant now = Instant.now();
         Instant later = now.plusSeconds(600);
         Date dateAfter10Minutes = Date.from(later);
 
-        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+        ConfirmationCode token = ConfirmationCode.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
 
-        User user = User.builder().confirmToken(token).build();
+        User user = User.builder().confirmationCode(token).build();
 
         UserCredentials userCredentials = UserCredentials.builder().enabled(true).user(user).build();
 
         when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.of(userCredentials));
-        when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getToken())).thenReturn(false);
+        when(tokenService.verifyToken(resetPasswordDTO.getEmail(), resetPasswordDTO.getCode())).thenReturn(false);
 
         assertFalse(resetPasswordService.resetPassword(resetPasswordDTO));
     }
@@ -140,7 +134,7 @@ class ResetPasswordServiceImplTest {
     @Test
     void testResetPasswordNoSuchUser() {
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder().email("dkfshkf@gmail.com")
-                .token("SAD88").password("12345").confirmPassword("12345").build();
+                .code("SAD88").password("12345").confirmPassword("12345").build();
 
         when(userCredentialsRepository.findByEmail(resetPasswordDTO.getEmail())).thenReturn(Optional.empty());
 
@@ -150,15 +144,15 @@ class ResetPasswordServiceImplTest {
     @Test
     void testResetPassword() {
         ResetPasswordDTO resetPasswordDTO = ResetPasswordDTO.builder().email("dkfshkf@gmail.com")
-                .token("SAD88").password("12345").confirmPassword("12345").build();
+                .code("SAD88").password("12345").confirmPassword("12345").build();
 
         Instant now = Instant.now();
         Instant later = now.plusSeconds(600);
         Date dateAfter10Minutes = Date.from(later);
 
-        ConfirmToken token = ConfirmToken.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
+        ConfirmationCode token = ConfirmationCode.builder().token("SAD88").expiryTime(dateAfter10Minutes).build();
 
-        User user = User.builder().confirmToken(token).build();
+        User user = User.builder().confirmationCode(token).build();
 
         UserCredentials userCredentials = UserCredentials.builder().enabled(false).user(user).build();
 

@@ -5,8 +5,11 @@ import com.booking.app.dto.RequestUpdatePasswordDTO;
 import com.booking.app.dto.ResetPasswordDTO;
 import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.services.ResetPasswordService;
+import com.booking.app.exception.ErrorDetails;
+import com.booking.app.services.PasswordService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,9 +31,9 @@ import static com.booking.app.constant.ResetPasswordConstantMessages.*;
 @AllArgsConstructor
 @Log4j2
 @Tag(name = "Password Management", description = "Endpoints over password operations")
-public class ResetPasswordController {
+public class PasswordController {
 
-    private final ResetPasswordService resetPasswordService;
+    private final PasswordService passwordService;
 
     /**
      * Sends a reset code to the specified email.
@@ -41,14 +44,16 @@ public class ResetPasswordController {
      * @throws MessagingException if there is an error while sending the email
      */
     @PostMapping("/reset")
-    @Operation(summary = "Send reset code")
+    @Operation(summary = "Send a code", description = "Send confirmation code to mail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_CODE_HAS_BEEN_SENT),
-            @ApiResponse(responseCode = "404", description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED)
+            @ApiResponse(responseCode = "404",
+                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
     public ResponseEntity<?> sendResetCode(@RequestBody @NotNull @Valid EmailDTO dto,
                                            @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage) throws MessagingException {
-        resetPasswordService.sendCode(dto.getEmail(), siteLanguage);
+        passwordService.sendResetCode(dto.getEmail(), siteLanguage);
         return ResponseEntity.ok(MESSAGE_CODE_HAS_BEEN_SENT);
     }
 
@@ -59,18 +64,19 @@ public class ResetPasswordController {
      * @return a ResponseEntity indicating the result of the operation
      */
     @PostMapping("/new-password")
-    @Operation(summary = "Confirmation reset password token")
+    @Operation(summary = "Create new password", description = "Confirm code and set new password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_PASSWORD_HAS_BEEN_SUCCESSFULLY_RESET),
-            @ApiResponse(responseCode = "400", description = MESSAGE_WRONG_CONFIRMATION_CODE_IS_PROVIDED),
-            @ApiResponse(responseCode = "404", description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED)
+            @ApiResponse(responseCode = "400",
+                    description = MESSAGE_INVALID_CONFIRMATION_CODE_IS_PROVIDED,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404",
+                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
     public ResponseEntity<?> confirmResetPassword(@RequestBody @NotNull @Valid ResetPasswordDTO dto) {
-        if (resetPasswordService.resetPassword(dto)) {
-            return ResponseEntity.ok(MESSAGE_PASSWORD_HAS_BEEN_SUCCESSFULLY_RESET);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(MESSAGE_WRONG_CONFIRMATION_CODE_IS_PROVIDED);
-        }
+        passwordService.resetPassword(dto);
+        return ResponseEntity.ok(MESSAGE_PASSWORD_HAS_BEEN_SUCCESSFULLY_RESET);
     }
 
     /**
@@ -84,15 +90,14 @@ public class ResetPasswordController {
     @Operation(summary = "Update password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED),
-            @ApiResponse(responseCode = "400", description = MESSAGE_NEW_PASSWORDS_DO_NOT_MATCH)
+            @ApiResponse(responseCode = "400",
+                    description = MESSAGE_CURRENT_PASSWORD_IS_NOT_RIGHT,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
     public ResponseEntity<?> updatePassword(@RequestBody @NotNull @Valid RequestUpdatePasswordDTO updatePasswordDTO,
                                             @AuthenticationPrincipal UserCredentials userCredentials) {
-        if (resetPasswordService.changePassword(updatePasswordDTO, userCredentials)) {
-            return ResponseEntity.ok().body(MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED);
-        } else {
-            return ResponseEntity.badRequest().body(MESSAGE_NEW_PASSWORDS_DO_NOT_MATCH);
-        }
+        passwordService.changePassword(updatePasswordDTO, userCredentials);
+        return ResponseEntity.ok().body(MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED);
     }
 
     /**
@@ -106,15 +111,15 @@ public class ResetPasswordController {
     @Operation(summary = "Resend new reset code")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_CODE_HAS_BEEN_SENT),
-            @ApiResponse(responseCode = "404", description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED)
+            @ApiResponse(responseCode = "404",
+                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
     @PostMapping("/resend/reset-token")
     public ResponseEntity<?> resendResetPasswordToken(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
                                                       @RequestBody @NotNull @Valid TokenConfirmationDTO dto) throws MessagingException {
-        if (resetPasswordService.sendCode(dto.getEmail(), siteLanguage)) {
-            return ResponseEntity.status(HttpStatus.OK).body("Reset token has been sent one more time");
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED);
+        passwordService.sendResetCode(dto.getEmail(), siteLanguage);
+        return ResponseEntity.status(HttpStatus.OK).body("Reset token has been sent one more time");
     }
 
 }
