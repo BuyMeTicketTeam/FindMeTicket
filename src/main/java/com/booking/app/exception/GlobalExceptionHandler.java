@@ -119,8 +119,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserIsNotFoundException.class)
-    public ResponseEntity<ErrorDetails> userNotFound(UserIsNotFoundException exception, WebRequest webRequest) {
+    @ExceptionHandler(UserCredentialsNotFoundException.class)
+    public ResponseEntity<ErrorDetails> userNotFound(UserCredentialsNotFoundException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),
@@ -155,6 +155,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(LastPasswordIsNotRightException.class)
+    public ResponseEntity<ErrorDetails> userIsDisabled(LastPasswordIsNotRightException exception, WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                HttpStatus.BAD_REQUEST
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
 }
