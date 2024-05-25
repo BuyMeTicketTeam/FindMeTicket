@@ -1,11 +1,13 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.entity.ConfirmToken;
+import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.User;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.repositories.UserCredentialsRepository;
-import com.booking.app.repositories.VerifyEmailRepository;
+import com.booking.app.exception.exception.UserCredentialsNotFoundException;
+import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
+import com.booking.app.services.UserCredentialsService;
+import com.booking.app.util.HtmlTemplateUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +23,7 @@ import org.thymeleaf.context.Context;
 import static com.booking.app.constant.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
 
 /**
- * Service class for sending email.
+ * Service implementation for sending emails related to user registration and confirmation.
  */
 @Service
 @RequiredArgsConstructor
@@ -31,48 +33,46 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    private final UserCredentialsRepository userCredentialsRepository;
-    private final VerifyEmailRepository verifyEmailRepository;
-
+    private final UserCredentialsService userCredentialsService;
+    private final ConfirmationCodeService confirmationCodeService;
 
     @Override
-    public void sendEmail(String htmlPage, String subject, String token, UserCredentials user) {
+    public void sendEmail(String language, String subject, String token, UserCredentials userCredentials) {
+        String htmlPageName = HtmlTemplateUtils.getConfirmationHtmlTemplate(language);
         Context context = new Context();
         context.setVariable("token", token);
-        context.setVariable("nickname", user.getUsername());
+        context.setVariable("nickname", userCredentials.getUsername());
 
-        String process = templateEngine.process(htmlPage, context);
+        String process = templateEngine.process(htmlPageName, context);
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
         try {
             helper.setSubject(subject);
             helper.setText(process, true);
-            helper.setTo(user.getEmail());
+            helper.setTo(userCredentials.getEmail());
+            mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("Failed to send confirmation email to {}, reason: {}", user.getEmail(), e);
+            log.error("Failed to send confirmation email to {}, reason: {}", userCredentials.getEmail(), e.getCause());
         }
-
-        mailSender.send(mimeMessage);
     }
 
-
     @Override
-    public boolean resendEmail(String email, String htmlPage) {
-        return userCredentialsRepository.findByEmail(email)
-                .map(userCredentials -> {
+    public void resendEmail(String language, String email) {
+        userCredentialsService.findByEmail(email)
+                .ifPresentOrElse(userCredentials -> {
                     User user = userCredentials.getUser();
-                    verifyEmailRepository.delete(userCredentials.getUser().getConfirmToken());
 
-                    ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
-                    confirmToken.setUser(user);
-                    user.setConfirmToken(confirmToken);
+                    ConfirmationCode newCode = ConfirmationCode.createCode();
+                    ConfirmationCode existingCode = user.getConfirmationCode();
+                    user.setConfirmationCode(newCode);
 
-                    verifyEmailRepository.save(confirmToken);
+                    confirmationCodeService.updateConfirmationCode(newCode, existingCode);
 
-                    sendEmail(htmlPage, EMAIL_CONFIRMATION_SUBJECT, confirmToken.getToken(), userCredentials);
-                    return true;
-                }).orElse(false);
+                    sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), userCredentials);
+                }, () -> {
+                    throw new UserCredentialsNotFoundException();
+                });
     }
 
 }

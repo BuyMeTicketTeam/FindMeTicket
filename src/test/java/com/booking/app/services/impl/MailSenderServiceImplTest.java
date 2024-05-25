@@ -1,28 +1,13 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.entity.ConfirmToken;
-import com.booking.app.entity.User;
-import com.booking.app.entity.UserCredentials;
 import com.booking.app.repositories.UserCredentialsRepository;
-import com.booking.app.repositories.VerifyEmailRepository;
-import com.booking.app.services.TokenService;
-import jakarta.mail.MessagingException;
-import org.junit.jupiter.api.Test;
+import com.booking.app.repositories.ConfirmationCodeRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.thymeleaf.TemplateEngine;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MailSenderServiceImplTest {
@@ -40,10 +25,10 @@ class MailSenderServiceImplTest {
     private UserCredentialsRepository userCredentialsRepository;
 
     @Mock
-    private VerifyEmailRepository verifyEmailRepository;
+    private ConfirmationCodeRepository confirmationCodeRepository;
 
-    @Mock
-    private TokenService tokenService;
+//    @Mock
+//    private TokenService tokenService;
 
 
 //    @Test
