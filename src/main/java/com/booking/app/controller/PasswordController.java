@@ -28,7 +28,7 @@ import static com.booking.app.exception.exception.InvalidConfirmationCodeExcepti
 @RestController
 @RequestMapping
 @AllArgsConstructor
-@Tag(name = "Password Management", description = "Endpoints over password operations")
+@Tag(name = "Password", description = "Endpoints over password operations")
 public class PasswordController {
 
     private final PasswordService passwordService;
