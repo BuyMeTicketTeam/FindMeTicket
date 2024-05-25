@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @PasswordMatches
-public class ResetPasswordDTO implements ConfirmPasswordUtil {
+public class PasswordDto implements ConfirmPasswordUtil {
 
     @Email
     private String email;
     @NotNull
-    private String token;
+    private String code;
     @NotNull
     private String password;
     @NotNull

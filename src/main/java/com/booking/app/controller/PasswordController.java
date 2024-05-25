@@ -1,9 +1,9 @@
 package com.booking.app.controller;
 
+import com.booking.app.dto.CodeConfirmationDTO;
 import com.booking.app.dto.EmailDTO;
+import com.booking.app.dto.PasswordDto;
 import com.booking.app.dto.RequestUpdatePasswordDTO;
-import com.booking.app.dto.ResetPasswordDTO;
-import com.booking.app.dto.TokenConfirmationDTO;
 import com.booking.app.entity.UserCredentials;
 import com.booking.app.exception.ErrorDetails;
 import com.booking.app.services.PasswordService;
@@ -13,23 +13,21 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import static com.booking.app.constant.ResetPasswordConstantMessages.*;
+import static com.booking.app.constant.PasswordConstantMessages.*;
+import static com.booking.app.exception.exception.InvalidConfirmationCodeException.MESSAGE_INVALID_CONFIRMATION_CODE_IS_PROVIDED;
 
 @RestController
 @RequestMapping
 @AllArgsConstructor
-@Log4j2
 @Tag(name = "Password Management", description = "Endpoints over password operations")
 public class PasswordController {
 
@@ -41,7 +39,6 @@ public class PasswordController {
      * @param dto          the email data transfer object containing the email address
      * @param siteLanguage the language preference for the email content
      * @return a ResponseEntity indicating the result of the operation
-     * @throws MessagingException if there is an error while sending the email
      */
     @PostMapping("/reset")
     @Operation(summary = "Send a code", description = "Send confirmation code to mail")
@@ -52,7 +49,7 @@ public class PasswordController {
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
     public ResponseEntity<?> sendResetCode(@RequestBody @NotNull @Valid EmailDTO dto,
-                                           @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage) throws MessagingException {
+                                           @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage) {
         passwordService.sendResetCode(dto.getEmail(), siteLanguage);
         return ResponseEntity.ok(MESSAGE_CODE_HAS_BEEN_SENT);
     }
@@ -74,7 +71,7 @@ public class PasswordController {
                     description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-    public ResponseEntity<?> confirmResetPassword(@RequestBody @NotNull @Valid ResetPasswordDTO dto) {
+    public ResponseEntity<?> confirmResetPassword(@RequestBody @NotNull @Valid PasswordDto dto) {
         passwordService.resetPassword(dto);
         return ResponseEntity.ok(MESSAGE_PASSWORD_HAS_BEEN_SUCCESSFULLY_RESET);
     }
@@ -106,7 +103,6 @@ public class PasswordController {
      * @param siteLanguage the language preference for the email content
      * @param dto          the token confirmation data transfer object containing the email address
      * @return a ResponseEntity indicating the result of the operation
-     * @throws MessagingException if there is an error while sending the email
      */
     @Operation(summary = "Resend new reset code")
     @ApiResponses(value = {
@@ -117,7 +113,7 @@ public class PasswordController {
     })
     @PostMapping("/resend/reset-token")
     public ResponseEntity<?> resendResetPasswordToken(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
-                                                      @RequestBody @NotNull @Valid TokenConfirmationDTO dto) throws MessagingException {
+                                                      @RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
         passwordService.sendResetCode(dto.getEmail(), siteLanguage);
         return ResponseEntity.status(HttpStatus.OK).body("Reset token has been sent one more time");
     }
