@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class TokenConfirmationDTO {
+public class CodeConfirmationDTO {
 
     @NotNull
     private String email;
     @NotNull
-    private String token;
+    private String code;
 
 }

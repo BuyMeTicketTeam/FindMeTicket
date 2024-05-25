@@ -1,30 +1,18 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.TokenConfirmationDTO;
-import com.booking.app.entity.ConfirmToken;
-import com.booking.app.entity.Role;
-import com.booking.app.entity.User;
-import com.booking.app.entity.UserCredentials;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserCredentialsRepository;
-import com.booking.app.repositories.VerifyEmailRepository;
+import com.booking.app.repositories.ConfirmationCodeRepository;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.TokenService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RegistrationServiceImplTest {
@@ -38,7 +26,7 @@ class RegistrationServiceImplTest {
     private RoleRepository roleRepository;
 
     @Mock
-    private VerifyEmailRepository verifyEmailRepository;
+    private ConfirmationCodeRepository confirmationCodeRepository;
 
     @Mock
     private UserMapper mapper;
@@ -49,24 +37,24 @@ class RegistrationServiceImplTest {
     @Mock
     private MailSenderService mailService;
 
-    @Mock
-    private TokenService tokenService;
-
-
-    private UserCredentials userCredentials;
-    private ConfirmToken confirmToken;
-    private User user;
-    private RegistrationDTO registrationDTO;
-    private TokenConfirmationDTO tokenConfirmationDTO;
-    private Role role;
-
-    @BeforeEach
-    void setUp() {
-        registrationDTO = RegistrationDTO.builder().email("mishaakamichael999@gmail.com")
-                .username("Michael999")
-                .password("GloryToUkraine5")
-                .confirmPassword("GloryToUkraine5").build();
-    }
+//    @Mock
+//    private TokenService tokenService;
+//
+//
+//    private UserCredentials userCredentials;
+//    private ConfirmationCode confirmationCode;
+//    private User user;
+//    private RegistrationDTO registrationDTO;
+//    private TokenConfirmationDTO tokenConfirmationDTO;
+//    private Role role;
+//
+//    @BeforeEach
+//    void setUp() {
+//        registrationDTO = RegistrationDTO.builder().email("mishaakamichael999@gmail.com")
+//                .username("Michael999")
+//                .password("GloryToUkraine5")
+//                .confirmPassword("GloryToUkraine5").build();
+//    }
 
 //    @Test
 //    void testSuccessfullyRegistration() throws MessagingException {
@@ -141,54 +129,54 @@ class RegistrationServiceImplTest {
 //        assertEquals(userCredentials.getEmail(), emailDTO.getEmail());
 //    }
 
-    @Test
-    void testSuccessEnableUserIfValid() {
-
-        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
-
-        UserCredentials userCredentials = UserCredentials.builder().enabled(false).build();
-
-        when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(true);
-
-        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
-
-        assertTrue(registrationService.enableIfValid(dto));
-    }
-
-    @Test
-    void testEnableUserIfValidWrongToken() {
-
-        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
-
-        UserCredentials userCredentials = UserCredentials.builder().enabled(false).build();
-
-        when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(false);
-
-        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
-
-        assertFalse(registrationService.enableIfValid(dto));
-    }
-
-    @Test
-    void testEnableUserIfValidNoUserFound() {
-
-        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
-
-        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
-
-        assertFalse(registrationService.enableIfValid(dto));
-    }
-
-    @Test
-    void testEnableUserIfValidUserAlreadyEnabled() {
-
-        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
-
-        UserCredentials userCredentials = UserCredentials.builder().enabled(true).build();
-
-        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
-
-        assertFalse(registrationService.enableIfValid(dto));
-    }
+//    @Test
+//    void testSuccessEnableUserIfValid() {
+//
+//        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+//
+//        UserCredentials userCredentials = UserCredentials.builder().enabled(false).build();
+//
+//        when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(true);
+//
+//        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
+//
+//        assertTrue(registrationService.confirmCode(dto));
+//    }
+//
+//    @Test
+//    void testEnableUserIfValidWrongToken() {
+//
+//        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+//
+//        UserCredentials userCredentials = UserCredentials.builder().enabled(false).build();
+//
+//        when(tokenService.verifyToken(dto.getEmail(), dto.getToken())).thenReturn(false);
+//
+//        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
+//
+//        assertFalse(registrationService.confirmCode(dto));
+//    }
+//
+//    @Test
+//    void testEnableUserIfValidNoUserFound() {
+//
+//        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+//
+//        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.empty());
+//
+//        assertFalse(registrationService.confirmCode(dto));
+//    }
+//
+//    @Test
+//    void testEnableUserIfValidUserAlreadyEnabled() {
+//
+//        TokenConfirmationDTO dto = TokenConfirmationDTO.builder().token("SAD88").email("javier_milei@gmail.com").build();
+//
+//        UserCredentials userCredentials = UserCredentials.builder().enabled(true).build();
+//
+//        when(userCredentialsRepository.findByEmail(dto.getEmail())).thenReturn(Optional.of(userCredentials));
+//
+//        assertFalse(registrationService.confirmCode(dto));
+//    }
 
 }

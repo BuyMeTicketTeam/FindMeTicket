@@ -2,138 +2,90 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.TokenConfirmationDTO;
-import com.booking.app.entity.ConfirmToken;
-import com.booking.app.entity.Role;
-import com.booking.app.entity.User;
+import com.booking.app.dto.CodeConfirmationDTO;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.enums.EnumProvider;
-import com.booking.app.enums.EnumRole;
 import com.booking.app.exception.exception.EmailAlreadyTakenException;
+import com.booking.app.exception.exception.InvalidConfirmationCodeException;
+import com.booking.app.exception.exception.UserCredentialsNotFoundException;
 import com.booking.app.mapper.UserMapper;
-import com.booking.app.repositories.RoleRepository;
-import com.booking.app.repositories.UserCredentialsRepository;
+import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
-import com.booking.app.services.TokenService;
-import com.booking.app.util.AvatarGenerator;
-import com.booking.app.util.HtmlTemplateUtils;
+import com.booking.app.services.UserCredentialsService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static com.booking.app.constant.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
 import static com.booking.app.constant.RegistrationConstantMessages.EMAIL_IS_ALREADY_TAKEN_MESSAGE;
 
-/**
- * Service class for user registration operations.
- */
+
 @Service
 @RequiredArgsConstructor
+@Log4j2
+@Transactional(propagation = Propagation.REQUIRED)
 public class RegistrationServiceImpl implements RegistrationService {
 
-
-    private final UserCredentialsRepository userCredentialsRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserCredentialsService userCredentialsService;
     private final UserMapper mapper;
     private final MailSenderService mailService;
-    private final TokenService tokenService;
+    private final ConfirmationCodeService confirmationCodeService;
 
     @Override
-    @Transactional
     public EmailDTO register(RegistrationDTO dto, String language) throws MessagingException {
-        UserCredentials userCredentials = findUser(dto);
-        sendMail(language, userCredentials);
+        UserCredentials userCredentials = findOrCreateUserCredentials(dto);
+        mailService.sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, userCredentials.getUser().getConfirmationCode().getCode(), userCredentials);
+        log.info("User with ID: {} has successfully registered.", userCredentials.getId());
         return mapper.toEmailDTO(userCredentials);
     }
 
     @Override
-    @Transactional
-    public boolean enableIfValid(TokenConfirmationDTO dto) {
-        Optional<UserCredentials> userCredentials = userCredentialsRepository.findByEmail(dto.getEmail());
-        return userCredentials.map(user -> {
-            if (!user.isEnabled() && tokenService.verifyToken(dto.getEmail(), dto.getToken())) {
-                userCredentialsRepository.enableUser(user.getId());
-                return true;
-            } else {
-                return false;
-            }
-        }).orElse(false);
+    public void confirmCode(CodeConfirmationDTO dto) {
+        userCredentialsService.findByEmail(dto.getEmail())
+                .ifPresentOrElse(userCredentials -> {
+                    if (!userCredentials.isEnabled()) {
+                        verifyUserCredentials(dto, userCredentials);
+                    }
+                }, () -> {
+                    throw new UserCredentialsNotFoundException();
+                });
     }
 
     /**
-     * Sends a confirmation email to the user.
+     * Verifies the user's credentials using the provided code.
      *
-     * @param language        The language for the email template.
-     * @param userCredentials The UserCredentials of the user to whom the email is sent.
-     * @throws MessagingException If there is an issue with sending the email.
+     * @param dto             the data transfer object containing the code and email for confirmation
+     * @param userCredentials the user credentials to be verified
      */
-    private void sendMail(String language, UserCredentials userCredentials) throws MessagingException {
-        String template = HtmlTemplateUtils.getConfirmationHtmlTemplate(language);
-        mailService.sendEmail(template, EMAIL_CONFIRMATION_SUBJECT, userCredentials.getUser().getConfirmToken().getToken(), userCredentials);
+    private void verifyUserCredentials(CodeConfirmationDTO dto, UserCredentials userCredentials) {
+        if (confirmationCodeService.verifyCode(userCredentials.getUser().getConfirmationCode(), dto.getCode())) {
+            userCredentialsService.enableUserCredentials(userCredentials);
+            log.info("User with ID: {} has successfully confirmed email.", userCredentials.getId());
+        } else {
+            throw new InvalidConfirmationCodeException();
+        }
     }
 
     /**
      * Finds an existing user by email or creates a new user if not found.
      *
-     * @param dto The RegistrationDTO containing user registration details.
-     * @return UserCredentials Returns the UserCredentials of the found or newly created user.
-     * @throws EmailAlreadyTakenException If a user with the provided email already exists and is enabled.
+     * @param dto the data transfer object containing user registration details
+     * @return the user credentials of the found or newly created user
+     * @throws EmailAlreadyTakenException if a user with the provided email already exists and is enabled
      */
-    private UserCredentials findUser(RegistrationDTO dto) {
-        return userCredentialsRepository.findByEmail(dto.getEmail())
+    private UserCredentials findOrCreateUserCredentials(RegistrationDTO dto) {
+        return userCredentialsService.findByEmail(dto.getEmail())
                 .map(user -> {
                     if (user.isEnabled()) {
                         throw new EmailAlreadyTakenException(EMAIL_IS_ALREADY_TAKEN_MESSAGE);
+                    } else {
+                        return userCredentialsService.updateUserCredentials(user, dto);
                     }
-                    return updateUser(user, dto);
                 })
-                .orElseGet(() -> createNewUser(dto));
-    }
-
-
-    /**
-     * Updates the details of an existing user.
-     *
-     * @param userCredentials The existing UserCredentials to be updated.
-     * @param dto             The RegistrationDTO containing new user details.
-     * @return UserCredentials Returns the updated UserCredentials.
-     */
-    private UserCredentials updateUser(UserCredentials userCredentials, RegistrationDTO dto) {
-        userCredentials.setPassword(passwordEncoder.encode(dto.getPassword()));
-        ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
-        User user = userCredentials.getUser();
-        user.setConfirmToken(confirmToken);
-        user.setNotification(dto.getNotification());
-        userCredentialsRepository.save(userCredentials);
-        return userCredentials;
-    }
-
-    /**
-     * Creates a new user with the provided registration details.
-     *
-     * @param dto The RegistrationDTO containing user registration details.
-     * @return UserCredentials Returns the newly created UserCredentials.
-     */
-    @NotNull
-    private UserCredentials createNewUser(RegistrationDTO dto) {
-        UserCredentials userCredentials = mapper.toUserSecurity(dto);
-        userCredentials.setProvider(EnumProvider.LOCAL);
-        userCredentials.setPassword(passwordEncoder.encode(dto.getPassword()));
-        Role role = roleRepository.findRoleByEnumRole(EnumRole.USER);
-        ConfirmToken confirmToken = ConfirmToken.createConfirmToken();
-        byte[] avatarAsBytes = AvatarGenerator.createRandomAvatarAsBytes();
-
-        User user = User.createUser(userCredentials, role, confirmToken, dto.getNotification(), avatarAsBytes);
-        userCredentials.setUser(user);
-        userCredentialsRepository.save(userCredentials);
-        return userCredentials;
+                .orElseGet(() -> userCredentialsService.createUserCredentials(dto));
     }
 
 }

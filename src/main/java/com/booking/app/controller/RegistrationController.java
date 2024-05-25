@@ -2,11 +2,13 @@ package com.booking.app.controller;
 
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.TokenConfirmationDTO;
+import com.booking.app.dto.CodeConfirmationDTO;
+import com.booking.app.exception.ErrorDetails;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
-import com.booking.app.util.HtmlTemplateUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,7 +16,6 @@ import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,6 @@ import static com.booking.app.constant.RegistrationConstantMessages.*;
 @RestController
 @RequestMapping
 @AllArgsConstructor
-@Log4j2
 @Tag(name = "Registration", description = "Endpoints for registration and confirmation")
 public class RegistrationController {
 
@@ -56,7 +56,6 @@ public class RegistrationController {
     public ResponseEntity<?> signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
                                     @RequestBody @Valid @NotNull RegistrationDTO dto) throws MessagingException, IOException {
         EmailDTO register = registrationService.register(dto, siteLanguage);
-        log.info("User with email {} has successfully registered!", dto.getEmail());
         return ResponseEntity.ok().body(register);
     }
 
@@ -70,15 +69,17 @@ public class RegistrationController {
     @Operation(summary = "Email confirmation", description = "Confirm user identity")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = USER_IS_VERIFIED_MESSAGE),
-            @ApiResponse(responseCode = "400", description = CODE_IS_NOT_RIGHT_MESSAGE)
+            @ApiResponse(responseCode = "400",
+                    description = CODE_IS_NOT_RIGHT_MESSAGE,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404",
+                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-    public ResponseEntity<?> confirmEmailToken(@RequestBody @NotNull @Valid TokenConfirmationDTO dto) {
-        if (registrationService.enableIfValid(dto)) {
-            log.info(String.format("User %s has successfully confirmed email!", dto.getEmail()));
-            return ResponseEntity.status(HttpStatus.OK).body(USER_IS_VERIFIED_MESSAGE);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CODE_IS_NOT_RIGHT_MESSAGE);
-        }
+
+    public ResponseEntity<?> confirmEmailToken(@RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
+        registrationService.confirmCode(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(USER_IS_VERIFIED_MESSAGE);
     }
 
     /**
@@ -92,16 +93,14 @@ public class RegistrationController {
     @Operation(summary = "Resend email confirmation")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = CONFIRM_TOKEN_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE),
-            @ApiResponse(responseCode = "404", description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE),
+            @ApiResponse(responseCode = "404",
+                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
     public ResponseEntity<?> resendConfirmEmailToken(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
-                                                     @RequestBody @NotNull @Valid TokenConfirmationDTO dto) {
-        String htmlTemplate = HtmlTemplateUtils.getConfirmationHtmlTemplate(siteLanguage);
-        if (mailSenderService.resendEmail(dto.getEmail(), htmlTemplate)) {
-            return ResponseEntity.status(HttpStatus.OK).body(CONFIRM_TOKEN_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE);
-        }
+                                                     @RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
+        mailSenderService.resendEmail(siteLanguage, dto.getEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(CONFIRM_TOKEN_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE);
     }
 
 }
