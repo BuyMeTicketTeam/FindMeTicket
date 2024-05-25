@@ -66,4 +66,11 @@ public interface UserCredentialsService {
      */
     UserCredentials updateUserCredentials(UserCredentials userCredentials, RegistrationDTO dto);
 
+    /**
+     * Deletes the given user credentials.
+     *
+     * @param userCredentials the user credentials to be deleted
+     */
+    void delete(UserCredentials userCredentials);
+
 }

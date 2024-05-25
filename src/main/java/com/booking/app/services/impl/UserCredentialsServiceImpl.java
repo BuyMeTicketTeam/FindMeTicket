@@ -100,5 +100,9 @@ public class UserCredentialsServiceImpl implements UserCredentialsService {
         return userCredentials;
     }
 
+    @Override
+    public void delete(UserCredentials userCredentials){
+        userCredentialsRepository.delete(userCredentials);
+    }
 
 }
