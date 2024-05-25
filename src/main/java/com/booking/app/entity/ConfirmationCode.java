@@ -11,37 +11,35 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "token")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class ConfirmToken {
+public class ConfirmationCode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @OneToOne(mappedBy = "confirmToken")
+    @OneToOne(mappedBy = "confirmationCode")
     private User user;
 
     @NotNull
-    private String token;
+    private String code;
 
     @NotNull
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date expiryTime;
 
-    public static ConfirmToken createConfirmToken() {
+    public static ConfirmationCode createCode() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tenMinutes = now.plusMinutes(10);
         Date dateExpiryTime = Date.from(tenMinutes.atZone(ZoneId.systemDefault()).toInstant());
-        return ConfirmToken.builder()
+        return ConfirmationCode.builder()
                 .expiryTime(dateExpiryTime)
-                .token(TokenUtils.generateRandomToken())
+                .code(TokenUtils.generateRandomToken())
                 .build();
     }
 
 }
-
