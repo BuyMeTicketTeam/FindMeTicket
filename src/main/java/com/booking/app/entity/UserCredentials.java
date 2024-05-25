@@ -6,11 +6,14 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_credentials")
+@Table(name = "user_credentials",
+        indexes = {@Index(name = "idx_email", columnList = "email", unique = true)})
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -24,7 +27,7 @@ public class UserCredentials implements UserDetails {
     private UUID id;
 
     @Email
-    @Column(unique = true,name = "email")
+    @Column(unique = true, name = "email")
     private String email;
 
     @Column

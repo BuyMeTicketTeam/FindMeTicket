@@ -1,5 +1,6 @@
 package com.booking.app.entity;
 
+import com.booking.app.util.AvatarGenerator;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,7 +44,7 @@ public class User {
 
     @JoinColumn(referencedColumnName = "id", name = "token_id")
     @OneToOne(cascade = CascadeType.ALL)
-    private ConfirmToken confirmToken;
+    private ConfirmationCode confirmationCode;
 
     @OneToOne(mappedBy = "user")
     private UserCredentials security;
@@ -55,16 +56,13 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Review review;
 
-    public static User createUser(UserCredentials userCredentials, Role role, ConfirmToken confirmToken, Boolean notification, byte[] profilePicture) {
-        User user = User.builder()
+    public static User createUser(Role role, ConfirmationCode confirmationCode, Boolean notification) {
+        byte[] avatarAsBytes = AvatarGenerator.createRandomAvatarAsBytes();
+        return User.builder()
                 .role(role)
-                .confirmToken(confirmToken)
-                .security(userCredentials)
+                .confirmationCode(confirmationCode)
                 .notification(notification)
-                .profilePicture(profilePicture).build();
-        userCredentials.setUser(user);
-        confirmToken.setUser(user);
-        return user;
+                .profilePicture(avatarAsBytes).build();
     }
 
 }
