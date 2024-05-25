@@ -180,13 +180,13 @@ docker.exe compose -f compose.yaml  up
 👤 **Aleksandra Poichenko** - *Project Manager* [[LinkedIn](https://www.linkedin.com/in/aleksandra-poichenko/)]
 
 👤 **Volodymyr Kuzmych** - *Team
-Mentor* [[GitHub](https://github.com/VKuzmich) | [LinkedIn](https://www.linkedin.com/in/volodymyr-kuzmych-9915942a/)]
+Mentor* [[GitHub](https://github.com/vvkuzmych) | [LinkedIn](https://www.linkedin.com/in/volodymyr-kuzmych-9915942a/)]
 
 👤 **Mykhailo Marchuk** - *Backend
-dev* [[GitHub](https://github.com/mishaakamichael999) | [LinkedIn](https://www.linkedin.com/in/mishaakamichael999/)]
+dev* [[GitHub](https://github.com/mishaakamichael999) | [LinkedIn](https://github.com/marchuk-engineer)]
 
 👤 **Kyrylo Peniaziev** - *Backend
-dev* [[GitHub](https://github.com/Stepan22-prog) | [LinkedIn](https://www.linkedin.com/in/kyrylo-peniaziev-9137a328a/)]
+dev* [[GitHub](https://github.com/KirilllP) | [LinkedIn](https://www.linkedin.com/in/kyrylo-peniaziev-9137a328a/)]
 
 👤 **Stepan Stadniuk** - *Frontend dev* [[GitHub](https://github.com/Stepan22-prog)]
 
