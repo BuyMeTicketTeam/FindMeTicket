@@ -1,22 +1,15 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.UserDTO;
-import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
-    @Transactional
-    UserDTO create(UserDTO user);
+    /**
+     * Updates the notification setting for a user.
+     *
+     * @param uuid         the ID of the user
+     * @param notification the new notification setting
+     */
+    void updateNotification(UUID uuid, boolean notification);
 
-    List<UserDTO> getAll();
-
-    UserDTO getById(UUID id);
-
-    @Transactional
-    UserDTO update(UUID id, UserDTO user);
-
-    @Transactional
-    void delete(UUID id);
 }
