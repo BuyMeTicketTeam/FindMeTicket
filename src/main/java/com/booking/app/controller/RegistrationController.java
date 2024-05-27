@@ -21,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 import static com.booking.app.constant.RegistrationConstantMessages.*;
 
 /**
@@ -45,27 +43,26 @@ public class RegistrationController {
      * @param dto          the registration data transfer object
      * @return a ResponseEntity containing the email data transfer object
      * @throws MessagingException if an error occurs while sending the email
-     * @throws IOException        if an I/O error occurs
      */
-    @PostMapping("/register")
+    @PostMapping("/sign-up")
     @Operation(summary = "Register a user", description = "Attempt to sign up new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = USER_REGISTERED_SUCCESSFULLY_MESSAGE + "\t\n"
                             + EMAIL_IS_ALREADY_TAKEN_MESSAGE)})
     public ResponseEntity<?> signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
-                                    @RequestBody @Valid @NotNull RegistrationDTO dto) throws MessagingException, IOException {
+                                    @RequestBody @Valid @NotNull RegistrationDTO dto) throws MessagingException {
         EmailDTO register = registrationService.register(dto, siteLanguage);
         return ResponseEntity.ok().body(register);
     }
 
     /**
-     * Confirms the user's email using a token.
+     * Confirms the user's email using a code.
      *
-     * @param dto the token confirmation data transfer object
+     * @param dto the code confirmation data transfer object
      * @return a ResponseEntity containing the result of the confirmation
      */
-    @PostMapping("/confirm-email")
+    @PostMapping("/verify")
     @Operation(summary = "Email confirmation", description = "Confirm user identity")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = USER_IS_VERIFIED_MESSAGE),
@@ -76,31 +73,30 @@ public class RegistrationController {
                     description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-
-    public ResponseEntity<?> confirmEmailToken(@RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
+    public ResponseEntity<?> confirmEmailCode(@RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
         registrationService.confirmCode(dto);
         return ResponseEntity.status(HttpStatus.OK).body(USER_IS_VERIFIED_MESSAGE);
     }
 
     /**
-     * Resends the email confirmation token.
+     * Resends the email confirmation code.
      *
      * @param siteLanguage the language of the site
-     * @param dto          the token confirmation data transfer object
+     * @param dto          the code confirmation data transfer object
      * @return a ResponseEntity containing the result of the resend operation
      */
-    @PostMapping("/resend/confirm-token")
+    @PostMapping("/resend/verification-code")
     @Operation(summary = "Resend email confirmation")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = CONFIRM_TOKEN_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE),
+            @ApiResponse(responseCode = "200", description = CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE),
             @ApiResponse(responseCode = "404",
                     description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-    public ResponseEntity<?> resendConfirmEmailToken(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
-                                                     @RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
+    public ResponseEntity<?> resendConfirmEmailCode(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
+                                                    @RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
         mailSenderService.resendEmail(siteLanguage, dto.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(CONFIRM_TOKEN_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE);
+        return ResponseEntity.status(HttpStatus.OK).body(CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE);
     }
 
 }

@@ -44,7 +44,7 @@ public class UserController {
      * @param response        the HTTP response
      * @return a response entity indicating the result of the operation
      */
-    @DeleteMapping("/delete-user")
+    @DeleteMapping("/users")
     @Operation(summary = "Delete a user", description = "Delete authenticated user account")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted successfully"),

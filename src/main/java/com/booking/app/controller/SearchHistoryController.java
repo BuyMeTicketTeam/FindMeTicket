@@ -37,7 +37,7 @@ public class SearchHistoryController {
      * @param request         The HTTP request containing language information.
      * @return ResponseEntity containing the user's search history.
      */
-    @GetMapping("/getHistory")
+    @GetMapping("/users/history")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "User's history", description = "Searching ticket of user history")
     @ApiResponses(value = {

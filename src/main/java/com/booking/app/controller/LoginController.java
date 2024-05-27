@@ -48,7 +48,7 @@ public class LoginController {
      * - HTTP 200 OK with the user details if authentication is successful
      * - HTTP 401 Unauthorized if authentication fails
      */
-    @PostMapping("/login")
+    @PostMapping("/sign-in")
     @Operation(summary = "Basic authentication")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = USER_HAS_BEEN_AUTHENTICATED,
@@ -77,7 +77,7 @@ public class LoginController {
             @ApiResponse(responseCode = "401", description = CLIENT_ID_IS_NOT_RIGHT_MESSAGE),
             @ApiResponse(responseCode = "400", description = NO_SOCIAL_IDENTITY_PROVIDERS_MESSAGE)
     })
-    @PostMapping("/oauth2/authorize/*")
+    @PostMapping("/sign-in/*")
     public ResponseEntity<?> socialLogin(@RequestBody @Valid @NotNull OAuth2IdTokenDTO tokenDTO, HttpServletRequest request, HttpServletResponse response) {
         if (request.getRequestURI().contains("google")) {
             return loginService.loginWithGoogle(tokenDTO, request, response);

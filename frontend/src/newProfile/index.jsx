@@ -60,7 +60,7 @@ function Popup({
   }
 
   function handleDeleteButton() {
-    makeQuerry('delete-user', undefined, undefined, 'DELETE').then((response) => {
+    makeQuerry('/users', undefined, undefined, 'DELETE').then((response) => {
       switch (response.status) {
         case 200:
           navigate('/');
@@ -113,7 +113,7 @@ function Popup({
 
   async function getHistory() {
     setLoading(true);
-    const response = await makeQuerry('getHistory', undefined, undefined, 'GET');
+    const response = await makeQuerry('/users/history', undefined, undefined, 'GET');
     setLoading(false);
     switch (response.status) {
       case 200:
@@ -158,9 +158,9 @@ function Popup({
     await new Promise(() => {
       timerId.current = setTimeout(() => {
         if (notificationEnabled) {
-          makeQuerry('notifications/enable', undefined, undefined, 'GET');
+          makeQuerry('users/notification/on', undefined, undefined, 'GET');
         } else {
-          makeQuerry('notifications/disable', undefined, undefined, 'GET');
+          makeQuerry('users/notification/off', undefined, undefined, 'GET');
         }
       }, 2000);
     });
@@ -171,7 +171,7 @@ function Popup({
   }, [notificationEnabled]);
 
   if (!status) {
-    navigate('/login', { state: { successNavigate: '/profile-page', closeNavigate: '/' } });
+    navigate('/sign-in', { state: { successNavigate: '/profile-page', closeNavigate: '/' } });
     return <p>redirect</p>;
   }
 

@@ -40,7 +40,7 @@ public class PasswordController {
      * @param siteLanguage the language preference for the email content
      * @return a ResponseEntity indicating the result of the operation
      */
-    @PostMapping("/reset")
+    @PostMapping("/send/reset-code")
     @Operation(summary = "Send a code", description = "Send confirmation code to mail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_CODE_HAS_BEEN_SENT),
@@ -55,12 +55,13 @@ public class PasswordController {
     }
 
     /**
-     * Confirms the reset password token and updates the password.
+     * Confirms the reset password code and resets the password.
      *
-     * @param dto the reset password data transfer object containing the email, token, and new password
+     * @param dto the reset password data transfer object containing the email, code, and new password
      * @return a ResponseEntity indicating the result of the operation
      */
-    @PostMapping("/new-password")
+    //
+    @PatchMapping("/users/password/reset")
     @Operation(summary = "Create new password", description = "Confirm code and set new password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_PASSWORD_HAS_BEEN_SUCCESSFULLY_RESET),
@@ -79,11 +80,11 @@ public class PasswordController {
     /**
      * Updates the password for an authenticated user.
      *
-     * @param updatePasswordDTO the request update password data transfer object containing the old and new passwords
-     * @param userCredentials   the authenticated user's credentials
+     * @param dto             the request update password data transfer object containing the old and new passwords
+     * @param userCredentials the authenticated user's credentials
      * @return a ResponseEntity indicating the result of the operation
      */
-    @PostMapping("/update-password")
+    @PatchMapping("/users/password/update")
     @Operation(summary = "Update password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED),
@@ -91,9 +92,9 @@ public class PasswordController {
                     description = MESSAGE_CURRENT_PASSWORD_IS_NOT_RIGHT,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-    public ResponseEntity<?> updatePassword(@RequestBody @NotNull @Valid RequestUpdatePasswordDTO updatePasswordDTO,
+    public ResponseEntity<?> updatePassword(@RequestBody @NotNull @Valid RequestUpdatePasswordDTO dto,
                                             @AuthenticationPrincipal UserCredentials userCredentials) {
-        passwordService.changePassword(updatePasswordDTO, userCredentials);
+        passwordService.changePassword(dto, userCredentials);
         return ResponseEntity.ok().body(MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED);
     }
 
@@ -104,6 +105,8 @@ public class PasswordController {
      * @param dto          the token confirmation data transfer object containing the email address
      * @return a ResponseEntity indicating the result of the operation
      */
+
+    @PostMapping("/resend/reset-code")
     @Operation(summary = "Resend new reset code")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = MESSAGE_CODE_HAS_BEEN_SENT),
@@ -111,7 +114,6 @@ public class PasswordController {
                     description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-    @PostMapping("/resend/reset-token")
     public ResponseEntity<?> resendResetPasswordToken(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
                                                       @RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
         passwordService.sendResetCode(dto.getEmail(), siteLanguage);

@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 public interface RegistrationService {
 
     /**
-     * Registers a new user.
+     * Registers a new user and send confirmation code to email.
      *
      * @param dto      the data transfer object containing user registration details
      * @param language the language for the email template

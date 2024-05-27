@@ -45,7 +45,7 @@ public class TicketController {
 
     private final SearchHistoryService searchHistoryService;
 
-    @PostMapping("/searchTickets")
+    @PostMapping("/tickets/search")
     @Operation(summary = "Search tickets", description = "Find tickets based by criteria")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tickets has been found"),
@@ -71,7 +71,7 @@ public class TicketController {
         return emitter;
     }
 
-    @GetMapping("/get/ticket/{id}")
+    @GetMapping("/tickets/{id}")
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ticket has been found"),
@@ -95,7 +95,7 @@ public class TicketController {
         return emitter;
     }
 
-    @PostMapping(value = "/sortedBy", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/tickets/sort", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Sort tickets", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Get sorted tickets")
     public ResponseEntity<?> getSortedTickets(@RequestBody @NotNull @Valid RequestSortedTicketsDTO requestSortedTicketsDTO,
@@ -104,7 +104,7 @@ public class TicketController {
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 
-    @PostMapping(value = "/selectedTransport", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/tickets/transport", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get tickets", description = "Get tickets by type transport")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully returned"),

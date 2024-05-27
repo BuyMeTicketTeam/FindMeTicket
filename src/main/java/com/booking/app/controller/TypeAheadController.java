@@ -39,7 +39,7 @@ public class TypeAheadController {
      * @param startLetters DTO containing the start letters for city search.
      * @return ResponseEntity with a list of CitiesDTO as the response body.
      */
-    @PostMapping(path = "/typeAhead")
+    @PostMapping(path = "/typeahead")
     @Operation(summary = "Type ahead feature", description = "Find cities based on type-ahead search")
     @ApiResponse(responseCode = "200",
             description = "Successful operation. Returns a list of cities",

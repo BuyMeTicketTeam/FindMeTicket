@@ -30,7 +30,7 @@ public class LogoutController {
      *
      * @return ResponseEntity with an HTTP status representing successful logout
      */
-    @GetMapping("/logout")
+    @GetMapping("/sign-out")
     @Operation(summary = "Log out a user")
     @ApiResponse(responseCode = "200", description = "Successfully logged")
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {

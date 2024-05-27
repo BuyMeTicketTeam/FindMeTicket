@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
-
-    @PostMapping("/saveReview")
+    // TODO SECURE PATH
+    @PostMapping("/reviews")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Save review", description = "Add user's review")
     @ApiResponses(value = {
@@ -37,19 +37,18 @@ public class ReviewController {
         return ResponseEntity.ok().body(reviewService.saveReview(saveReviewDto, request));
     }
 
-    @GetMapping("/getReviews")
+    @GetMapping("/reviews")
     @Operation(summary = "Get reviews", description = "All reviews")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Successfully returned all reviews",
                     content = {@Content(schema = @Schema(implementation = ReviewDTO.class), mediaType = "application/json")})
     })
-
     public ResponseEntity<?> getReviews() {
         return ResponseEntity.ok().body(reviewService.getReviewList());
     }
 
-    @DeleteMapping("/deleteReview")
+    @DeleteMapping("/reviews")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Delete review", description = "Delete review of authorized user")
     @ApiResponses(value = {
@@ -60,7 +59,7 @@ public class ReviewController {
         return reviewService.deleteReview(request) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/getUserReview")
+    @GetMapping("/users/reviews")
     @Operation(summary = "Get user's review", description = "Get authorized user review")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -68,7 +67,6 @@ public class ReviewController {
                     content = {@Content(schema = @Schema(implementation = ReviewDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Review is not found")
     })
-
     public ResponseEntity<?> getReview(HttpServletRequest request) {
         ReviewDTO reviewDTO = reviewService.getUserReview(request);
         return reviewDTO == null ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(reviewDTO);

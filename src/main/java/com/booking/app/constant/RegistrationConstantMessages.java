@@ -9,7 +9,7 @@ public class RegistrationConstantMessages {
     public static final String USER_REGISTERED_SUCCESSFULLY_MESSAGE = "User registered successfully.";
     public static final String CODE_IS_NOT_RIGHT_MESSAGE = "Code is not right";
     public static final String USER_IS_VERIFIED_MESSAGE = "User is verified";
-    public static final String CONFIRM_TOKEN_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE = "Confirm token has been sent one more time";
+    public static final String CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE = "Confirm token has been sent one more time";
     public static final String THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE = "The specified email is not registered";
 }
 

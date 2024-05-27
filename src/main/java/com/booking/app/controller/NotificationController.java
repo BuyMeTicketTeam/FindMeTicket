@@ -31,7 +31,7 @@ public class NotificationController {
      * @param userCredentials the credentials of the authenticated user
      * @return a ResponseEntity indicating the outcome of the disable operation
      */
-    @GetMapping("/notifications/disable")
+    @GetMapping("/users/notification/off")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Disable")
     @ApiResponses(value = {
@@ -49,7 +49,7 @@ public class NotificationController {
      * @param userCredentials the credentials of the authenticated user
      * @return a ResponseEntity indicating the outcome of the enable operation
      */
-    @GetMapping("/notifications/enable")
+    @GetMapping("/users/notification/on")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Enable")
     @ApiResponses(value = {
