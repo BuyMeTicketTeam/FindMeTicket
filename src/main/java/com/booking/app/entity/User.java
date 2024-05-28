@@ -1,28 +1,44 @@
 package com.booking.app.entity;
 
+import com.booking.app.enums.EnumProvider;
 import com.booking.app.util.AvatarGenerator;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        indexes = {@Index(name = "idx_email", columnList = "email", unique = true)})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Email
+    @Column(unique = true, name = "email")
+    private String email;
+
+    @Column
+    private String password;
+
+    @Column
+    private String username;
 
     @Column(name = "registration_date")
     @CreatedDate
@@ -31,12 +47,24 @@ public class User {
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
-    @Column(name = "profile_picture", columnDefinition = "BYTEA")
-    private byte[] profilePicture;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider")
+    private EnumProvider provider;
 
-    private String urlPicture;
+    @Column(columnDefinition = "BYTEA")
+    private byte[] defaultAvatar;
+
+    private String socialMediaAvatar;
 
     private boolean notification = false;
+
+    private boolean accountNonExpired;
+
+    private boolean accountNonLocked;
+
+    private boolean credentialsNonExpired;
+
+    private boolean enabled;
 
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", name = "role_id")
@@ -46,12 +74,8 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private ConfirmationCode confirmationCode;
 
-    @OneToOne(mappedBy = "user")
-    private UserCredentials security;
-
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<UserSearchHistory> history;
-
+    private List<SearchHistory> history;
 
     @OneToOne(mappedBy = "user")
     private Review review;
@@ -62,7 +86,12 @@ public class User {
                 .role(role)
                 .confirmationCode(confirmationCode)
                 .notification(notification)
-                .profilePicture(avatarAsBytes).build();
+                .defaultAvatar(avatarAsBytes).build();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRole().getEnumRole().getSimpleGrantedAuthorities();
     }
 
 }
