@@ -1,7 +1,7 @@
 package com.booking.app.mapper;
 
 import com.booking.app.dto.SearchHistoryDto;
-import com.booking.app.entity.UserSearchHistory;
+import com.booking.app.entity.SearchHistory;
 import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.model.ArrivalCity;
 import com.booking.app.mapper.model.DepartureCity;
@@ -21,7 +21,7 @@ public interface HistoryMapper {
     @Mapping(target = "train", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.TRAIN))")
     @Mapping(target = "airplane", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.AIRPLANE))")
     @Mapping(target = "ferry", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.FERRY))")
-    SearchHistoryDto historyToDto(UserSearchHistory userSearchHistory, @Context DepartureCity departureCity, @Context ArrivalCity arrivalCity);
+    SearchHistoryDto historyToDto(SearchHistory searchHistory, @Context DepartureCity departureCity, @Context ArrivalCity arrivalCity);
 
     @Named("timeToString")
     static String timeToString(LocalDateTime time) {

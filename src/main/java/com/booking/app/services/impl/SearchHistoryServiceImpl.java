@@ -2,9 +2,9 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.SearchHistoryDto;
+import com.booking.app.entity.SearchHistory;
 import com.booking.app.entity.UkrainianPlaces;
 import com.booking.app.entity.UserCredentials;
-import com.booking.app.entity.UserSearchHistory;
 import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.HistoryMapper;
 import com.booking.app.mapper.model.ArrivalCity;
@@ -47,7 +47,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     public void addHistory(RequestTicketsDTO dto, String language, HttpServletRequest request) {
         findUser(request).ifPresent(user -> {
             Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
-            historyRepository.save(UserSearchHistory.builder()
+            historyRepository.save(SearchHistory.builder()
                     .user(user.getUser())
                     .departureCityId(typeAheadService.getCityId(dto.getDepartureCity(), language))
                     .arrivalCityId(typeAheadService.getCityId(dto.getArrivalCity(), language))
