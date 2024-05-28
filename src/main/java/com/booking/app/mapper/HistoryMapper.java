@@ -17,10 +17,10 @@ public interface HistoryMapper {
     @Mapping(source = "addingTime", target = "addingTime", qualifiedByName = "timeToString")
     @Mapping(source = "departureCityId", target = "departureCity", qualifiedByName = "getDepartureCity")
     @Mapping(source = "arrivalCityId", target = "arrivalCity", qualifiedByName = "getArrivalCity")
-    @Mapping(target = "bus", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.BUS))")
-    @Mapping(target = "train", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.TRAIN))")
-    @Mapping(target = "airplane", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.AIRPLANE))")
-    @Mapping(target = "ferry", expression = "java(userSearchHistory.getTypeTransport().contains(TypeTransportEnum.FERRY))")
+    @Mapping(target = "bus", expression = "java(searchHistory.getTypeTransport().contains(TypeTransportEnum.BUS))")
+    @Mapping(target = "train", expression = "java(searchHistory.getTypeTransport().contains(TypeTransportEnum.TRAIN))")
+    @Mapping(target = "airplane", expression = "java(searchHistory.getTypeTransport().contains(TypeTransportEnum.AIRPLANE))")
+    @Mapping(target = "ferry", expression = "java(searchHistory.getTypeTransport().contains(TypeTransportEnum.FERRY))")
     SearchHistoryDto historyToDto(SearchHistory searchHistory, @Context DepartureCity departureCity, @Context ArrivalCity arrivalCity);
 
     @Named("timeToString")

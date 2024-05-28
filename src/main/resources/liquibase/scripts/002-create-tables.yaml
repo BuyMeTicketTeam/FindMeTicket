@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1716650321009-1
+      id: 1716926842874-1
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -27,7 +27,7 @@ databaseChangeLog:
                   type: UUID
             tableName: bus_info
   - changeSet:
-      id: 1716650321009-2
+      id: 1716926842874-2
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -52,7 +52,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: confirmation_code
   - changeSet:
-      id: 1716650321009-3
+      id: 1716926842874-3
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -69,7 +69,7 @@ databaseChangeLog:
                   name: review_text
                   type: varchar(1000)
               - column:
-                  name: writing_date
+                  name: adding_date
                   type: DATETIME
               - column:
                   constraints:
@@ -81,7 +81,7 @@ databaseChangeLog:
                   type: UUID
             tableName: review
   - changeSet:
-      id: 1716650321009-4
+      id: 1716926842874-4
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -100,7 +100,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1716650321009-5
+      id: 1716926842874-5
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -127,7 +127,37 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1716650321009-6
+      id: 1716926842874-6
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_searchhistory
+                  name: id
+                  type: UUID
+              - column:
+                  name: departure_city
+                  type: BIGINT
+              - column:
+                  name: arrival_city
+                  type: BIGINT
+              - column:
+                  name: departure_date
+                  type: VARCHAR(255)
+              - column:
+                  name: adding_time
+                  type: DATETIME
+              - column:
+                  name: user_id
+                  type: UUID
+            tableName: search_history
+  - changeSet:
+      id: 1716926842874-7
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -169,7 +199,7 @@ databaseChangeLog:
                   type: UUID
             tableName: ticket
   - changeSet:
-      id: 1716650321009-7
+      id: 1716926842874-8
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -196,7 +226,7 @@ databaseChangeLog:
                   type: UUID
             tableName: train_info
   - changeSet:
-      id: 1716650321009-8
+      id: 1716926842874-9
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -205,14 +235,14 @@ databaseChangeLog:
               - column:
                   constraints:
                     nullable: false
-                  name: user_search_history_id
+                  name: search_history_id
                   type: UUID
               - column:
                   name: type
                   type: VARCHAR(255)
             tableName: type_transport
   - changeSet:
-      id: 1716650321009-9
+      id: 1716926842874-10
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -246,7 +276,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_places
   - changeSet:
-      id: 1716650321009-10
+      id: 1716926842874-11
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -256,7 +286,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_user_credentials
+                    primaryKeyName: pk_users
                   name: id
                   type: UUID
               - column:
@@ -269,11 +299,25 @@ databaseChangeLog:
                   name: username
                   type: VARCHAR(255)
               - column:
-                  name: user_id
-                  type: UUID
+                  name: registration_date
+                  type: DATE
+              - column:
+                  name: phone_number
+                  type: VARCHAR(255)
               - column:
                   name: provider
                   type: VARCHAR(255)
+              - column:
+                  name: default_avatar
+                  type: BYTEA
+              - column:
+                  name: social_media_avatar
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: notification
+                  type: BOOLEAN
               - column:
                   constraints:
                     nullable: false
@@ -294,68 +338,6 @@ databaseChangeLog:
                     nullable: false
                   name: enabled
                   type: BOOLEAN
-            tableName: user_credentials
-  - changeSet:
-      id: 1716650321009-11
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_usersearchhistory
-                  name: id
-                  type: UUID
-              - column:
-                  name: departure_city
-                  type: BIGINT
-              - column:
-                  name: arrival_city
-                  type: BIGINT
-              - column:
-                  name: departure_date
-                  type: VARCHAR(255)
-              - column:
-                  name: adding_time
-                  type: DATETIME
-              - column:
-                  name: user_id
-                  type: UUID
-            tableName: user_search_history
-  - changeSet:
-      id: 1716650321009-12
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - createTable:
-            columns:
-              - column:
-                  constraints:
-                    nullable: false
-                    primaryKey: true
-                    primaryKeyName: pk_users
-                  name: id
-                  type: UUID
-              - column:
-                  name: registration_date
-                  type: DATE
-              - column:
-                  name: phone_number
-                  type: VARCHAR(255)
-              - column:
-                  name: profile_picture
-                  type: BYTEA
-              - column:
-                  name: url_picture
-                  type: VARCHAR(255)
-              - column:
-                  constraints:
-                    nullable: false
-                  name: notification
-                  type: BOOLEAN
               - column:
                   name: role_id
                   type: INT
@@ -364,7 +346,7 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1716650321009-13
+      id: 1716926842874-12
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -373,25 +355,16 @@ databaseChangeLog:
             constraintName: uc_review_user
             tableName: review
   - changeSet:
-      id: 1716650321009-14
+      id: 1716926842874-13
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
             columnNames: email
-            constraintName: uc_user_credentials_email
-            tableName: user_credentials
+            constraintName: uc_users_email
+            tableName: users
   - changeSet:
-      id: 1716650321009-15
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            columnNames: user_id
-            constraintName: uc_user_credentials_user
-            tableName: user_credentials
-  - changeSet:
-      id: 1716650321009-16
+      id: 1716926842874-14
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -400,7 +373,7 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1716650321009-17
+      id: 1716926842874-15
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -409,7 +382,7 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1716650321009-18
+      id: 1716926842874-16
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -418,10 +391,10 @@ databaseChangeLog:
               - column:
                   name: email
             indexName: idx_email
-            tableName: user_credentials
+            tableName: users
             unique: true
   - changeSet:
-      id: 1716650321009-19
+      id: 1716926842874-17
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -432,7 +405,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1716650321009-20
+      id: 1716926842874-18
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -443,7 +416,18 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1716650321009-21
+      id: 1716926842874-19
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: search_history
+            constraintName: FK_SEARCHHISTORY_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1716926842874-20
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -454,7 +438,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1716650321009-22
+      id: 1716926842874-21
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -465,18 +449,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1716650321009-23
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: user_id
-            baseTableName: user_search_history
-            constraintName: FK_USERSEARCHHISTORY_ON_USER
-            referencedColumnNames: id
-            referencedTableName: users
-  - changeSet:
-      id: 1716650321009-24
+      id: 1716926842874-22
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -487,7 +460,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1716650321009-25
+      id: 1716926842874-23
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -498,25 +471,14 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: confirmation_code
   - changeSet:
-      id: 1716650321009-26
+      id: 1716926842874-24
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: user_id
-            baseTableName: user_credentials
-            constraintName: FK_USER_CREDENTIALS_ON_USER
-            referencedColumnNames: id
-            referencedTableName: users
-  - changeSet:
-      id: 1716650321009-27
-      author: misha (generated)
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addForeignKeyConstraint:
-            baseColumnNames: user_search_history_id
+            baseColumnNames: search_history_id
             baseTableName: type_transport
-            constraintName: fk_type_transport_on_user_search_history
+            constraintName: fk_type_transport_on_search_history
             referencedColumnNames: id
-            referencedTableName: user_search_history
+            referencedTableName: search_history
 

@@ -1,6 +1,6 @@
 package com.booking.app.dto;
 
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,26 +17,26 @@ public class AuthorizedUserDTO {
 
     private String email;
 
-    private String basicPicture;
+    private String defaultAvatar;
 
-    private String googlePicture;
+    private String socialMediaAvatar;
 
     private Boolean notification;
 
-    public static AuthorizedUserDTO createBasicAuthorizedUser(UserCredentials userCredentials) {
+    public static AuthorizedUserDTO createBasicAuthorizedUser(User user) {
         return AuthorizedUserDTO.builder()
-                .email(userCredentials.getEmail())
-                .notification(userCredentials.getUser().isNotification())
-                .basicPicture(Base64.getEncoder().encodeToString(userCredentials.getUser().getProfilePicture()))
-                .username(userCredentials.getUsername()).build();
+                .email(user.getEmail())
+                .notification(user.isNotification())
+                .defaultAvatar(Base64.getEncoder().encodeToString(user.getDefaultAvatar()))
+                .username(user.getUsername()).build();
     }
 
-    public static AuthorizedUserDTO createGoogleAuthorizedUser(UserCredentials userCredentials) {
+    public static AuthorizedUserDTO createGoogleAuthorizedUser(User user) {
         return AuthorizedUserDTO.builder()
-                .email(userCredentials.getEmail())
-                .notification(userCredentials.getUser().isNotification())
-                .username(userCredentials.getUsername())
-                .googlePicture(userCredentials.getUser().getUrlPicture()).build();
+                .email(user.getEmail())
+                .notification(user.isNotification())
+                .username(user.getUsername())
+                .socialMediaAvatar(user.getSocialMediaAvatar()).build();
     }
 
 }

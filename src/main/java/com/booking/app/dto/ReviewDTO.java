@@ -27,23 +27,23 @@ public class ReviewDTO {
 
     private String username;
 
-    private byte[] profilePicture;
+    private byte[] defaultAvatar;
 
-    private String urlPicture;
+    private String socialMediaAvatar;
 
     public static ReviewDTO createInstance(Review review) {
         User user = review.getUser();
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .id(user.getReview().getId())
-                .writingDate(review.getWritingDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                .writingDate(review.getAddingDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 .grade(review.getGrade())
                 .reviewText(review.getReviewText())
-                .username(user.getSecurity().getUsername())
+                .username(user.getUsername())
                 .build();
 
-        switch (user.getSecurity().getProvider()) {
-            case GOOGLE -> reviewDTO.setUrlPicture(user.getUrlPicture());
-            case LOCAL -> reviewDTO.setProfilePicture(user.getProfilePicture());
+        switch (user.getProvider()) {
+            case GOOGLE -> reviewDTO.setSocialMediaAvatar(user.getSocialMediaAvatar());
+            case LOCAL -> reviewDTO.setDefaultAvatar(user.getDefaultAvatar());
             default -> throw new ProviderNotFoundException("Third party service provider is not provided");
         }
         return reviewDTO;

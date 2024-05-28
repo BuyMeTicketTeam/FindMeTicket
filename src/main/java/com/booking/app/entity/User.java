@@ -80,13 +80,27 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
     private Review review;
 
-    public static User createUser(Role role, ConfirmationCode confirmationCode, Boolean notification) {
+    public static User createBasicUser(Role role, ConfirmationCode confirmationCode, Boolean notification) {
         byte[] avatarAsBytes = AvatarGenerator.createRandomAvatarAsBytes();
         return User.builder()
                 .role(role)
                 .confirmationCode(confirmationCode)
                 .notification(notification)
                 .defaultAvatar(avatarAsBytes).build();
+    }
+
+    public static User createGoogleUser(Role role, String username, String email, String urlPicture) {
+        return User.builder()
+                .provider(EnumProvider.GOOGLE)
+                .username(username)
+                .email(email)
+                .socialMediaAvatar(urlPicture)
+                .role(role)
+                .enabled(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .accountNonLocked(true)
+                .build();
     }
 
     @Override

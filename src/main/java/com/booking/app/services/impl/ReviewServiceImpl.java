@@ -4,9 +4,8 @@ import com.booking.app.dto.ReviewDTO;
 import com.booking.app.dto.SaveReviewDto;
 import com.booking.app.entity.Review;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserCredentials;
 import com.booking.app.repositories.ReviewRepository;
-import com.booking.app.repositories.UserCredentialsRepository;
+import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.ReviewService;
 import com.booking.app.util.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,12 +28,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
 
-    private final UserCredentialsRepository userCredentialsRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ReviewDTO saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request) {
         return findUser(request)
-                .map(UserCredentials::getUser)
                 .map(user -> {
                     Review existingReview = user.getReview();
                     if (Objects.nonNull(existingReview)) {
@@ -63,8 +61,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean deleteReview(HttpServletRequest request) {
-        return findUser(request).map(credentials -> {
-            Review review = credentials.getUser().getReview();
+        return findUser(request).map(user -> {
+            Review review = user.getReview();
             if (Objects.nonNull(review)) {
                 reviewRepository.delete(review);
                 return true;
@@ -76,23 +74,22 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewDTO getUserReview(HttpServletRequest request) {
         return findUser(request)
-                .map(UserCredentials::getUser)
                 .map(User::getReview)
                 .map(ReviewDTO::createInstance)
                 .orElse(null);
     }
 
     /**
-     * Finds the user credentials based on the HTTP request.
+     * Finds the user based on the HTTP request.
      *
      * @param request The HTTP request.
-     * @return Optional of UserCredentials.
+     * @return Optional of User.
      */
     @NotNull
-    private Optional<UserCredentials> findUser(HttpServletRequest request) {
+    private Optional<User> findUser(HttpServletRequest request) {
         Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID)
                 .map(cookie -> UUID.fromString(cookie.getValue()));
-        return uuid.flatMap(userCredentialsRepository::findById);
+        return uuid.flatMap(userRepository::findById);
     }
 
 }

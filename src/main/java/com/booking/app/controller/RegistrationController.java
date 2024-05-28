@@ -1,8 +1,8 @@
 package com.booking.app.controller;
 
+import com.booking.app.dto.CodeConfirmationDTO;
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.CodeConfirmationDTO;
 import com.booking.app.exception.ErrorDetails;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
@@ -50,6 +50,7 @@ public class RegistrationController {
             @ApiResponse(responseCode = "200",
                     description = USER_REGISTERED_SUCCESSFULLY_MESSAGE + "\t\n"
                             + EMAIL_IS_ALREADY_TAKEN_MESSAGE)})
+    // todo status when user is regged
     public ResponseEntity<?> signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
                                     @RequestBody @Valid @NotNull RegistrationDTO dto) throws MessagingException {
         EmailDTO register = registrationService.register(dto, siteLanguage);
@@ -62,7 +63,7 @@ public class RegistrationController {
      * @param dto the code confirmation data transfer object
      * @return a ResponseEntity containing the result of the confirmation
      */
-    @PostMapping("/verify")
+    @PostMapping("/users/verify")
     @Operation(summary = "Email confirmation", description = "Confirm user identity")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = USER_IS_VERIFIED_MESSAGE),
@@ -76,27 +77,6 @@ public class RegistrationController {
     public ResponseEntity<?> confirmEmailCode(@RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
         registrationService.confirmCode(dto);
         return ResponseEntity.status(HttpStatus.OK).body(USER_IS_VERIFIED_MESSAGE);
-    }
-
-    /**
-     * Resends the email confirmation code.
-     *
-     * @param siteLanguage the language of the site
-     * @param dto          the code confirmation data transfer object
-     * @return a ResponseEntity containing the result of the resend operation
-     */
-    @PostMapping("/resend/verification-code")
-    @Operation(summary = "Resend email confirmation")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE),
-            @ApiResponse(responseCode = "404",
-                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
-                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
-    })
-    public ResponseEntity<?> resendConfirmEmailCode(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
-                                                    @RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
-        mailSenderService.resendEmail(siteLanguage, dto.getEmail());
-        return ResponseEntity.status(HttpStatus.OK).body(CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE);
     }
 
 }

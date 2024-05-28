@@ -4,29 +4,24 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.SearchHistoryDto;
 import com.booking.app.entity.SearchHistory;
 import com.booking.app.entity.UkrainianPlaces;
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
 import com.booking.app.enums.TypeTransportEnum;
 import com.booking.app.mapper.HistoryMapper;
 import com.booking.app.mapper.model.ArrivalCity;
 import com.booking.app.mapper.model.DepartureCity;
 import com.booking.app.repositories.SearchHistoryRepository;
 import com.booking.app.repositories.UkrPlacesRepository;
-import com.booking.app.repositories.UserCredentialsRepository;
+import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.SearchHistoryService;
 import com.booking.app.services.TypeAheadService;
-import com.booking.app.util.CookieUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Stream;
-
-import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +29,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     private final SearchHistoryRepository historyRepository;
 
-    private final UserCredentialsRepository userCredentialsRepository;
+    private final UserRepository userRepository;
 
     private final TypeAheadService typeAheadService;
 
@@ -42,13 +37,12 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
 
     private final UkrPlacesRepository ukrPlacesRepository;
 
-
     @Override
-    public void addHistory(RequestTicketsDTO dto, String language, HttpServletRequest request) {
-        findUser(request).ifPresent(user -> {
+    public void addHistory(RequestTicketsDTO dto, String language, @Nullable User user) {
+        Optional.ofNullable(user).ifPresent(u -> {
             Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
             historyRepository.save(SearchHistory.builder()
-                    .user(user.getUser())
+                    .user(u)
                     .departureCityId(typeAheadService.getCityId(dto.getDepartureCity(), language))
                     .arrivalCityId(typeAheadService.getCityId(dto.getArrivalCity(), language))
                     .departureDate(dto.getDepartureDate())
@@ -58,9 +52,9 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     }
 
     @Override
-    public List<SearchHistoryDto> getUserHistory(UserCredentials userCredentials, String language) {
-        return Stream.of(userCredentials)
-                .flatMap(user -> user.getUser().getHistory().stream())
+    public List<SearchHistoryDto> getHistory(@Nullable User user, String language) {
+        return Stream.of(user)
+                .flatMap(u -> u.getHistory().stream())
                 .map(history -> {
                     String departureCity = getCity(history.getArrivalCityId(), language);
                     String arrivalCity = getCity(history.getDepartureCityId(), language);
@@ -81,19 +75,6 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
                 ? ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameEng)
                 : ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameUa);
         return city.orElse(null);
-    }
-
-    /**
-     * Finds the user credentials based on the HTTP request.
-     *
-     * @param request The HTTP request.
-     * @return Optional of UserCredentials.
-     */
-    @NotNull
-    private Optional<UserCredentials> findUser(HttpServletRequest request) {
-        Optional<UUID> uuid = CookieUtils.getCookie(request, USER_ID)
-                .map(cookie -> UUID.fromString(cookie.getValue()));
-        return uuid.flatMap(userCredentialsRepository::findById);
     }
 
 }

@@ -1,8 +1,8 @@
 package com.booking.app.controller;
 
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
 import com.booking.app.exception.ErrorDetails;
-import com.booking.app.services.UserCredentialsService;
+import com.booking.app.services.UserService;
 import com.booking.app.util.CookieUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,16 +34,17 @@ public class UserController {
     public static final String MESSAGE_USER_HAS_BEEN_DELETED = "User has been deleted";
     public static final String MESSAGE_UNAUTHENTICATED = "Full authentication is required to access this resource";
 
-    private final UserCredentialsService userCredentialsService;
+    private final UserService userService;
 
     /**
      * Deletes the authenticated user.
      *
-     * @param userCredentials the authenticated user's credentials
-     * @param request         the HTTP request
-     * @param response        the HTTP response
+     * @param user     the authenticated user's credentials
+     * @param request  the HTTP request
+     * @param response the HTTP response
      * @return a response entity indicating the result of the operation
      */
+    // todo {userId}
     @DeleteMapping("/users")
     @Operation(summary = "Delete a user", description = "Delete authenticated user account")
     @ApiResponses(value = {
@@ -52,10 +53,10 @@ public class UserController {
                     description = MESSAGE_UNAUTHENTICATED,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
     })
-    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal UserCredentials userCredentials,
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal User user,
                                         HttpServletRequest request,
                                         HttpServletResponse response) {
-        userCredentialsService.delete(userCredentials);
+        userService.delete(user);
         deleteCookies(request, response);
         return ResponseEntity.ok().body(MESSAGE_USER_HAS_BEEN_DELETED);
     }

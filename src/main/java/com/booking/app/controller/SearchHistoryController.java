@@ -1,7 +1,7 @@
 package com.booking.app.controller;
 
 import com.booking.app.dto.SearchHistoryDto;
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
 import com.booking.app.services.SearchHistoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,13 +30,7 @@ public class SearchHistoryController {
 
     private final SearchHistoryService searchHistoryService;
 
-    /**
-     * Retrieves the user's search history.
-     *
-     * @param userCredentials The user credentials obtained from authentication.
-     * @param request         The HTTP request containing language information.
-     * @return ResponseEntity containing the user's search history.
-     */
+    // todo {userId}
     @GetMapping("/users/history")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "User's history", description = "Searching ticket of user history")
@@ -47,8 +41,8 @@ public class SearchHistoryController {
             ),
             @ApiResponse(responseCode = "404", description = "History is not found")
     })
-    public ResponseEntity<?> getHistory(@AuthenticationPrincipal UserCredentials userCredentials, HttpServletRequest request) {
-        return ResponseEntity.ok().body(searchHistoryService.getUserHistory(userCredentials, request.getHeader(HttpHeaders.CONTENT_LANGUAGE)));
+    public ResponseEntity<?> getHistory(@AuthenticationPrincipal User user, HttpServletRequest request) {
+        return ResponseEntity.ok().body(searchHistoryService.getHistory(user, request.getHeader(HttpHeaders.CONTENT_LANGUAGE)));
     }
 
 }

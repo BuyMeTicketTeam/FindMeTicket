@@ -1,6 +1,6 @@
 package com.booking.app.controller;
 
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
 import com.booking.app.services.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,45 +20,38 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/users")
 @Log4j2
 @Tag(name = "Notification", description = "Notifications management")
 public class NotificationController {
 
     private final NotificationService notificationService;
 
-    /**
-     * Disables notifications for the authenticated user.
-     *
-     * @param userCredentials the credentials of the authenticated user
-     * @return a ResponseEntity indicating the outcome of the disable operation
-     */
-    @GetMapping("/users/notification/off")
+
+    // todo {userId}
+    @GetMapping("/notifications/off")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Disable")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Off"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<?> disableNotification(@AuthenticationPrincipal UserCredentials userCredentials) {
-        notificationService.disable(userCredentials.getUser());
+    public ResponseEntity<?> disableNotification(@AuthenticationPrincipal User user) {
+        notificationService.disable(user);
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Enables notifications for the authenticated user.
-     *
-     * @param userCredentials the credentials of the authenticated user
-     * @return a ResponseEntity indicating the outcome of the enable operation
-     */
-    @GetMapping("/users/notification/on")
+
+    // todo {userId}
+    @GetMapping("/notifications/on")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Enable")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "On"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<?> enableNotification(@AuthenticationPrincipal UserCredentials userCredentials) {
-        notificationService.enable(userCredentials.getUser());
+    public ResponseEntity<?> enableNotification(@AuthenticationPrincipal User user) {
+        notificationService.enable(user);
         return ResponseEntity.ok().build();
     }
 

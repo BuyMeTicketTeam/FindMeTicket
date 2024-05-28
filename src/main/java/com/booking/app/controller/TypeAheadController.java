@@ -14,7 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +39,8 @@ public class TypeAheadController {
      * @param startLetters DTO containing the start letters for city search.
      * @return ResponseEntity with a list of CitiesDTO as the response body.
      */
-    @PostMapping(path = "/typeahead")
+    // todo ?startLetters=
+    @GetMapping(path = "cities/typeahead")
     @Operation(summary = "Type ahead feature", description = "Find cities based on type-ahead search")
     @ApiResponse(responseCode = "200",
             description = "Successful operation. Returns a list of cities",

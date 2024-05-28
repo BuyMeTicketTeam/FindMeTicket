@@ -2,8 +2,8 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.AuthorizedUserDTO;
 import com.booking.app.dto.LoginDTO;
-import com.booking.app.dto.OAuth2IdTokenDTO;
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.dto.SocialSignInRequestDto;
+import com.booking.app.entity.User;
 import com.booking.app.security.filter.JwtProvider;
 import com.booking.app.services.GoogleAccountService;
 import com.booking.app.services.LoginService;
@@ -47,25 +47,25 @@ public class LoginServiceImpl implements LoginService {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        UserCredentials userCredentials = (UserCredentials) authentication.getPrincipal();
+        User user = (User) authentication.getPrincipal();
 
-        if (isAuthenticated(loginDTO, response, authentication, userCredentials))
+        if (isAuthenticated(loginDTO, response, authentication, user))
             return ResponseEntity.ok()
-                    .body(AuthorizedUserDTO.createBasicAuthorizedUser((userCredentials)));
+                    .body(AuthorizedUserDTO.createBasicAuthorizedUser((user)));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @Override
-    public ResponseEntity<?> loginWithGoogle(OAuth2IdTokenDTO tokenDTO, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> loginWithGoogle(SocialSignInRequestDto tokenDTO, HttpServletRequest request, HttpServletResponse response) {
         if (isAlreadyLoggedIn(request))
             return ResponseEntity.ok().build();
         AtomicReference<AuthorizedUserDTO> authorizedUserDTO = new AtomicReference<>();
         googleAccountServiceImpl.loginOAuthGoogle(tokenDTO)
                 .ifPresentOrElse(
-                        userCredentials -> {
-                            generateAndSetTokens(response, userCredentials);
-                            authorizedUserDTO.set(AuthorizedUserDTO.createGoogleAuthorizedUser(userCredentials));
+                        user -> {
+                            generateAndSetTokens(response, user);
+                            authorizedUserDTO.set(AuthorizedUserDTO.createGoogleAuthorizedUser(user));
                         },
                         () -> handleUserNotPresent(response)
                 );
@@ -76,14 +76,14 @@ public class LoginServiceImpl implements LoginService {
      * Generates and sets the access and refresh tokens in the response.
      *
      * @param response        the HTTP response
-     * @param userCredentials the authenticated user's credentials
+     * @param user the authenticated user
      */
-    private void generateAndSetTokens(HttpServletResponse response, UserCredentials userCredentials) {
-        String refreshToken = jwtProvider.generateRefreshToken(userCredentials.getEmail());
-        String accessToken = jwtProvider.generateAccessToken(userCredentials.getEmail());
+    private void generateAndSetTokens(HttpServletResponse response, User user) {
+        String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
+        String accessToken = jwtProvider.generateAccessToken(user.getEmail());
 
         CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-        CookieUtils.addCookie(response, USER_ID, userCredentials.getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
+        CookieUtils.addCookie(response, USER_ID, user.getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
         response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
     }
 
@@ -93,13 +93,13 @@ public class LoginServiceImpl implements LoginService {
      * @param loginDTO        the login data transfer object
      * @param response        the HTTP response
      * @param authentication  the authentication object
-     * @param userCredentials the authenticated user's credentials
+     * @param user the authenticated user
      * @return true if authentication is successful, false otherwise
      */
-    private boolean isAuthenticated(LoginDTO loginDTO, HttpServletResponse response, Authentication authentication, UserCredentials userCredentials) {
+    private boolean isAuthenticated(LoginDTO loginDTO, HttpServletResponse response, Authentication authentication, User user) {
         if (authentication.isAuthenticated()) {
             handleRememberMe(loginDTO, response);
-            generateAndSetTokens(response, userCredentials);
+            generateAndSetTokens(response, user);
             return true;
         }
         return false;

@@ -2,7 +2,7 @@ package com.booking.app.controller;
 
 import com.booking.app.dto.AuthorizedUserDTO;
 import com.booking.app.dto.LoginDTO;
-import com.booking.app.dto.OAuth2IdTokenDTO;
+import com.booking.app.dto.SocialSignInRequestDto;
 import com.booking.app.services.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,10 +17,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller responsible for handling login requests, both basic and social login.
@@ -62,7 +59,7 @@ public class LoginController {
     /**
      * Handles social authentication via OAuth2 providers like Google and Facebook.
      *
-     * @param tokenDTO the OAuth2 token data transfer object containing the token from the social provider
+     * @param dto the OAuth2 token data transfer object containing the token from the social provider
      * @param request  the HTTP request
      * @param response the HTTP response
      * @return a ResponseEntity containing the authentication result:
@@ -70,17 +67,17 @@ public class LoginController {
      * - HTTP 401 Unauthorized if the client ID is incorrect
      * - HTTP 400 Bad Request if no social identity providers were chosen
      */
-    @Operation(summary = "Social authentication")
+    @Operation(summary = "Social authentication", description = "Authenticate using Google or Facebook")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = USER_HAS_BEEN_AUTHENTICATED,
                     content = {@Content(schema = @Schema(implementation = AuthorizedUserDTO.class), mediaType = "application/json")}),
             @ApiResponse(responseCode = "401", description = CLIENT_ID_IS_NOT_RIGHT_MESSAGE),
             @ApiResponse(responseCode = "400", description = NO_SOCIAL_IDENTITY_PROVIDERS_MESSAGE)
     })
-    @PostMapping("/sign-in/*")
-    public ResponseEntity<?> socialLogin(@RequestBody @Valid @NotNull OAuth2IdTokenDTO tokenDTO, HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/sign-in/{provider}")
+    public ResponseEntity<?> socialLogin(@PathVariable String provider, @RequestBody @Valid @NotNull SocialSignInRequestDto dto, HttpServletRequest request, HttpServletResponse response) {
         if (request.getRequestURI().contains("google")) {
-            return loginService.loginWithGoogle(tokenDTO, request, response);
+            return loginService.loginWithGoogle(dto, request, response);
         } else if (request.getRequestURI().contains("facebook")) {
             // TODO complete authentication via Facebook
         }

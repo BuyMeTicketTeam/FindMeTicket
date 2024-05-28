@@ -1,29 +1,24 @@
 package com.booking.app.security.filter;
 
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
+import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.util.CookieUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.DispatcherServlet;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -38,7 +33,7 @@ import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-public class JwtAuthFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
 
@@ -77,8 +72,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         else if (Objects.isNull(getUserDetails(jwtProvider.extractEmail(refreshToken)))) {
             log.warn("No user is present");
         } else {
-            UserCredentials userCredentials = (UserCredentials) userDetails;
-            String email = userCredentials.getEmail();
+            User user = (User) userDetails;
+            String email = user.getEmail();
 
             // Validate access token
             if (jwtProvider.validateAccessToken(accessToken)) {
@@ -136,14 +131,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             setSecurityContext(user);
             this.userDetails = user;
             return user;
-        } catch (UsernameNotFoundException e) {
+        } catch (UserNotFoundException e) {
             return null;
         }
     }
 
     private void setAuthenticationResponseData(HttpServletResponse response, String accessToken, String refreshToken, UserDetails userDetails) {
         CookieUtils.addCookie(response, REFRESH_TOKEN, refreshToken, jwtProvider.getRefreshTokenExpirationMs(), true, true);
-        CookieUtils.addCookie(response, USER_ID, ((UserCredentials) userDetails).getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
+        CookieUtils.addCookie(response, USER_ID, ((User) userDetails).getId().toString(), jwtProvider.getRefreshTokenExpirationMs(), false, true);
         response.setHeader(HttpHeaders.AUTHORIZATION, BEARER + accessToken);
     }
 

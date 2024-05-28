@@ -1,17 +1,17 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.dto.CodeConfirmationDTO;
 import com.booking.app.dto.EmailDTO;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.CodeConfirmationDTO;
-import com.booking.app.entity.UserCredentials;
+import com.booking.app.entity.User;
 import com.booking.app.exception.exception.EmailAlreadyTakenException;
 import com.booking.app.exception.exception.InvalidConfirmationCodeException;
-import com.booking.app.exception.exception.UserCredentialsNotFoundException;
+import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
-import com.booking.app.services.UserCredentialsService;
+import com.booking.app.services.UserService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,41 +29,41 @@ import static com.booking.app.constant.RegistrationConstantMessages.EMAIL_IS_ALR
 @Transactional(propagation = Propagation.REQUIRED)
 public class RegistrationServiceImpl implements RegistrationService {
 
-    private final UserCredentialsService userCredentialsService;
+    private final UserService userService;
     private final UserMapper mapper;
     private final MailSenderService mailService;
     private final ConfirmationCodeService confirmationCodeService;
 
     @Override
     public EmailDTO register(RegistrationDTO dto, String language) throws MessagingException {
-        UserCredentials userCredentials = findOrCreateUserCredentials(dto);
-        mailService.sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, userCredentials.getUser().getConfirmationCode().getCode(), userCredentials);
-        log.info("User with ID: {} has successfully registered.", userCredentials.getId());
-        return mapper.toEmailDTO(userCredentials);
+        User user = findOrCreateUser(dto);
+        mailService.sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, user.getConfirmationCode().getCode(), user);
+        log.info("User with ID: {} has successfully registered.", user.getId());
+        return mapper.toEmailDto(user);
     }
 
     @Override
     public void confirmCode(CodeConfirmationDTO dto) {
-        userCredentialsService.findByEmail(dto.getEmail())
-                .ifPresentOrElse(userCredentials -> {
-                    if (!userCredentials.isEnabled()) {
-                        verifyUserCredentials(dto, userCredentials);
+        userService.findByEmail(dto.getEmail())
+                .ifPresentOrElse(user -> {
+                    if (!user.isEnabled()) {
+                        verifyUser(dto, user);
                     }
                 }, () -> {
-                    throw new UserCredentialsNotFoundException();
+                    throw new UserNotFoundException();
                 });
     }
 
     /**
-     * Verifies the user's credentials using the provided code.
+     * Verifies the user using the provided code.
      *
-     * @param dto             the data transfer object containing the code and email for confirmation
-     * @param userCredentials the user credentials to be verified
+     * @param dto  the data transfer object containing the code and email for confirmation
+     * @param user the user to be verified
      */
-    private void verifyUserCredentials(CodeConfirmationDTO dto, UserCredentials userCredentials) {
-        if (confirmationCodeService.verifyCode(userCredentials.getUser().getConfirmationCode(), dto.getCode())) {
-            userCredentialsService.enableUserCredentials(userCredentials);
-            log.info("User with ID: {} has successfully confirmed email.", userCredentials.getId());
+    private void verifyUser(CodeConfirmationDTO dto, User user) {
+        if (confirmationCodeService.verifyCode(user.getConfirmationCode(), dto.getCode())) {
+            userService.enableUser(user);
+            log.info("User with ID: {} has successfully confirmed email.", user.getId());
         } else {
             throw new InvalidConfirmationCodeException();
         }
@@ -73,19 +73,19 @@ public class RegistrationServiceImpl implements RegistrationService {
      * Finds an existing user by email or creates a new user if not found.
      *
      * @param dto the data transfer object containing user registration details
-     * @return the user credentials of the found or newly created user
+     * @return the user  of the found or newly created user
      * @throws EmailAlreadyTakenException if a user with the provided email already exists and is enabled
      */
-    private UserCredentials findOrCreateUserCredentials(RegistrationDTO dto) {
-        return userCredentialsService.findByEmail(dto.getEmail())
+    private User findOrCreateUser(RegistrationDTO dto) {
+        return userService.findByEmail(dto.getEmail())
                 .map(user -> {
                     if (user.isEnabled()) {
                         throw new EmailAlreadyTakenException(EMAIL_IS_ALREADY_TAKEN_MESSAGE);
                     } else {
-                        return userCredentialsService.updateUserCredentials(user, dto);
+                        return userService.updateUser(user, dto);
                     }
                 })
-                .orElseGet(() -> userCredentialsService.createUserCredentials(dto));
+                .orElseGet(() -> userService.saveUser(dto));
     }
 
 }

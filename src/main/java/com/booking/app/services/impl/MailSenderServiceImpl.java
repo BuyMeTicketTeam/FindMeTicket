@@ -2,11 +2,10 @@ package com.booking.app.services.impl;
 
 import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserCredentials;
-import com.booking.app.exception.exception.UserCredentialsNotFoundException;
+import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
-import com.booking.app.services.UserCredentialsService;
+import com.booking.app.services.UserService;
 import com.booking.app.util.HtmlTemplateUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -33,15 +32,15 @@ public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    private final UserCredentialsService userCredentialsService;
+    private final UserService userService;
     private final ConfirmationCodeService confirmationCodeService;
 
     @Override
-    public void sendEmail(String language, String subject, String token, UserCredentials userCredentials) {
+    public void sendEmail(String language, String subject, String token, User user) {
         String htmlPageName = HtmlTemplateUtils.getConfirmationHtmlTemplate(language);
         Context context = new Context();
         context.setVariable("token", token);
-        context.setVariable("nickname", userCredentials.getUsername());
+        context.setVariable("nickname", user.getUsername());
 
         String process = templateEngine.process(htmlPageName, context);
 
@@ -50,28 +49,26 @@ public class MailSenderServiceImpl implements MailSenderService {
         try {
             helper.setSubject(subject);
             helper.setText(process, true);
-            helper.setTo(userCredentials.getEmail());
+            helper.setTo(user.getEmail());
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("Failed to send confirmation email to {}, reason: {}", userCredentials.getEmail(), e.getCause());
+            log.error("Failed to send confirmation email to {}, reason: {}", user.getEmail(), e.getCause());
         }
     }
 
     @Override
     public void resendEmail(String language, String email) {
-        userCredentialsService.findByEmail(email)
-                .ifPresentOrElse(userCredentials -> {
-                    User user = userCredentials.getUser();
-
+        userService.findByEmail(email)
+                .ifPresentOrElse(user -> {
                     ConfirmationCode newCode = ConfirmationCode.createCode();
                     ConfirmationCode existingCode = user.getConfirmationCode();
                     user.setConfirmationCode(newCode);
 
                     confirmationCodeService.updateConfirmationCode(newCode, existingCode);
 
-                    sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), userCredentials);
+                    sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), user);
                 }, () -> {
-                    throw new UserCredentialsNotFoundException();
+                    throw new UserNotFoundException();
                 });
     }
 

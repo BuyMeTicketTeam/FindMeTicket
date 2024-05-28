@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OAuth2IdTokenDTO {
+public class SocialSignInRequestDto {
     @NotNull
     private String idToken;
 }

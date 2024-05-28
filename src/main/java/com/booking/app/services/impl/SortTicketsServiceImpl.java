@@ -10,15 +10,14 @@ import com.booking.app.mapper.TrainMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.services.SortTicketsService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-
-import static com.booking.app.constant.SortCriteriaConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -79,14 +78,16 @@ public class SortTicketsServiceImpl implements SortTicketsService {
      * @param dto The request DTO containing the sorting criteria.
      * @return A comparator for sorting tickets.
      */
+    @SneakyThrows
     private static Comparator<Ticket> customComparator(RequestSortedTicketsDTO dto) {
-        return switch (dto.getSortingBy()) {
-            case PRICE_CRITERIA -> Comparator.comparing(Ticket::getPrice);
-            case DEPARTURE_TIME_CRITERIA -> Comparator.comparing(Ticket::getDepartureTime);
-            case ARRIVAL_TIME_CRITERIA -> Comparator.comparing(Ticket::formatArrivalDateTime);
-            case TRAVEL_TIME_CRITERIA -> Comparator.comparing(Ticket::getTravelTime);
-            default -> throw new UnsupportedOperationException("Any of the sorting criteria are not supportable");
-        };
+        throw new OperationNotSupportedException();
+//        return switch (dto.getSortingBy()) {
+//            case PRICE_CRITERIA -> Comparator.comparing(Ticket::getPrice);
+//            case DEPARTURE_TIME_CRITERIA -> Comparator.comparing(Ticket::getDepartureTime);
+//            case ARRIVAL_TIME_CRITERIA -> Comparator.comparing(Ticket::formatArrivalDateTime);
+//            case TRAVEL_TIME_CRITERIA -> Comparator.comparing(Ticket::getTravelTime);
+//            default -> throw new UnsupportedOperationException("Any of the sorting criteria are not supportable");
+//        };
     }
 
     /**

@@ -12,10 +12,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAsync
 @EnableScheduling
 @ConfigurationPropertiesScan(basePackages = {"com.booking.app.props"})
-public class TicketBookingWebServiceApplication {
+public class FindMeTicketServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TicketBookingWebServiceApplication.class, args);
+        SpringApplication.run(FindMeTicketServiceApplication.class, args);
     }
 
 }

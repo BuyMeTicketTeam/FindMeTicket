@@ -119,8 +119,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserCredentialsNotFoundException.class)
-    public ResponseEntity<ErrorDetails> userNotFound(UserCredentialsNotFoundException exception, WebRequest webRequest) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDetails> userNotFound(UserNotFoundException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),

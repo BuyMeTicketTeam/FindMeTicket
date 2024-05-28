@@ -18,13 +18,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 @AllArgsConstructor
 @Tag(name = "Review", description = "Review management")
 public class ReviewController {
 
     private final ReviewService reviewService;
-    // TODO SECURE PATH
+
+    // todo /{userId}/review
+    // *authentication required
     @PostMapping("/reviews")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Save review", description = "Add user's review")
@@ -37,6 +39,7 @@ public class ReviewController {
         return ResponseEntity.ok().body(reviewService.saveReview(saveReviewDto, request));
     }
 
+    // todo /review
     @GetMapping("/reviews")
     @Operation(summary = "Get reviews", description = "All reviews")
     @ApiResponses(value = {
@@ -48,6 +51,8 @@ public class ReviewController {
         return ResponseEntity.ok().body(reviewService.getReviewList());
     }
 
+    // todo /{userId}/review
+    // *authentication required
     @DeleteMapping("/reviews")
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Delete review", description = "Delete review of authorized user")
@@ -59,6 +64,8 @@ public class ReviewController {
         return reviewService.deleteReview(request) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
+    // todo /{userId}/review
+    // *authentication required
     @GetMapping("/users/reviews")
     @Operation(summary = "Get user's review", description = "Get authorized user review")
     @ApiResponses(value = {

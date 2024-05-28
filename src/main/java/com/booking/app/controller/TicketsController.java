@@ -3,6 +3,7 @@ package com.booking.app.controller;
 import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
+import com.booking.app.entity.User;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SearchHistoryService;
 import com.booking.app.services.SortTicketsService;
@@ -12,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -32,10 +33,11 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+@RequestMapping(path = "/tickets", produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
+
 @RequiredArgsConstructor
 @Tag(name = "Ticket web scraping", description = "Endpoints for scraping tickets' info")
-public class TicketController {
+public class TicketsController {
 
     private final ScraperManager scrapingService;
 
@@ -45,7 +47,8 @@ public class TicketController {
 
     private final SearchHistoryService searchHistoryService;
 
-    @PostMapping("/tickets/search")
+    // todo ?departureCity=&arrivalCity=&departureDate=&bus=true&train=false
+    @GetMapping("/search")
     @Operation(summary = "Search tickets", description = "Find tickets based by criteria")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tickets has been found"),
@@ -53,10 +56,10 @@ public class TicketController {
     })
     public ResponseBodyEmitter findTickets(@RequestBody @NotNull @Valid RequestTicketsDTO ticketsDTO,
                                            @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
-                                           HttpServletResponse response,
-                                           HttpServletRequest request) throws IOException, ParseException {
+                                           @AuthenticationPrincipal User user,
+                                           HttpServletResponse response) throws IOException, ParseException {
         validateLanguage(siteLanguage);
-        searchHistoryService.addHistory(ticketsDTO, siteLanguage, request);
+        searchHistoryService.addHistory(ticketsDTO, siteLanguage, user);
 
         SseEmitter emitter = new SseEmitter();
         CompletableFuture<Boolean> isTicketScraped = scrapingService.findTickets(ticketsDTO, emitter, siteLanguage);
@@ -71,7 +74,7 @@ public class TicketController {
         return emitter;
     }
 
-    @GetMapping("/tickets/{id}")
+    @GetMapping("/{id}")
     @Operation(summary = "Single ticket", description = "Ticket by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ticket has been found"),
@@ -95,7 +98,10 @@ public class TicketController {
         return emitter;
     }
 
-    @PostMapping(value = "/tickets/sort", produces = MediaType.APPLICATION_JSON_VALUE)
+    // sortingBy= ascending= true/false
+    // unite this with /tickets/transport
+    // todo ?departureCity=&arrivalCity=&departureDate=&bus=true&train=false
+    @GetMapping(value = "/sortBy", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Sort tickets", description = "Either by price, travel time, departure, or arrival")
     @ApiResponse(responseCode = "200", description = "Get sorted tickets")
     public ResponseEntity<?> getSortedTickets(@RequestBody @NotNull @Valid RequestSortedTicketsDTO requestSortedTicketsDTO,
@@ -104,6 +110,7 @@ public class TicketController {
         return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 
+    // todo needed to be united
     @PostMapping(value = "/tickets/transport", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Get tickets", description = "Get tickets by type transport")
     @ApiResponses(value = {

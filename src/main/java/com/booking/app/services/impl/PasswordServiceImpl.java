@@ -1,16 +1,15 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.RequestUpdatePasswordDTO;
 import com.booking.app.dto.PasswordDto;
+import com.booking.app.dto.RequestUpdatePasswordDTO;
 import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.User;
-import com.booking.app.entity.UserCredentials;
 import com.booking.app.exception.exception.LastPasswordIsNotRightException;
-import com.booking.app.exception.exception.UserCredentialsNotFoundException;
+import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.PasswordService;
-import com.booking.app.services.UserCredentialsService;
+import com.booking.app.services.UserService;
 import com.booking.app.util.HtmlTemplateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,49 +29,48 @@ import static com.booking.app.constant.MailConstants.RESET_PASSWORD_SUBJECT;
 public class PasswordServiceImpl implements PasswordService {
 
     private final MailSenderService mailSenderService;
-    private final UserCredentialsService userCredentialsService;
+    private final UserService userService;
     private final ConfirmationCodeService confirmationCodeService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void sendResetCode(String email, String language) {
-        userCredentialsService.findByEmail(email)
-                .ifPresentOrElse(userCredentials -> {
-                            if (userCredentialsService.isEnabled(userCredentials)) {
-                                User user = userCredentials.getUser();
+        userService.findByEmail(email)
+                .ifPresentOrElse(user -> {
+                            if (userService.isEnabled(user)) {
                                 ConfirmationCode newCode = ConfirmationCode.createCode();
                                 user.setConfirmationCode(newCode);
 
-                                sendMail(language, newCode, userCredentials);
+                                sendMail(language, newCode, user);
                                 confirmationCodeService.save(newCode);
                             }
                         },
                         () -> {
-                            throw new UserCredentialsNotFoundException();
+                            throw new UserNotFoundException();
                         });
 
     }
 
     @Override
     public void resetPassword(PasswordDto dto) {
-        userCredentialsService.findByEmail(dto.getEmail())
-                .ifPresentOrElse(userCredentials -> {
-                    if (userCredentialsService.isEnabled(userCredentials)
-                            && confirmationCodeService.verifyCode(userCredentials.getUser().getConfirmationCode(), dto.getCode())) {
-                        userCredentialsService.updatePassword(userCredentials.getId(), passwordEncoder.encode(dto.getPassword()));
+        userService.findByEmail(dto.getEmail())
+                .ifPresentOrElse(user -> {
+                    if (userService.isEnabled(user)
+                            && confirmationCodeService.verifyCode(user.getConfirmationCode(), dto.getCode())) {
+                        userService.updatePassword(user.getId(), passwordEncoder.encode(dto.getPassword()));
                     }
                 }, () -> {
-                    throw new UserCredentialsNotFoundException();
+                    throw new UserNotFoundException();
                 });
 
     }
 
     @Override
-    public void changePassword(RequestUpdatePasswordDTO dto, UserCredentials userCredentials) {
-        String currentPassword = userCredentials.getPassword();
+    public void changePassword(RequestUpdatePasswordDTO dto, User user) {
+        String currentPassword = user.getPassword();
         String lastPassword = dto.getLastPassword();
         if (passwordEncoder.matches(lastPassword, currentPassword)) {
-            userCredentialsService.updatePassword(userCredentials.getId(), passwordEncoder.encode(dto.getPassword()));
+            userService.updatePassword(user.getId(), passwordEncoder.encode(dto.getPassword()));
         } else {
             throw new LastPasswordIsNotRightException();
         }
@@ -81,13 +79,13 @@ public class PasswordServiceImpl implements PasswordService {
     /**
      * Sends an email with the reset password token.
      *
-     * @param language        the language preference for the email content
-     * @param newCode         the confirmation token to be included in the email
-     * @param userCredentials the user's credentials
+     * @param language the language preference for the email content
+     * @param newCode  the confirmation token to be included in the email
+     * @param user     the user
      */
-    private void sendMail(String language, ConfirmationCode newCode, UserCredentials userCredentials) {
+    private void sendMail(String language, ConfirmationCode newCode, User user) {
         String htmlTemplate = HtmlTemplateUtils.getResetPasswordHtmlTemplate(language);
-        mailSenderService.sendEmail(htmlTemplate, RESET_PASSWORD_SUBJECT, newCode.getCode(), userCredentials);
+        mailSenderService.sendEmail(htmlTemplate, RESET_PASSWORD_SUBJECT, newCode.getCode(), user);
     }
 
 }
