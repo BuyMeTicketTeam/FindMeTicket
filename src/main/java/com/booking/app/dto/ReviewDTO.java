@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.authentication.ProviderNotFoundException;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class ReviewDTO {
 
     private String urlPicture;
 
-    public static ReviewDTO createInstance(Review review){
+    public static ReviewDTO createInstance(Review review) {
         User user = review.getUser();
         ReviewDTO reviewDTO = ReviewDTO.builder()
                 .id(user.getReview().getId())
@@ -41,9 +41,10 @@ public class ReviewDTO {
                 .username(user.getSecurity().getUsername())
                 .build();
 
-        switch (user.getSecurity().getProvider()){
-            case GOOGLE ->reviewDTO.setUrlPicture(user.getUrlPicture());
+        switch (user.getSecurity().getProvider()) {
+            case GOOGLE -> reviewDTO.setUrlPicture(user.getUrlPicture());
             case LOCAL -> reviewDTO.setProfilePicture(user.getProfilePicture());
+            default -> throw new ProviderNotFoundException("Third party service provider is not provided");
         }
         return reviewDTO;
     }
