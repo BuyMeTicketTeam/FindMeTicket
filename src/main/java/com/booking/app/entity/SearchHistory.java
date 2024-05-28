@@ -15,7 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Setter
 @Getter
-public class UserSearchHistory {
+public class SearchHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
