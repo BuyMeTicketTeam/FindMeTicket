@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.SocialSignInRequestDto;
+import com.booking.app.dto.SocialLoginDto;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.User;
 import com.booking.app.enums.EnumRole;
@@ -51,7 +51,7 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
      * @param requestBody DTO containing the Google OAuth2 ID Token.
      * @return User for the logged-in user.
      */
-    public Optional<User> loginOAuthGoogle(SocialSignInRequestDto requestBody) {
+    public Optional<User> loginOAuthGoogle(SocialLoginDto requestBody) {
         try {
             GoogleIdToken account = verifier.verify(requestBody.getIdToken());
             return Optional.of(createOrUpdateUser(account));

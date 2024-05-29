@@ -9,5 +9,4 @@ public class PasswordConstantMessages {
     public static final String MESSAGE_PASSWORD_HAS_BEEN_SUCCESSFULLY_RESET = "Password has been successfully reset";
     public static final String MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED = "New password has been created";
     public static final String MESSAGE_CURRENT_PASSWORD_IS_NOT_RIGHT = "The passed current password is not right.";
-    public static final String THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_OR_THE_ACCOUNT_IS_DISABLED = "The specified email is not registered or the account is disabled";
 }

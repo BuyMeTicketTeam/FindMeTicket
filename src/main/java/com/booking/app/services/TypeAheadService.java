@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.CitiesDto;
+import com.booking.app.dto.CityDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,7 +15,7 @@ public interface TypeAheadService {
      * @return List of CitiesDTO matching the provided start letters.
      * @throws IOException If an I/O error occurs during the process.
      */
-    List<CitiesDto> findMatches(String startLetters, String siteLanguage) throws IOException;
+    List<CityDto> findMatches(String startLetters, String siteLanguage) throws IOException;
 
     /**
      * Gets the ID of a city by its name and language.

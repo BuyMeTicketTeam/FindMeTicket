@@ -1,7 +1,7 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.LoginDTO;
-import com.booking.app.dto.SocialSignInRequestDto;
+import com.booking.app.dto.LoginDto;
+import com.booking.app.dto.SocialLoginDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public interface LoginService {
      * - HTTP 200 OK with the user details if authentication is successful
      * - HTTP 401 Unauthorized if authentication fails
      */
-    ResponseEntity<?> loginWithEmailAndPassword(LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<?> loginWithEmailAndPassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response);
 
 
     /**
@@ -35,5 +35,5 @@ public interface LoginService {
      * - HTTP 200 OK with the user details if authentication is successful
      * - HTTP 401 Unauthorized if authentication fails
      */
-    ResponseEntity<?> loginWithGoogle(SocialSignInRequestDto tokenDTO, HttpServletRequest request, HttpServletResponse response);
+    ResponseEntity<?> loginWithGoogle(SocialLoginDto tokenDTO, HttpServletRequest request, HttpServletResponse response);
 }

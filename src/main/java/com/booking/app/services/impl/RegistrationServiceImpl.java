@@ -1,7 +1,7 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.CodeConfirmationDTO;
-import com.booking.app.dto.EmailDTO;
+import com.booking.app.dto.CodeConfirmationDto;
+import com.booking.app.dto.EmailDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.User;
 import com.booking.app.exception.exception.EmailAlreadyTakenException;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.booking.app.constant.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
 import static com.booking.app.constant.RegistrationConstantMessages.EMAIL_IS_ALREADY_TAKEN_MESSAGE;
 
 
@@ -35,15 +34,16 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final ConfirmationCodeService confirmationCodeService;
 
     @Override
-    public EmailDTO register(RegistrationDTO dto, String language) throws MessagingException {
+    @Transactional
+    public EmailDto register(RegistrationDTO dto, String language) throws MessagingException {
         User user = findOrCreateUser(dto);
-        mailService.sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, user.getConfirmationCode().getCode(), user);
+        mailService.sendVerificationCode(user.getEmail(), language);
         log.info("User with ID: {} has successfully registered.", user.getId());
         return mapper.toEmailDto(user);
     }
 
     @Override
-    public void confirmCode(CodeConfirmationDTO dto) {
+    public void confirmCode(CodeConfirmationDto dto) {
         userService.findByEmail(dto.getEmail())
                 .ifPresentOrElse(user -> {
                     if (!user.isEnabled()) {
@@ -60,7 +60,7 @@ public class RegistrationServiceImpl implements RegistrationService {
      * @param dto  the data transfer object containing the code and email for confirmation
      * @param user the user to be verified
      */
-    private void verifyUser(CodeConfirmationDTO dto, User user) {
+    private void verifyUser(CodeConfirmationDto dto, User user) {
         if (confirmationCodeService.verifyCode(user.getConfirmationCode(), dto.getCode())) {
             userService.enableUser(user);
             log.info("User with ID: {} has successfully confirmed email.", user.getId());

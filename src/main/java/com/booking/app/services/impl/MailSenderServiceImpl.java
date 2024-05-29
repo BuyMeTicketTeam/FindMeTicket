@@ -20,6 +20,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import static com.booking.app.constant.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
+import static com.booking.app.constant.MailConstants.RESET_PASSWORD_SUBJECT;
 
 /**
  * Service implementation for sending emails related to user registration and confirmation.
@@ -36,7 +37,48 @@ public class MailSenderServiceImpl implements MailSenderService {
     private final ConfirmationCodeService confirmationCodeService;
 
     @Override
-    public void sendEmail(String language, String subject, String token, User user) {
+    public void sendVerificationCode(String email, String language) {
+        userService.findByEmail(email)
+                .ifPresentOrElse(user -> {
+                    ConfirmationCode newCode = ConfirmationCode.createCode();
+                    ConfirmationCode existingCode = user.getConfirmationCode();
+                    user.setConfirmationCode(newCode);
+
+                    confirmationCodeService.updateConfirmationCode(newCode, existingCode);
+                    sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), user);
+                }, () -> {
+                    throw new UserNotFoundException();
+                });
+    }
+
+    // todo check workflow of both methods and its calling service
+    @Override
+    public void sendResetPasswordCode(String email, String language) {
+        userService.findByEmail(email)
+                .ifPresentOrElse(user -> {
+                            if (userService.isEnabled(user)) {
+                                ConfirmationCode newCode = ConfirmationCode.createCode();
+                                user.setConfirmationCode(newCode);
+
+                                String htmlTemplate = HtmlTemplateUtils.getResetPasswordHtmlTemplate(language);
+                                sendEmail(htmlTemplate, RESET_PASSWORD_SUBJECT, newCode.getCode(), user);
+                                confirmationCodeService.save(newCode);
+                            }
+                        },
+                        () -> {
+                            throw new UserNotFoundException();
+                        });
+    }
+
+    /**
+     * Sends an email with a confirmation token to the user.
+     *
+     * @param language the language preference for the email content
+     * @param subject  the subject of the email
+     * @param token    the confirmation token to be included in the email
+     * @param user     the user credentials containing the recipient's email and username
+     */
+    private void sendEmail(String language, String subject, String token, User user) {
         String htmlPageName = HtmlTemplateUtils.getConfirmationHtmlTemplate(language);
         Context context = new Context();
         context.setVariable("token", token);
@@ -54,22 +96,6 @@ public class MailSenderServiceImpl implements MailSenderService {
         } catch (MessagingException e) {
             log.error("Failed to send confirmation email to {}, reason: {}", user.getEmail(), e.getCause());
         }
-    }
-
-    @Override
-    public void resendEmail(String language, String email) {
-        userService.findByEmail(email)
-                .ifPresentOrElse(user -> {
-                    ConfirmationCode newCode = ConfirmationCode.createCode();
-                    ConfirmationCode existingCode = user.getConfirmationCode();
-                    user.setConfirmationCode(newCode);
-
-                    confirmationCodeService.updateConfirmationCode(newCode, existingCode);
-
-                    sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), user);
-                }, () -> {
-                    throw new UserNotFoundException();
-                });
     }
 
 }

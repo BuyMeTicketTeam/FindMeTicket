@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1716926842874-1
+      id: 1716983425426-1
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -27,7 +27,7 @@ databaseChangeLog:
                   type: UUID
             tableName: bus_info
   - changeSet:
-      id: 1716926842874-2
+      id: 1716983425426-2
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -52,7 +52,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: confirmation_code
   - changeSet:
-      id: 1716926842874-3
+      id: 1716983425426-3
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -81,7 +81,7 @@ databaseChangeLog:
                   type: UUID
             tableName: review
   - changeSet:
-      id: 1716926842874-4
+      id: 1716983425426-4
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -100,7 +100,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: role
   - changeSet:
-      id: 1716926842874-5
+      id: 1716983425426-5
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -127,7 +127,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1716926842874-6
+      id: 1716983425426-6
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -157,7 +157,7 @@ databaseChangeLog:
                   type: UUID
             tableName: search_history
   - changeSet:
-      id: 1716926842874-7
+      id: 1716983425426-7
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -199,7 +199,7 @@ databaseChangeLog:
                   type: UUID
             tableName: ticket
   - changeSet:
-      id: 1716926842874-8
+      id: 1716983425426-8
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -226,7 +226,7 @@ databaseChangeLog:
                   type: UUID
             tableName: train_info
   - changeSet:
-      id: 1716926842874-9
+      id: 1716983425426-9
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -242,7 +242,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: type_transport
   - changeSet:
-      id: 1716926842874-10
+      id: 1716983425426-10
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -253,7 +253,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_ukrainianplaces
+                    primaryKeyName: pk_ukrainiancities
                   name: id
                   type: BIGINT
               - column:
@@ -274,9 +274,9 @@ databaseChangeLog:
               - column:
                   name: name_ru
                   type: VARCHAR(255)
-            tableName: ukrainian_places
+            tableName: ukrainian_cities
   - changeSet:
-      id: 1716926842874-11
+      id: 1716983425426-11
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -346,7 +346,7 @@ databaseChangeLog:
                   type: UUID
             tableName: users
   - changeSet:
-      id: 1716926842874-12
+      id: 1716983425426-12
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -355,7 +355,7 @@ databaseChangeLog:
             constraintName: uc_review_user
             tableName: review
   - changeSet:
-      id: 1716926842874-13
+      id: 1716983425426-13
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -364,7 +364,7 @@ databaseChangeLog:
             constraintName: uc_users_email
             tableName: users
   - changeSet:
-      id: 1716926842874-14
+      id: 1716983425426-14
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -373,7 +373,7 @@ databaseChangeLog:
             constraintName: uc_users_phone_number
             tableName: users
   - changeSet:
-      id: 1716926842874-15
+      id: 1716983425426-15
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -382,7 +382,7 @@ databaseChangeLog:
             constraintName: uc_users_token
             tableName: users
   - changeSet:
-      id: 1716926842874-16
+      id: 1716983425426-16
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -394,7 +394,7 @@ databaseChangeLog:
             tableName: users
             unique: true
   - changeSet:
-      id: 1716926842874-17
+      id: 1716983425426-17
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -405,7 +405,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1716926842874-18
+      id: 1716983425426-18
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -416,7 +416,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1716926842874-19
+      id: 1716983425426-19
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -427,7 +427,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: users
   - changeSet:
-      id: 1716926842874-20
+      id: 1716983425426-20
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -438,7 +438,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1716926842874-21
+      id: 1716983425426-21
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -449,7 +449,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1716926842874-22
+      id: 1716983425426-22
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -460,7 +460,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: role
   - changeSet:
-      id: 1716926842874-23
+      id: 1716983425426-23
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -471,7 +471,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: confirmation_code
   - changeSet:
-      id: 1716926842874-24
+      id: 1716983425426-24
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:

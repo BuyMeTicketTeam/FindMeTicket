@@ -1,8 +1,8 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.dto.HistoryDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.dto.SearchHistoryDto;
 import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.SearchHistory;
@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<SearchHistoryDto> getHistory(@Nullable User user, String language) {
+    public List<HistoryDto> getHistory(@Nullable User user, String language) {
         return Optional.ofNullable(user)
                 .map(User::getHistory)
                 .orElse(Collections.emptyList())

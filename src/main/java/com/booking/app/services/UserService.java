@@ -1,8 +1,8 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.HistoryDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.dto.SearchHistoryDto;
 import com.booking.app.entity.User;
 import com.booking.app.exception.exception.UserIsDisabledException;
 
@@ -100,6 +100,6 @@ public interface UserService {
      * @param language The language for city names.
      * @return List of search history DTOs.
      */
-    List<SearchHistoryDto> getHistory(User user, String language);
+    List<HistoryDto> getHistory(User user, String language);
 
 }

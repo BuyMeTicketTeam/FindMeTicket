@@ -1,7 +1,8 @@
 package com.booking.app.controller;
 
-import com.booking.app.dto.CodeConfirmationDTO;
-import com.booking.app.dto.EmailDTO;
+import com.booking.app.annotation.GlobalApiResponses;
+import com.booking.app.dto.CodeConfirmationDto;
+import com.booking.app.dto.EmailDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.exception.ErrorDetails;
 import com.booking.app.services.MailSenderService;
@@ -18,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,7 @@ import static com.booking.app.constant.RegistrationConstantMessages.*;
 @RequestMapping
 @AllArgsConstructor
 @Tag(name = "Registration", description = "Endpoints for registration and confirmation")
+@GlobalApiResponses
 public class RegistrationController {
 
     private final RegistrationService registrationService;
@@ -50,10 +53,10 @@ public class RegistrationController {
             @ApiResponse(responseCode = "200",
                     description = USER_REGISTERED_SUCCESSFULLY_MESSAGE + "\t\n"
                             + EMAIL_IS_ALREADY_TAKEN_MESSAGE)})
-    // todo status when user is regged
+    // todo status when user is l
     public ResponseEntity<?> signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
                                     @RequestBody @Valid @NotNull RegistrationDTO dto) throws MessagingException {
-        EmailDTO register = registrationService.register(dto, siteLanguage);
+        EmailDto register = registrationService.register(dto, siteLanguage);
         return ResponseEntity.ok().body(register);
     }
 
@@ -69,12 +72,12 @@ public class RegistrationController {
             @ApiResponse(responseCode = "200", description = USER_IS_VERIFIED_MESSAGE),
             @ApiResponse(responseCode = "400",
                     description = CODE_IS_NOT_RIGHT_MESSAGE,
-                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")}),
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "404",
                     description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
-                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = "application/json")})
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})
     })
-    public ResponseEntity<?> confirmEmailCode(@RequestBody @NotNull @Valid CodeConfirmationDTO dto) {
+    public ResponseEntity<?> confirmEmailCode(@RequestBody @NotNull @Valid CodeConfirmationDto dto) {
         registrationService.confirmCode(dto);
         return ResponseEntity.status(HttpStatus.OK).body(USER_IS_VERIFIED_MESSAGE);
     }

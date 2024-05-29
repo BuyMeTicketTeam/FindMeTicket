@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class CodeConfirmationDTO {
+public class CodeConfirmationDto {
 
     @NotNull
     private String email;

@@ -1,8 +1,9 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.AuthorizedUserDTO;
-import com.booking.app.dto.LoginDTO;
-import com.booking.app.dto.SocialSignInRequestDto;
+import com.booking.app.constant.ApiMessagesConstants;
+import com.booking.app.dto.AuthenticatedUserDto;
+import com.booking.app.dto.LoginDto;
+import com.booking.app.dto.SocialLoginDto;
 import com.booking.app.entity.User;
 import com.booking.app.security.filter.JwtProvider;
 import com.booking.app.services.GoogleAccountService;
@@ -27,7 +28,6 @@ import static com.booking.app.constant.CustomHttpHeaders.REMEMBER_ME;
 import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 import static com.booking.app.constant.JwtTokenConstants.BEARER;
 import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
-import static com.booking.app.controller.LoginController.CLIENT_ID_IS_NOT_RIGHT_MESSAGE;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +40,21 @@ public class LoginServiceImpl implements LoginService {
 
     private final GoogleAccountService googleAccountServiceImpl;
 
+    /**
+     * Sends an unauthorized status 401 response if the user is not present.
+     *
+     * @param response the HTTP response
+     */
+    private static void handleUserNotPresent(HttpServletResponse response) {
+        try {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ApiMessagesConstants.INVALID_CLIENT_PROVIDER_ID_MESSAGE);
+        } catch (IOException e) {
+            log.info(ApiMessagesConstants.INVALID_CLIENT_PROVIDER_ID_MESSAGE);
+        }
+    }
+
     @Override
-    public ResponseEntity<?> loginWithEmailAndPassword(LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> loginWithEmailAndPassword(LoginDto loginDTO, HttpServletRequest request, HttpServletResponse response) {
         if (isAlreadyLoggedIn(request))
             return ResponseEntity.ok().build();
 
@@ -51,21 +64,21 @@ public class LoginServiceImpl implements LoginService {
 
         if (isAuthenticated(loginDTO, response, authentication, user))
             return ResponseEntity.ok()
-                    .body(AuthorizedUserDTO.createBasicAuthorizedUser((user)));
+                    .body(AuthenticatedUserDto.createBasicAuthorizedUser((user)));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @Override
-    public ResponseEntity<?> loginWithGoogle(SocialSignInRequestDto tokenDTO, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> loginWithGoogle(SocialLoginDto tokenDTO, HttpServletRequest request, HttpServletResponse response) {
         if (isAlreadyLoggedIn(request))
             return ResponseEntity.ok().build();
-        AtomicReference<AuthorizedUserDTO> authorizedUserDTO = new AtomicReference<>();
+        AtomicReference<AuthenticatedUserDto> authorizedUserDTO = new AtomicReference<>();
         googleAccountServiceImpl.loginOAuthGoogle(tokenDTO)
                 .ifPresentOrElse(
                         user -> {
                             generateAndSetTokens(response, user);
-                            authorizedUserDTO.set(AuthorizedUserDTO.createGoogleAuthorizedUser(user));
+                            authorizedUserDTO.set(AuthenticatedUserDto.createGoogleAuthorizedUser(user));
                         },
                         () -> handleUserNotPresent(response)
                 );
@@ -75,8 +88,8 @@ public class LoginServiceImpl implements LoginService {
     /**
      * Generates and sets the access and refresh tokens in the response.
      *
-     * @param response        the HTTP response
-     * @param user the authenticated user
+     * @param response the HTTP response
+     * @param user     the authenticated user
      */
     private void generateAndSetTokens(HttpServletResponse response, User user) {
         String refreshToken = jwtProvider.generateRefreshToken(user.getEmail());
@@ -90,13 +103,13 @@ public class LoginServiceImpl implements LoginService {
     /**
      * Checks if the authentication is successful and sets the tokens if true.
      *
-     * @param loginDTO        the login data transfer object
-     * @param response        the HTTP response
-     * @param authentication  the authentication object
-     * @param user the authenticated user
+     * @param loginDTO       the login data transfer object
+     * @param response       the HTTP response
+     * @param authentication the authentication object
+     * @param user           the authenticated user
      * @return true if authentication is successful, false otherwise
      */
-    private boolean isAuthenticated(LoginDTO loginDTO, HttpServletResponse response, Authentication authentication, User user) {
+    private boolean isAuthenticated(LoginDto loginDTO, HttpServletResponse response, Authentication authentication, User user) {
         if (authentication.isAuthenticated()) {
             handleRememberMe(loginDTO, response);
             generateAndSetTokens(response, user);
@@ -111,22 +124,9 @@ public class LoginServiceImpl implements LoginService {
      * @param loginDTO the login data transfer object
      * @param response the HTTP response
      */
-    private void handleRememberMe(LoginDTO loginDTO, HttpServletResponse response) {
+    private void handleRememberMe(LoginDto loginDTO, HttpServletResponse response) {
         if (Boolean.TRUE.equals(loginDTO.getRememberMe())) {
             CookieUtils.addCookie(response, REMEMBER_ME, loginDTO.getRememberMe().toString(), jwtProvider.getRefreshTokenExpirationMs(), true, true);
-        }
-    }
-
-    /**
-     * Sends an unauthorized status 401 response if the user is not present.
-     *
-     * @param response the HTTP response
-     */
-    private static void handleUserNotPresent(HttpServletResponse response) {
-        try {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, CLIENT_ID_IS_NOT_RIGHT_MESSAGE);
-        } catch (IOException e) {
-            log.info(CLIENT_ID_IS_NOT_RIGHT_MESSAGE);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.ReviewDTO;
+import com.booking.app.dto.ReviewDto;
 import com.booking.app.dto.SaveReviewDto;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,14 +15,14 @@ public interface ReviewService {
      * @param request       The HTTP request.
      * @return The saved review DTO if successful, or null otherwise.
      */
-    ReviewDTO saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request);
+    ReviewDto saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request);
 
     /**
      * Retrieves a list of all reviews.
      *
      * @return List of review DTOs.
      */
-    List<ReviewDTO> getReviewList();
+    List<ReviewDto> getReviewList();
 
     /**
      * Deletes a review provided by the user.
@@ -38,5 +38,5 @@ public interface ReviewService {
      * @param request The HTTP request.
      * @return The review DTO of the current user, or null if not found.
      */
-    ReviewDTO getUserReview(HttpServletRequest request);
+    ReviewDto getUserReview(HttpServletRequest request);
 }

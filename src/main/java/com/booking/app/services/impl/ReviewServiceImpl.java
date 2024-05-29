@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.ReviewDTO;
+import com.booking.app.dto.ReviewDto;
 import com.booking.app.dto.SaveReviewDto;
 import com.booking.app.entity.Review;
 import com.booking.app.entity.User;
@@ -25,13 +25,13 @@ import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
 @Log4j2
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
-
+    // todo refactor methods
     private final ReviewRepository reviewRepository;
 
     private final UserRepository userRepository;
 
     @Override
-    public ReviewDTO saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request) {
+    public ReviewDto saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request) {
         return findUser(request)
                 .map(user -> {
                     Review existingReview = user.getReview();
@@ -48,15 +48,15 @@ public class ReviewServiceImpl implements ReviewService {
                     user.setReview(newReview);
                     reviewRepository.save(newReview);
 
-                    return ReviewDTO.createInstance(newReview);
+                    return ReviewDto.createInstance(newReview);
                 })
                 .orElse(null);
     }
 
     @Override
-    public List<ReviewDTO> getReviewList() {
+    public List<ReviewDto> getReviewList() {
         List<Review> reviewList = reviewRepository.findAll();
-        return reviewList.stream().map(ReviewDTO::createInstance).toList();
+        return reviewList.stream().map(ReviewDto::createInstance).toList();
     }
 
     @Override
@@ -72,12 +72,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDTO getUserReview(HttpServletRequest request) {
+    public ReviewDto getUserReview(HttpServletRequest request) {
         return findUser(request)
                 .map(User::getReview)
-                .map(ReviewDTO::createInstance)
+                .map(ReviewDto::createInstance)
                 .orElse(null);
     }
+    // todo thrown exception
 
     /**
      * Finds the user based on the HTTP request.

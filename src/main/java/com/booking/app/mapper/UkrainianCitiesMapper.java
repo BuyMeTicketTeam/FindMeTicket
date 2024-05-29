@@ -1,6 +1,6 @@
 package com.booking.app.mapper;
 
-import com.booking.app.dto.CitiesDto;
+import com.booking.app.dto.CityDto;
 import com.booking.app.entity.UkrainianCities;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,23 +14,23 @@ public interface UkrainianCitiesMapper {
     @Mapping(target = "cityEng", source = "nameEng", ignore = true)
     @Mapping(target = "siteLanguage", ignore = true)
     @Mapping(target = "country", source = "country")
-    CitiesDto toCitiesDTO(UkrainianCities ukrainianCities);
+    CityDto toCitiesDTO(UkrainianCities ukrainianCities);
 
-    default List<CitiesDto> toCitiesDtoList(List<UkrainianCities> ukrainianCitiesList, String inputLanguage, String siteLanguage) {
+    default List<CityDto> toCitiesDtoList(List<UkrainianCities> ukrainianCitiesList, String inputLanguage, String siteLanguage) {
         return ukrainianCitiesList.stream()
                 .map(place -> {
-                    CitiesDto citiesDTO = toCitiesDTO(place);
-                    citiesDTO.setSiteLanguage(siteLanguage);
+                    CityDto cityDTO = toCitiesDTO(place);
+                    cityDTO.setSiteLanguage(siteLanguage);
 
                     switch (siteLanguage) {
                         case "ua":
                             switch (inputLanguage) {
                                 case "ua":
-                                    citiesDTO.setCityUa(place.getNameUa());
+                                    cityDTO.setCityUa(place.getNameUa());
                                     break;
                                 case "eng":
-                                    citiesDTO.setCityEng(place.getNameEng());
-                                    citiesDTO.setCityUa(place.getNameUa());
+                                    cityDTO.setCityEng(place.getNameEng());
+                                    cityDTO.setCityUa(place.getNameUa());
                                     break;
                             }
                             break;
@@ -38,17 +38,17 @@ public interface UkrainianCitiesMapper {
                         case "eng":
                             switch (inputLanguage) {
                                 case "eng":
-                                    citiesDTO.setCityEng(place.getNameEng());
+                                    cityDTO.setCityEng(place.getNameEng());
                                     break;
                                 case "ua":
-                                    citiesDTO.setCityEng(place.getNameEng());
-                                    citiesDTO.setCityUa(place.getNameUa());
+                                    cityDTO.setCityEng(place.getNameEng());
+                                    cityDTO.setCityUa(place.getNameUa());
                                     break;
                             }
                             break;
                     }
 
-                    return citiesDTO;
+                    return cityDTO;
                 })
                 .toList();
     }

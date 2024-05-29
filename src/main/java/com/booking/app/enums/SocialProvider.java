@@ -1,6 +1,6 @@
 package com.booking.app.enums;
 
-public enum EnumProvider {
+public enum SocialProvider {
     LOCAL,
     GOOGLE,
     FACEBOOK

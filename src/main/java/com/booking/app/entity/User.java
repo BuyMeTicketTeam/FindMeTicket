@@ -1,6 +1,6 @@
 package com.booking.app.entity;
 
-import com.booking.app.enums.EnumProvider;
+import com.booking.app.enums.SocialProvider;
 import com.booking.app.util.AvatarGenerator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -49,7 +49,7 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "provider")
-    private EnumProvider provider;
+    private SocialProvider provider;
 
     @Column(columnDefinition = "BYTEA")
     private byte[] defaultAvatar;
@@ -91,7 +91,7 @@ public class User implements UserDetails {
 
     public static User createGoogleUser(Role role, String username, String email, String urlPicture) {
         return User.builder()
-                .provider(EnumProvider.GOOGLE)
+                .provider(SocialProvider.GOOGLE)
                 .username(username)
                 .email(email)
                 .socialMediaAvatar(urlPicture)

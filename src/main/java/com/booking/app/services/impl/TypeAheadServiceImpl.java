@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.CitiesDto;
+import com.booking.app.dto.CityDto;
 import com.booking.app.mapper.UkrainianCitiesMapper;
 import com.booking.app.services.LanguageDetectorService;
 import com.booking.app.services.TypeAheadService;
@@ -25,7 +25,7 @@ public class TypeAheadServiceImpl implements TypeAheadService {
     private final UkrainianCitiesMapper ukrainianCitiesMapper;
 
     @Override
-    public List<CitiesDto> findMatches(String startLetters, String siteLanguage) throws IOException {
+    public List<CityDto> findMatches(String startLetters, String siteLanguage) throws IOException {
         return languageDetectorService.detectLanguage(startLetters)
                 .flatMap(language -> ukrainianCitiesService.getCities(startLetters, language)
                         .map(cities -> ukrainianCitiesMapper.toCitiesDtoList(cities, language, siteLanguage)))
