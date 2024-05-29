@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UkrainianPlaces {
+public class UkrainianCities {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

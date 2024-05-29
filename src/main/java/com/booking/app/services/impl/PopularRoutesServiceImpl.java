@@ -4,8 +4,8 @@ package com.booking.app.services.impl;
 import com.booking.app.constant.PopularRoutesConstants;
 import com.booking.app.dto.City;
 import com.booking.app.dto.RequestTicketsDTO;
-import com.booking.app.entity.UkrainianPlaces;
-import com.booking.app.repositories.UkrPlacesRepository;
+import com.booking.app.entity.UkrainianCities;
+import com.booking.app.repositories.UkrainianCitiesRepository;
 import com.booking.app.services.PopularRoutesService;
 import com.booking.app.services.impl.scrape.ScraperManager;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
 
     private final ScraperManager manager;
 
-    private final UkrPlacesRepository placesRepository;
+    private final UkrainianCitiesRepository placesRepository;
 
     @Override
     @Async
@@ -44,8 +44,8 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
         List<CompletableFuture<Boolean>> runningRoutes = new LinkedList<>();
 
         for (City route : routes) {
-            Optional<UkrainianPlaces> departureCity = placesRepository.findById(route.departureId());
-            Optional<UkrainianPlaces> arrivalCity = placesRepository.findById(route.arrivalId());
+            Optional<UkrainianCities> departureCity = placesRepository.findById(route.departureId());
+            Optional<UkrainianCities> arrivalCity = placesRepository.findById(route.arrivalId());
 
             if (departureCity.isPresent() && arrivalCity.isPresent()) {
                 runningRoutes.add(findTickets(departureCity.get().getNameUa(), arrivalCity.get().getNameUa(), UKRAINIAN));

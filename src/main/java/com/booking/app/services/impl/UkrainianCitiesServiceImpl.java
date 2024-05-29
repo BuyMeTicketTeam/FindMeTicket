@@ -6,6 +6,7 @@ import com.booking.app.services.UkrainianCitiesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +21,12 @@ public class UkrainianCitiesServiceImpl implements UkrainianCitiesService {
                 ? ukrainianCitiesRepository.findById(id).map(UkrainianCities::getNameEng)
                 : ukrainianCitiesRepository.findById(id).map(UkrainianCities::getNameUa);
         return city.orElse(null);
+    }
+
+    public Optional<List<UkrainianCities>> getCities(String startLetters, String inputLanguage) {
+        return (inputLanguage.equals("eng"))
+                ? ukrainianCitiesRepository.findUkrainianPlacesByNameEngStartsWithIgnoreCaseAndNameEngNotContainingIgnoreCase(startLetters, "oblast")
+                : ukrainianCitiesRepository.findUkrainianPlacesByNameUaStartsWithIgnoreCaseAndNameUaNotContainingIgnoreCase(startLetters, "область");
     }
 
 }
