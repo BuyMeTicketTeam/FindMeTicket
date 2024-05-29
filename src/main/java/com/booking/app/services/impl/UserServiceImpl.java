@@ -3,7 +3,10 @@ package com.booking.app.services.impl;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.SearchHistoryDto;
-import com.booking.app.entity.*;
+import com.booking.app.entity.ConfirmationCode;
+import com.booking.app.entity.Role;
+import com.booking.app.entity.SearchHistory;
+import com.booking.app.entity.User;
 import com.booking.app.enums.EnumRole;
 import com.booking.app.enums.SocialProvider;
 import com.booking.app.enums.TypeTransportEnum;
@@ -12,12 +15,12 @@ import com.booking.app.mapper.HistoryMapper;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.mapper.model.ArrivalCity;
 import com.booking.app.mapper.model.DepartureCity;
+import com.booking.app.repositories.HistoryRepository;
 import com.booking.app.repositories.RoleRepository;
-import com.booking.app.repositories.SearchHistoryRepository;
-import com.booking.app.repositories.UkrPlacesRepository;
 import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.TypeAheadService;
+import com.booking.app.services.UkrainianCitiesService;
 import com.booking.app.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,15 +38,18 @@ import java.util.*;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private final UkrainianCitiesService ukrainianCitiesService;
+    private final TypeAheadService typeAheadService;
+    private final ConfirmationCodeService confirmationCodeService;
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final UserMapper userMapper;
+    private final HistoryRepository historyRepository;
+
     private final PasswordEncoder passwordEncoder;
-    private final ConfirmationCodeService confirmationCodeService;
-    private final SearchHistoryRepository historyRepository;
-    private final TypeAheadService typeAheadService;
+
     private final HistoryMapper historyMapper;
-    private final UkrPlacesRepository ukrPlacesRepository;
+    private final UserMapper userMapper;
 
     @Override
     public void updateNotification(UUID uuid, boolean notification) {
@@ -136,25 +142,11 @@ public class UserServiceImpl implements UserService {
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(history -> {
-                    String departureCity = getCity(history.getArrivalCityId(), language);
-                    String arrivalCity = getCity(history.getDepartureCityId(), language);
+                    String departureCity = ukrainianCitiesService.getCity(history.getArrivalCityId(), language);
+                    String arrivalCity = ukrainianCitiesService.getCity(history.getDepartureCityId(), language);
                     return historyMapper.historyToDto(history, new DepartureCity(arrivalCity), new ArrivalCity(departureCity));
                 })
                 .toList().reversed();
-    }
-
-    /**
-     * Retrieves the name of a city based on its ID and language.
-     *
-     * @param id       The ID of the city.
-     * @param language The language for the city name.
-     * @return The name of the city.
-     */
-    private String getCity(Long id, String language) {
-        Optional<String> city = language.equals("eng")
-                ? ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameEng)
-                : ukrPlacesRepository.findById(id).map(UkrainianPlaces::getNameUa);
-        return city.orElse(null);
     }
 
 }
