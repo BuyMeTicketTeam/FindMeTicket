@@ -227,6 +227,7 @@ select:-webkit-autofill:focus {
 
     &:hover {
       cursor: pointer;
+      box-shadow: none;
     }
 
     &:disabled {
@@ -236,6 +237,17 @@ select:-webkit-autofill:focus {
     &:disabled:hover {
       cursor: initial;
     }
+  }
+}
+
+.link {
+  color: $bright;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 0;
+
+  &:disabled {
+      color: $grey;
   }
 }
 
@@ -252,6 +264,15 @@ select:-webkit-autofill:focus {
   }
 }
 
+.loading {
+  width: 70px;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  background: $dark;
+  border-radius: 10px;
+  padding: 10px;
+}
+
 .form-body {
   background: $semi-dark;
   border-radius: 20px;
@@ -259,6 +280,10 @@ select:-webkit-autofill:focus {
   min-width: 450px;
   max-width: 30%;
   height: fit-content;
+}
+
+.popup-overlay {
+  background: $overlay;
 }
 
 body #bmc-wbtn {

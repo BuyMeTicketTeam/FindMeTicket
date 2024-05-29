@@ -123,68 +123,64 @@ export default function Profile() {
             />
           </button>
         </div>
-        <div className="notification-wrapper">
-          <p className="notification-text">
+        <div className="profile-block profile-notification">
+          <p className="profile-notification__text">
             {t('notification')}
           </p>
-          <label htmlFor="notification" className="switch">
+          <label htmlFor="notification" className="profile-notification-switch">
             <input
               id="notification"
               type="checkbox"
               checked={notificationState}
               onChange={() => setNotificationState((prevState) => !prevState)}
             />
-            <span className="slider round" />
+            <span className="profile-notification-switch__slider" />
           </label>
         </div>
-        <div className="contact-wrapper">
-          <p className="contact-text">{t('account')}</p>
-          <div className="contact-item">
-            <div className="column">
-              <div className="column-header">
-                <div className="email-two">
-                  <img src={emailIcon} className="contact-icon" alt="Email" />
-                  <p className="contact-info-two email-info">{t('email')}</p>
-                </div>
+        <div className="profile-block profile-contacts">
+          <p className="profile-block__title">{t('account')}</p>
+          <div className="profile-contacts-group">
+            <div className="profile-contacts-group__column">
+              <div className="profile-contacts-group__row">
+                <img src={emailIcon} className="profile-contacts-group__icon" alt="Email" />
+                <p className="profile-contacts-group__text">{t('email')}</p>
               </div>
-              <div className="contact-info-data">
-                <div className="email-data">
-                  {userEmail}
-                </div>
+              <div className="profile-contacts-group__row">
+                {userEmail}
               </div>
             </div>
-            <div className="column">
-              <div className="column-header">
-                <img src={phoneIcon} className="contact-icon phone" alt="Phone" />
-                <p className="contact-info-two phone-info">{t('phone')}</p>
+            <div className="profile-contacts-group__column">
+              <div className="profile-contacts-group__row content_center">
+                <img src={phoneIcon} className="profile-contacts-group__icon type_phone" alt="Phone" />
+                <p className="">{t('phone')}</p>
               </div>
-              <div className="contact-info-data">
+              <div className="profile-contacts-group__row content_center">
                 <button
                   type="button"
-                  className="custom-button"
+                  disabled
+                  className="button"
                 >
                   {t('add')}
                 </button>
-
               </div>
             </div>
-            <div className="column">
-              <div className="column-header">
-                <img src={addressIcon} className="contact-icon" alt="Dia" />
-                <p className="contact-info-two actions-info">{t('account_management')}</p>
+            <div className="profile-contacts-group__column">
+              <div className="profile-contacts-group__row">
+                <img src={addressIcon} className="profile-contacts-group__icon" alt="Dia" />
+                <p className="">{t('account_management')}</p>
               </div>
-              <div className="contact-info-data">
+              <div className="profile-contacts-group__row">
                 <Link
                   type="button"
                   to="/change-password"
-                  className="change-password"
+                  className="link"
                   data-testid="change-password-link"
                 >
                   {t('change_password')}
                 </Link>
                 <button
                   type="button"
-                  className="delete-account"
+                  className="button profile-delete-acc"
                   onClick={() => setOpenDeleteModal(true)}
                   data-testid="delete-account-button"
                 >
@@ -195,30 +191,30 @@ export default function Profile() {
           </div>
         </div>
         <button
-          className={`history-wrapper ${isHistoryExpanded ? 'expanded' : ''}`}
+          className={`profile-block profile-history-btn ${isHistoryExpanded ? 'expanded' : ''}`}
           onClick={() => setIsHistoryExpanded(!isHistoryExpanded)}
           type="button"
         >
-          <img src={historyIcon} alt="History" className="new-icon" />
-          <p className="history-text">{t('history')}</p>
-          <div className={`history-arrow ${isHistoryExpanded ? 'arrow-down' : ''}`} />
+          <img src={historyIcon} alt="History" className="profile-history-btn__icon" />
+          <p className="profile-history-btn__text">{t('history')}</p>
+          <div className={`profile-history-btn__arrow ${isHistoryExpanded ? 'arrow-down' : ''}`} />
         </button>
         {isHistoryExpanded && (
-        <div className="history-content">
-          {isLoading && <img className="ticket-price__loading" src={loaderIcon} alt="Loading..." />}
-          {(!isLoading && history)
+        <div className="profile-history">
+          {isLoading && <img className="loading" src={loaderIcon} alt="Loading..." />}
+          {(!isLoading && history && history.length > 0)
             ? history.map((historyItem) => (
-              <Link to="/" key={uuidv4()} className="history-item">
-                <span className="history-date">{historyItem.addingTime}</span>
-                <img src={getIcon(historyItem)} alt="Transport icon" className="history-icon" />
-                <span className="history-from">{historyItem.departureCity}</span>
-                <div className="history-central-column">
-                  <div className="history-departure-date">{historyItem.departureDate}</div>
-                  <hr className="history-line" />
+              <Link to="/" key={uuidv4()} className="profile-history-item">
+                <span className="profile-history-item__search-date">{historyItem.addingTime}</span>
+                <img src={getIcon(historyItem)} alt="Transport icon" className="profile-history-item__icon" />
+                <span className="profile-history-item__from">{historyItem.departureCity}</span>
+                <div className="profile-history-item__column">
+                  <div className="profile-history-item__date">{historyItem.departureDate}</div>
+                  <hr className="profile-history-item__line" />
                 </div>
-                <span className="history-to">{historyItem.arrivalCity}</span>
+                <span className="profile-history-item__to">{historyItem.arrivalCity}</span>
               </Link>
-            )) : <div className="history-item no-items">{t('no_items')}</div>}
+            )) : <div className="profile-history-item no-items">{t('no_items')}</div>}
         </div>
         )}
       </div>

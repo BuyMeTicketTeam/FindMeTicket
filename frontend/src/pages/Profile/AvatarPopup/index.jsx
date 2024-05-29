@@ -8,6 +8,8 @@ import {
 } from '../../../images/ranks/ranks';
 import lockImage from '../../../images/lock.svg';
 
+import './style.scss';
+
 export default function AvatarPopup({ open, closeModal, userAvatar }) {
   const outlines = [rank1, rank2, rank3, rank4, rank5];
   const level = 1;
@@ -17,12 +19,13 @@ export default function AvatarPopup({ open, closeModal, userAvatar }) {
       <div className="avatar-popup">
         {outlines.map((outlineItem, index) => (
           <div key={uuidv4()} className="avatar-popup-card">
-            <div className={`avatar-popup-card__body ${(index <= level - 1) ? 'dark_body' : ''}`}>
-              <img src={outlineItem} alt="rank1" className="avatar-popup-card__image" />
-              <img src={userAvatar} alt="Avatar" className="avatar-popup-card__overlay" />
-              <span className="avatar-popup-card__level">Lvl {index}</span>
+            <div className="avatar-popup-card__body">
+              <img src={outlineItem} alt="rank1" className={`avatar-popup-card__image image_${index}`} />
+              <img src={userAvatar} alt="Avatar" className="avatar-popup-card__avatar" />
+              <p className="avatar-popup-card__level">Lvl {index}</p>
             </div>
-            {(index <= level - 1) && <img src={lockImage} alt="lock" className="avatar-popup-card__lock" />}
+            {(index > level - 1) && <div className="avatar-popup-card__overlay" /> }
+            {(index > level - 1) && <img src={lockImage} alt="lock" className="avatar-popup-card__lock" />}
           </div>
         ))}
         <button className="avatar-popup-close" type="button" onClick={closeModal}>

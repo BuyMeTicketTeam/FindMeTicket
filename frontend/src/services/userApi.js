@@ -112,7 +112,6 @@ export const userApi = api.injectEndpoints({
       query: () => ({
         url: '/getHistory',
         method: 'GET',
-        responseHandler: 'text',
       }),
     }),
     notificationEnable: builder.query({
