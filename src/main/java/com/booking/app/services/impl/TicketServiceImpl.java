@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.dto.TicketDto;
 import com.booking.app.entity.ticket.Route;
 import com.booking.app.mapper.BusMapper;
@@ -40,7 +40,7 @@ public class TicketServiceImpl implements TicketService {
     TrainMapper trainMapper;
 
     @Transactional
-    public <T extends TicketDto> Optional<List<T>> getTickets(RequestTicketsDTO dto) throws IOException {
+    public <T extends TicketDto> Optional<List<T>> getTickets(RequestTicketsDto dto) throws IOException {
         Route route = findRoute(dto);
 
         if (Objects.nonNull(route)) {
@@ -62,7 +62,7 @@ public class TicketServiceImpl implements TicketService {
      * @param language  the language for the ticket details
      * @param <T>       the type of ticket DTO
      */
-    private <T extends TicketDto> void addTicketsToDto(RequestTicketsDTO dto, Route route, List<T> ticketDto, String language) {
+    private <T extends TicketDto> void addTicketsToDto(RequestTicketsDto dto, Route route, List<T> ticketDto, String language) {
         if (Boolean.TRUE.equals(dto.getBus())) {
             busTicketRepository.findByRoute(route)
                     .ifPresent(busTickets -> busTickets.forEach(bus -> ticketDto.add((T) busMapper.ticketToTicketDto(bus, language))));
@@ -80,7 +80,7 @@ public class TicketServiceImpl implements TicketService {
      * @param dto the request containing filtering criteria
      * @return the route that matches the criteria
      */
-    private Route findRoute(RequestTicketsDTO dto) {
+    private Route findRoute(RequestTicketsDto dto) {
         return routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(
                 dto.getDepartureCity(),
                 dto.getArrivalCity(),

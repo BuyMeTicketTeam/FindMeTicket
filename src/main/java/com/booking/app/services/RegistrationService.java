@@ -1,6 +1,5 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.CodeConfirmationDto;
 import com.booking.app.dto.EmailDto;
 import com.booking.app.dto.RegistrationDTO;
 import jakarta.mail.MessagingException;
@@ -21,12 +20,5 @@ public interface RegistrationService {
      * @throws MessagingException if there is an error sending the confirmation email
      */
     EmailDto register(RegistrationDTO dto, String language) throws MessagingException;
-
-    /**
-     * Confirms the user's email using a code.
-     *
-     * @param dto the data transfer object containing the token and email for confirmation
-     */
-    void confirmCode(CodeConfirmationDto dto);
 
 }

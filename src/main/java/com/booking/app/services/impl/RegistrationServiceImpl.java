@@ -1,12 +1,9 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.CodeConfirmationDto;
 import com.booking.app.dto.EmailDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.User;
 import com.booking.app.exception.exception.EmailAlreadyTakenException;
-import com.booking.app.exception.exception.InvalidConfirmationCodeException;
-import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
@@ -40,33 +37,6 @@ public class RegistrationServiceImpl implements RegistrationService {
         mailService.sendVerificationCode(user.getEmail(), language);
         log.info("User with ID: {} has successfully registered.", user.getId());
         return mapper.toEmailDto(user);
-    }
-
-    @Override
-    public void confirmCode(CodeConfirmationDto dto) {
-        userService.findByEmail(dto.getEmail())
-                .ifPresentOrElse(user -> {
-                    if (!user.isEnabled()) {
-                        verifyUser(dto, user);
-                    }
-                }, () -> {
-                    throw new UserNotFoundException();
-                });
-    }
-
-    /**
-     * Verifies the user using the provided code.
-     *
-     * @param dto  the data transfer object containing the code and email for confirmation
-     * @param user the user to be verified
-     */
-    private void verifyUser(CodeConfirmationDto dto, User user) {
-        if (confirmationCodeService.verifyCode(user.getConfirmationCode(), dto.getCode())) {
-            userService.enableUser(user);
-            log.info("User with ID: {} has successfully confirmed email.", user.getId());
-        } else {
-            throw new InvalidConfirmationCodeException();
-        }
     }
 
     /**

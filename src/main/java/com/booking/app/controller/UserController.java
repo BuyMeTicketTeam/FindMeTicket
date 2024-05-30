@@ -5,6 +5,7 @@ import com.booking.app.constant.ApiMessagesConstants;
 import com.booking.app.constant.RegistrationConstantMessages;
 import com.booking.app.dto.*;
 import com.booking.app.entity.User;
+import com.booking.app.enums.ContentLanguage;
 import com.booking.app.exception.ErrorDetails;
 import com.booking.app.services.NotificationService;
 import com.booking.app.services.PasswordService;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.booking.app.constant.PasswordConstantMessages.*;
+import static com.booking.app.constant.RegistrationConstantMessages.*;
 import static com.booking.app.exception.exception.InvalidConfirmationCodeException.MESSAGE_INVALID_CONFIRMATION_CODE_IS_PROVIDED;
 
 /**
@@ -51,14 +54,38 @@ public class UserController {
     private final PasswordService passwordService;
     private final ReviewService reviewService;
 
+    /**
+     * Confirms the user's email using a code.
+     *
+     * @param dto the code confirmation data transfer object
+     * @return a ResponseEntity containing the result of the confirmation
+     */
+    @PostMapping("/verify")
+    @Operation(summary = "Email confirmation", description = "Confirm user identity")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = USER_IS_VERIFIED_MESSAGE),
+            @ApiResponse(responseCode = "400",
+                    description = CODE_IS_NOT_RIGHT_MESSAGE,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404",
+                    description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
+                    content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})
+    })
+    public ResponseEntity<?> confirmEmailCode(@RequestBody @NotNull @Valid CodeConfirmationDto dto) {
+        userService.confirmCode(dto);
+        return ResponseEntity.status(HttpStatus.OK).body(USER_IS_VERIFIED_MESSAGE);
+    }
+
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Delete a user",
             description = "Deletes the authenticated user account",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = ApiMessagesConstants.USER_HAS_BEEN_DELETED_MESSSAGE, content = @Content(schema = @Schema(hidden = true))),
@@ -77,17 +104,19 @@ public class UserController {
     @Operation(summary = "User history",
             description = "Routes from user history",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully returned", content = @Content(schema = @Schema(implementation = HistoryDto.class), mediaType = MediaType.APPLICATION_JSON_VALUE)),
                     @ApiResponse(responseCode = "401", description = ApiMessagesConstants.UNAUTHENTICATED_MESSAGE, content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorDetails.class)))
             })
     public ResponseEntity<?> getHistory(@PathVariable("userId") String userId,
-                                        @RequestHeader(name = HttpHeaders.CONTENT_LANGUAGE) String contentLanguage,
+                                        @RequestHeader(name = HttpHeaders.CONTENT_LANGUAGE) ContentLanguage language,
                                         @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(userService.getHistory(user, contentLanguage));
+        return ResponseEntity.ok().body(userService.getHistory(user, language.getLanguage()));
     }
 
     @GetMapping("/{userId}/notifications/on")
@@ -95,8 +124,10 @@ public class UserController {
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Enable getting notifications",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             }, responses = {
             @ApiResponse(responseCode = "204", description = "Notifications are on"),
             @ApiResponse(responseCode = "401", description = ApiMessagesConstants.UNAUTHENTICATED_MESSAGE)
@@ -111,8 +142,10 @@ public class UserController {
     @PreAuthorize("#{hasAnyRole('USER', 'ADMIN')}")
     @Operation(summary = "Disable getting notifications",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = "Notifications are off"),
@@ -144,8 +177,10 @@ public class UserController {
     @Operation(summary = "Update password",
             description = "Create new password for logged-in user",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = MESSAGE_NEW_PASSWORD_HAS_BEEN_CREATED, content = @Content(schema = @Schema(hidden = true))),
@@ -164,8 +199,10 @@ public class UserController {
     @Operation(summary = "Add review",
             description = "Adds user review",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "201",
@@ -201,8 +238,10 @@ public class UserController {
     @Operation(summary = "Delete review",
             description = "Deletes review of authorized user",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "204", description = "Successfully deleted"),
@@ -218,8 +257,10 @@ public class UserController {
     @Operation(summary = "Get user review",
             description = "Gets authorized user review",
             parameters = {
-                    @Parameter(name = "Authorization", in = ParameterIn.HEADER, required = true, description = "Provide access JWT token"),
-                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token"),
+                    @Parameter(name = HttpHeaders.AUTHORIZATION, in = ParameterIn.HEADER, required = true, description = "Provide access JWT token",
+                            schema = @Schema(type = "string", example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
+                    @Parameter(name = "RefreshToken", in = ParameterIn.COOKIE, required = true, description = "Provide refresh JWT token",
+                            schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")),
             },
             responses = {
                     @ApiResponse(responseCode = "200",

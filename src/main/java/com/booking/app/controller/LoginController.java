@@ -61,6 +61,7 @@ public class LoginController {
         return loginService.loginWithEmailAndPassword(dto, request, response);
     }
 
+    @PostMapping("/sign-in/{provider}")
     @Operation(summary = "Social authentication", description = "Authenticate by using Google or Facebook")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = ApiMessagesConstants.USER_HAS_BEEN_AUTHENTICATED_MESSAGE,
@@ -72,7 +73,6 @@ public class LoginController {
                     description = ApiMessagesConstants.INVALID_CLIENT_PROVIDER_ID_MESSAGE,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
     })
-    @PostMapping("/sign-in/{provider}")
     public ResponseEntity<?> socialLogin(@PathVariable("provider") @Parameter(required = true, description = "Provider type", schema = @Schema(type = "string", allowableValues = {"google", "facebook"})) SocialProvider provider,
                                          @RequestBody @Valid @NotNull SocialLoginDto dto,
                                          HttpServletRequest request,

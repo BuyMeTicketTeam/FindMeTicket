@@ -3,7 +3,7 @@ package com.booking.app.services.impl;
 
 import com.booking.app.constant.PopularRoutesConstants;
 import com.booking.app.dto.City;
-import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.entity.UkrainianCities;
 import com.booking.app.repositories.UkrainianCitiesRepository;
 import com.booking.app.services.PopularRoutesService;
@@ -71,7 +71,7 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
      * @throws ParseException if there is an error in parsing the date
      */
     private CompletableFuture<Boolean> findTickets(String departureCity, String arrivalCity, String language) throws IOException, ParseException {
-        return manager.findTickets(RequestTicketsDTO.builder()
+        return manager.findTickets(RequestTicketsDto.builder()
                 .departureCity(departureCity)
                 .arrivalCity(arrivalCity)
                 .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)))

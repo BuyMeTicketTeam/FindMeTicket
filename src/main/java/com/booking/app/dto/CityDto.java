@@ -21,6 +21,6 @@ public class CityDto {
     @Schema(description = "City name in English", example = "Kyiv")
     private String cityEng;
 
-    @Schema(description = "Site language", example = "en")
-    private String siteLanguage;
+    @Schema(description = "Content language", example = "en")
+    private String language;
 }

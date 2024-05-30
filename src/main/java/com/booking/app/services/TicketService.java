@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.dto.TicketDto;
 
 import java.io.IOException;
@@ -17,6 +17,6 @@ public interface TicketService {
      * @return a list of tickets or an empty optional if no tickets are found
      * @throws IOException if an I/O error occurs while determining the language
      */
-    <T extends TicketDto> Optional<List<T>> getTickets(RequestTicketsDTO dto) throws IOException;
+    <T extends TicketDto> Optional<List<T>> getTickets(RequestTicketsDto dto) throws IOException;
 
 }

@@ -12,7 +12,7 @@ public interface UkrainianCitiesMapper {
 
     @Mapping(target = "cityUa", source = "nameUa", ignore = true)
     @Mapping(target = "cityEng", source = "nameEng", ignore = true)
-    @Mapping(target = "siteLanguage", ignore = true)
+    @Mapping(target = "language", ignore = true)
     @Mapping(target = "country", source = "country")
     CityDto toCitiesDTO(UkrainianCities ukrainianCities);
 
@@ -20,7 +20,7 @@ public interface UkrainianCitiesMapper {
         return ukrainianCitiesList.stream()
                 .map(place -> {
                     CityDto cityDTO = toCitiesDTO(place);
-                    cityDTO.setSiteLanguage(siteLanguage);
+                    cityDTO.setLanguage(siteLanguage);
 
                     switch (siteLanguage) {
                         case "ua":

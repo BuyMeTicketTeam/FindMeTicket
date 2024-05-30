@@ -3,9 +3,11 @@ package com.booking.app.controller;
 import com.booking.app.annotation.GlobalApiResponses;
 import com.booking.app.constant.RegistrationConstantMessages;
 import com.booking.app.dto.EmailDto;
+import com.booking.app.enums.ContentLanguage;
 import com.booking.app.exception.ErrorDetails;
 import com.booking.app.services.MailSenderService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import static com.booking.app.constant.ApiMessagesConstants.INVALID_CONTENT_LANGUAGE_HEADER_MESSAGE;
 import static com.booking.app.constant.PasswordConstantMessages.MESSAGE_CODE_HAS_BEEN_SENT;
 import static com.booking.app.constant.RegistrationConstantMessages.CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE;
 import static com.booking.app.constant.RegistrationConstantMessages.THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE;
@@ -40,13 +43,14 @@ public class UserVerifierController {
                     @ApiResponse(responseCode = "204",
                             description = MESSAGE_CODE_HAS_BEEN_SENT,
                             content = @Content(schema = @Schema(hidden = true))),
+                    @ApiResponse(responseCode = "400", description = INVALID_CONTENT_LANGUAGE_HEADER_MESSAGE + " OR " + "Invalid request body", content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
                     @ApiResponse(responseCode = "404",
                             description = RegistrationConstantMessages.THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
                             content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})
             })
     public void sendResetCode(@RequestBody @NotNull @Valid EmailDto dto,
-                              @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage) {
-        mailSenderService.sendResetPasswordCode(dto.getEmail(), siteLanguage);
+                              @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) @Parameter(required = true, description = "Content Language", schema = @Schema(type = "string", allowableValues = {"eng", "ua"})) ContentLanguage language) {
+        mailSenderService.sendResetPasswordCode(dto.getEmail(), language.getLanguage());
     }
 
     @PostMapping("/verification-code/send")
@@ -55,13 +59,14 @@ public class UserVerifierController {
             description = "Sends a code to verify a user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = CONFIRM_CODE_HAS_BEEN_SENT_ONE_MORE_TIME_MESSAGE),
+            @ApiResponse(responseCode = "400", description = INVALID_CONTENT_LANGUAGE_HEADER_MESSAGE + " OR " + "Invalid request body", content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "404",
                     description = THE_SPECIFIED_EMAIL_IS_NOT_REGISTERED_MESSAGE,
                     content = {@Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})
     })
-    public void resendConfirmEmailCode(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage,
+    public void resendConfirmEmailCode(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) @Parameter(required = true, description = "Content Language", schema = @Schema(type = "string", allowableValues = {"eng", "ua"})) ContentLanguage language,
                                        @RequestBody @NotNull @Valid EmailDto dto) {
-        mailSenderService.sendVerificationCode(dto.getEmail(), siteLanguage);
+        mailSenderService.sendVerificationCode(dto.getEmail(), language.getLanguage());
     }
 
 }

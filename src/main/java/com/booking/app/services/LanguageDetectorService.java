@@ -13,4 +13,5 @@ public interface LanguageDetectorService {
      * @throws IOException if an I/O error occurs while reading the language profiles
      */
     Optional<String> detectLanguage(String letters) throws IOException;
+
 }

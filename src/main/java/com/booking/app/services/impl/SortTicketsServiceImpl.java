@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.RequestSortedTicketsDTO;
+import com.booking.app.dto.RequestSortedTicketsDto;
 import com.booking.app.dto.TicketDto;
 import com.booking.app.entity.ticket.Ticket;
 import com.booking.app.entity.ticket.bus.BusTicket;
@@ -29,49 +29,6 @@ public class SortTicketsServiceImpl implements SortTicketsService {
 
     private final TrainMapper trainMapper;
 
-    public List<TicketDto> getSortedTickets(RequestSortedTicketsDTO dto, String language) {
-        List<Ticket> tickets = findTickets(dto);
-        Comparator<Ticket> comparator = customComparator(dto);
-        sortTickets(dto, tickets, comparator);
-
-        return tickets.stream()
-                .map(ticket -> mapTicketToDto(ticket, dto, language))
-                .toList();
-    }
-
-    /**
-     * Maps a ticket to its corresponding DTO based on the ticket type and the provided DTO.
-     *
-     * @param ticket   The ticket to be mapped.
-     * @param dto      The request DTO containing the filtering criteria.
-     * @param language The language for the ticket details.
-     * @return The mapped ticket DTO, or null if the ticket type does not match the criteria.
-     */
-    private TicketDto mapTicketToDto(Ticket ticket, RequestSortedTicketsDTO dto, String language) {
-        return switch (ticket) {
-            case BusTicket t when dto.getBus() -> busMapper.ticketToTicketDto(t, language);
-            case TrainTicket t when dto.getTrain() -> trainMapper.toTrainTicketDto(t, language);
-            default ->
-                    throw new UnsupportedOperationException("Unsupported ticket type: " + ticket.getClass().getSimpleName());
-        };
-    }
-
-    /**
-     * Finds tickets based on the departure city, arrival city, and departure date.
-     *
-     * @param dto The request DTO containing the criteria for ticket search.
-     * @return A list of tickets matching the criteria.
-     */
-    @NotNull
-    private List<Ticket> findTickets(RequestSortedTicketsDTO dto) {
-        return new ArrayList<>(
-                routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(
-                        dto.getDepartureCity(),
-                        dto.getArrivalCity(),
-                        dto.getDepartureDate()
-                ).getTickets());
-    }
-
     /**
      * Creates a comparator based on the sorting criteria provided in the DTO.
      *
@@ -79,7 +36,7 @@ public class SortTicketsServiceImpl implements SortTicketsService {
      * @return A comparator for sorting tickets.
      */
     @SneakyThrows
-    private static Comparator<Ticket> customComparator(RequestSortedTicketsDTO dto) {
+    private static Comparator<Ticket> customComparator(RequestSortedTicketsDto dto) {
         throw new OperationNotSupportedException();
 //        return switch (dto.getSortingBy()) {
 //            case PRICE_CRITERIA -> Comparator.comparing(Ticket::getPrice);
@@ -97,10 +54,53 @@ public class SortTicketsServiceImpl implements SortTicketsService {
      * @param tickets    The list of tickets to be sorted.
      * @param comparator The comparator to define the sorting logic.
      */
-    private static void sortTickets(RequestSortedTicketsDTO dto, List<Ticket> tickets, Comparator<Ticket> comparator) {
+    private static void sortTickets(RequestSortedTicketsDto dto, List<Ticket> tickets, Comparator<Ticket> comparator) {
         tickets.sort(dto.isAscending()
                 ? comparator
                 : comparator.reversed());
+    }
+
+    public List<TicketDto> getSortedTickets(RequestSortedTicketsDto dto, String language) {
+        List<Ticket> tickets = findTickets(dto);
+        Comparator<Ticket> comparator = customComparator(dto);
+        sortTickets(dto, tickets, comparator);
+
+        return tickets.stream()
+                .map(ticket -> mapTicketToDto(ticket, dto, language))
+                .toList();
+    }
+
+    /**
+     * Maps a ticket to its corresponding DTO based on the ticket type and the provided DTO.
+     *
+     * @param ticket   The ticket to be mapped.
+     * @param dto      The request DTO containing the filtering criteria.
+     * @param language The language for the ticket details.
+     * @return The mapped ticket DTO, or null if the ticket type does not match the criteria.
+     */
+    private TicketDto mapTicketToDto(Ticket ticket, RequestSortedTicketsDto dto, String language) {
+        return switch (ticket) {
+            case BusTicket t when dto.getBus() -> busMapper.ticketToTicketDto(t, language);
+            case TrainTicket t when dto.getTrain() -> trainMapper.toTrainTicketDto(t, language);
+            default ->
+                    throw new UnsupportedOperationException("Unsupported ticket type: " + ticket.getClass().getSimpleName());
+        };
+    }
+
+    /**
+     * Finds tickets based on the departure city, arrival city, and departure date.
+     *
+     * @param dto The request DTO containing the criteria for ticket search.
+     * @return A list of tickets matching the criteria.
+     */
+    @NotNull
+    private List<Ticket> findTickets(RequestSortedTicketsDto dto) {
+        return new ArrayList<>(
+                routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(
+                        dto.getDepartureCity(),
+                        dto.getArrivalCity(),
+                        dto.getDepartureDate()
+                ).getTickets());
     }
 
 }

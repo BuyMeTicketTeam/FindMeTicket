@@ -1,8 +1,9 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.CodeConfirmationDto;
 import com.booking.app.dto.HistoryDto;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.entity.User;
 import com.booking.app.exception.exception.UserIsDisabledException;
 
@@ -91,7 +92,7 @@ public interface UserService {
      * @param language The language of the search.
      * @param user     User to add history
      */
-    void addHistory(RequestTicketsDTO dto, String language, User user);
+    void addHistory(RequestTicketsDto dto, String language, User user);
 
     /**
      * Retrieves the search history of a user.
@@ -101,5 +102,12 @@ public interface UserService {
      * @return List of search history DTOs.
      */
     List<HistoryDto> getHistory(User user, String language);
+
+    /**
+     * Confirms the user's email using a code.
+     *
+     * @param dto the data transfer object containing the token and email for confirmation
+     */
+    void confirmCode(CodeConfirmationDto dto);
 
 }

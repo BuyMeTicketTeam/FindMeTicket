@@ -1,8 +1,9 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.dto.CodeConfirmationDto;
 import com.booking.app.dto.HistoryDto;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.RequestTicketsDTO;
+import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.SearchHistory;
@@ -10,7 +11,9 @@ import com.booking.app.entity.User;
 import com.booking.app.enums.EnumRole;
 import com.booking.app.enums.SocialProvider;
 import com.booking.app.enums.TypeTransportEnum;
+import com.booking.app.exception.exception.InvalidConfirmationCodeException;
 import com.booking.app.exception.exception.UserIsDisabledException;
+import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.mapper.HistoryMapper;
 import com.booking.app.mapper.UserMapper;
 import com.booking.app.mapper.model.ArrivalCity;
@@ -50,6 +53,18 @@ public class UserServiceImpl implements UserService {
 
     private final HistoryMapper historyMapper;
     private final UserMapper userMapper;
+
+    @Override
+    public void confirmCode(CodeConfirmationDto dto) {
+        findByEmail(dto.getEmail())
+                .ifPresentOrElse(user -> {
+                    if (!user.isEnabled()) {
+                        verifyUser(dto, user);
+                    }
+                }, () -> {
+                    throw new UserNotFoundException();
+                });
+    }
 
     @Override
     public void updateNotification(UUID uuid, boolean notification) {
@@ -122,7 +137,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addHistory(RequestTicketsDTO dto, String language, @Nullable User user) {
+    public void addHistory(RequestTicketsDto dto, String language, @Nullable User user) {
         Optional.ofNullable(user).ifPresent(u -> {
             Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
             historyRepository.save(SearchHistory.builder()
@@ -147,6 +162,21 @@ public class UserServiceImpl implements UserService {
                     return historyMapper.historyToDto(history, new DepartureCity(arrivalCity), new ArrivalCity(departureCity));
                 })
                 .toList().reversed();
+    }
+
+    /**
+     * Verifies the user using the provided code.
+     *
+     * @param dto  the data transfer object containing the code and email for confirmation
+     * @param user the user to be verified
+     */
+    private void verifyUser(CodeConfirmationDto dto, User user) {
+        if (confirmationCodeService.verifyCode(user.getConfirmationCode(), dto.getCode())) {
+            enableUser(user);
+            log.info("User with ID: {} has successfully confirmed email.", user.getId());
+        } else {
+            throw new InvalidConfirmationCodeException();
+        }
     }
 
 }
