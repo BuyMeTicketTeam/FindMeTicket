@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
+import { paramsToObject } from '../../../helper/paramsToObject';
+
 import InProgress from '../../../InProgress/index';
 import TransportButton from '../TransportBtn';
 
@@ -15,33 +17,55 @@ function Transport({
   loading,
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeButton = searchParams.get('type') ?? 'all';
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'transport' });
 
-  const handleButtonClick = (type) => {
-    setSearchParams({ ...searchParams, type });
+  const searchParamsObj = paramsToObject(searchParams.entries());
+
+  const handleButtonClick = (...types) => {
+    const defaultTypes = {
+      bus: false,
+      train: false,
+      airplane: false,
+      ferry: false,
+    };
+    types.forEach((type) => { defaultTypes[type] = true; });
+    setSearchParams({ ...searchParamsObj, ...defaultTypes });
+  };
+
+  const getIsActive = (transport) => {
+    const bus = searchParams.get('bus') === 'true';
+    const train = searchParams.get('train') === 'true';
+
+    switch (transport) {
+      case 'bus':
+        return bus && !train;
+      case 'train':
+        return !bus && train;
+      default:
+        return bus && train;
+    }
   };
 
   return (
     <div>
       <TransportButton
         label={t('everything')}
-        isActive={activeButton === 'all'}
-        onClick={() => { handleButtonClick('all'); }}
+        isActive={getIsActive('all')}
+        onClick={() => { handleButtonClick('bus', 'train'); }}
         img={everythingIcon}
         loading={loading}
       />
       <TransportButton
         label={t('bus')}
-        isActive={activeButton === 'bus'}
+        isActive={getIsActive('bus')}
         onClick={() => { handleButtonClick('bus'); }}
         img={busIcon}
         loading={loading}
       />
       <TransportButton
         label={t('train')}
-        isActive={activeButton === 'train'}
+        isActive={getIsActive('train')}
         onClick={() => { handleButtonClick('train'); }}
         img={trainIcon}
         loading={loading}
