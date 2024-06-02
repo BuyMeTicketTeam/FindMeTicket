@@ -1,0 +1,59 @@
+@import '../../../styles/colorsVar.scss';
+.main-filters {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.main-filters__btn {
+    width: 255px;
+    height: 39px;
+    position: relative;
+    font-size: 20px;
+    font-weight: 500;
+    background: $semi-dark;
+    color: inherit;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 38px 8px 28px;
+    transition: 0.3s;
+
+    &::before {
+        display: inline-block;
+        content: '';
+        position: absolute;
+        top: 8px;
+        right: 19px;
+        width: 20px;
+        height: 20px;
+        background: url('./arrow-more.svg');
+    }
+
+    &:hover {
+        background: $bright;
+        cursor: pointer;
+    }
+
+    &.active {
+        background: $bright;
+    }
+
+    &.active.up::before {
+        transform: rotate(180deg);
+        right: 15px;
+        top: 11px;
+    }
+
+    &:not(:last-child) {
+        margin-right: 15px;
+    }
+    &:disabled {
+        background: $grey;
+    }
+}
+
+.main-filters__img {
+    width: 25px;
+    height: 25px;
+}
