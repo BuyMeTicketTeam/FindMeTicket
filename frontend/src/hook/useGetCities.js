@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 import { useRef, useCallback } from 'react';
-import makeQuerry from '../helper/querry';
+import { useLazyTypeAheadAPIQuery } from '../services/typeAhead';
 
 export default function useGetCities() {
   function transformData(item) {
@@ -16,14 +17,20 @@ export default function useGetCities() {
   }
 
   const timerId = useRef();
+  const [typeAhead] = useLazyTypeAheadAPIQuery();
   const getCities = useCallback(async (inputValue, updateState) => {
     if (inputValue.length > 1) {
       clearInterval(timerId.current);
       const result = await new Promise((resolve) => {
         timerId.current = setTimeout(async () => {
-          const response = await makeQuerry('typeAhead', JSON.stringify({ startLetters: inputValue }));
-          const responseBody = response.status === 200 ? response.body.map(transformData) : [];
-          resolve(responseBody);
+          try {
+            const response = await typeAhead(inputValue).unwrap();
+            console.log(response);
+            resolve(response.map(transformData));
+          } catch (error) {
+            console.log(error);
+            resolve([]);
+          }
         }, 500);
       });
       updateState(result[0]);

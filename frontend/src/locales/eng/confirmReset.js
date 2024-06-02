@@ -1,5 +1,4 @@
 export const confirmReset = {
-  error_419: 'Server error. Try again',
   error_500: 'Server error. Try again',
   error_400: 'The code is incorrect',
   title: 'Create a new password',

@@ -14,7 +14,7 @@ import {
 import Button from '../../utils/Button';
 import Calendar from '../Calendar';
 import arrowsImg from './arrows.svg';
-import eventSourceQuery2 from '../../helper/eventSourceQuery2';
+import eventSourceQuery2 from '../../helper/eventSourceQuery';
 import makeQuerry from '../../helper/querry';
 import useGetCities from '../../hook/useGetCities';
 import './searchField.scss';

@@ -1,6 +1,7 @@
 export const login = {
   login_error: 'The email is invalid',
   error_401: 'The login or password is incorrect',
+  error_400: 'Validation error',
   error_500: 'Server error. Try again',
   error_google: 'An error occurred during authorization through Google',
   error_facebook: 'An error occurred during authorization through Facebook',

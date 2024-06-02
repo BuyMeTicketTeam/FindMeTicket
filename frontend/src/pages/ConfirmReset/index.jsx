@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 
-import { useNewPasswordMutation, useResendConfirmResetTokenMutation } from '../../services/userApi';
+import { useNewPasswordMutation, useResetMutation } from '../../services/userApi';
 import useTimeout from '../../hook/useTimeout';
 import { CODE_PATTERN, PASSWORD_PATTERN } from '../../constants/regex';
 
@@ -18,7 +18,7 @@ export default function ConfirmReset() {
   const [newPassword, {
     isSuccess, isLoading, isError, error,
   }] = useNewPasswordMutation();
-  const [resendResetToken, { isLoading: isResendLoading }] = useResendConfirmResetTokenMutation();
+  const [resendResetToken, { isLoading: isResendLoading }] = useResetMutation();
   const { t } = useTranslation('translation', { keyPrefix: 'confirmReset' });
   const {
     register, handleSubmit, setError, formState: { errors },
@@ -54,7 +54,7 @@ export default function ConfirmReset() {
     }
     try {
       const payload = {
-        token: data.code,
+        code: data.code,
         email: state.email,
         password: data.password,
         confirmPassword: data.confirmPassword,

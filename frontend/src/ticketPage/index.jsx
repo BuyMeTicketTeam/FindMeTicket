@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import eventSourceQuery2 from '../helper/eventSourceQuery2';
+import eventSourceQuery2 from '../helper/eventSourceQuery';
 import Price from './Price/index';
 import Information from './Information/index ';
 import Loader from '../Loader/index';

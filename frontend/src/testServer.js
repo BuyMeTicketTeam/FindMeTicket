@@ -165,7 +165,7 @@ createServer({
     this.post('/selectedTransport', () => new Response(200, undefined, JSON.stringify([])));
     this.post('/searchTickets', () => new Response(200, undefined, JSON.stringify([])));
     this.delete('/delete-user', () => new Response(200));
-    this.post('/typeAhead', (schema, request) => {
+    this.get('/cities/typeahead', (schema, request) => {
       if (JSON.parse(request.requestBody) === 'Дн') {
         return new Response(200, undefined, JSON.stringify(destination));
       }

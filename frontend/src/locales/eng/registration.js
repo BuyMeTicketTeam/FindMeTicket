@@ -1,7 +1,6 @@
 export const registration = {
   registration: 'Registration',
   error_409: 'The user with this email address is already registered',
-  error_418: 'This nickname already exists, come up with something else',
   error_500: 'Server error. Try again',
   privacy_policy: 'You must agree to the privacy policy',
   username: 'Nickname',

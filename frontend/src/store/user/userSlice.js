@@ -17,7 +17,7 @@ function setUser(state, action) {
   state.username = action.payload.username;
   state.notification = action.payload.notification;
   state.userEmail = action.payload.email;
-  state.userPhoto = action.payload.googlePicture ?? `data:image/jpeg;base64,${action.payload.basicPicture}`;
+  state.userPhoto = action.payload.socialMediaAvatar ?? `data:image/jpeg;base64,${action.payload.defaultAvatar}`;
 }
 
 function logoutUser() {
@@ -43,7 +43,5 @@ const slice = createSlice({
 });
 
 export default slice.reducer;
-
-export const { initUsers } = slice.actions;
 
 export const selectIsAuthenticated = (state) => state.user.isAuthenticated;

@@ -34,7 +34,7 @@ export default function Confirm() {
   async function onSubmit(data) {
     try {
       const payload = {
-        token: data.token,
+        code: data.token,
         email: state.email,
       };
       await confirm(payload).unwrap();

@@ -9,7 +9,7 @@ import RouteController from './RouteController';
 import Reset from '../pages/Reset';
 import Register from '../pages/Register';
 import Confirm from '../pages/Confirm';
-import Index from '../main';
+import Index from '../pages/Main';
 import TicketPage from '../ticketPage';
 import Login from '../pages/Login';
 import ConfirmReset from '../pages/ConfirmReset';
@@ -21,9 +21,7 @@ import ProfilePage from '../pages/Profile';
 import Reviews from '../Reviews';
 
 export default function Routers({
-  updateAuthValue, ticketsData,
-  setTicketsData, selectedTransport,
-  setSelectedTransport,
+  updateAuthValue,
 }) {
   const { language } = useTranslation().i18n;
   const auth = useSelector((state) => state.user.isAuthenticated);
@@ -31,16 +29,9 @@ export default function Routers({
   return (
     <Routes>
       <Route
-        path="/*"
+        path="/"
         element={(
-          <Index
-            ticketsData={ticketsData}
-            setTicketsData={setTicketsData}
-            selectedTransport={selectedTransport}
-            setSelectedTransport={setSelectedTransport}
-            // urlSearch={urlSearch}
-            // setUrlSearch={setUrlSearch}
-          />
+          <Index />
         )}
       />
       <Route
