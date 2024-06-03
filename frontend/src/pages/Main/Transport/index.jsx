@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-concat */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
@@ -32,6 +32,10 @@ function Transport({
     types.forEach((type) => { defaultTypes[type] = true; });
     setSearchParams({ ...searchParamsObj, ...defaultTypes });
   };
+
+  useEffect(() => {
+    handleButtonClick('bus', 'train');
+  }, []);
 
   const getIsActive = (transport) => {
     const bus = searchParams.get('bus') === 'true';

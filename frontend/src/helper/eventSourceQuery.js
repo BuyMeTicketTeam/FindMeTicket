@@ -6,7 +6,10 @@ async function eventSourceQuery({
 }) {
   try {
     const token = localStorage.getItem('JWTtoken');
-    await fetchEventSource(`${process.env.REACT_APP_SERVER_ADDRESS}${address}${new URLSearchParams({
+    console.log(new URLSearchParams({
+      ...body,
+    }).toString());
+    await fetchEventSource(`${process.env.REACT_APP_SERVER_ADDRESS}${address}?${new URLSearchParams({
       ...body,
     })}`, {
       method: 'GET',

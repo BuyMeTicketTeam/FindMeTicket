@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 
 import { useLazySearchTicketsQuery, useLazySortByQuery } from '../../services/ticketsApi';
 import { paramsToObject } from '../../helper/paramsToObject';
+import eventSourceQuery from '../../helper/eventSourceQuery';
 
 import SearchField from './SearchField';
 import Transport from './Transport';
@@ -35,9 +36,14 @@ export default function Index() {
 
     const searchParamsObj = paramsToObject(searchParams.entries());
 
+    function handleMessage(params) {
+      console.log(params);
+    }
+
     if (tickets.length === 0) {
       console.log(searchParamsObj);
-      searchTickets(searchParamsObj);
+      // searchTickets(searchParamsObj);
+      eventSourceQuery({ address: '/tickets/search', body: searchParamsObj, handleMessage });
     } else {
       sortTickets(searchParamsObj);
     }

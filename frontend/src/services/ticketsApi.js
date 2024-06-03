@@ -1,5 +1,6 @@
+/* eslint-disable no-await-in-loop */
 import { api } from './api';
-import eventSourceQuery from '../helper/eventSourceQuery';
+// import eventSourceQuery from '../helper/eventSourceQuery';
 
 export const ticketsApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -11,35 +12,23 @@ export const ticketsApi = api.injectEndpoints({
       }),
     }),
     searchTickets: builder.query({
-      query: () => '/tickets/search',
-      async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved }) {
-        try {
-          console.log('query');
-          // wait for the initial query to resolve before proceeding
-          // await cacheDataLoaded;
-
-          console.log('query2');
-
-          // when data is received from the socket connection to the server,
-          // if it is a message and for the appropriate channel,
-          // update our query result with the received message
-          const listener = (event) => {
-            const data = JSON.parse(event.data);
-
-            updateCachedData((draft) => {
-              draft.push(data);
-            });
-          };
-
-          eventSourceQuery('/tickets/search', arg, listener);
-        } catch {
-          // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
-          // in which case `cacheDataLoaded` will throw
-        }
-        // cacheEntryRemoved will resolve when the cache subscription is no longer active
-        await cacheEntryRemoved;
-        // perform cleanup steps once the `cacheEntryRemoved` promise resolves
-      },
+      query: (searchParams) => ({
+        url: '/tickets/search',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'text/event-stream',
+        },
+        params: searchParams,
+        responseHandler: async (response) => {
+          const reader = response.body.getReader();
+          let done; let value;
+          while (!done) {
+            ({ value, done } = await reader.read());
+            console.log(value, done);
+            searchParams.onChunk(value);
+          }
+        },
+      }),
     }),
   }),
 });

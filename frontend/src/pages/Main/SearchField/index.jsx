@@ -56,7 +56,8 @@ export default function SearchField({
       ...searchParams,
       arrivalCity: cityTo.value,
       departureCity: cityFrom.value,
-      date: dateFormat.format(date),
+      departureDate: dateFormat.format(date),
+      bus: true,
     });
   }
 

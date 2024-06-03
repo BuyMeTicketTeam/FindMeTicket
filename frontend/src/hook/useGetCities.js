@@ -5,11 +5,11 @@ import { useLazyTypeAheadAPIQuery } from '../services/typeAhead';
 export default function useGetCities() {
   function transformData(item) {
     switch (true) {
-      case item.siteLanguage === 'ua' && item.cityEng !== null:
+      case item.language === 'ua' && item.cityEng !== null:
         return ({ value: item.cityUa, label: `${item.cityUa} (${item.cityEng}), ${item.country}` });
-      case item.siteLanguage === 'ua' && item.cityEng === null:
+      case item.language === 'ua' && item.cityEng === null:
         return ({ value: item.cityUa, label: `${item.cityUa}, ${item.country}` });
-      case item.siteLanguage === 'eng' && item.cityUa === null:
+      case item.language === 'eng' && item.cityUa === null:
         return ({ value: item.cityEng, label: `${item.cityEng}, ${item.country}` });
       default:
         return ({ value: item.cityEng, label: `${item.cityEng} (${item.cityUa}), ${item.country}` });

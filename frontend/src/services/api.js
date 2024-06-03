@@ -11,7 +11,7 @@ const baseQuery = fetchBaseQuery({
     const token = localStorage.getItem('JWTtoken');
 
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      headers.set('Authorization', token);
     }
 
     headers.set('Content-Language', getI18n().language.toLowerCase());

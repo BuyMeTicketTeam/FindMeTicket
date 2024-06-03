@@ -2,7 +2,6 @@ import Cookies from 'universal-cookie';
 import { api } from './api';
 
 const cookies = new Cookies(null, { path: '/' });
-const userId = cookies.get('UserID');
 
 async function loginResponseHandler(response) {
   if (response.headers.has('Authorization')) {
@@ -84,7 +83,7 @@ export const userApi = api.injectEndpoints({
     }),
     newPassword: builder.mutation({
       query: (userData) => ({
-        url: `/users/${userId}/password/reset`,
+        url: `/users/${cookies.get('USER_ID')}/password/reset`,
         method: 'PATCH',
         body: userData,
         responseHandler: 'text',
@@ -92,7 +91,7 @@ export const userApi = api.injectEndpoints({
     }),
     changePassword: builder.mutation({
       query: (passwords) => ({
-        url: `/users/${userId}/password/update`,
+        url: `/users/${cookies.get('USER_ID')}/password/update`,
         method: 'PATCH',
         body: passwords,
       }),
@@ -105,26 +104,26 @@ export const userApi = api.injectEndpoints({
     }),
     deleteUser: builder.mutation({
       query: () => ({
-        url: `/users/${userId}`,
+        url: `/users/${cookies.get('USER_ID')}`,
         method: 'DELETE',
       }),
     }),
     getHistory: builder.query({
       query: () => ({
-        url: `/users/${userId}/history`,
+        url: `/users/${cookies.get('USER_ID')}/history`,
         method: 'GET',
       }),
     }),
     notificationEnable: builder.query({
       query: () => ({
-        url: `/users/${userId}/notifications/on`,
+        url: `/users/${cookies.get('USER_ID')}/notifications/on`,
         method: 'GET',
         responseHandler: 'text',
       }),
     }),
     notificationDisable: builder.query({
       query: () => ({
-        url: `/users/${userId}/notifications/off`,
+        url: `/users/${cookies.get('USER_ID')}/notifications/off`,
         method: 'GET',
         responseHandler: 'text',
       }),
