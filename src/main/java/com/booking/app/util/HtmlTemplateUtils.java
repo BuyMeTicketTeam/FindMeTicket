@@ -15,7 +15,7 @@ public class HtmlTemplateUtils {
      * @param language Language ua/eng
      * @return HTML template name
      */
-    public static String getConfirmationHtmlTemplate(String language) {
+    public static String getConfirmationTemplate(String language) {
         return switch (language) {
             case ("ua") -> "confirmMailUa";
             case ("eng") -> "confirmMailEng";
@@ -29,7 +29,7 @@ public class HtmlTemplateUtils {
      * @param language Language ua/eng
      * @return HTML template name
      */
-    public static String getResetPasswordHtmlTemplate(String language) {
+    public static String getResetPasswordTemplate(String language) {
         return switch (language) {
             case ("ua") -> "resetPasswordUa";
             case ("eng") -> "resetPasswordEng";

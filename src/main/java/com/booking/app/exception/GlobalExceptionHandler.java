@@ -101,19 +101,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(UserNotConfirmedException.class)
-    public ResponseEntity<ErrorDetails> passwordMatches(UserNotConfirmedException exception, WebRequest webRequest) {
-
-        ErrorDetails errorDetails = new ErrorDetails(
-                LocalDateTime.now(),
-                exception.getMessage(),
-                webRequest.getDescription(false),
-                HttpStatus.CONFLICT
-        );
-        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
-    }
-
     @ResponseStatus(HttpStatus.OK)
     @ExceptionHandler(EmailAlreadyTakenException.class)
     public ResponseEntity<ErrorDetails> emailExists(EmailAlreadyTakenException exception, WebRequest webRequest) {
@@ -180,8 +167,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserIsDisabledException.class)
-    public ResponseEntity<ErrorDetails> userIsDisabled(UserIsDisabledException exception, WebRequest webRequest) {
+    @ExceptionHandler(UserNotConfirmedException.class)
+    public ResponseEntity<ErrorDetails> userIsDisabled(UserNotConfirmedException exception, WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),

@@ -21,6 +21,6 @@ public interface MailSenderService {
      * @param email    the email address to send the reset code to
      * @param language the language preference for the email content
      */
-    void sendResetPasswordCode(String email, String language);
+    void sendResetCode(String email, String language);
 
 }

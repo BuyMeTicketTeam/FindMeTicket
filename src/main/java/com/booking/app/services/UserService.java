@@ -5,7 +5,7 @@ import com.booking.app.dto.HistoryDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.entity.User;
-import com.booking.app.exception.exception.UserIsDisabledException;
+import com.booking.app.exception.exception.UserNotConfirmedException;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,9 +42,9 @@ public interface UserService {
      *
      * @param user The user to be checked.
      * @return True if user are enabled, otherwise throws UserIsDisabledException.
-     * @throws UserIsDisabledException If user is disabled.
+     * @throws UserNotConfirmedException If user is disabled.
      */
-    boolean isEnabled(User user) throws UserIsDisabledException;
+    boolean isEnabled(User user) throws UserNotConfirmedException;
 
     /**
      * Updates the password for a user.

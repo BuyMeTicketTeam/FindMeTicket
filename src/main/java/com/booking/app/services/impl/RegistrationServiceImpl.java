@@ -1,11 +1,8 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.EmailDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.entity.User;
 import com.booking.app.exception.exception.EmailAlreadyTakenException;
-import com.booking.app.mapper.UserMapper;
-import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import com.booking.app.services.UserService;
@@ -26,17 +23,14 @@ import static com.booking.app.constant.RegistrationConstantMessages.EMAIL_IS_ALR
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserService userService;
-    private final UserMapper mapper;
     private final MailSenderService mailService;
-    private final ConfirmationCodeService confirmationCodeService;
 
     @Override
     @Transactional
-    public EmailDto register(RegistrationDTO dto, String language) throws MessagingException {
+    public void register(RegistrationDTO dto, String language) throws MessagingException {
         User user = findOrCreateUser(dto);
         mailService.sendVerificationCode(user.getEmail(), language);
         log.info("User with ID: {} has successfully registered.", user.getId());
-        return mapper.toEmailDto(user);
     }
 
     /**

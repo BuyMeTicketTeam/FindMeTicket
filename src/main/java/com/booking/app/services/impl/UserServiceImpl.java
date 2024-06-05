@@ -11,7 +11,7 @@ import com.booking.app.entity.User;
 import com.booking.app.enums.SocialProvider;
 import com.booking.app.enums.TransportType;
 import com.booking.app.exception.exception.InvalidConfirmationCodeException;
-import com.booking.app.exception.exception.UserIsDisabledException;
+import com.booking.app.exception.exception.UserNotConfirmedException;
 import com.booking.app.exception.exception.UserNotFoundException;
 import com.booking.app.mapper.HistoryMapper;
 import com.booking.app.mapper.UserMapper;
@@ -81,11 +81,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isEnabled(User user) throws UserIsDisabledException {
+    public boolean isEnabled(User user) throws UserNotConfirmedException {
         if (user.isEnabled()) {
             return true;
         } else {
-            throw new UserIsDisabledException();
+            throw new UserNotConfirmedException();
         }
     }
 

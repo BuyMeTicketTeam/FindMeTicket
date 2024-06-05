@@ -50,7 +50,7 @@ public class UserVerifierController {
             })
     public void sendResetCode(@RequestBody @NotNull @Valid EmailDto dto,
                               @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) @Parameter(required = true, description = "Content Language", schema = @Schema(type = "string", allowableValues = {"eng", "ua"})) ContentLanguage language) {
-        mailSenderService.sendResetPasswordCode(dto.getEmail(), language.getLanguage());
+        mailSenderService.sendResetCode(dto.getEmail(), language.getLanguage());
     }
 
     @PostMapping("/verification-code/send")

@@ -1,7 +1,6 @@
 package com.booking.app.controller;
 
 import com.booking.app.annotation.GlobalApiResponses;
-import com.booking.app.dto.EmailDto;
 import com.booking.app.dto.RegistrationDTO;
 import com.booking.app.enums.ContentLanguage;
 import com.booking.app.exception.ErrorDetails;
@@ -18,7 +17,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.booking.app.constant.ApiMessagesConstants.INVALID_CONTENT_LANGUAGE_HEADER_MESSAGE;
@@ -42,7 +40,6 @@ public class RegistrationController {
      *
      * @param language the language of the site
      * @param dto      the registration data transfer object
-     * @return a ResponseEntity containing the email data transfer object
      * @throws MessagingException if an error occurs while sending the email
      */
     @PostMapping("/sign-up")
@@ -54,11 +51,10 @@ public class RegistrationController {
                                     + EMAIL_IS_ALREADY_TAKEN_MESSAGE),
                     @ApiResponse(responseCode = "400", description = INVALID_CONTENT_LANGUAGE_HEADER_MESSAGE + " OR " + "Invalid request body", content = @Content(schema = @Schema(implementation = ErrorDetails.class), mediaType = MediaType.APPLICATION_JSON_VALUE))
             })
-    public ResponseEntity<?> signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) @Parameter(required = true, description = "Content Language", schema = @Schema(type = "string", allowableValues = {"eng", "ua"})) ContentLanguage language,
-                                    @RequestBody @Valid @NotNull RegistrationDTO dto) throws
+    public void signUp(@RequestHeader(HttpHeaders.CONTENT_LANGUAGE) @Parameter(required = true, description = "Content Language", schema = @Schema(type = "string", allowableValues = {"eng", "ua"})) ContentLanguage language,
+                       @RequestBody @Valid @NotNull RegistrationDTO dto) throws
             MessagingException {
-        EmailDto register = registrationService.register(dto, language.getLanguage());
-        return ResponseEntity.ok().body(register);
+        registrationService.register(dto, language.getLanguage());
     }
 
 }

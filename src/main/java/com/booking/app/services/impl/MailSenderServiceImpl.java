@@ -45,23 +45,24 @@ public class MailSenderServiceImpl implements MailSenderService {
                     user.setConfirmationCode(newCode);
 
                     confirmationCodeService.updateConfirmationCode(newCode, existingCode);
-                    sendEmail(language, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), user);
+
+                    String templateName = HtmlTemplateUtils.getConfirmationTemplate(language);
+                    sendEmail(templateName, EMAIL_CONFIRMATION_SUBJECT, newCode.getCode(), user);
                 }, () -> {
                     throw new UserNotFoundException();
                 });
     }
 
-    // todo check workflow of both methods and its calling service
     @Override
-    public void sendResetPasswordCode(String email, String language) {
+    public void sendResetCode(String email, String language) {
         userService.findByEmail(email)
                 .ifPresentOrElse(user -> {
                             if (userService.isEnabled(user)) {
                                 ConfirmationCode newCode = ConfirmationCode.createCode();
                                 user.setConfirmationCode(newCode);
 
-                                String htmlTemplate = HtmlTemplateUtils.getResetPasswordHtmlTemplate(language);
-                                sendEmail(htmlTemplate, RESET_PASSWORD_SUBJECT, newCode.getCode(), user);
+                                String templateName = HtmlTemplateUtils.getResetPasswordTemplate(language);
+                                sendEmail(templateName, RESET_PASSWORD_SUBJECT, newCode.getCode(), user);
                                 confirmationCodeService.save(newCode);
                             }
                         },
@@ -73,18 +74,17 @@ public class MailSenderServiceImpl implements MailSenderService {
     /**
      * Sends an email with a confirmation token to the user.
      *
-     * @param language the language preference for the email content
-     * @param subject  the subject of the email
-     * @param token    the confirmation token to be included in the email
-     * @param user     the user credentials containing the recipient's email and username
+     * @param templateName the HTML template name
+     * @param subject      the subject of the email
+     * @param token        the confirmation token to be included in the email
+     * @param user         the user credentials containing the recipient's email and username
      */
-    private void sendEmail(String language, String subject, String token, User user) {
-        String htmlPageName = HtmlTemplateUtils.getConfirmationHtmlTemplate(language);
+    private void sendEmail(String templateName, String subject, String token, User user) {
         Context context = new Context();
         context.setVariable("token", token);
         context.setVariable("nickname", user.getUsername());
 
-        String process = templateEngine.process(htmlPageName, context);
+        String process = templateEngine.process(templateName, context);
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
