@@ -30,11 +30,27 @@ export const ticketsApi = api.injectEndpoints({
         },
       }),
     }),
+    getTicket: builder.query({
+      query: (ticketId) => ({
+        url: `/tickets/${ticketId}`,
+        method: 'GET',
+        // responseHandler: async (response) => {
+        //   const reader = response.body.getReader();
+        //   let done; let value;
+        //   while (!done) {
+        //     ({ value, done } = await reader.read());
+        //     console.log(value, done);
+        //     searchParams.onChunk(value);
+        //   }
+        // },
+      }),
+    }),
   }),
 });
 export const {
   useLazySortByQuery,
   useLazySearchTicketsQuery,
+  useGetTicketQuery,
 } = ticketsApi;
 
 export const {
