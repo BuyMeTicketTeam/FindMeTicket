@@ -6,6 +6,7 @@ databaseChangeLog:
       changes:
         - sql:
             sql: |
-              INSERT INTO role (enum_role) VALUES
+              INSERT INTO roles (type) VALUES
                  ('USER'),
-                 ('ADMIN');
+                 ('ADMIN'),
+                 ('MANAGER');
