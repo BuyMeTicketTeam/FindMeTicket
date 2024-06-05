@@ -52,9 +52,10 @@ export const userApi = api.injectEndpoints({
         url: '/auth/sign-up',
         method: 'POST',
         body: userData,
-        validateStatus: (response) => {
-          console.log(response);
-          return response.status === 200 && response.statusText === 'User registered successfully.';
+        responseHandler: 'text',
+        validateStatus: (response, result) => {
+          console.log(result.length);
+          return response.status === 200 && result.length === 0;
         },
       }),
     }),

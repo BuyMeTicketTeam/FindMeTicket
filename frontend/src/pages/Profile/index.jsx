@@ -164,7 +164,7 @@ export default function Profile() {
                 </button>
               </div>
             </div>
-            <div className="profile-contacts-group__column">
+            <div className="profile-contacts-group__column column_wide">
               <div className="profile-contacts-group__row">
                 <img src={addressIcon} className="profile-contacts-group__icon" alt="Dia" />
                 <p className="">{t('account_management')}</p>

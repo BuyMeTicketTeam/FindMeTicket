@@ -50,6 +50,10 @@ img {
   max-width: 1300px;
   margin: 0 auto;
   padding: 0 20px;
+
+  @media (max-width: $laptop) {
+    padding-right: 40px;
+  }
 }
 
 .field__name {

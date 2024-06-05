@@ -1,4 +1,5 @@
 @import '../../styles/colorsVar.scss';
+@import '../../styles/mediaQueryVar.scss';
 
 .profile {
 }
@@ -20,6 +21,15 @@
 
   &__title {
     font-size: 24px;
+
+    @media (max-width: $tablet) {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: $tablet) {
+    padding: 15px;
+    margin: 12px 0;
   }
 }
 
@@ -27,13 +37,19 @@
   align-items: center;
 
   &__username {
-    margin-left: 20px;
-    font-size: 24px;
+    @media (max-width: $tablet) {
+      margin-left: 15px;
+      font-size: 20px;
+    }
   }
 
   &__exit-button {
     background: transparent;
     border: none;
+
+    @media (max-width: $tablet) {
+      width: 40px;
+    }
 
     &:hover {
       cursor: pointer;
@@ -63,6 +79,11 @@
   background: transparent;
   border: none;
 
+  @media (max-width: $tablet) {
+    width: 75px;
+    height: 75px;
+  }
+
   &__rank {
     position: absolute;
     top: 0;
@@ -91,6 +112,10 @@
   justify-content: space-between;
   &__text {
     font-size: 18px;
+  }
+
+  @media (max-width: $tablet) {
+    font-size: 16px;
   }
 }
 
@@ -146,13 +171,24 @@
 
 .profile-contacts-group {
   display: flex;
-  gap: 15px;
   margin-top: 20px;
+  justify-content: space-between;
 
   &__column {
     flex: 0 0 33%;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: $laptop) {
+      flex-shrink: 1;
+      gap: 8px;
+    }
+
+    &.column_wide {
+      @media (max-width: $laptop) {
+        flex: 0 0 40%;
+      }
+    }
   }
 
   &__icon {
