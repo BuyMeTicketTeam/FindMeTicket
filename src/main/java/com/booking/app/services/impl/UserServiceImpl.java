@@ -8,9 +8,8 @@ import com.booking.app.entity.ConfirmationCode;
 import com.booking.app.entity.Role;
 import com.booking.app.entity.SearchHistory;
 import com.booking.app.entity.User;
-import com.booking.app.enums.EnumRole;
 import com.booking.app.enums.SocialProvider;
-import com.booking.app.enums.TypeTransportEnum;
+import com.booking.app.enums.TransportType;
 import com.booking.app.exception.exception.InvalidConfirmationCodeException;
 import com.booking.app.exception.exception.UserIsDisabledException;
 import com.booking.app.exception.exception.UserNotFoundException;
@@ -104,18 +103,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(RegistrationDTO dto) {
-        User user = userMapper.toUser(dto);
-        user.setProvider(SocialProvider.LOCAL);
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
-
-        Role role = roleRepository.findRoleByEnumRole(EnumRole.USER);
-
+        Role role = roleRepository.findByType(Role.RoleType.USER);
         ConfirmationCode confirmationCode = ConfirmationCode.createCode();
-
-        User newUser = User.createBasicUser(role, confirmationCode, dto.getNotification());
-
-        save(newUser);
-        return newUser;
+        User user = User.createBasicUser(
+                role,
+                confirmationCode, dto.getEmail(),
+                passwordEncoder.encode(dto.getPassword()),
+                dto.getUsername(), dto.getNotification()
+        );
+        user.setProvider(SocialProvider.LOCAL);
+        return save(user);
     }
 
     @Override
@@ -139,7 +136,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addHistory(RequestTicketsDto dto, String language, @Nullable User user) {
         Optional.ofNullable(user).ifPresent(u -> {
-            Set<TypeTransportEnum> types = TypeTransportEnum.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
+            Set<TransportType> types = TransportType.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
             historyRepository.save(SearchHistory.builder()
                     .user(u)
                     .departureCityId(typeAheadService.getCityId(dto.getDepartureCity(), language))
