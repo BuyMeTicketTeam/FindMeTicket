@@ -1,32 +1,28 @@
-import React, {
-  useState,
-} from 'react';
+import React, { useState } from 'react';
 import AsyncSelect from 'react-select/async';
 import { useTranslation } from 'react-i18next';
-import {
-  useSearchParams,
-} from 'react-router-dom';
-import Calendar from '../Calendar';
-import arrowsImg from './arrows.svg';
-import useGetCities from '../../../hook/useGetCities';
-import './searchField.scss';
+import { useSelector, useDispatch } from 'react-redux';
 
-const dateFormat = new Intl.DateTimeFormat('ru', {
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-});
+import useGetCities from '../../../hook/useGetCities';
+import { setCities, setDepartureDate } from '../../../store/tickets/ticketsSlice';
+
+import Calendar from '../Calendar';
+
+import arrowsImg from './arrows.svg';
+
+import './searchField.scss';
 
 export default function SearchField({
   loading,
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation('translation', { keyPrefix: 'search' });
   const [cityFrom, setCityFrom] = useState('');
   const [cityTo, setCityTo] = useState('');
   const [errorCityFrom, setErrorCityFrom] = useState(false);
   const [errorCityTo, setErrorCityTo] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const { departureDate } = useSelector((state) => state.tickets);
+  const dispatch = useDispatch();
+  const setDate = (date) => dispatch(setDepartureDate(date));
   const getCities = useGetCities();
   const noOptionsMessage = (target) => (target.inputValue.length > 1 ? (t('error')) : null);
 
@@ -52,13 +48,10 @@ export default function SearchField({
       return;
     }
 
-    setSearchParams({
-      ...searchParams,
+    dispatch(setCities({
       arrivalCity: cityTo.value,
       departureCity: cityFrom.value,
-      departureDate: dateFormat.format(date),
-      bus: true,
-    });
+    }));
   }
 
   function changeCities() {
@@ -112,7 +105,7 @@ export default function SearchField({
         />
         {errorCityTo && <p data-testid="errorCityTo" className="search-field__error">{t('error2')}</p>}
       </div>
-      <Calendar date={date} onDate={setDate} />
+      <Calendar date={departureDate} onDate={(date) => setDate(Date.parse(date))} />
       <button
         type="button"
         className="button"

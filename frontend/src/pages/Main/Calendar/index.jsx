@@ -30,7 +30,7 @@ export default function Calendar({ date, onDate }) {
         closeOnScroll
         calendarClassName="calendar"
         className="input"
-        selected={date}
+        selected={new Date(date)}
         onChange={onDate}
       />
     </div>

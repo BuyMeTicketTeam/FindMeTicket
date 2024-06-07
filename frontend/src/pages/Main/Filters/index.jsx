@@ -1,22 +1,27 @@
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { setSorting } from '../../../store/tickets/ticketsSlice';
+
 import FiltersBtn from './FiltersBtn';
+
 import './filters.scss';
 
 export default function Filters({ loading }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const sortBy = searchParams.get('sortBy');
-  const ascending = searchParams.get('ascending');
+  const { sortBy, ascending } = useSelector((state) => state.tickets);
+  const dispatch = useDispatch();
 
   const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
 
   function handleSort(sortType) {
     if (sortBy === sortType) {
-      setSearchParams({ ...searchParams, ascending: true });
+      dispatch(setSorting({ ascending: !ascending, sortBy }));
       return;
     }
-    setSearchParams({ ...searchParams, sortBy: sortType, ascending: false });
+    dispatch(setSorting({ ascending: false, sortBy: sortType }));
   }
+
+  // console.log(sortBy === filtersBtn[0]);
 
   return (
     <div data-testid="filters" className="main-filters">

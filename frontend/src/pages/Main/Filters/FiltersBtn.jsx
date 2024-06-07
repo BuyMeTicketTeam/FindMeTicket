@@ -3,9 +3,9 @@ import './filters.scss';
 import loaderAnim from '../../../images/loader.svg';
 
 export default function FiltersBtn({
-  isDown, isUp, onClick, sortType, children, dataTestId, loading,
+  isActive, isUp, onClick, sortType, children, dataTestId, loading,
 }) {
-  const btnActive = isDown ? 'active' : '';
+  const btnActive = isActive ? 'active' : '';
   const btnUp = isUp ? 'up' : '';
 
   return (

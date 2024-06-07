@@ -1,9 +1,9 @@
 /* eslint-disable no-useless-concat */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { paramsToObject } from '../../../helper/paramsToObject';
+import { setTransportType } from '../../../store/tickets/ticketsSlice';
 
 import InProgress from '../../../InProgress/index';
 import TransportButton from '../TransportBtn';
@@ -16,60 +16,32 @@ import {
 function Transport({
   loading,
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('translation', { keyPrefix: 'transport' });
+  const dispatch = useDispatch();
+  const { bus, train } = useSelector((state) => state.tickets);
 
-  const searchParamsObj = paramsToObject(searchParams.entries());
-
-  const handleButtonClick = (...types) => {
-    const defaultTypes = {
-      bus: false,
-      train: false,
-      airplane: false,
-      ferry: false,
-    };
-    types.forEach((type) => { defaultTypes[type] = true; });
-    setSearchParams({ ...searchParamsObj, ...defaultTypes });
-  };
-
-  useEffect(() => {
-    handleButtonClick('bus', 'train');
-  }, []);
-
-  const getIsActive = (transport) => {
-    const bus = searchParams.get('bus') === 'true';
-    const train = searchParams.get('train') === 'true';
-
-    switch (transport) {
-      case 'bus':
-        return bus && !train;
-      case 'train':
-        return !bus && train;
-      default:
-        return bus && train;
-    }
-  };
+  const handleButtonClick = (type) => dispatch(setTransportType(type));
 
   return (
     <div>
       <TransportButton
         label={t('everything')}
-        isActive={getIsActive('all')}
-        onClick={() => { handleButtonClick('bus', 'train'); }}
+        isActive={bus && train}
+        onClick={() => { handleButtonClick('all'); }}
         img={everythingIcon}
         loading={loading}
       />
       <TransportButton
         label={t('bus')}
-        isActive={getIsActive('bus')}
+        isActive={bus && !train}
         onClick={() => { handleButtonClick('bus'); }}
         img={busIcon}
         loading={loading}
       />
       <TransportButton
         label={t('train')}
-        isActive={getIsActive('train')}
+        isActive={train && !bus}
         onClick={() => { handleButtonClick('train'); }}
         img={trainIcon}
         loading={loading}
