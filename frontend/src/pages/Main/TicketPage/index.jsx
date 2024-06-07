@@ -2,19 +2,18 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-// import eventSourceQuery2 from '../helper/eventSourceQuery';
-import { useGetTicketQuery } from '../services/ticketsApi';
+import { useGetTicketQuery } from '../../../services/ticketsApi';
 import Price from './Price/index';
 import Information from './Information/index ';
-import Loader from '../Loader/index';
+import Loader from '../../../Loader';
 import PriceTrain from './PriceTrain/index';
-import Error from '../Error';
+import Error from '../../../Error';
 import Maps from './Maps';
 import './style.scss';
 
 function TicketPage() {
   const { ticketId } = useParams();
-  const [ticketUrl, setTicketUrl] = useState(new Set());
+  const [ticketUrl, setTicketUrl] = useState([]);
   const [ticketData, setTicketData] = useState();
 
   const onChunk = (value) => {
@@ -28,7 +27,10 @@ function TicketPage() {
   const { isError, isLoading } = useGetTicketQuery({ data: ticketId, onChunk });
   const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
 
-  const PriceView = ticketData?.type === 'TRAIN' ? <PriceTrain /> : <Price />;
+  const PriceView = ticketData?.type === 'TRAIN'
+    ? <PriceTrain connection={isLoading} ticketUrls={ticketUrl} />
+    : <Price ticketUrls={ticketUrl} connection={isLoading} />;
+
   const mapView = ticketData?.placeAt ? <Maps address={`${ticketData.placeAt},${ticketData.arrivalCity}`} /> : <Error />;
 
   const ticketDataView = ticketData && (
@@ -40,13 +42,13 @@ function TicketPage() {
       {mapView}
     </>
   );
-  const ticketErrorView = isError && <Error />;
+
   const ticketLoadingView = (!isError && !ticketData) && <Loader />;
 
   return (
     <div className="ticket-page-container">
       {ticketDataView}
-      {ticketErrorView}
+      {isError && <Error />}
       {ticketLoadingView}
     </div>
   );

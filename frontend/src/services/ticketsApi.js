@@ -61,26 +61,15 @@ export const ticketsApi = api.injectEndpoints({
       query: (searchPayload) => ({
         url: '/events',
         method: 'GET',
-        headers: {
-          'Content-Type': 'text/event-stream',
-        },
         params: searchPayload.data,
         responseHandler: (response) => sseResponseHandler(searchPayload, response),
       }),
     }),
     getTicket: builder.query({
-      query: (ticketId) => ({
-        url: `/tickets/${ticketId}`,
+      query: (searchPayload) => ({
+        url: `/tickets/${searchPayload.ticketId}`,
         method: 'GET',
-        // responseHandler: async (response) => {
-        //   const reader = response.body.getReader();
-        //   let done; let value;
-        //   while (!done) {
-        //     ({ value, done } = await reader.read());
-        //     console.log(value, done);
-        //     searchParams.onChunk(value);
-        //   }
-        // },
+        responseHandler: (response) => sseResponseHandler(searchPayload, response),
       }),
     }),
   }),
