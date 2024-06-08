@@ -1,23 +1,26 @@
 import React from 'react';
-import './style.scss';
 import { useTranslation } from 'react-i18next';
+// import './style.scss';
 
-export default function PriceBlock({ ticketUrl }) {
+export default function PriceBlock({
+  title, price, url, img,
+}) {
   const { t } = useTranslation('translation', { keyPrefix: 'ticket-page' });
   return (
     <div className="price-block" data-testid="price-block">
+      {img && <img src={img} alt={title} />}
       <span>
-        {ticketUrl.comfort}
+        {title}
         :
       </span>
       <div className="price-container" data-testid="price-container">
         <div className="price">
-          {Number(ticketUrl.price).toFixed(2)}
+          {Number(price).toFixed(2)}
           {' '}
           {t('uan')}
         </div>
       </div>
-      <a href={ticketUrl.url} className="button buy-button" target="_blank">{t('buy')}</a>
+      <a href={url} className="button buy-button" target="_blank" rel="noreferrer">{t('buy')}</a>
     </div>
   );
 }

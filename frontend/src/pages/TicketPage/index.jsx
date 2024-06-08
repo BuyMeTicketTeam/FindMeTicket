@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useGetTicketQuery } from '../../../services/ticketsApi';
+import { useGetTicketQuery } from '../../services/ticketsApi';
 import Price from './Price/index';
 import Information from './Information/index ';
-import Loader from '../../../Loader';
+import Loader from '../../Loader';
 import PriceTrain from './PriceTrain/index';
-import Error from '../../../Error';
+import Error from '../../Error';
 import Maps from './Maps';
 import './style.scss';
 
