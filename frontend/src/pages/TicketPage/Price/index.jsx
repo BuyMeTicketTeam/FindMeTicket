@@ -12,10 +12,10 @@ import './style.scss';
 function Price({ ticketUrls, connection }) {
   function defineImage(resource) {
     switch (resource) {
-      case 'busfor.ua':
+      case 'busfor':
         return busforIcon;
 
-      case 'proizd.ua':
+      case 'proizdua':
         return proizdIcon;
 
       default:
@@ -28,10 +28,10 @@ function Price({ ticketUrls, connection }) {
       {ticketUrls.length > 0
       && ticketUrls.map((ticketUrl) => (
         <PriceBlock
-          img={defineImage(ticketUrl.resource)}
-          title={ticketUrl.resource}
-          price={ticketUrl.price}
-          url={ticketUrl.url}
+          img={defineImage(ticketUrl.event)}
+          title={ticketUrl.event}
+          price={ticketUrl.data.price}
+          url={ticketUrl.data.url}
         />
       ))}
       {connection && <img className="ticket-price__loading" src={spinningLoaderIcon} alt="loader" />}

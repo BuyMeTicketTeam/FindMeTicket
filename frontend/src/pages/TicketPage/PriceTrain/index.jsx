@@ -15,13 +15,13 @@ function PriceTrain({ ticketUrls, connection }) {
   return (
     <div className="train-price ticket-price">
       <div className="ticket-header">
-        {ticketUrls.some((url) => url.resource === 'proizdua') && (
+        {ticketUrls.some((url) => url.event === 'proizdua') && (
         <button className={`ticket-header__btn ${selctedResource === 0 ? 'active' : ''}`} type="button" onClick={() => setSelectedResource(0)}>
           <img src={proizdIcon} alt="proizdIcon" className="proizd-icon" />
           Proizd.ua
         </button>
         )}
-        {ticketUrls.some((url) => url.resource === 'ticketsua') && (
+        {ticketUrls.some((url) => url.event === 'ticketsua') && (
         <button className={`ticket-header__btn ${selctedResource === 1 ? 'active' : ''}`} type="button" onClick={() => setSelectedResource(1)}>
           <img src={ticketsuaIcon} alt="proizdIcon" className="proizd-icon" />
           Tickets.ua
@@ -29,12 +29,12 @@ function PriceTrain({ ticketUrls, connection }) {
         )}
       </div>
       <div className="ticket-price__body">
-        {ticketUrls.filter((url) => (selctedResource === 0 ? (url.resource === 'proizdua') : (url.resource === 'ticketsua'))).map(
+        {ticketUrls.filter((url) => (selctedResource === 0 ? (url.event === 'proizdua') : (url.event === 'ticketsua'))).map(
           (ticketUrl) => (
             <PriceBlock
-              title={ticketUrl.comfort}
-              price={ticketUrl.price}
-              url={ticketUrl.url}
+              title={ticketUrl.data.comfort}
+              price={ticketUrl.data.price}
+              url={ticketUrl.data.url}
             />
           ),
         )}

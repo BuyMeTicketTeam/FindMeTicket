@@ -10,7 +10,7 @@ import Reset from '../pages/Reset';
 import Register from '../pages/Register';
 import Confirm from '../pages/Confirm';
 import Index from '../pages/Main';
-import TicketPage from '../ticketPage';
+import TicketPage from '../pages/TicketPage';
 import Login from '../pages/Login';
 import ConfirmReset from '../pages/ConfirmReset';
 import ChangePassword from '../pages/ChangePassword';

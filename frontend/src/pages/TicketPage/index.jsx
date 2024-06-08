@@ -8,7 +8,7 @@ import Information from './Information/index ';
 import Loader from '../../Loader';
 import PriceTrain from './PriceTrain/index';
 import Error from '../../Error';
-import Maps from './Maps';
+// import Maps from './Maps';
 import './style.scss';
 
 function TicketPage() {
@@ -31,7 +31,7 @@ function TicketPage() {
     ? <PriceTrain connection={isLoading} ticketUrls={ticketUrl} />
     : <Price ticketUrls={ticketUrl} connection={isLoading} />;
 
-  const mapView = ticketData?.placeAt ? <Maps address={`${ticketData.placeAt},${ticketData.arrivalCity}`} /> : <Error />;
+  // const mapView = ticketData?.placeAt ? <Maps address={`${ticketData.placeAt},${ticketData.arrivalCity}`} /> : <Error />;
 
   const ticketDataView = ticketData && (
     <>
@@ -39,7 +39,7 @@ function TicketPage() {
       <Information ticketData={ticketData} />
       <div className="ticketPage-text">{t('price')}</div>
       {PriceView}
-      {mapView}
+      {/* {mapView} */}
     </>
   );
 
