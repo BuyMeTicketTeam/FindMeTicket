@@ -185,7 +185,7 @@ select:-webkit-autofill:focus {
   padding: 8px 20px;
   transition: 0.3s;
 
-  @media (max-width: $mobile) {
+  @media (max-width: $tablet) {
     font-size: 16px;
     padding: 5px 15px;
   }

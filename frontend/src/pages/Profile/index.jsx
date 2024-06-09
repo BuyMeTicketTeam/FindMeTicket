@@ -103,6 +103,7 @@ export default function Profile() {
           <div className="gen-info-level">
             <div className="gen-info-level__text">Lvl 1</div>
             <Popup
+              open
               trigger={<img src={mark} alt="mark" className="gen-info-level__tip-img" />}
               position="right center"
               className="profile-tip"

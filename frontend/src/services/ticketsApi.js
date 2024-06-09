@@ -59,7 +59,7 @@ export const ticketsApi = api.injectEndpoints({
     }),
     searchTickets: builder.query({
       query: (searchPayload) => ({
-        url: '/events',
+        url: '/tickets/search',
         method: 'GET',
         params: searchPayload.data,
         responseHandler: (response) => sseResponseHandler(searchPayload, response),

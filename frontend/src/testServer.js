@@ -177,7 +177,7 @@ createServer({
       document.cookie = 'remember_me=true; path=/; max-age=600';
       return new Response(200, { Authorization: 'alkshfksadfjs2143234' });
     });
-    this.get('/getHistory', () => new Response(200, undefined, JSON.stringify([
+    this.get('http://localhost:8080/users/b91d44b6-c2e0-41b1-bd3f-4490be8d993a/history', () => new Response(200, undefined, JSON.stringify([
       {
         addingTime: '12.03.2077',
         departureCity: 'Dnipro',

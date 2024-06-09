@@ -31,15 +31,26 @@
     padding: 15px;
     margin: 12px 0;
   }
+
+  @media (max-width: $mobile) {
+    flex-wrap: wrap;
+  }
 }
 
 .gen-info {
   align-items: center;
 
   &__username {
+    margin-left: 15px;
+    font-size: 24px;
+
     @media (max-width: $tablet) {
-      margin-left: 15px;
-      font-size: 20px;
+      margin-left: 10px;
+      font-size: 18px;
+    }
+
+    @media (max-width: $mobile) {
+      flex: 0 0 75%;
     }
   }
 
@@ -49,6 +60,10 @@
 
     @media (max-width: $tablet) {
       width: 40px;
+    }
+
+    @media (max-width: $mobile) {
+      width: 30px;
     }
 
     &:hover {
@@ -61,6 +76,12 @@
   display: flex;
   align-items: center;
   flex: auto;
+  min-width: 61px;
+  margin-right: 10px;
+
+  @media (max-width: $tablet) {
+    
+  }
 
   &__text {
     color: $bright;
@@ -73,15 +94,15 @@
 }
 
 .profile-avatar {
-  width: 100px;
+  flex: 0 0 100px;
   height: 100px;
   position: relative;
   background: transparent;
   border: none;
 
   @media (max-width: $tablet) {
-    width: 75px;
-    height: 75px;
+    flex: 0 0 50px;
+    height: 50px;
   }
 
   &__rank {
@@ -106,25 +127,33 @@
   padding: 7px;
   border-radius: 6px;
   margin-right: 20px;
+
+  @media (max-width: $tablet) {
+    margin-right: 40px;
+    left: 20px !important;
+  }
 }
 
 .profile-notification {
   justify-content: space-between;
   &__text {
     font-size: 18px;
-  }
 
-  @media (max-width: $tablet) {
-    font-size: 16px;
+    @media (max-width: $tablet) {
+      font-size: 16px;
+    }
   }
 }
 
 .profile-notification-switch {
   position: relative;
   display: inline-block;
-  width: 40px; 
+  flex: 0 0 40px; 
   height: 20px;
-  margin-right: 20px;
+
+  @media (max-width: $mobile) {
+   margin-top: 7px;
+  }
 
   &__slider {
     position: absolute;
@@ -174,6 +203,11 @@
   margin-top: 20px;
   justify-content: space-between;
 
+  @media (max-width: $tablet) {
+   flex-direction: column;
+   gap: 15px;
+  }
+
   &__column {
     flex: 0 0 33%;
     display: flex;
@@ -181,7 +215,6 @@
 
     @media (max-width: $laptop) {
       flex-shrink: 1;
-      gap: 8px;
     }
 
     &.column_wide {
@@ -206,10 +239,18 @@
 
     &.content_center {
       justify-content: center;
+
+      @media (max-width: $tablet) {
+        justify-content: start;
+       }
     }
 
     &:first-child {
       margin-bottom: 15px;
+
+      @media (max-width: $tablet) {
+        margin-bottom: 5px;
+       }
     }
   }
 }
@@ -369,10 +410,18 @@
 
   &__icon {
     width: 35px;
+
+    @media (max-width: $tablet) {
+      width: 25px;
+    }
   }
 
   &__text {
     font-size: 25px;
+
+    @media (max-width: $tablet) {
+      font-size: 20px;
+    }
   }
 
   &__arrow {
@@ -402,17 +451,35 @@
   text-decoration: none;
   font-size: 18px;
 
+  @media (max-width: $tablet) {
+    padding: 10px 10px 10px 10px;
+    font-size: 16px;
+  }
+
   &__search-date {
     padding-right: 10px;
     border-right: 2px solid $font-color;
+
+    @media (max-width: $mobile) {
+      font-size: 12px;
+    }
   }
 
   &__icon {
+    width: 40px;
     padding-left: 8px;
+
+    @media (max-width: $mobile) {
+      width: 30px;
+    }
   }
 
   &__from {
     margin-left: 20px;
+
+    @media (max-width: $tablet) {
+      margin-left: 10px;
+    }
   }
 
   &__column {
@@ -421,11 +488,19 @@
     flex-direction: column;
     flex: auto;
     margin: 0 15px;
+
+    @media (max-width: $tablet) {
+      margin: 0 10px;
+    }
   }
 
   &__date {
     font-size: 14px;
     align-self: center;
+
+    @media (max-width: $tablet) {
+      font-size: 12px;
+    }
   }
 
   &__line {
@@ -435,5 +510,10 @@
   &.no-items {
     padding-right: 20px;
     justify-content: center;
+
+    @media (max-width: $tablet) {
+      padding-right: 10px;
+      font-size: 16px;
+    }
   }
 }
