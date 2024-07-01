@@ -2,7 +2,7 @@
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/RBK67jt/logo.png" alt="logo" border="0"></a>
 </div>
 
-<a href = "https://app.swaggerhub.com/apis-docs/MykhailoMarchuk/FindMETICKET/2.0">![Swagger](https://img.shields.io/badge/swagger-2.0.0-blue.svg?cacheSeconds=2592000)</a>
+<a href = "https://app.swaggerhub.com/apis-docs/MISHAAKAMICHAEL999/FindMeTicket/1.0">![Swagger](https://img.shields.io/badge/swagger-2.0.0-blue.svg?cacheSeconds=2592000)</a>
 <h6 align="center">Team members are organized by SoftServe IT Company. Idea by team members.</h6>
 This web application revolutionizes the ticket booking experience for various types of transport, including buses,
 trains, airplanes, and ferries. It offers a user-friendly interface, simplifying the process of finding and redirecting
