@@ -20,10 +20,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -35,32 +38,13 @@ public class WebSecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    private final String[] PUBLIC_PATHS = {
-            "/v3/api-docs/**",
-            "/configuration/**",
-            "/swagger*/**",
-            "/webjars/**",
-
-            "/favicon.ico",
-            "/error",
-            "/register",
-            "/confirm-email",
-            "/resend/confirm-token",
-            "/resend/reset-token",
-            "/confirm-email",
-            "/reset",
-            "/new-password",
-            "/typeAhead",
-            "/fail",
-            "/login",
-            "/logout",
-            "/oauth2/authorize/**",
-            "/sortedBy",
-            "/searchTickets",
-            "/get/ticket/**",
-            "/selectedTransport",
-            "/getReviews"
-    };
+    private final Map<String, Set<String>> AUTHENTICATED_PATHS = Map.of(
+            "/users/**", Set.of("DELETE"),
+            "/users/**/password/update", Set.of("PATCH"),
+            "/users/**/notifications/on", Set.of("GET"),
+            "/users/**/notifications/off", Set.of("GET"),
+            "/users/**/reviews", Set.of("DELETE", "POST")
+    );
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -69,14 +53,16 @@ public class WebSecurityConfiguration {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.logout(AbstractHttpConfigurer::disable);
         http.cors(Customizer.withDefaults());
-
-//        http.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_PATHS).permitAll()
-        http.authorizeHttpRequests(t -> t.anyRequest().permitAll());
-
         http.addFilterBefore(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(new RestAuthenticationEntryPoint()));
-
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.authorizeHttpRequests(requests -> {
+            AUTHENTICATED_PATHS.forEach((path, methods) ->
+                    methods.forEach(method -> requests.requestMatchers(new AntPathRequestMatcher(path, method)).authenticated())
+            );
+            requests.anyRequest().permitAll();
+        });
 
         return http.build();
     }

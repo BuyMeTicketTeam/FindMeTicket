@@ -158,9 +158,9 @@ function Popup({
     await new Promise(() => {
       timerId.current = setTimeout(() => {
         if (notificationEnabled) {
-          makeQuerry('users/notification/on', undefined, undefined, 'GET');
+          makeQuerry('/users/notification/on', undefined, undefined, 'PATCH');
         } else {
-          makeQuerry('users/notification/off', undefined, undefined, 'GET');
+          makeQuerry('/users/notification/off', undefined, undefined, 'PATCH');
         }
       }, 2000);
     });
