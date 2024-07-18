@@ -6,7 +6,6 @@ import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
 import com.booking.app.exception.exception.UndefinedLanguageException;
 import com.booking.app.services.SearchHistoryService;
-import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
 import com.booking.app.services.impl.scrape.ScraperManager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,8 +31,6 @@ import java.util.concurrent.CompletableFuture;
 public class TicketController implements TicketApi {
 
     private final ScraperManager scrapingService;
-
-    private final SortTicketsService sortTicketsService;
 
     private final TicketService ticketService;
 
@@ -73,7 +70,7 @@ public class TicketController implements TicketApi {
     @Override
     public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request) {
         validateLanguage(siteLanguage);
-        return ResponseEntity.ok().body(sortTicketsService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
+        return ResponseEntity.ok().body(ticketService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
     }
 
     @PostMapping(value = "/selectedTransport", produces = MediaType.APPLICATION_JSON_VALUE)

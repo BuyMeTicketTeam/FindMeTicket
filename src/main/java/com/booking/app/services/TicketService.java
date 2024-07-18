@@ -1,5 +1,6 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.RequestSortedTicketsDTO;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
 
@@ -9,4 +10,6 @@ import java.util.Optional;
 
 public interface TicketService {
     <T extends TicketDto> Optional<List<T>> getBusTickets(RequestTicketsDTO dto) throws IOException;
+
+    List<TicketDto> getSortedTickets(RequestSortedTicketsDTO dto, String language);
 }
