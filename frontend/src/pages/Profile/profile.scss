@@ -1,0 +1,519 @@
+@import '../../styles/colorsVar.scss';
+@import '../../styles/mediaQueryVar.scss';
+
+.profile {
+}
+
+.container.type_profile {
+  max-width: 1000px;
+}
+
+.profile-block {
+  display: flex;
+  background-color: $semi-dark;
+  margin: 15px 0;
+  border-radius: 10px;
+  padding: 20px;
+
+  &.profile-contacts {
+    display: block;
+  }
+
+  &__title {
+    font-size: 24px;
+
+    @media (max-width: $tablet) {
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: $tablet) {
+    padding: 15px;
+    margin: 12px 0;
+  }
+
+  @media (max-width: $mobile) {
+    flex-wrap: wrap;
+  }
+}
+
+.gen-info {
+  align-items: center;
+
+  &__username {
+    margin-left: 15px;
+    font-size: 24px;
+
+    @media (max-width: $tablet) {
+      margin-left: 10px;
+      font-size: 18px;
+    }
+
+    @media (max-width: $mobile) {
+      flex: 0 0 75%;
+    }
+  }
+
+  &__exit-button {
+    background: transparent;
+    border: none;
+
+    @media (max-width: $tablet) {
+      width: 40px;
+    }
+
+    @media (max-width: $mobile) {
+      width: 30px;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.gen-info-level {
+  display: flex;
+  align-items: center;
+  flex: auto;
+  min-width: 61px;
+  margin-right: 10px;
+
+  @media (max-width: $tablet) {
+    
+  }
+
+  &__text {
+    color: $bright;
+    margin-left: 8px;
+  }
+
+  &__tip-img {
+    width: 20px;
+  }
+}
+
+.profile-avatar {
+  flex: 0 0 100px;
+  height: 100px;
+  position: relative;
+  background: transparent;
+  border: none;
+
+  @media (max-width: $tablet) {
+    flex: 0 0 50px;
+    height: 50px;
+  }
+
+  &__rank {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &__img {
+    width: 85%;
+    border-radius: 50%;
+  }
+}
+
+.profile-tip-arrow {
+  display: none;
+}
+
+.profile-tip-content {
+  background: $dark;
+  font-size: 14px;
+  padding: 7px;
+  border-radius: 6px;
+  margin-right: 20px;
+
+  @media (max-width: $tablet) {
+    margin-right: 40px;
+    left: 20px !important;
+  }
+}
+
+.profile-notification {
+  justify-content: space-between;
+  &__text {
+    font-size: 18px;
+
+    @media (max-width: $tablet) {
+      font-size: 16px;
+    }
+  }
+}
+
+.profile-notification-switch {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 40px; 
+  height: 20px;
+
+  @media (max-width: $mobile) {
+   margin-top: 7px;
+  }
+
+  &__slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #ccc;
+    border-radius: 20px; 
+    transition: .4s;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: 16px; 
+      width: 16px;
+      left: 2px; 
+      bottom: 2px;
+      background-color: white;
+      border-radius: 50%; 
+      transition: .4s;
+    }
+  }
+
+  input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .profile-notification-switch__slider {
+      background-color: $bright;
+    }
+
+    &:focus + .profile-notification-switch__slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    &:checked + .profile-notification-switch__slider:before {
+      transform: translateX(21px);
+    }
+  }
+}
+
+.profile-contacts-group {
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-between;
+
+  @media (max-width: $tablet) {
+   flex-direction: column;
+   gap: 15px;
+  }
+
+  &__column {
+    flex: 0 0 33%;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: $laptop) {
+      flex-shrink: 1;
+    }
+
+    &.column_wide {
+      @media (max-width: $laptop) {
+        flex: 0 0 40%;
+      }
+    }
+  }
+
+  &__icon {
+    width: 20px;
+    margin-right: 4px;
+
+    &.type_phone {
+      width: 18px;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+
+    &.content_center {
+      justify-content: center;
+
+      @media (max-width: $tablet) {
+        justify-content: start;
+       }
+    }
+
+    &:first-child {
+      margin-bottom: 15px;
+
+      @media (max-width: $tablet) {
+        margin-bottom: 5px;
+       }
+    }
+  }
+}
+
+.button.profile-delete-acc {
+  background: $dark;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid $dark;
+  margin-left: 10px;
+
+  &:hover {
+    box-shadow: none;
+  }
+}
+
+.popup-content .change-password {
+  cursor: pointer;
+  border: 2px solid $main;
+  border-radius: 10px;
+  background-color: $main;
+  font-size: 14px;
+  color: #fff;
+  margin-right: 10px;
+  padding: 6px;
+  box-shadow: -1px 1px 12px 0px  rgba(0, 0, 0, 0.5) ;
+}
+.popup-content .change-password:hover {
+  box-shadow: 0px 0px 8px 1px $main ;
+}
+
+.popup-content input {
+  border: 2px solid $bright;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: $semi-dark;
+  color: #fff;
+  width: 230px;
+}
+.popup-content .exit-button {
+  border: none;
+}
+.popup-content .exit-button {
+  background: none;
+  padding: 0;
+  border: none;
+  margin-right: 50px;
+}
+
+
+.popup-content a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.popup-content .privacy-policy-link,
+.popup-content .delete-account {
+  cursor: pointer;
+  transition: 0.3s;
+  margin-right: auto;
+}
+
+.popup-content .delete-account {
+  font-size: 14px;
+  border-radius: 10px;
+  border: 2px solid $main;
+  padding: 6px;
+  background-color: $main;
+  color: #fff;
+  box-shadow: -1px 1px 12px 0px  rgba(0, 0, 0, 0.5) ;
+}
+.popup-content .delete-account:hover {
+  box-shadow: 0px 0px 8px 1px $main ;
+}
+.popup-content .privacy-policy-link {
+  cursor: pointer;
+  transition: 0.3s;
+  margin-right: auto;
+  border: none;
+  font-size: 14px;
+  color: #fff;
+}
+
+.popup-content .privacy-policy-link:hover {
+  color: $bright;
+}
+
+
+.popup-content .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #fff;
+  background: transparent;
+  border: none;
+}
+
+.popup-content .close-button:hover {
+  color: $bright;
+}
+
+.popup-content .custom-input {
+  margin-bottom: 10px;
+  color: #fff;
+  width: 230px;
+  white-space: nowrap;
+}
+
+.popup-content .custom-input input {
+  display: none;
+}
+
+
+.popup-content .privacy-policy-link:disabled:hover {
+  box-shadow: none;
+  transform: none;
+}
+
+.popup-content .notification-text {
+  margin-left: 20px; 
+  font-size: 20px;
+  flex: auto;
+}
+
+.notification-switch {
+  display: flex;
+  align-items: center;
+}
+
+.notification-wrapper {
+  align-items: center;
+  display: flex;
+  height: 100px;
+  width: 80%;
+  max-width: 1000px;
+  background-color: $semi-dark;
+  margin: 20px auto;
+  border-radius: 10px;
+}
+
+.profile-history-btn {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: none;
+  color: inherit;
+  width: 100%;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &__icon {
+    width: 35px;
+
+    @media (max-width: $tablet) {
+      width: 25px;
+    }
+  }
+
+  &__text {
+    font-size: 25px;
+
+    @media (max-width: $tablet) {
+      font-size: 20px;
+    }
+  }
+
+  &__arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 7px solid #fff;
+    margin-left: auto; 
+    margin-right: 20px;
+    transform: scale(2);
+  }
+
+}
+
+.profile-history {
+  width: 100%;
+}
+
+.profile-history-item {
+  height: 70px;
+  width: 100%;
+  background-color: $dark;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 10px 15% 10px 20px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 18px;
+
+  @media (max-width: $tablet) {
+    padding: 10px 10px 10px 10px;
+    font-size: 16px;
+  }
+
+  &__search-date {
+    padding-right: 10px;
+    border-right: 2px solid $font-color;
+
+    @media (max-width: $mobile) {
+      font-size: 12px;
+    }
+  }
+
+  &__icon {
+    width: 40px;
+    padding-left: 8px;
+
+    @media (max-width: $mobile) {
+      width: 30px;
+    }
+  }
+
+  &__from {
+    margin-left: 20px;
+
+    @media (max-width: $tablet) {
+      margin-left: 10px;
+    }
+  }
+
+  &__column {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    margin: 0 15px;
+
+    @media (max-width: $tablet) {
+      margin: 0 10px;
+    }
+  }
+
+  &__date {
+    font-size: 14px;
+    align-self: center;
+
+    @media (max-width: $tablet) {
+      font-size: 12px;
+    }
+  }
+
+  &__line {
+    margin-top: 10px;
+  }
+
+  &.no-items {
+    padding-right: 20px;
+    justify-content: center;
+
+    @media (max-width: $tablet) {
+      padding-right: 10px;
+      font-size: 16px;
+    }
+  }
+}

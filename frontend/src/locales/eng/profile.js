@@ -1,0 +1,17 @@
+export const profile = {
+  error_enable_notification: 'Notifications enabling error. Try again',
+  error_disable_notification: 'Error disabling notifications. Try again',
+  error_delete_user: 'An error occurred while deleting the account',
+  change_password: 'Change password',
+  delete_account: 'Delete account',
+  hello: 'Hi,',
+  notification: 'Would you like to receive notifications about the availability of tickets?',
+  account: 'Account',
+  email: 'Email',
+  phone: 'Phone number',
+  account_management: 'Account management',
+  add: 'Add',
+  history: 'History',
+  no_items: 'You have no search history',
+  lvl: 'Level unlocking occurs automatically when using our services. Each level corresponds to three months of use.',
+};

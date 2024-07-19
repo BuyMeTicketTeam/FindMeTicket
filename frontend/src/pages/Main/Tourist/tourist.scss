@@ -1,0 +1,25 @@
+@import '../../../styles/colorsVar.scss';
+.banner-container {
+    margin-top: 15px;
+    background-color: $semi-bright;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 2px solid $dark;
+}
+
+.centered-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner-text {
+    font-size: 18px;
+    color: $dark;
+}
+
+.banner__btn {
+    min-width: 0;
+    text-decoration: none;
+    text-align: center;
+}

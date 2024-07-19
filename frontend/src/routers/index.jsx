@@ -3,39 +3,35 @@ import React from 'react';
 import {
   Routes, Route,
 } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import RouteController from './RouteController';
-import Reset from '../reset';
-import Register from '../register';
-import Confirm from '../confirm';
-import Index from '../main';
-import TicketPage from '../ticketPage';
-import Login from '../header/login/index';
-import ResetPassword from '../resetPassword';
-import ChangePassword from '../changePassword';
+import Reset from '../pages/Reset';
+import Register from '../pages/Register';
+import Confirm from '../pages/Confirm';
+import Index from '../pages/Main';
+import TicketPage from '../pages/TicketPage';
+import Login from '../pages/Login';
+import ConfirmReset from '../pages/ConfirmReset';
+import ChangePassword from '../pages/ChangePassword';
 import PrivacyPolicyEng from '../privacyPolicy/index-eng';
 import PrivacyPolicyUa from '../privacyPolicy/index-ua';
 import TouristPlaces from '../TouristPlaces';
-import ProfilePage from '../newProfile';
+import ProfilePage from '../pages/Profile';
 import Reviews from '../Reviews';
 
 export default function Routers({
-  updateAuthValue, ticketsData,
-  setTicketsData, selectedTransport,
-  setSelectedTransport, auth, urlSearch, setUrlSearch, language,
+  updateAuthValue,
 }) {
+  const { language } = useTranslation().i18n;
+  const auth = useSelector((state) => state.user.isAuthenticated);
+  console.log(auth);
   return (
     <Routes>
       <Route
-        path="/*"
+        path="/"
         element={(
-          <Index
-            ticketsData={ticketsData}
-            setTicketsData={setTicketsData}
-            selectedTransport={selectedTransport}
-            setSelectedTransport={setSelectedTransport}
-            urlSearch={urlSearch}
-            setUrlSearch={setUrlSearch}
-          />
+          <Index />
         )}
       />
       <Route
@@ -74,31 +70,19 @@ export default function Routers({
         path="/reset-password"
         element={(
           <RouteController access={!auth}>
-            <ResetPassword />
+            <ConfirmReset />
           </RouteController>
       )}
       />
       <Route
         path="/change-password"
-        element={(
-          <RouteController access={auth}>
-            <ChangePassword />
-          </RouteController>
-      )}
+        element={(<ChangePassword />)}
       />
       <Route path="/ticket-page/:ticketId" element={<TicketPage />} />
-      <Route
-        path="/change-password"
-        element={(
-          <RouteController access={!auth}>
-            <ChangePassword />
-          </RouteController>
-      )}
-      />
-      {language.value === 'UA' && (
+      {language === 'Ua' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyUa />} />
       )}
-      {language.value === 'ENG' && (
+      {language === 'Eng' && (
         <Route path="/privacy-policy" element={<PrivacyPolicyEng />} />
       )}
       <Route path="/tourist-places/:city?" element={<TouristPlaces auth={auth} />} />

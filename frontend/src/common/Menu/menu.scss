@@ -1,0 +1,88 @@
+@import '../../styles/colorsVar.scss';
+.menu {
+  z-index: 2;
+  position: fixed;
+  top: 61px;
+  right: 0;
+  transform: translate(110%, 0);
+  width: 300px;
+  height: 100%;
+  transition: 0.3s;
+  background: $semi-dark;
+
+  &.menu-open {
+    transform: translate(0, 0);
+    transition: 0.3s;
+  }
+}
+
+.menu-overlay {
+  z-index: 1;
+  position: absolute;
+  top: 61px;
+  left: 0;
+  background: $overlay;
+  width: 100vw;
+  height: calc(100vh - 61px);
+}
+
+.nav-list {
+  &__item {
+    list-style: none;
+    border-bottom: 2px solid $dark;
+    transition: 0.2s;
+
+    a {
+      display: inline-block;
+      text-decoration: none;
+      padding: 15px;
+    }
+
+    &:hover {
+      background: $dark;
+    }
+
+    &:first-child {
+      border-top: 2px solid $dark;
+    }
+
+    &.language_item {
+      display: flex;
+
+      img {
+        padding-left: 15px;
+      }
+      
+      & > div {
+        flex: auto;
+      }
+    }
+
+    .react-select__control {
+      padding: 15px 0;
+    }
+  }
+}
+
+.menu__title {
+  padding: 15px;
+}
+
+.menu-contacts-list {
+  padding-left: 25px;
+  &__item {
+    padding: 10px 0;
+  }
+}
+
+.menu-social-media {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  list-style: none;
+
+  &__item {
+    width: 40px;
+  }
+}

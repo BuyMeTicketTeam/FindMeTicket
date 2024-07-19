@@ -9,10 +9,11 @@ import TicketsBody from './Body';
 import Partner from './Partner';
 
 export default function Index({
-  ticketsData, setTicketsData, selectedTransport, setSelectedTransport, urlSearch, setUrlSearch,
+  ticketsData, setTicketsData, selectedTransport, setSelectedTransport,
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [urlSearch, setUrlSearch] = useState();
 
   return (
     <div className="main-block main">

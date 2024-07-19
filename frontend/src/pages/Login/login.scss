@@ -1,0 +1,112 @@
+@import '../../styles/colorsVar.scss';
+@import '../../styles/mediaQueryVar.scss';
+
+.login {
+	&__close {
+		position: absolute;
+		top: 25px;
+		right: 21px;
+		background: transparent;
+		border: 0;
+		width: 30px;
+		height: 30px;
+
+		@media (max-width: $mobile) {
+      width: 25px;
+			height: 25px;
+    }
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		&::after {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 30px;
+			height: 3px;
+			transform: rotate(45deg);
+			background: $font-color;
+		}
+
+		&::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 30px;
+			height: 3px;
+			transform: rotate(-45deg);
+			background: $font-color;
+		}
+	}
+
+	&__link {
+		margin: 15px 0;
+		color: $font-color;
+
+		&:hover {
+			cursor: pointer;
+		}
+
+		&.align_center {
+			text-align: center;
+			margin-bottom: 0;
+		}
+	}
+}
+
+.login-separator {
+	display: flex;
+	align-items: center;
+	margin: 10px 0;
+
+	&__line {
+		width: 100%;
+		background: $grey;
+		height: 1px;
+	}
+
+	&__content {
+		margin: 0px 5px;
+		color: $grey;
+	}
+
+}
+
+.login-services {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: inherit;
+	font-weight: 600;
+	width: 100%;
+	background: #fff;
+	color: $main;
+	border-radius: 10px;
+	padding: 10px;
+	text-decoration: none;
+	border: none;
+	margin-top: 15px;
+
+	@media (max-width: $mobile) {
+		padding: 5px;
+	}
+
+	img {
+		max-width: 25px;
+		margin-right: 8px;
+	}
+
+	&:hover {
+		cursor: pointer;
+	}
+
+	&:not(:last-child) {
+		margin-bottom: 15px;
+	}
+}

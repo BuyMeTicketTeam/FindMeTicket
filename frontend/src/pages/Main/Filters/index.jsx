@@ -1,0 +1,41 @@
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { setSorting } from '../../../store/tickets/ticketsSlice';
+
+import FiltersBtn from './FiltersBtn';
+
+import './filters.scss';
+
+export default function Filters({ loading }) {
+  const { sortBy, ascending } = useSelector((state) => state.tickets);
+  const dispatch = useDispatch();
+
+  const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
+
+  function handleSort(sortType) {
+    if (sortBy === sortType) {
+      dispatch(setSorting({ ascending: !ascending, sortBy }));
+      return;
+    }
+    dispatch(setSorting({ ascending: false, sortBy: sortType }));
+  }
+
+  // console.log(sortBy === filtersBtn[0]);
+
+  return (
+    <div data-testid="filters" className="main-filters">
+      {filtersBtn.map((filter) => (
+        <FiltersBtn
+          key={filter}
+          onClick={() => handleSort(filter)}
+          isActive={sortBy === filter}
+          isUp={sortBy === filter && ascending}
+          loading={loading}
+        >
+          {filter}
+        </FiltersBtn>
+      ))}
+    </div>
+  );
+}

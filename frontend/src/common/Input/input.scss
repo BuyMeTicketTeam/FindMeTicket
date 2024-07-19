@@ -1,0 +1,58 @@
+@import '../../styles/colorsVar.scss';
+@import '../../styles/mediaQueryVar.scss';
+.input {
+  width: 100%;
+  border-radius: 10px;
+  border: 2px solid $bright;
+  padding: 8px;
+  font-size: 18px;
+  background: $dark;
+  color: inherit;
+  z-index: 1;
+
+  @media (max-width: $mobile) {
+    padding: 5px;
+    font-size: 16px;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0px 0px 8px 1px $bright;
+  }
+
+  &::placeholder {
+    color: $grey;
+  }
+
+  &.input_error {
+    border: 2px solid $error;
+    outline-color: $error;
+    box-shadow: 0px 0px 9px 2px $error;
+  }
+
+  &__toggle-value-visibility {
+    z-index: 2;
+    position: absolute;
+    top: 36px;
+    right: 4px;
+    background: transparent;
+    border: none;
+    padding: 3px 3px 0 3px;
+
+    @media (max-width: $mobile) {
+      top: 28px;
+    }
+
+    &.hide::before {
+      position: absolute;
+      top: 13px;
+      left: 5px;
+      display: inline-block;
+      content: '';
+      width: 21px;
+      height: 2px;
+      background: $font-color;
+      transform: rotate(45deg);
+    }
+  }
+}

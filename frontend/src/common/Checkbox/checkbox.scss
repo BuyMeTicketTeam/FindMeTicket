@@ -1,0 +1,62 @@
+@import '../../styles/colorsVar.scss';
+@import '../../styles/mediaQueryVar.scss';
+
+.checkbox {
+  margin-bottom: 10px;
+
+  &__label {
+    display: inline-block;
+    position: relative;
+    font-size: 18px;
+    font-weight: 500;
+    padding-left: 30px;
+
+    @media (max-width: $mobile) {
+      font-size: 16px;
+    }
+
+    a {
+      margin-left: 5px;
+    }
+
+    &::after {
+      position: absolute;
+      left: 0;
+      top: 0;
+      content: '';
+      display: block;
+      width: 15px;
+      height: 15px;
+      border: 2px solid $bright;
+    }
+  }
+
+  &__input {
+    position: absolute;
+    visibility: hidden;
+
+    &:checked~.checkbox__label::before {
+      left: 0px;
+      top: -4px;
+      position: absolute;
+      content: '';
+      display: block;
+      width: 15px;
+      height: 20px;
+      background: url('../../images/tick.svg');
+    }
+
+    &.checkbox_error~.checkbox__label::after {
+      border: 2px solid $error-bright;
+    }
+
+    &.checkbox_error~.checkbox__label {
+      color: $error-bright;
+    }
+  }
+
+  &__error {
+    margin-top: 3px;
+    padding-left: 30px;
+  }
+}

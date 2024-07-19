@@ -1,13 +1,18 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { getI18n } from 'react-i18next';
 
-async function eventSourceQuery2({
-  address, body, handleMessage, handleError, handleClose, handleOpen, method = 'GET', headers,
+async function eventSourceQuery({
+  address, body, handleMessage, handleError, handleClose, handleOpen, headers,
 }) {
   try {
     const token = localStorage.getItem('JWTtoken');
-    await fetchEventSource(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/${address}`, {
-      method,
+    console.log(new URLSearchParams({
+      ...body,
+    }).toString());
+    await fetchEventSource(`${process.env.REACT_APP_SERVER_ADDRESS}${address}?${new URLSearchParams({
+      ...body,
+    })}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Content-Language': getI18n().language.toLowerCase(),
@@ -16,7 +21,6 @@ async function eventSourceQuery2({
         ...headers,
       },
       credentials: 'include',
-      body,
       onopen(res) {
         if (res.ok && res.status === 200) {
           console.log('Connection made ', res);
@@ -56,4 +60,4 @@ async function eventSourceQuery2({
   }
 }
 
-export default eventSourceQuery2;
+export default eventSourceQuery;

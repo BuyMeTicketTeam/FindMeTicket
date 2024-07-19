@@ -16,7 +16,6 @@ const mockData = {
   placeFrom: 'Station A',
   placeAt: 'Station B',
   price: 100,
-  url: 'https://example.com',
 };
 
 test('renders ticket component with correct data', () => {

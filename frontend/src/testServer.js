@@ -142,20 +142,30 @@ createServer({
     // Responding to a POST request
     this.post('/login', () => {
       // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
-      return new Response(200, { rememberMe: process.env.REACT_APP_TEST_JWT_TOKEN, userId: 1231231421 }, JSON.stringify({ username: 'Max' }));
+      return new Response(200, { rememberMe: true }, JSON.stringify({
+        username: 'Max', email: 'user@gmail.com', basicPicture: null, googlePicture: 'https://lh3.googleusercontent.com/a/ACg8ocIyLV6grsACo0xFoxYN_AScMvUMXuW6TebrrnI1OwopQCzw6Q=s96-c',
+      }));
     });
-    this.post('/register', () => new Response(200));
-    this.post('/oauth2/authorize/google', () => new Response(200, undefined, JSON.stringify({ username: 'Max' })));
+    this.post('/register', () => new Response(400));
+    this.post('/oauth2/authorize/google', () => {
+      // document.cookie = 'rememberMe=cookie-content-here; path=/; expires=123123123123;';
+      return new Response(200, { rememberMe: true }, JSON.stringify({
+        username: 'Max', email: 'user@gmail.com', basicPicture: null, googlePicture: 'https://lh3.googleusercontent.com/a/ACg8ocIyLV6grsACo0xFoxYN_AScMvUMXuW6TebrrnI1OwopQCzw6Q=s96-c',
+      }));
+    });
     this.post('/confirm-email', () => new Response(200));
     this.post('/reset', () => new Response(200));
     this.post('/new-password', () => new Response(200));
+    this.post('/update-password', () => new Response(200));
     this.post('/resend-confirm-token', () => new Response(200));
     this.get('/logout', () => new Response(200));
+    this.get('/notifications/enable', () => new Response(200));
+    this.get('/notifications/disable', () => new Response(200));
     this.post('/get1', () => new Response(200));
     this.post('/selectedTransport', () => new Response(200, undefined, JSON.stringify([])));
     this.post('/searchTickets', () => new Response(200, undefined, JSON.stringify([])));
     this.delete('/delete-user', () => new Response(200));
-    this.post('/typeAhead', (schema, request) => {
+    this.get('/cities/typeahead', (schema, request) => {
       if (JSON.parse(request.requestBody) === 'Дн') {
         return new Response(200, undefined, JSON.stringify(destination));
       }
@@ -167,7 +177,7 @@ createServer({
       document.cookie = 'remember_me=true; path=/; max-age=600';
       return new Response(200, { Authorization: 'alkshfksadfjs2143234' });
     });
-    this.get('/getHistory', () => new Response(200, undefined, JSON.stringify([
+    this.get('http://localhost:8080/users/b91d44b6-c2e0-41b1-bd3f-4490be8d993a/history', () => new Response(200, undefined, JSON.stringify([
       {
         addingTime: '12.03.2077',
         departureCity: 'Dnipro',
