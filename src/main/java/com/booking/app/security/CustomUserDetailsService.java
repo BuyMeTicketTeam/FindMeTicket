@@ -1,7 +1,7 @@
 package com.booking.app.security;
 
-import com.booking.app.entity.User;
-import com.booking.app.exception.exception.UserNotFoundException;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.UserNotFoundException;
 import com.booking.app.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

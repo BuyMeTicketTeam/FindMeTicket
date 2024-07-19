@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.entity.User;
+import com.booking.app.entities.user.User;
 
 public interface NotificationService {
 

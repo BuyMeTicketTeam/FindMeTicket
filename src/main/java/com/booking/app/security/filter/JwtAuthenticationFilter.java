@@ -1,8 +1,8 @@
 package com.booking.app.security.filter;
 
-import com.booking.app.entity.User;
-import com.booking.app.exception.exception.UserNotFoundException;
-import com.booking.app.util.CookieUtils;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.UserNotFoundException;
+import com.booking.app.utils.CookieUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,16 +16,13 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Objects;
 
-import static com.booking.app.constant.CustomHttpHeaders.USER_ID;
-import static com.booking.app.constant.JwtTokenConstants.BEARER;
-import static com.booking.app.constant.JwtTokenConstants.REFRESH_TOKEN;
+import static com.booking.app.constants.AuthenticatedUserConstants.*;
 
 /**
  * This filter intercepts incoming requests and processes JWT authentication.
@@ -38,8 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtProvider jwtProvider;
 
     private final UserDetailsService userDetailsService;
-
-    private final RedirectStrategy redirectStrategy;
 
     private UserDetails userDetails;
 
@@ -65,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         else if (Objects.isNull(jwtProvider.extractEmail(refreshToken))) {
             log.warn("Invalid JWT refresh token has been provided");
             // Redirect to the logout endpoint
-            redirectStrategy.sendRedirect(request, response, LOGOUT_ENDPOINT);
+            response.sendRedirect(LOGOUT_ENDPOINT);
             return;
         }
         // Check if user is present by provided email
@@ -85,7 +80,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     handleValidRefreshToken(response, userDetails, email);
                 } catch (ExpiredJwtException e) {
                     // If refresh token is expired, redirect to the logout endpoint
-                    redirectStrategy.sendRedirect(request, response, LOGOUT_ENDPOINT);
+                    response.sendRedirect(LOGOUT_ENDPOINT);
                     return;
                 }
             }

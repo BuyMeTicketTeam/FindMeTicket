@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1717622316344-1
+      id: 1717675488655-1
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -27,7 +27,7 @@ databaseChangeLog:
                   type: UUID
             tableName: bus_info
   - changeSet:
-      id: 1717622316344-2
+      id: 1717675488655-2
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -52,7 +52,26 @@ databaseChangeLog:
                   type: DATETIME
             tableName: confirmation_code
   - changeSet:
-      id: 1717622316344-3
+      id: 1717675488655-3
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_provider
+                  name: id
+                  type: SMALLINT
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+            tableName: provider
+  - changeSet:
+      id: 1717675488655-4
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -81,7 +100,7 @@ databaseChangeLog:
                   type: UUID
             tableName: review
   - changeSet:
-      id: 1717622316344-4
+      id: 1717675488655-5
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -92,15 +111,15 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_roles
+                    primaryKeyName: pk_role
                   name: id
                   type: SMALLINT
               - column:
                   name: type
                   type: VARCHAR(255)
-            tableName: roles
+            tableName: role
   - changeSet:
-      id: 1717622316344-5
+      id: 1717675488655-6
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -127,7 +146,7 @@ databaseChangeLog:
                   type: DATETIME
             tableName: route
   - changeSet:
-      id: 1717622316344-6
+      id: 1717675488655-7
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -157,7 +176,7 @@ databaseChangeLog:
                   type: UUID
             tableName: search_history
   - changeSet:
-      id: 1717622316344-7
+      id: 1717675488655-8
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -199,7 +218,7 @@ databaseChangeLog:
                   type: UUID
             tableName: ticket
   - changeSet:
-      id: 1717622316344-8
+      id: 1717675488655-9
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -226,7 +245,7 @@ databaseChangeLog:
                   type: UUID
             tableName: train_info
   - changeSet:
-      id: 1717622316344-9
+      id: 1717675488655-10
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -242,7 +261,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: type_transport
   - changeSet:
-      id: 1717622316344-10
+      id: 1717675488655-11
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -276,7 +295,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
             tableName: ukrainian_cities
   - changeSet:
-      id: 1717622316344-11
+      id: 1717675488655-12
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -286,7 +305,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_users
+                    primaryKeyName: pk_user
                   name: id
                   type: UUID
               - column:
@@ -303,9 +322,6 @@ databaseChangeLog:
                   type: DATE
               - column:
                   name: phone_number
-                  type: VARCHAR(255)
-              - column:
-                  name: provider
                   type: VARCHAR(255)
               - column:
                   name: default_avatar
@@ -341,9 +357,9 @@ databaseChangeLog:
               - column:
                   name: code_id
                   type: UUID
-            tableName: users
+            tableName: user
   - changeSet:
-      id: 1717622316344-12
+      id: 1717675488655-13
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -353,19 +369,41 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_users_roles
-                  name: roles_id
+                    primaryKeyName: pk_user_provider
+                  name: provider_id
                   type: SMALLINT
               - column:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_users_roles
-                  name: users_id
+                    primaryKeyName: pk_user_provider
+                  name: user_id
                   type: UUID
-            tableName: users_roles
+            tableName: user_provider
   - changeSet:
-      id: 1717622316344-13
+      id: 1717675488655-14
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user_role
+                  name: role_id
+                  type: SMALLINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user_role
+                  name: user_id
+                  type: UUID
+            tableName: user_role
+  - changeSet:
+      id: 1717675488655-15
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -374,34 +412,34 @@ databaseChangeLog:
             constraintName: uc_review_user
             tableName: review
   - changeSet:
-      id: 1717622316344-14
+      id: 1717675488655-16
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
             columnNames: code_id
-            constraintName: uc_users_code
-            tableName: users
+            constraintName: uc_user_code
+            tableName: user
   - changeSet:
-      id: 1717622316344-15
+      id: 1717675488655-17
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
             columnNames: email
-            constraintName: uc_users_email
-            tableName: users
+            constraintName: uc_user_email
+            tableName: user
   - changeSet:
-      id: 1717622316344-16
+      id: 1717675488655-18
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addUniqueConstraint:
             columnNames: phone_number
-            constraintName: uc_users_phone_number
-            tableName: users
+            constraintName: uc_user_phone_number
+            tableName: user
   - changeSet:
-      id: 1717622316344-17
+      id: 1717675488655-19
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -410,10 +448,10 @@ databaseChangeLog:
               - column:
                   name: email
             indexName: idx_email
-            tableName: users
+            tableName: user
             unique: true
   - changeSet:
-      id: 1717622316344-18
+      id: 1717675488655-20
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -424,7 +462,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1717622316344-19
+      id: 1717675488655-21
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -433,9 +471,9 @@ databaseChangeLog:
             baseTableName: review
             constraintName: FK_REVIEW_ON_USER
             referencedColumnNames: id
-            referencedTableName: users
+            referencedTableName: user
   - changeSet:
-      id: 1717622316344-20
+      id: 1717675488655-22
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -444,9 +482,9 @@ databaseChangeLog:
             baseTableName: search_history
             constraintName: FK_SEARCHHISTORY_ON_USER
             referencedColumnNames: id
-            referencedTableName: users
+            referencedTableName: user
   - changeSet:
-      id: 1717622316344-21
+      id: 1717675488655-23
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -457,7 +495,7 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: route
   - changeSet:
-      id: 1717622316344-22
+      id: 1717675488655-24
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -468,18 +506,18 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: ticket
   - changeSet:
-      id: 1717622316344-23
+      id: 1717675488655-25
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: code_id
-            baseTableName: users
-            constraintName: FK_USERS_ON_CODE
+            baseTableName: user
+            constraintName: FK_USER_ON_CODE
             referencedColumnNames: id
             referencedTableName: confirmation_code
   - changeSet:
-      id: 1717622316344-24
+      id: 1717675488655-26
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
@@ -490,25 +528,47 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: search_history
   - changeSet:
-      id: 1717622316344-25
+      id: 1717675488655-27
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: roles_id
-            baseTableName: users_roles
-            constraintName: fk_userol_on_role
+            baseColumnNames: provider_id
+            baseTableName: user_provider
+            constraintName: fk_usepro_on_auth_provider
             referencedColumnNames: id
-            referencedTableName: roles
+            referencedTableName: provider
   - changeSet:
-      id: 1717622316344-26
+      id: 1717675488655-28
       author: misha (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: users_id
-            baseTableName: users_roles
-            constraintName: fk_userol_on_user
+            baseColumnNames: user_id
+            baseTableName: user_provider
+            constraintName: fk_usepro_on_user
             referencedColumnNames: id
-            referencedTableName: users
+            referencedTableName: user
+  - changeSet:
+      id: 1717675488655-29
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: user_role
+            constraintName: fk_user_role_on_role
+            referencedColumnNames: id
+            referencedTableName: role
+  - changeSet:
+      id: 1717675488655-30
+      author: misha (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_role
+            constraintName: fk_user_role_on_user
+            referencedColumnNames: id
+            referencedTableName: user
 

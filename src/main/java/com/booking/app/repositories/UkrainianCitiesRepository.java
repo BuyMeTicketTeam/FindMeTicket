@@ -1,6 +1,6 @@
 package com.booking.app.repositories;
 
-import com.booking.app.entity.UkrainianCities;
+import com.booking.app.entities.UkrainianCities;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.entity.User;
-import com.booking.app.exception.exception.EmailAlreadyTakenException;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.EmailAlreadyTakenException;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.RegistrationService;
 import com.booking.app.services.UserService;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.booking.app.constant.RegistrationConstantMessages.EMAIL_IS_ALREADY_TAKEN_MESSAGE;
+import static com.booking.app.constants.RegistrationConstantMessages.EMAIL_IS_ALREADY_TAKEN_MESSAGE;
 
 
 @Service

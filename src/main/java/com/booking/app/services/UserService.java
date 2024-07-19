@@ -1,13 +1,10 @@
 package com.booking.app.services;
 
 import com.booking.app.dto.CodeConfirmationDto;
-import com.booking.app.dto.HistoryDto;
 import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.RequestTicketsDto;
-import com.booking.app.entity.User;
-import com.booking.app.exception.exception.UserNotConfirmedException;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.UserNotConfirmedException;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,24 +81,6 @@ public interface UserService {
      * @param user the user to be deleted
      */
     void delete(User user);
-
-    /**
-     * Adds a search history entry for the user.
-     *
-     * @param dto      The DTO containing search details.
-     * @param language The language of the search.
-     * @param user     User to add history
-     */
-    void addHistory(RequestTicketsDto dto, String language, User user);
-
-    /**
-     * Retrieves the search history of a user.
-     *
-     * @param user     The user credentials.
-     * @param language The language for city names.
-     * @return List of search history DTOs.
-     */
-    List<HistoryDto> getHistory(User user, String language);
 
     /**
      * Confirms the user's email using a code.

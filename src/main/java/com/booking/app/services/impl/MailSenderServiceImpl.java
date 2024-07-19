@@ -1,12 +1,12 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.entity.ConfirmationCode;
-import com.booking.app.entity.User;
-import com.booking.app.exception.exception.UserNotFoundException;
+import com.booking.app.entities.user.ConfirmationCode;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.UserNotFoundException;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.UserService;
-import com.booking.app.util.HtmlTemplateUtils;
+import com.booking.app.utils.HtmlTemplateUtils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import static com.booking.app.constant.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
-import static com.booking.app.constant.MailConstants.RESET_PASSWORD_SUBJECT;
+import static com.booking.app.constants.MailConstants.EMAIL_CONFIRMATION_SUBJECT;
+import static com.booking.app.constants.MailConstants.RESET_PASSWORD_SUBJECT;
 
 /**
  * Service implementation for sending emails related to user registration and confirmation.

@@ -1,7 +1,7 @@
 package com.booking.app.services;
 
 
-import com.booking.app.entity.UkrainianCities;
+import com.booking.app.entities.UkrainianCities;
 
 import java.util.List;
 import java.util.Optional;

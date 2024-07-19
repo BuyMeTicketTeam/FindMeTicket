@@ -1,6 +1,6 @@
 package com.booking.app.security;
 
-import com.booking.app.exception.ErrorDetails;
+import com.booking.app.exceptions.ErrorDetailsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        ErrorDetails errorDetails = new ErrorDetails(
+        ErrorDetailsDto errorDetailsDto = new ErrorDetailsDto(
                 LocalDateTime.now(),
                 authException.getMessage(),
                 request.getRequestURI(),
@@ -29,6 +29,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
         );
         final ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
-        mapper.writeValue(response.getOutputStream(), errorDetails);
+        mapper.writeValue(response.getOutputStream(), errorDetailsDto);
     }
 }

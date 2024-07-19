@@ -1,6 +1,6 @@
 package com.booking.app.repositories;
 
-import com.booking.app.entity.User;
+import com.booking.app.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

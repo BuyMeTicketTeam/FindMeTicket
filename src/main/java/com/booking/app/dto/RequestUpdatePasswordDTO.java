@@ -1,7 +1,7 @@
 package com.booking.app.dto;
 
-import com.booking.app.annotation.PasswordMatches;
-import com.booking.app.util.ConfirmPasswordUtil;
+import com.booking.app.annotations.PasswordMatches;
+import com.booking.app.utils.ConfirmPasswordUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @PasswordMatches
 @Schema(description = "Data Transfer Object for updating user passwords, including the last password, new password, and password confirmation.")
-public class RequestUpdatePasswordDTO implements ConfirmPasswordUtil {
+public class RequestUpdatePasswordDTO implements ConfirmPasswordUtils {
 
     @NotNull
     @Schema(description = "The user's last password.", required = true)

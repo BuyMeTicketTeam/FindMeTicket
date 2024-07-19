@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.entity.UkrainianCities;
+import com.booking.app.entities.UkrainianCities;
 import com.booking.app.repositories.UkrainianCitiesRepository;
 import com.booking.app.services.UkrainianCitiesService;
 import lombok.RequiredArgsConstructor;

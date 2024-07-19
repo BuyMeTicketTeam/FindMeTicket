@@ -2,9 +2,9 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.dto.TicketDto;
-import com.booking.app.entity.ticket.Route;
-import com.booking.app.mapper.BusMapper;
-import com.booking.app.mapper.TrainMapper;
+import com.booking.app.entities.ticket.Route;
+import com.booking.app.mappers.BusMapper;
+import com.booking.app.mappers.TrainMapper;
 import com.booking.app.repositories.BusTicketRepository;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TrainTicketRepository;

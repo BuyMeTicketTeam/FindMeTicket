@@ -1,42 +1,47 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.CreateReviewDto;
 import com.booking.app.dto.ReviewDto;
-import com.booking.app.dto.SaveReviewDto;
-import jakarta.servlet.http.HttpServletRequest;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.ReviewNotFoundException;
 
 import java.util.List;
 
+/**
+ * Service interface for handling review-related operations.
+ */
 public interface ReviewService {
 
     /**
-     * Saves a review provided by the user.
+     * Retrieves the review for a given user.
      *
-     * @param saveReviewDto The DTO containing review information.
-     * @param request       The HTTP request.
-     * @return The saved review DTO if successful, or null otherwise.
+     * @param user the user whose review is to be retrieved
+     * @return the review of the user wrapped in a ReviewDto
+     * @throws ReviewNotFoundException if the user does not have a review
      */
-    ReviewDto saveReview(SaveReviewDto saveReviewDto, HttpServletRequest request);
+    ReviewDto getReview(User user);
 
     /**
-     * Retrieves a list of all reviews.
+     * Retrieves all reviews.
      *
-     * @return List of review DTOs.
+     * @return a list of all reviews wrapped in ReviewDto objects
      */
-    List<ReviewDto> getReviewList();
+    List<ReviewDto> getReviews();
 
     /**
-     * Deletes a review provided by the user.
+     * Saves a new review for a given user.
      *
-     * @param request The HTTP request.
-     * @return True if the review is deleted successfully, false otherwise.
+     * @param createReviewDto the data transfer object containing the details of the review to be created
+     * @param user            the user for whom the review is to be created
+     * @return the created review wrapped in a ReviewDto
      */
-    boolean deleteReview(HttpServletRequest request);
+    ReviewDto saveReview(CreateReviewDto createReviewDto, User user);
 
     /**
-     * Retrieves the review of the current user.
+     * Deletes the review of a given user.
      *
-     * @param request The HTTP request.
-     * @return The review DTO of the current user, or null if not found.
+     * @param user the user whose review is to be deleted
      */
-    ReviewDto getUserReview(HttpServletRequest request);
+    void deleteReview(User user);
+
 }

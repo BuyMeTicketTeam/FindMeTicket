@@ -1,6 +1,6 @@
 package com.booking.app.dto;
 
-import com.booking.app.entity.Role;
+import com.booking.app.entities.user.Role;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

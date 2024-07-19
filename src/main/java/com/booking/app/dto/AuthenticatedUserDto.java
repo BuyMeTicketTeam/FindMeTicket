@@ -1,6 +1,6 @@
 package com.booking.app.dto;
 
-import com.booking.app.entity.User;
+import com.booking.app.entities.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

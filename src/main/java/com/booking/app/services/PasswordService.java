@@ -2,8 +2,8 @@ package com.booking.app.services;
 
 import com.booking.app.dto.PasswordDto;
 import com.booking.app.dto.RequestUpdatePasswordDTO;
-import com.booking.app.entity.User;
-import com.booking.app.exception.exception.LastPasswordIsNotRightException;
+import com.booking.app.entities.user.User;
+import com.booking.app.exceptions.user.LastPasswordIsNotRightException;
 
 
 public interface PasswordService {

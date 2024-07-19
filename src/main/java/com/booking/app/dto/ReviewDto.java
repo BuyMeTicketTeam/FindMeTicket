@@ -1,7 +1,8 @@
 package com.booking.app.dto;
 
-import com.booking.app.entity.Review;
-import com.booking.app.entity.User;
+import com.booking.app.entities.user.AuthProvider;
+import com.booking.app.entities.user.Review;
+import com.booking.app.entities.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.ProviderNotFoundException;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -42,19 +44,25 @@ public class ReviewDto {
 
     public static ReviewDto createInstance(Review review) {
         User user = review.getUser();
-        ReviewDto reviewDTO = ReviewDto.builder()
+        ReviewDto dto = ReviewDto.builder()
                 .id(user.getReview().getId())
                 .writingDate(review.getAddingDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 .grade(review.getGrade())
                 .reviewText(review.getReviewText())
                 .username(user.getUsername())
                 .build();
+        Set<AuthProvider> providers = user.getProviders();
 
-        switch (user.getProvider()) {
-            case GOOGLE -> reviewDTO.setSocialMediaAvatar(user.getSocialMediaAvatar());
-            case LOCAL -> reviewDTO.setDefaultAvatar(user.getDefaultAvatar());
-            default -> throw new ProviderNotFoundException("Third party service provider is not provided");
+        if (providers.isEmpty()) {
+            throw new ProviderNotFoundException("Third party service provider is not provided");
+        } else {
+            if (user.getSocialMediaAvatar() != null) {
+                dto.setSocialMediaAvatar(user.getSocialMediaAvatar());
+            } else {
+                dto.setDefaultAvatar(user.getDefaultAvatar());
+            }
+            return dto;
         }
-        return reviewDTO;
     }
+
 }

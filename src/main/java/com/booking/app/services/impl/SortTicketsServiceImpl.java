@@ -2,11 +2,11 @@ package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestSortedTicketsDto;
 import com.booking.app.dto.TicketDto;
-import com.booking.app.entity.ticket.Ticket;
-import com.booking.app.entity.ticket.bus.BusTicket;
-import com.booking.app.entity.ticket.train.TrainTicket;
-import com.booking.app.mapper.BusMapper;
-import com.booking.app.mapper.TrainMapper;
+import com.booking.app.entities.ticket.Ticket;
+import com.booking.app.entities.ticket.bus.BusTicket;
+import com.booking.app.entities.ticket.train.TrainTicket;
+import com.booking.app.mappers.BusMapper;
+import com.booking.app.mappers.TrainMapper;
 import com.booking.app.repositories.RouteRepository;
 import com.booking.app.services.SortTicketsService;
 import lombok.RequiredArgsConstructor;

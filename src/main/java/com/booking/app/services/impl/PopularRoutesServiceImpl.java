@@ -1,13 +1,13 @@
 package com.booking.app.services.impl;
 
 
-import com.booking.app.constant.PopularRoutesConstants;
+import com.booking.app.constants.PopularRoutesConstants;
 import com.booking.app.dto.City;
 import com.booking.app.dto.RequestTicketsDto;
-import com.booking.app.entity.UkrainianCities;
+import com.booking.app.entities.UkrainianCities;
 import com.booking.app.repositories.UkrainianCitiesRepository;
 import com.booking.app.services.PopularRoutesService;
-import com.booking.app.services.impl.scrape.ScraperManager;
+import com.booking.app.services.impl.scraper.ScraperManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import static com.booking.app.constant.DateFormatConstants.DATE_FORMAT_PATTERN;
+import static com.booking.app.constants.DateFormatConstants.DATE_FORMAT_PATTERN;
 
 /**
  * Service implementation for finding popular routes.

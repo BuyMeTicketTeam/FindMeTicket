@@ -1,7 +1,7 @@
 package com.booking.app.services;
 
-import com.booking.app.entity.ConfirmationCode;
-import com.booking.app.exception.exception.InvalidConfirmationCodeException;
+import com.booking.app.entities.user.ConfirmationCode;
+import com.booking.app.exceptions.user.InvalidConfirmationCodeException;
 
 public interface ConfirmationCodeService {
 

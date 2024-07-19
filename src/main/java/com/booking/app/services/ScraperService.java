@@ -1,7 +1,7 @@
 package com.booking.app.services;
 
-import com.booking.app.entity.ticket.Route;
-import com.booking.app.entity.ticket.bus.BusTicket;
+import com.booking.app.entities.ticket.Route;
+import com.booking.app.entities.ticket.bus.BusTicket;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
