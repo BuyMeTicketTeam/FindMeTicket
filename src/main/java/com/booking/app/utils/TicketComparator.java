@@ -21,7 +21,7 @@ public class TicketComparator {
     private static final Comparator<Ticket> compareByDepartureTime =
             (Ticket t1, Ticket t2) -> (t1.getDepartureTime()).compareTo(t2.getDepartureTime());
     private static final Comparator<Ticket> compareByArrivalTime =
-            (Ticket t1, Ticket t2) -> (t1.getArrivalTime()).compareTo(t2.getArrivalTime());
+            (Ticket t1, Ticket t2) -> (t1.getArrivalDateTime()).compareTo(t2.getArrivalDateTime());
 
 
     public List<Ticket> getSortedTickets(List<Ticket> tickets, RequestSortedTicketsDto dto) {
