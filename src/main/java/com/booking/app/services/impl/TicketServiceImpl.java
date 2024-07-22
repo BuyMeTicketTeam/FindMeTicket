@@ -1,6 +1,7 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.dto.RequestSortedTicketsDto;
+import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.dto.TicketDto;
 import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.Ticket;
@@ -61,8 +62,7 @@ public class TicketServiceImpl implements TicketService {
     public List<TicketDto> getSortedTickets(RequestSortedTicketsDto dto, String language) {
         List<Ticket> tickets = new ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate()).getTickets().stream().toList());
 
-        return ticketMapper.toTicketDtoList(TicketComparator.getSortedTickets(.getSortedTickets(tickets, dto), language);
-
+        return ticketMapper.toTicketDtoList(TicketComparator.getSortedTickets(tickets, dto), language);
     }
 
     /**

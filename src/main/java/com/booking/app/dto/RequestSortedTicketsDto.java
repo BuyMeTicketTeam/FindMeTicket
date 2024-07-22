@@ -1,10 +1,14 @@
 package com.booking.app.dto;
 
+import com.booking.app.constants.SortCriteria;
+import com.booking.app.constants.SortType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -23,10 +27,7 @@ public class RequestSortedTicketsDto {
     private String departureDate;
 
     @Schema(description = "Sorting criteria", example = "price")
-    private String sortingBy;
-
-    @Schema(description = "Indicates if the sorting is ascending", example = "true")
-    private boolean ascending;
+    private Map<SortCriteria, SortType> sortingBy;
 
     @Schema(description = "Indicates if the travel is by bus", example = "true")
     private Boolean bus;

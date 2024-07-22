@@ -8,7 +8,6 @@ import com.booking.app.dto.TicketDto;
 import com.booking.app.entities.user.User;
 import com.booking.app.exceptions.ErrorDetailsDto;
 import com.booking.app.services.SearchHistoryService;
-import com.booking.app.services.SortTicketsService;
 import com.booking.app.services.TicketService;
 import com.booking.app.services.impl.scraper.ScraperManager;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,7 +48,6 @@ import static com.booking.app.constants.ApiMessagesConstants.INVALID_REQUEST_BOD
 public class TicketController {
 
     private final ScraperManager scraperManager;
-    private final SortTicketsService sortTicketsService;
     private final TicketService ticketService;
     private final SearchHistoryService searchHistoryService;
 
@@ -112,7 +110,7 @@ public class TicketController {
             })
     public List<TicketDto> getSortedTickets(@RequestBody @NotNull @Valid RequestSortedTicketsDto requestSortedTicketsDto,
                                             @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) @Parameter(required = true, description = "Content Language", schema = @Schema(type = "string", allowableValues = {"eng", "ua"})) ContentLanguage language) {
-        return sortTicketsService.getSortedTickets(requestSortedTicketsDto, language.getLanguage());
+        return ticketService.getSortedTickets(requestSortedTicketsDto, language.getLanguage());
     }
 
     @PostMapping(value = "/transport", produces = MediaType.APPLICATION_JSON_VALUE)

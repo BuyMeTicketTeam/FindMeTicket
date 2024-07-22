@@ -1,5 +1,6 @@
 package com.booking.app.services;
 
+import com.booking.app.dto.RequestSortedTicketsDto;
 import com.booking.app.dto.RequestTicketsDto;
 import com.booking.app.dto.TicketDto;
 
@@ -17,7 +18,7 @@ public interface TicketService {
      * @return a list of tickets or an empty optional if no tickets are found
      * @throws IOException if an I/O error occurs while determining the language
      */
-    <T extends TicketDto> Optional<List<T>> getBusTickets(RequestTicketsDto dto) throws IOException;
+    <T extends TicketDto> Optional<List<T>> getTickets(RequestTicketsDto dto) throws IOException;
 
     /**
      * Retrieves and sorts a list of tickets based on the specified criteria.
