@@ -37,7 +37,7 @@ public class Ticket {
     private Instant arrivalDateTime;
 
     @Column(name = "travel_time")
-    private BigDecimal travelTime;
+    private Integer travelTime;
 
     @Column(name = "carrier")
     @EqualsAndHashCode.Include
