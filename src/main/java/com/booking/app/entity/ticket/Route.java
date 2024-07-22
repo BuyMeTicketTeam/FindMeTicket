@@ -1,11 +1,11 @@
 package com.booking.app.entity.ticket;
 
-import com.booking.app.entity.ticket.Ticket;
 import com.google.common.collect.Sets;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
@@ -29,10 +29,10 @@ public class Route {
     private String arrivalCity;
 
     @Column(name = "departure_date")
-    private String departureDate;
+    private LocalDate departureDate;
 
     @Column(name = "adding_time")
-    private LocalDateTime addingTime;
+    private Instant addingTime;
 
     @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @Builder.Default

@@ -5,13 +5,9 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.LocalTime;
-import java.time.Year;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -36,13 +32,9 @@ public class Ticket {
 
     @Column(name = "departure_time")
     @EqualsAndHashCode.Include
-    private String departureTime;
+    private LocalTime departureTime;
 
-    @Column(name = "arrival_time")
-    private String arrivalTime;
-
-    @Column(name = "arrival_date")
-    private String arrivalDate;
+    private Instant arrivalDateTime;
 
     @Column(name = "travel_time")
     private BigDecimal travelTime;
@@ -55,13 +47,6 @@ public class Ticket {
     @JoinColumn(name = "route_id")
     private Route route;
 
-    public LocalDateTime formatArrivalDateTime() {
-        LocalTime time = LocalTime.parse(arrivalTime, DateTimeFormatter.ofPattern("HH:mm"));
-        LocalDate date = LocalDate.parse(arrivalDate.replaceAll(",.*", "") + "." + Year.now().getValue(), DateTimeFormatter.ofPattern("d.MM.yyyy"));
-
-        return LocalDateTime.of(date, time);
-    }
-
     public BigDecimal getPrice() {
         throw new UnsupportedOperationException("Method must be only called from subclass");
     }
@@ -71,7 +56,7 @@ public class Ticket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ticket ticket = (Ticket) o;
-        return carrierEquals(ticket) && departureTimeEquals(ticket) && arrivalTimeEquals(ticket) && Objects.equals(arrivalDate, ticket.arrivalDate);
+        return carrierEquals(ticket) && arrivalDateTimeEquals(ticket) && departureTimeEquals(ticket);
     }
 
     @Override
@@ -79,24 +64,32 @@ public class Ticket {
         return 31;
     }
 
-    private boolean arrivalTimeEquals(Ticket that) {
-        if (this.arrivalTime == null || that.arrivalTime == null) return false;
-
-        LocalTime thisArrivalTime = LocalTime.parse(this.arrivalTime);
-        LocalTime thatArrivalTime = LocalTime.parse(that.arrivalTime);
-
-        long minutesDifference = Math.abs(ChronoUnit.MINUTES.between(thisArrivalTime, thatArrivalTime));
-        return minutesDifference < 5;
+    /**
+     * Compares the arrivalDateTime of this Ticket with that Ticket.
+     * The reason for that: on different websites same ticket might have arrival datetime differs within 5 minutes.
+     *
+     * @param that the other Ticket to compare with
+     * @return true if the arrivalDateTime values of both Tickets are within 5 minutes of each other, false otherwise
+     */
+    private boolean arrivalDateTimeEquals(Ticket that) {
+        if (this.arrivalDateTime == null || that.arrivalDateTime == null) {
+            return false;
+        }
+        return Math.abs(ChronoUnit.MINUTES.between(this.arrivalDateTime, that.arrivalDateTime)) < 5;
     }
 
+    /**
+     * Compares the departureTime of this Ticket with that Ticket.
+     * The reason for that: on different websites same ticket might have departure time differs within 5 minutes.
+     *
+     * @param that the other Ticket to compare with
+     * @return true if the departureTime values of both Tickets are within 5 minutes of each other, false otherwise
+     */
     private boolean departureTimeEquals(Ticket that) {
-        if (this.departureTime == null || that.departureTime == null) return false;
-
-        LocalTime thisDeparture = LocalTime.parse(this.departureTime);
-        LocalTime thatDeparture = LocalTime.parse(that.departureTime);
-
-        long minutesDifference = Math.abs(ChronoUnit.MINUTES.between(thisDeparture, thatDeparture));
-        return minutesDifference < 5;
+        if (this.departureTime == null || that.departureTime == null) {
+            return false;
+        }
+        return Math.abs(ChronoUnit.MINUTES.between(this.departureTime, that.departureTime)) < 5;
     }
 
     private boolean carrierEquals(Ticket that) {
