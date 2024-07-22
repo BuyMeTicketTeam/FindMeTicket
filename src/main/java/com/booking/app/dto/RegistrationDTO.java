@@ -1,7 +1,7 @@
 package com.booking.app.dto;
 
-import com.booking.app.annotation.PasswordMatches;
-import com.booking.app.util.ConfirmPasswordUtil;
+import com.booking.app.annotations.PasswordMatches;
+import com.booking.app.utils.ConfirmPasswordUtils;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @PasswordMatches
 @NoArgsConstructor
-public class RegistrationDTO implements ConfirmPasswordUtil {
+public class RegistrationDTO implements ConfirmPasswordUtils {
 
     @NotBlank(message = "Invalid Login: Empty login")
     @NotNull(message = "Invalid Login: Login is NULL")

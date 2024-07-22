@@ -1,13 +1,13 @@
 package com.booking.app.controller;
 
-import com.booking.app.controller.api.TicketApi;
-import com.booking.app.dto.RequestSortedTicketsDTO;
+
+import com.booking.app.dto.RequestSortedTicketsDto;
 import com.booking.app.dto.RequestTicketsDTO;
 import com.booking.app.dto.TicketDto;
-import com.booking.app.exception.exception.UndefinedLanguageException;
+import com.booking.app.exceptions.UndefinedLanguageException;
 import com.booking.app.services.SearchHistoryService;
 import com.booking.app.services.TicketService;
-import com.booking.app.services.impl.scrape.ScraperManager;
+import com.booking.app.services.impl.scraper.ScraperManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @RequestMapping(produces = {MediaType.TEXT_EVENT_STREAM_VALUE})
 @RequiredArgsConstructor
-public class TicketController implements TicketApi {
+public class TicketController {
 
     private final ScraperManager scrapingService;
 
@@ -37,16 +37,15 @@ public class TicketController implements TicketApi {
     private final SearchHistoryService searchHistoryService;
 
     @PostMapping("/searchTickets")
-    @Override
-    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO ticketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response, HttpServletRequest request) throws IOException, ParseException {
+    public ResponseBodyEmitter findTickets(@RequestBody RequestTicketsDTO requestBody, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response, HttpServletRequest request) throws IOException, ParseException {
 
         validateLanguage(siteLanguage);
 
-        searchHistoryService.addHistory(ticketsDTO, siteLanguage, request);
+        searchHistoryService.addHistory(requestBody, siteLanguage, request);
 
         SseEmitter emitter = new SseEmitter();
 
-        CompletableFuture<Boolean> isTicketScraped = scrapingService.findTickets(ticketsDTO, emitter, siteLanguage);
+        CompletableFuture<Boolean> isTicketScraped = scrapingService.findTickets(requestBody, emitter, siteLanguage);
 
         isTicketScraped.thenAccept(isFound -> {
             if (Boolean.TRUE.equals(isFound)) response.setStatus(HttpStatus.OK.value());
@@ -56,7 +55,6 @@ public class TicketController implements TicketApi {
     }
 
     @GetMapping("/get/ticket/{id}")
-    @Override
     public ResponseBodyEmitter getTicketById(@PathVariable("id") UUID id, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletResponse response) throws IOException, ParseException {
         validateLanguage(siteLanguage);
         SseEmitter emitter = new SseEmitter();
@@ -67,10 +65,9 @@ public class TicketController implements TicketApi {
     }
 
     @PostMapping(value = "/sortedBy", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Override
-    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDTO requestSortedTicketsDTO, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request) {
+    public ResponseEntity<?> getSortedTickets(@RequestBody RequestSortedTicketsDto requestBody, @RequestHeader(HttpHeaders.CONTENT_LANGUAGE) String siteLanguage, HttpServletRequest request) {
         validateLanguage(siteLanguage);
-        return ResponseEntity.ok().body(ticketService.getSortedTickets(requestSortedTicketsDTO, siteLanguage));
+        return ResponseEntity.ok().body(ticketService.getSortedTickets(requestBody, siteLanguage));
     }
 
     @PostMapping(value = "/selectedTransport", produces = MediaType.APPLICATION_JSON_VALUE)

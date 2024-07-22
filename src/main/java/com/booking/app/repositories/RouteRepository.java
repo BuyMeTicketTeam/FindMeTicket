@@ -1,6 +1,6 @@
 package com.booking.app.repositories;
 
-import com.booking.app.entity.ticket.Route;
+import com.booking.app.entities.ticket.Route;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +19,8 @@ public interface RouteRepository extends JpaRepository<Route, UUID> {
     @Modifying
     @Query("DELETE FROM Route e WHERE e.addingTime < :thresholdDateTime")
     void deleteOlderThan(@Param("thresholdDateTime") LocalDateTime thresholdDateTime);
+
+    Route findFirstByAddingTime(LocalDateTime dateTime);
 
     void deleteRouteByAddingTimeBefore(LocalDateTime time);
 }

@@ -1,6 +1,6 @@
 package com.booking.app.security.filter;
 
-import com.booking.app.constant.JwtTokenConstants;
+import com.booking.app.constants.AuthenticatedUserConstants;
 import com.google.api.client.util.Strings;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -101,7 +101,7 @@ public class JwtProvider {
     public static String extractAccessToken(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (!Strings.isNullOrEmpty(token) && token.startsWith(JwtTokenConstants.BEARER.trim())) {
+        if (!Strings.isNullOrEmpty(token) && token.startsWith(AuthenticatedUserConstants.BEARER.trim())) {
             return token.substring(7);
         }
         return null;
@@ -111,7 +111,7 @@ public class JwtProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(JwtTokenConstants.REFRESH_TOKEN)) {
+                if (cookie.getName().equals(AuthenticatedUserConstants.REFRESH_TOKEN)) {
                     return cookie.getValue();
                 }
             }

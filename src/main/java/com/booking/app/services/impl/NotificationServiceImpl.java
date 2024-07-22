@@ -1,6 +1,6 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.entity.User;
+import com.booking.app.entities.user.User;
 import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.NotificationService;
 import lombok.RequiredArgsConstructor;
