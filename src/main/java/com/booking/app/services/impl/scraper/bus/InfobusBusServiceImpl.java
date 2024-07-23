@@ -28,8 +28,7 @@ import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Year;
+import java.time.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -155,7 +154,7 @@ public class InfobusBusServiceImpl implements ScraperService {
             String arrivalTime = element.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText();
 
             if (ticket.getDepartureTime().equals(departureTime) &&
-                    ticket.getArrivalTime().equals(arrivalTime) &&
+                    ticket.getArrivalDateTime().equals(arrivalTime) &&
                     priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
 
                 WebElement button = element.findElement(By.cssSelector("button.btn"));
@@ -228,7 +227,7 @@ public class InfobusBusServiceImpl implements ScraperService {
     }
 
 
-    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
+    private static void requestTickets(String departureCity, String arrivalCity, LocalDate departureDate, WebDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(url);
@@ -249,7 +248,7 @@ public class InfobusBusServiceImpl implements ScraperService {
         wait.until(ExpectedConditions.elementToBeClickable(By.id(clickableElementId))).findElements(By.tagName("li")).getFirst().click();
     }
 
-    private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
+    private static void selectDate(LocalDate departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
         WebElement dateFrom = driver.findElement(By.id("dateFrom"));
         dateFrom.click();
 
@@ -262,11 +261,10 @@ public class InfobusBusServiceImpl implements ScraperService {
         if (language.equals("eng")) outputYearFormat = new SimpleDateFormat("yyyy", new Locale("en"));
         if (language.equals("eng")) outputDayFormat = new SimpleDateFormat("d", new Locale("en"));
 
-        Date inputDate = inputFormat.parse(departureDate);
 
-        String requestMonth = outputMonthFormat.format(inputDate);
-        String requestYear = outputYearFormat.format(inputDate);
-        String requestDay = outputDayFormat.format(inputDate);
+        String requestMonth = departureDate.getMonth().toString();
+        String requestYear = String.valueOf(departureDate.getYear());
+        String requestDay = String.valueOf(departureDate.getDayOfMonth());
 
         String calendarMonth = driver.findElement(By.cssSelector("span.ui-datepicker-month")).getText();
         String calendarYear = driver.findElement(By.cssSelector("span.ui-datepicker-year")).getText();
@@ -290,10 +288,9 @@ public class InfobusBusServiceImpl implements ScraperService {
                 .route(route)
                 .placeFrom(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("a.text-g")).getText())
                 .placeAt(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("a.text-g")).getText())
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .departureTime(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                .arrivalTime(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText())
-                .arrivalDate(date)
+                .travelTime(totalMinutes)
+                .departureTime(LocalTime.parse(webTicket.findElement(By.cssSelector("div.departure")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText()))
+                .arrivalDateTime(Instant.parse(webTicket.findElement(By.cssSelector("div.arrival")).findElement(By.cssSelector("div.day_time")).findElements(By.tagName("span")).get(2).getText()))
                 .carrier(carrier.toUpperCase()).build().addPrice(BusInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.INFOBUS).build());
     }
 

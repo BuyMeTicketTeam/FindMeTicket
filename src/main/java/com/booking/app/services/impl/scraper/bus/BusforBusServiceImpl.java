@@ -28,9 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -84,52 +82,6 @@ public class BusforBusServiceImpl implements ScraperService {
         }
     }
 
-    @Async
-    @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException {
-        WebDriver driver = webDriverFactory.createInstance();
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
-        String departureCity = ticket.getRoute().getDepartureCity();
-        String arrivalCity = ticket.getRoute().getArrivalCity();
-        String departureDate = ticket.getRoute().getDepartureDate();
-
-        String url = determineBaseUri(language);
-        String fulfilledUrl = String.format(url, departureCity, arrivalCity, departureDate);
-
-        driver.get(fulfilledUrl);
-        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
-
-        waitForTickets(driver);
-
-        List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
-        processTicketInfo(emitter, ticket, language, tickets, wait, driver, emitterNotExpired);
-
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
-    }
-
-    private static void waitForTickets(WebDriver driver) {
-        int previousCount = 0;
-        int currentCount = 0;
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
-        try {
-            do {
-                previousCount = currentCount;
-
-                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
-
-                wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(DIV_TICKET), previousCount));
-
-                List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-                currentCount = elements.size();
-            } while (currentCount > previousCount);
-        } catch (TimeoutException e) {
-
-        }
-    }
-
     private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> tickets, WebDriverWait wait, WebDriver driver, MutableBoolean emitterNotExpired) throws IOException {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
@@ -155,7 +107,7 @@ public class BusforBusServiceImpl implements ScraperService {
             Range<Integer> range = Range.between(-2, 2);
 
             if (range.contains(difference.intValue()) &&
-                    ticket.getArrivalTime().equals(arrivalDateTime.substring(0, 5)) &&
+                    ticket.getArrivalDateTime().equals(arrivalDateTime.substring(0, 5)) &&
                     ticket.getDepartureTime().equals(departureDateTime.substring(0, 5))) {
 
                 WebElement button = wait.until(ExpectedConditions.elementToBeClickable(element.findElement(By.tagName("button")).findElement(By.tagName("span"))));
@@ -177,6 +129,39 @@ public class BusforBusServiceImpl implements ScraperService {
                         .build()));
             }
         } else log.info("BUSFOR URL NOT FOUND");
+    }
+
+    private static void waitForTickets(WebDriver driver) {
+        int previousCount = 0;
+        int currentCount = 0;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        try {
+            do {
+                previousCount = currentCount;
+
+                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+
+                wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(By.cssSelector(DIV_TICKET), previousCount));
+
+                List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+                currentCount = elements.size();
+            } while (currentCount > previousCount);
+        } catch (TimeoutException e) {
+
+        }
+    }
+
+    private static BusTicket createTicket(Route route, WebElement departureInfo, WebElement
+            arrivalInfo, String departureTime, String arrivalDateTime, String arrivalDate, int totalMinutes, BigDecimal price, String carrier) {
+        return BusTicket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
+                .departureTime(LocalTime.parse(departureTime.substring(0, 5)))
+                .arrivalDateTime(Instant.parse(arrivalDateTime))
+                .travelTime(totalMinutes)
+                .carrier(carrier).build().addPrice(BusInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build());
     }
 
     private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> tickets, WebDriver driver, WebDriverWait wait, MutableBoolean emitterNotExpired) throws IOException {
@@ -275,18 +260,30 @@ public class BusforBusServiceImpl implements ScraperService {
         };
     }
 
-    private static BusTicket createTicket(Route route, WebElement departureInfo, WebElement
-            arrivalInfo, String departureDateTime, String arrivalDateTime, String arrivalDate, int totalMinutes, BigDecimal price, String carrier) {
-        return BusTicket.builder()
-                .id(UUID.randomUUID())
-                .route(route)
-                .placeFrom(departureInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                .placeAt(arrivalInfo.findElement(By.cssSelector("div.LinesEllipsis")).getText())
-                .departureTime(departureDateTime.substring(0, 5))
-                .arrivalTime(arrivalDateTime)
-                .arrivalDate(arrivalDate)
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .carrier(carrier).build().addPrice(BusInfo.builder().price(price).sourceWebsite(SiteConstants.BUSFOR_UA).build());
+    @Async
+    @Override
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException {
+        WebDriver driver = webDriverFactory.createInstance();
+
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        String departureCity = ticket.getRoute().getDepartureCity();
+        String arrivalCity = ticket.getRoute().getArrivalCity();
+        String departureDate = ticket.getRoute().getDepartureDate().toString();
+
+        String url = determineBaseUri(language);
+        String fulfilledUrl = String.format(url, departureCity, arrivalCity, departureDate);
+
+        driver.get(fulfilledUrl);
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+
+        waitForTickets(driver);
+
+        List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
+        processTicketInfo(emitter, ticket, language, tickets, wait, driver, emitterNotExpired);
+
+        driver.quit();
+        return CompletableFuture.completedFuture(true);
     }
 
 }

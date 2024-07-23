@@ -27,11 +27,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service("proizdTrainService")
@@ -185,18 +186,18 @@ public class ProizdTrainServiceImpl implements ScraperService {
         return TrainTicket.builder()
                 .id(UUID.randomUUID())
                 .route(route)
-                .arrivalDate(formattedTime)
+                .arrivalDateTime(Instant.parse(formattedTime))
                 .placeFrom(places[0])
                 .placeAt(places[1])
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .departureTime(element.findElements(By.cssSelector("div.trip__time ")).get(0).getText())
-                .arrivalTime(element.findElements(By.cssSelector("div.trip__time ")).get(1).getText())
+                .travelTime(totalMinutes)
+                .departureTime(LocalTime.parse(element.findElements(By.cssSelector("div.trip__time ")).get(0).getText()))
+                .arrivalDateTime(Instant.parse(element.findElements(By.cssSelector("div.trip__time ")).get(1).getText()))
                 .carrier(carrier)
                 .build()
                 .addPrices(trainInfos);
     }
 
-    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
+    private static void requestTickets(String departureCity, String arrivalCity, LocalDate departureDate, WebDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(url);
@@ -233,7 +234,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(cityXpath)));
     }
 
-    private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
+    private static void selectDate(LocalDate departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
         WebElement dateFrom = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.search-field.date")));
         Actions actions = new Actions(driver);
         actions.moveToElement(dateFrom).doubleClick().build().perform();
@@ -251,11 +252,10 @@ public class ProizdTrainServiceImpl implements ScraperService {
         SimpleDateFormat outputDayFormat = language.equals("eng") ? new SimpleDateFormat("d", new Locale("en"))
                 : new SimpleDateFormat("d", new Locale("uk"));
 
-        Date inputDate = inputFormat.parse(departureDate);
 
-        String requestMonth = outputMonthFormat.format(inputDate);
-        String requestYear = outputYearFormat.format(inputDate);
-        String requestDay = outputDayFormat.format(inputDate);
+        String requestMonth = departureDate.getMonth().toString();
+        String requestYear = String.valueOf(departureDate.getYear());
+        String requestDay = String.valueOf(departureDate.getDayOfMonth());
 
         calendarMonth = calendarMonth.substring(0, calendarMonth.length() - 5);
 

@@ -101,7 +101,7 @@ public class TicketController {
         return emitter;
     }
 
-    @GetMapping(value = "/sortBy", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/sortBy", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Sort tickets",
             description = "Either by price, travel time, departure, or arrival",
             responses = {

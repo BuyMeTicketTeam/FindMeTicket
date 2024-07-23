@@ -53,8 +53,8 @@ public class GdticketsScraperServiceImpl implements ScraperService {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 //        String url = determineBaseUrl(language);
-        if (!requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, "https://gd.tickets.ua/", language))
-            return CompletableFuture.completedFuture(false);
+//        if (!requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, "https://gd.tickets.ua/", language))
+//            return CompletableFuture.completedFuture(false);
         //        try {
 //            wait.until(ExpectedConditions.or(ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET_NOT_FOUND)), ExpectedConditions.presenceOfElementLocated(By.cssSelector(DIV_TICKET))));
 //            driver.findElement(By.cssSelector(DIV_TICKET));

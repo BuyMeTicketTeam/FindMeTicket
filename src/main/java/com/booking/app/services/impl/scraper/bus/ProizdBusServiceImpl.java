@@ -27,11 +27,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -160,8 +157,8 @@ public class ProizdBusServiceImpl implements ScraperService {
             String departureTime = element.findElements(By.cssSelector("div.trip__time")).get(0).getText();
             String arrivalTime = element.findElements(By.cssSelector("div.trip__time")).get(1).getText();
 
-            if (ticket.getDepartureTime().equals(departureTime) &&
-                    ticket.getArrivalTime().equals(arrivalTime) &&
+            if (ticket.getDepartureTime().equals(LocalTime.parse(departureTime)) &&
+                    ticket.getArrivalDateTime().equals(Instant.parse(arrivalTime)) &&
                     priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
                 priceInfo.setLink(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
                 log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
@@ -234,7 +231,7 @@ public class ProizdBusServiceImpl implements ScraperService {
         return createTicket(element, route, price, totalMinutes, formattedDate, carrier);
     }
 
-    private static void requestTickets(String departureCity, String arrivalCity, String departureDate, WebDriver driver, String url, String language) throws ParseException {
+    private static void requestTickets(String departureCity, String arrivalCity, LocalDate departureDate, WebDriver driver, String url, String language) throws ParseException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
         Actions actions = new Actions(driver);
         driver.get(url);
@@ -264,7 +261,7 @@ public class ProizdBusServiceImpl implements ScraperService {
         wait.until(ExpectedConditions.elementToBeClickable(proposedCity)).click();
     }
 
-    private static void selectDate(String departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
+    private static void selectDate(LocalDate departureDate, WebDriver driver, WebDriverWait wait, String language) throws ParseException {
         WebElement dateFrom = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("div.search-form__field.search-form__date")));
         Actions actions = new Actions(driver);
         actions.moveToElement(dateFrom).doubleClick().build().perform();
@@ -282,11 +279,10 @@ public class ProizdBusServiceImpl implements ScraperService {
         SimpleDateFormat outputDayFormat = language.equals("eng") ? new SimpleDateFormat("d", new Locale("en"))
                 : new SimpleDateFormat("d", new Locale("uk"));
 
-        Date inputDate = inputFormat.parse(departureDate);
 
-        String requestMonth = outputMonthFormat.format(inputDate);
-        String requestYear = outputYearFormat.format(inputDate);
-        String requestDay = outputDayFormat.format(inputDate);
+        String requestMonth = departureDate.getMonth().toString();
+        String requestYear = String.valueOf(departureDate.getYear());
+        String requestDay = String.valueOf(departureDate.getDayOfMonth());
 
         calendarMonth = calendarMonth.substring(0, calendarMonth.length() - 5);
 
@@ -319,10 +315,9 @@ public class ProizdBusServiceImpl implements ScraperService {
                 .route(route)
                 .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
                 .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
-                .travelTime(BigDecimal.valueOf(totalMinutes))
-                .departureTime(element.findElements(By.cssSelector("div.trip__time")).get(0).getText())
-                .arrivalTime(element.findElements(By.cssSelector("div.trip__time")).get(1).getText())
-                .arrivalDate(formattedTime)
+                .travelTime(totalMinutes)
+                .departureTime(LocalTime.parse(element.findElements(By.cssSelector("div.trip__time")).get(0).getText()))
+                .arrivalDateTime(Instant.parse(element.findElements(By.cssSelector("div.trip__time")).get(1).getText()))
                 .carrier(carrier).build().addPrice(BusInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build());
     }
 

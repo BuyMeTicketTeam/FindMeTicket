@@ -140,10 +140,10 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: departure_date
-                  type: VARCHAR(255)
+                  type: DATE
               - column:
                   name: adding_time
-                  type: DATETIME
+                  type: TIMESTAMP
             tableName: route
   - changeSet:
       id: 1717675488655-7
@@ -202,14 +202,11 @@ databaseChangeLog:
                   name: departure_time
                   type: VARCHAR(255)
               - column:
-                  name: arrival_time
-                  type: VARCHAR(255)
-              - column:
-                  name: arrival_date
-                  type: VARCHAR(255)
+                  name: arrival_date_time
+                  type: TIMESTAMP
               - column:
                   name: travel_time
-                  type: DECIMAL
+                  type: int
               - column:
                   name: carrier
                   type: VARCHAR(255)

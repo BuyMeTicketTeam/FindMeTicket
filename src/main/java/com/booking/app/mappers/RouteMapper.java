@@ -10,7 +10,7 @@ import org.mapstruct.MappingConstants;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @Builder(disableBuilder = true))
 public interface RouteMapper {
 
-    @Mapping(target = "addingTime", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "addingTime", expression = "java(java.time.Instant.now())")
     Route toRoute(RequestTicketsDto requestTicketsDTO);
 
 }
