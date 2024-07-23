@@ -1,0 +1,104 @@
+spring:
+  datasource:
+    password: postgres
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/db_ticket?
+    hikari:
+      schema: find_me_ticket_schema
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: false
+        default_schema: find_me_ticket_schema
+        generate_statistics: false
+        jdbc:
+          batch_size: 100
+        order_updates: true
+        order_inserts: true
+
+##-------------------------
+## Logging level
+##-------------------------
+logging:
+  level:
+    ROOT: INFO
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
+        transaction: DEBUG
+        web: DEBUG
+        security: TRACE
+      hibernate: ERROR
+
+
+
+  ##-------------------------
+  ## Email Sender configuration
+  ##-------------------------
+  mail:
+    host: smtp.gmail.com
+    port: '587'
+    username: findmeticketweb@gmail.com
+    password: lgyn zgeb yowy vbam
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+##-------------------------
+## JWT Properties
+##-------------------------
+jwtSecret: ${JWT_SECRET}
+accessTokenExpirationMs: '1440'
+refreshTokenExpirationMs: '43200'
+##-------------------------
+## Language detection file-configurations
+##-------------------------
+languages: eng.txt, ua.txt
+
+#-------------------------
+# OAuth 2.0 configuration
+#-------------------------
+app:
+  googleClientId: ${GOOGLE_AUTH_KEY}
+
+#-------------------------
+# Encoding
+#-------------------------
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  error:
+    include-message: always
+
+#-------------------------
+# Third-party ticket's services
+#-------------------------
+link:
+  busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+  busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
+  proizd-ua-bus: 'https://bus.proizd.ua/'
+  proizd-eng-bus: 'https://bus.proizd.ua/en'
+  infobus-ua-bus: 'https://infobus.eu/ua/bus'
+  infobus-eng-bus: 'https://infobus.eu/en/bus'
+  infobus-eng-train: 'https://infobus.eu/en/train'
+  infobus-ua-train: 'https://infobus.eu/ua/train'
+  proizd-eng-train: 'https://proizd.ua/en'
+  proizd-ua-train: 'https://proizd.ua/'
+#-------------------------
+# API Key Configuration
+#-------------------------
+api:
+  currency-rate-key: ${CURRENCY_API_KEY}
