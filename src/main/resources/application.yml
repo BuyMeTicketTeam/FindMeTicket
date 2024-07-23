@@ -33,6 +33,7 @@ logging:
 ##-------------------------
 spring:
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     show-sql: true

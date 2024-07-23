@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,7 +27,7 @@ public class DeleteTicketServiceImpl implements DeleteTicketService {
     @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 30)
     @Transactional
     public void deleteOldTickets() throws IOException, ParseException {
-        LocalDateTime fifteenMinutesAgo = LocalDateTime.now();
+        Instant fifteenMinutesAgo = Instant.now().minusSeconds(15 * 30);
 
         routeRepository.deleteRouteByAddingTimeBefore(fifteenMinutesAgo);
 

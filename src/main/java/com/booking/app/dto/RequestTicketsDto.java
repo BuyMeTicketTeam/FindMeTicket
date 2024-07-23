@@ -1,5 +1,6 @@
 package com.booking.app.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -7,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -24,9 +27,10 @@ public class RequestTicketsDto {
     private String arrivalCity;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
     @Pattern(regexp = "\\d{2}\\.\\d{2}\\.\\d{4}", message = "Date must be in the format dd.MM.yyyy")
     @Schema(description = "Date of departure in the format dd.MM.yyyy", example = "01.06.2024")
-    private String departureDate;
+    private LocalDate departureDate;
 
     @NotNull
     @Builder.Default

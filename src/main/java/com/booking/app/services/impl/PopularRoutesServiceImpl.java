@@ -15,13 +15,10 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
-import static com.booking.app.constants.DateFormatConstants.DATE_FORMAT_PATTERN;
 
 /**
  * Service implementation for finding popular routes.
@@ -74,7 +71,7 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
         return manager.findTickets(RequestTicketsDto.builder()
                 .departureCity(departureCity)
                 .arrivalCity(arrivalCity)
-                .departureDate(LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN)))
+                .departureDate(LocalDate.now())
                 .build(), null, language);
     }
 

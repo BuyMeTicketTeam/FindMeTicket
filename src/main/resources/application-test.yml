@@ -2,18 +2,17 @@ spring:
   datasource:
     password: postgres
     username: postgres
-    url: jdbc:postgresql://localhost:5432/db_ticket?
     hikari:
       schema: find_me_ticket_schema
+  liquibase:
+    change-log: classpath:/liquibase/master.yaml
+    liquibase-schema: find_me_ticket_schema
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: create-drop
     properties:
       hibernate:
-        show_sql: false
-        format_sql: false
+        show_sql: true
         default_schema: find_me_ticket_schema
         generate_statistics: false
         jdbc:
@@ -22,23 +21,6 @@ spring:
         order_inserts: true
 
 ##-------------------------
-## Logging level
-##-------------------------
-logging:
-  level:
-    ROOT: INFO
-    org:
-      springframework:
-        orm:
-          jpa: DEBUG
-        transaction: DEBUG
-        web: DEBUG
-        security: TRACE
-      hibernate: ERROR
-
-
-
-  ##-------------------------
   ## Email Sender configuration
   ##-------------------------
   mail:

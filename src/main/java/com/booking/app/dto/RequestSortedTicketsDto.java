@@ -2,12 +2,14 @@ package com.booking.app.dto;
 
 import com.booking.app.constants.SortCriteria;
 import com.booking.app.constants.SortType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Data
@@ -24,7 +26,8 @@ public class RequestSortedTicketsDto {
     private String arrivalCity;
 
     @Schema(description = "Date of departure in the format dd.MM.yyyy", example = "01.06.2024")
-    private String departureDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy")
+    private LocalDate departureDate;
 
     @Schema(description = "Sorting criteria", example = "price")
     private Map<SortCriteria, SortType> sortingBy;

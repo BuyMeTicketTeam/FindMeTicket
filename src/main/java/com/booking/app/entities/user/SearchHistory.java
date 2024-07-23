@@ -4,6 +4,7 @@ import com.booking.app.constants.TransportType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class SearchHistory {
     private Long arrivalCityId;
 
     @Column(name = "departure_date")
-    private String departureDate;
+    private LocalDate departureDate;
 
     @Column(name = "adding_time")
     @Builder.Default

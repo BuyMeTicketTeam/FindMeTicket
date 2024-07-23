@@ -6,8 +6,10 @@ import com.booking.app.constants.SortType;
 import com.booking.app.dto.RequestSortedTicketsDto;
 import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.Ticket;
+import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.RandomStringUtils;
@@ -25,10 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -54,6 +53,9 @@ public class TicketControllerTest {
     private TicketRepository ticketRepository;
 
     @Autowired
+    private RouteRepository routeRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     private MockMvc mvc;
@@ -67,6 +69,7 @@ public class TicketControllerTest {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     private void initData() {
@@ -80,6 +83,7 @@ public class TicketControllerTest {
 
         for (int i = 0; i < 100; i++) {
             tickets.add(Ticket.builder()
+                    .id(UUID.randomUUID())
                     .route(route)
                     .placeAt(RandomStringUtils.randomAlphabetic(20))
                     .placeFrom(RandomStringUtils.randomAlphabetic(20))
@@ -88,6 +92,7 @@ public class TicketControllerTest {
                     .carrier(RandomStringUtils.randomAlphabetic(10))
                     .build());
         }
+        routeRepository.save(route);
         ticketRepository.saveAll(tickets);
     }
 
@@ -102,7 +107,7 @@ public class TicketControllerTest {
             requestTicketsDto = RequestSortedTicketsDto.builder()
                     .arrivalCity(ARRIVAL_CITY)
                     .departureCity(DEPARTURE_CITY)
-                    .departureDate(LocalDate.now().toString())
+                    .departureDate(LocalDate.now())
                     .build();
 
         }
