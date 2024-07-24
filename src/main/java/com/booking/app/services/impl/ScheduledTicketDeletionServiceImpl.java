@@ -1,9 +1,10 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.repositories.RouteRepository;
-import com.booking.app.services.DeleteTicketService;
 import com.booking.app.services.PopularRoutesService;
+import com.booking.app.services.ScheduledTicketDeletionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class DeleteTicketServiceImpl implements DeleteTicketService {
+@Profile(value = "!test")
+public class ScheduledTicketDeletionServiceImpl implements ScheduledTicketDeletionService {
 
     private final RouteRepository routeRepository;
 

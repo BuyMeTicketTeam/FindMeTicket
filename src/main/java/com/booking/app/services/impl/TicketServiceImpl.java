@@ -61,8 +61,10 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<TicketDto> getSortedTickets(RequestSortedTicketsDto dto, String language) {
         List<Ticket> tickets = new ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate()).getTickets().stream().toList());
-
-        return ticketMapper.toTicketDtoList(TicketComparator.getSortedTickets(tickets, dto), language);
+        if (Objects.nonNull(dto.getSortingBy())) {
+            tickets = TicketComparator.sort(tickets, dto);
+        }
+        return ticketMapper.toTicketDtoList(tickets, language);
     }
 
     /**

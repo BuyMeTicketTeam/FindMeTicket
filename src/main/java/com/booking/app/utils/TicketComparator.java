@@ -24,7 +24,7 @@ public class TicketComparator {
             (Ticket t1, Ticket t2) -> (t1.getArrivalDateTime()).compareTo(t2.getArrivalDateTime());
 
 
-    public List<Ticket> getSortedTickets(List<Ticket> tickets, RequestSortedTicketsDto dto) {
+    public List<Ticket> sort(List<Ticket> tickets, RequestSortedTicketsDto dto) {
         tickets.sort(createCombinedComparator(dto));
         return tickets;
     }
