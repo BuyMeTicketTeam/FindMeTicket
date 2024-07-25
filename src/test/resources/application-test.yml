@@ -2,11 +2,10 @@ spring:
   datasource:
     password: postgres
     username: postgres
-    hikari:
-      schema: find_me_ticket_schema
+    schema: find_me_ticket_schema
   liquibase:
     change-log: classpath:/liquibase/master.yaml
-    liquibase-schema: find_me_ticket_schema
+    default-schema: find_me_ticket_schema
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -19,8 +18,10 @@ spring:
           batch_size: 100
         order_updates: true
         order_inserts: true
+    hibernate:
+      ddl-auto: none
 
-##-------------------------
+  ##-------------------------
   ## Email Sender configuration
   ##-------------------------
   mail:
@@ -84,3 +85,6 @@ link:
 #-------------------------
 api:
   currency-rate-key: ${CURRENCY_API_KEY}
+logging:
+  level:
+    liquibase: DEBUG

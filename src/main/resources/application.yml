@@ -65,7 +65,8 @@ spring:
   ##-------------------------
   liquibase:
     change-log: classpath:/liquibase/master.yaml
-    liquibase-schema: find_me_ticket_schema
+    default-schema: find_me_ticket_schema
+
   ##-------------------------
   ## Database configuration
   ##-------------------------
@@ -74,8 +75,7 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driverClassName: org.postgresql.Driver
-    hikari:
-      schema: find_me_ticket_schema
+    schema: find_me_ticket_schema
 
 ##-------------------------
 ## JWT Properties
