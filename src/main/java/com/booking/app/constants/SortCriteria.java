@@ -5,13 +5,13 @@ import lombok.Getter;
 @Getter
 public enum SortCriteria {
 
-    PRICE("Price"),
+    PRICE("price"),
 
-    DEPARTURE_TIME("DepartureTime"),
+    DEPARTURE_TIME("departureTime"),
 
-    ARRIVAL_TIME("ArrivalTime"),
+    ARRIVAL_TIME("arrivalTime"),
 
-    TRAVEL_TIME("TravelTime");
+    TRAVEL_TIME("travelTime");
 
     private final String criteria;
 
