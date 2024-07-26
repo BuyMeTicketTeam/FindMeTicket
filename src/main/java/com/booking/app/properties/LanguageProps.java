@@ -5,10 +5,12 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-@ConfigurationProperties("spring.datasource")
-@Getter
+@ConfigurationProperties("languages.files")
 @Setter
-public class DatabaseSchemaProps {
-    private String schema;
+@Getter
+public class LanguageProps {
+    private List<String> profiles;
 }

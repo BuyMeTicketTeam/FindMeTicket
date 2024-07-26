@@ -6,9 +6,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("spring.datasource")
-@Getter
+@ConfigurationProperties("security.jwt")
 @Setter
-public class DatabaseSchemaProps {
-    private String schema;
+@Getter
+public class JwtProps {
+    private String secret;
+    private Integer accessTokenExpirationMin;
+    private Integer refreshTokenExpirationMin;
 }

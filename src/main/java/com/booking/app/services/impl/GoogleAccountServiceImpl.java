@@ -4,6 +4,7 @@ import com.booking.app.dto.SocialLoginDto;
 import com.booking.app.entities.user.AuthProvider;
 import com.booking.app.entities.user.Role;
 import com.booking.app.entities.user.User;
+import com.booking.app.properties.ApiProps;
 import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.AuthProviderService;
 import com.booking.app.services.GoogleAccountService;
@@ -14,8 +15,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -27,7 +27,6 @@ import java.util.Optional;
  * This service provides functionality for handling Google OAuth login and user creation or update.
  */
 @Service
-@RequiredArgsConstructor
 public class GoogleAccountServiceImpl implements GoogleAccountService {
 
     private final RoleService roleService;
@@ -35,8 +34,15 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
 
     private final UserRepository userRepository;
 
-    @Value("${app.googleClientId}")
-    String clientId;
+    private final String clientId;
+
+    @Autowired
+    public GoogleAccountServiceImpl(RoleService roleService, AuthProviderService authProviderService, UserRepository userRepository, ApiProps apiProps) {
+        this.roleService = roleService;
+        this.authProviderService = authProviderService;
+        this.userRepository = userRepository;
+        this.clientId = apiProps.getGoogleClientId();
+    }
 
     private GoogleIdTokenVerifier verifier;
 

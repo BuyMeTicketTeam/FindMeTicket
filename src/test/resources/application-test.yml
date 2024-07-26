@@ -1,7 +1,9 @@
 spring:
   datasource:
-    password: postgres
-    username: postgres
+    url: jdbc:postgresql://localhost:5432/db_ticket?
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driverClassName: org.postgresql.Driver
     schema: find_me_ticket_schema
   liquibase:
     change-log: classpath:/liquibase/master.yaml
@@ -18,8 +20,6 @@ spring:
           batch_size: 100
         order_updates: true
         order_inserts: true
-    hibernate:
-      ddl-auto: none
 
   ##-------------------------
   ## Email Sender configuration
@@ -36,24 +36,6 @@ spring:
           starttls:
             enable: true
 
-
-##-------------------------
-## JWT Properties
-##-------------------------
-jwtSecret: ${JWT_SECRET}
-accessTokenExpirationMs: '1440'
-refreshTokenExpirationMs: '43200'
-##-------------------------
-## Language detection file-configurations
-##-------------------------
-languages: eng.txt, ua.txt
-
-#-------------------------
-# OAuth 2.0 configuration
-#-------------------------
-app:
-  googleClientId: ${GOOGLE_AUTH_KEY}
-
 #-------------------------
 # Encoding
 #-------------------------
@@ -66,25 +48,43 @@ server:
   error:
     include-message: always
 
+##-------------------------
+## JWT Properties
+##-------------------------
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpirationMin: '1440'
+    refreshTokenExpirationMin: '43200'
+
+##-------------------------
+## Language detection file-configurations
+##-------------------------
+languages:
+  files:
+    profiles: eng.txt, ua.txt
+
 #-------------------------
 # Third-party ticket's services
 #-------------------------
-link:
-  busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
-  busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
-  proizd-ua-bus: 'https://bus.proizd.ua/'
-  proizd-eng-bus: 'https://bus.proizd.ua/en'
-  infobus-ua-bus: 'https://infobus.eu/ua/bus'
-  infobus-eng-bus: 'https://infobus.eu/en/bus'
-  infobus-eng-train: 'https://infobus.eu/en/train'
-  infobus-ua-train: 'https://infobus.eu/ua/train'
-  proizd-eng-train: 'https://proizd.ua/en'
-  proizd-ua-train: 'https://proizd.ua/'
+ticket:
+  source:
+    uri:
+      busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+      busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
+      proizd-ua-bus: 'https://bus.proizd.ua/'
+      proizd-eng-bus: 'https://bus.proizd.ua/en'
+      infobus-ua-bus: 'https://infobus.eu/ua/bus'
+      infobus-eng-bus: 'https://infobus.eu/en/bus'
+      infobus-eng-train: 'https://infobus.eu/en/train'
+      infobus-ua-train: 'https://infobus.eu/ua/train'
+      proizd-eng-train: 'https://proizd.ua/en'
+      proizd-ua-train: 'https://proizd.ua/'
+
 #-------------------------
-# API Key Configuration
+# API keys
 #-------------------------
 api:
-  currency-rate-key: ${CURRENCY_API_KEY}
-logging:
-  level:
-    liquibase: DEBUG
+  key:
+    currency-rate: ${CURRENCY_API_KEY}
+    google-client-id: ${GOOGLE_AUTH_KEY}

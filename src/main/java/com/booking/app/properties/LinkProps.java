@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("link")
+@ConfigurationProperties("ticket.source.uri")
 @Setter
 @Getter
 public class LinkProps {

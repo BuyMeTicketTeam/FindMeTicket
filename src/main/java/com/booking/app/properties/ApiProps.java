@@ -6,9 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties("spring.datasource")
-@Getter
+@ConfigurationProperties("api.key")
 @Setter
-public class DatabaseSchemaProps {
-    private String schema;
+@Getter
+public class ApiProps {
+    private String currencyRate;
+    private String googleClientId;
 }
