@@ -50,7 +50,7 @@ public class SchemaInitializationConfiguration {
                 log.info("Going to create DB schema '{}' if not exists.", schemaName);
                 statement.execute("create schema if not exists " + schemaName);
             } catch (SQLException e) {
-                throw new RuntimeException("Failed to create schema '" + schemaName + "'", e);
+                throw new RuntimeException("Failed to create schema '" + schemaName + "'", e.getCause());
             }
         }
     }

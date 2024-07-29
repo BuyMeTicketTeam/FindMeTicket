@@ -34,7 +34,7 @@ spring:
   ## Database configuration
   ##-------------------------
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_ticket?
+    url: jdbc:postgresql://db-postgres:5432/db_ticket?
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driverClassName: org.postgresql.Driver
