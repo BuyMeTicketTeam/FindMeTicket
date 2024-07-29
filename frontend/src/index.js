@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { store } from './store/store';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { store } from "./redux/store/store";
+import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
@@ -13,7 +13,7 @@ root.render(
         <App />
       </GoogleOAuthProvider>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
 
 // I left this to use in the future for optimization.

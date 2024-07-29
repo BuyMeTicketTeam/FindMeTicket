@@ -1,16 +1,16 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-len */
-import React, { useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Header from './common/Header';
-import useAuthCheck from './hook/useAuthCheck';
-import Routers from './routers';
-import CookieBanner from './cookieBanner/cookie';
-import './testServer';
+import React, { useState } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import Header from "./common/Header";
+import useAuthCheck from "./hook/useAuthCheck";
+import Routers from "./components/routers/index";
+import CookieBanner from "./components/cookieBanner/cookie";
+import "./testServer";
 // import Footer from './footer';
-import './App.scss';
-import './locales/i18n';
-import ScrollButton from './scrollButton';
+import "./App.scss";
+import "./locales/i18n";
+import ScrollButton from "./components/scrollButton/index";
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();

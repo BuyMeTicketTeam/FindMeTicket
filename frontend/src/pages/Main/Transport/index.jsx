@@ -1,23 +1,25 @@
 /* eslint-disable no-useless-concat */
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useDispatch, useSelector } from "react-redux";
 
-import { setTransportType } from '../../../store/tickets/ticketsSlice';
+import { setTransportType } from "../../../redux/store/tickets/ticketsSlice";
 
-import InProgress from '../../../InProgress/index';
-import TransportButton from '../TransportBtn';
+import InProgress from "../../../components/InProgress/index";
+import TransportButton from "../TransportBtn";
 
-import './transport.scss';
+import "./transport.scss";
 import {
-  busIcon, trainIcon, everythingIcon, planeIcon, boatIcon,
-} from '../../../images/transport-img/img';
+  busIcon,
+  trainIcon,
+  everythingIcon,
+  planeIcon,
+  boatIcon,
+} from "../../../images/transport-img/img";
 
-function Transport({
-  loading,
-}) {
+function Transport({ loading }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useTranslation('translation', { keyPrefix: 'transport' });
+  const { t } = useTranslation("translation", { keyPrefix: "transport" });
   const dispatch = useDispatch();
   const { bus, train } = useSelector((state) => state.tickets);
 
@@ -26,41 +28,54 @@ function Transport({
   return (
     <div>
       <TransportButton
-        label={t('everything')}
+        label={t("everything")}
         isActive={bus && train}
-        onClick={() => { handleButtonClick('all'); }}
+        onClick={() => {
+          handleButtonClick("all");
+        }}
         img={everythingIcon}
         loading={loading}
       />
       <TransportButton
-        label={t('bus')}
+        label={t("bus")}
         isActive={bus && !train}
-        onClick={() => { handleButtonClick('bus'); }}
+        onClick={() => {
+          handleButtonClick("bus");
+        }}
         img={busIcon}
         loading={loading}
       />
       <TransportButton
-        label={t('train')}
+        label={t("train")}
         isActive={train && !bus}
-        onClick={() => { handleButtonClick('train'); }}
+        onClick={() => {
+          handleButtonClick("train");
+        }}
         img={trainIcon}
         loading={loading}
       />
       <TransportButton
-        label={t('plane')}
+        label={t("plane")}
         onClick={() => setIsOpen(true)}
         img={planeIcon}
         loading={loading}
         disabled
       />
       <TransportButton
-        label={t('ferry')}
+        label={t("ferry")}
         onClick={() => setIsOpen(true)}
         img={boatIcon}
         loading={loading}
         disabled
       />
-      {isOpen && <InProgress title={t('message-title')} text={t('message-text')} open={isOpen} closeModal={() => setIsOpen(false)} />}
+      {isOpen && (
+        <InProgress
+          title={t("message-title")}
+          text={t("message-text")}
+          open={isOpen}
+          closeModal={() => setIsOpen(false)}
+        />
+      )}
     </div>
   );
 }

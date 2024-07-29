@@ -1,13 +1,11 @@
-import React from 'react';
-import Popup from 'reactjs-popup';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import Popup from "reactjs-popup";
+import { useTranslation } from "react-i18next";
 
-import './inProgress.scss';
+import "./inProgress.scss";
 
-export default function Index({
-  open, closeModal, title, text,
-}) {
-  const { t } = useTranslation('translation', { keyPrefix: 'in-progress' });
+export default function Index({ open, closeModal, title, text }) {
+  const { t } = useTranslation("translation", { keyPrefix: "in-progress" });
 
   return (
     <Popup open={open} onClose={closeModal} position="right center">
@@ -23,12 +21,8 @@ export default function Index({
             />
           </div>
           <p className="message__text">{text}</p>
-          <button
-            type="button"
-            className="button"
-            onClick={closeModal}
-          >
-            {t('ok')}
+          <button type="button" className="button" onClick={closeModal}>
+            {t("ok")}
           </button>
         </div>
       </div>

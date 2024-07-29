@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import './loader.scss';
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "./loader.scss";
 
 export default function Loader() {
-  const [animation, setAnimation] = useState('first');
-  const { t } = useTranslation('translation', { keyPrefix: 'loading' });
+  const [animation, setAnimation] = useState("first");
+  const { t } = useTranslation("translation", { keyPrefix: "loading" });
 
   function changeText() {
     switch (animation) {
-      case 'first':
-        setAnimation('second');
+      case "first":
+        setAnimation("second");
         break;
-      case 'second':
-        setAnimation('third');
+      case "second":
+        setAnimation("third");
         break;
-      case 'third':
-        setAnimation('fourth');
+      case "third":
+        setAnimation("fourth");
         break;
-      case 'fourth':
-        setAnimation('fifth');
+      case "fourth":
+        setAnimation("fifth");
         break;
       default:
-        setAnimation('first');
+        setAnimation("first");
         break;
     }
   }
@@ -36,11 +36,11 @@ export default function Loader() {
       <div className="truck-wrapper">
         <div className="loader__text-wrapper">
           <ul className={`loader__inner-text ${animation}`}>
-            <li>{t('text-our-service')}</li>
-            <li>{t('text-thanks')}</li>
-            <li>{t('text-wait')}</li>
-            <li>{t('text-almost')}</li>
-            <li>{t('text-tourist-places')}</li>
+            <li>{t("text-our-service")}</li>
+            <li>{t("text-thanks")}</li>
+            <li>{t("text-wait")}</li>
+            <li>{t("text-almost")}</li>
+            <li>{t("text-tourist-places")}</li>
           </ul>
         </div>
         <div className="truck">

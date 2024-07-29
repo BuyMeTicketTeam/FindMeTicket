@@ -1,17 +1,17 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import { setSorting } from '../../../store/tickets/ticketsSlice';
+import { setSorting } from "../../../redux/store/tickets/ticketsSlice";
 
-import FiltersBtn from './FiltersBtn';
+import FiltersBtn from "./FiltersBtn";
 
-import './filters.scss';
+import "./filters.scss";
 
 export default function Filters({ loading }) {
   const { sortBy, ascending } = useSelector((state) => state.tickets);
   const dispatch = useDispatch();
 
-  const filtersBtn = ['Price', 'TravelTime', 'DepartureTime', 'ArrivalTime'];
+  const filtersBtn = ["Price", "TravelTime", "DepartureTime", "ArrivalTime"];
 
   function handleSort(sortType) {
     if (sortBy === sortType) {

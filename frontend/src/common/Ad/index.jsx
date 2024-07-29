@@ -1,13 +1,13 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import './ad.scss';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import "./ad.scss";
 
 export default function Index() {
-  const { t } = useTranslation('translation', { keyPrefix: 'ad' });
+  const { t } = useTranslation("translation", { keyPrefix: "ad" });
   return (
     <div className="ad-container">
-      <div className="ad-text">{t('title')}</div>
-      <div className="contact-email">{t('email')}</div>
+      <div className="ad-text">{t("title")}</div>
+      <div className="contact-email">{t("email")}</div>
     </div>
   );
 }

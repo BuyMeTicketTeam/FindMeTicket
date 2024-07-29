@@ -1,10 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React from "react";
 
-import './checkbox.scss';
+import "./checkbox.scss";
 
 export default function Checkbox({
-  children, error, errorMessage, dataTestid, id, otherProps,
+  children,
+  error,
+  errorMessage,
+  dataTestid,
+  id,
+  otherProps,
 }) {
   return (
     <div className="checkbox">
@@ -12,11 +17,17 @@ export default function Checkbox({
         data-testid={dataTestid}
         id={id}
         type="checkbox"
-        className={error ? 'checkbox__input checkbox_error' : 'checkbox__input'}
+        className={error ? "checkbox__input checkbox_error" : "checkbox__input"}
         {...otherProps}
       />
-      <label htmlFor={id} className="checkbox__label">{children}</label>
-      {error && <p data-testid="error" className="checkbox__error input-error">{errorMessage}</p>}
+      <label htmlFor={id} className="checkbox__label">
+        {children}
+      </label>
+      {error && (
+        <p data-testid="error" className="checkbox__error input-error">
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }

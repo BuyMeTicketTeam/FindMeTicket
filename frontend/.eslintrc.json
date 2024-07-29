@@ -8,7 +8,8 @@
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
         "plugin:import/recommended",
-        "airbnb"
+        "airbnb",
+        "prettier"
     ],
     "parserOptions": {
         "ecmaVersion": "latest",
