@@ -1,11 +1,12 @@
 package com.booking.app.services.impl.scraper.bus;
 
 import com.booking.app.constants.SiteConstants;
-import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.dto.tickets.UrlAndPriceDTO;
 import com.booking.app.entities.ticket.Route;
+import com.booking.app.entities.ticket.Ticket;
 import com.booking.app.entities.ticket.bus.BusInfo;
 import com.booking.app.entities.ticket.bus.BusTicket;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import com.booking.app.mappers.BusMapper;
 import com.booking.app.properties.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
@@ -53,40 +54,11 @@ public class BusforBusServiceImpl implements ScraperService {
 
     private static final String DIV_TICKET_NOT_FOUND = "div.Style__EmptyTitle-xljhz5-2.iBjiPF";
 
-    @Async
-    @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws IOException {
-
-        WebDriver driver = webDriverFactory.createInstance();
-
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-            String url = determineBaseUri(language);
-            String fulfilledUrl = String.format(url, route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate());
-
-            driver.get(fulfilledUrl);
-
-            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
-
-            waitForTickets(driver);
-
-            List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
-
-            processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait, emitterNotExpired);
-            return CompletableFuture.completedFuture(true);
-        } catch (Exception e) {
-            log.error("Error in BUSFOR BUS service: " + e.getMessage());
-            return CompletableFuture.completedFuture(false);
-        } finally {
-            driver.quit();
-        }
-    }
-
-    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> tickets, WebDriverWait wait, WebDriver driver, MutableBoolean emitterNotExpired) throws IOException {
+    private static void processTicketInfo(SseEmitter emitter, Ticket ticket, String language, List<WebElement> tickets, WebDriverWait wait, WebDriver driver, MutableBoolean emitterNotExpired) throws IOException {
         log.info("Bus tickets on busfor: " + tickets.size());
         BigDecimal currentUAH = null;
-
-        BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
+        BusTicket busTicket = (BusTicket) ticket;
+        BusInfo priceInfo = busTicket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.BUSFOR_UA)).findFirst().get();
 
         if (language.equals("eng"))
             currentUAH = ExchangeRateUtils.getCurrentExchangeRate("PLN", "UAH");
@@ -129,6 +101,35 @@ public class BusforBusServiceImpl implements ScraperService {
                         .build()));
             }
         } else log.info("BUSFOR URL NOT FOUND");
+    }
+
+    @Async
+    @Override
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) {
+
+        WebDriver driver = webDriverFactory.createInstance();
+
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            String url = determineBaseUri(language);
+            String fulfilledUrl = String.format(url, route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate());
+
+            driver.get(fulfilledUrl);
+
+            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+
+            waitForTickets(driver);
+
+            List<WebElement> tickets = driver.findElements(By.cssSelector(DIV_TICKET));
+
+            processScrapedTickets(emitter, route, language, doShow, tickets, driver, wait, emitterNotExpired);
+            return CompletableFuture.completedFuture(true);
+        } catch (Exception e) {
+            log.error("Error in BUSFOR BUS service: " + e.getMessage());
+            return CompletableFuture.completedFuture(false);
+        } finally {
+            driver.quit();
+        }
     }
 
     private static void waitForTickets(WebDriver driver) {
@@ -262,7 +263,7 @@ public class BusforBusServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, Ticket ticket, String language, MutableBoolean emitterNotExpired) throws IOException {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));

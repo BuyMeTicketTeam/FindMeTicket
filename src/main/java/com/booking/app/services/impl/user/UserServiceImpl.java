@@ -1,13 +1,13 @@
 package com.booking.app.services.impl.user;
 
-import com.booking.app.dto.CodeConfirmationDto;
-import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.users.CodeConfirmationDto;
+import com.booking.app.dto.users.RegistrationDTO;
 import com.booking.app.entities.user.AuthProvider;
 import com.booking.app.entities.user.ConfirmationCode;
 import com.booking.app.entities.user.Role;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.user.UserNotConfirmedException;
-import com.booking.app.exceptions.user.UserNotFoundException;
+import com.booking.app.exceptions.notfound.UserNotConfirmedException;
+import com.booking.app.exceptions.notfound.UserNotFoundException;
 import com.booking.app.repositories.ProviderRepository;
 import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserRepository;

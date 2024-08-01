@@ -33,7 +33,7 @@ public class ScheduledTicketDeletionServiceImpl implements ScheduledTicketDeleti
 
         routeRepository.deleteRouteByAddingTimeBefore(fifteenMinutesAgo);
 
-        popularRoutesService.findRoutes();
+//        popularRoutesService.findRoutes();
     }
 
 }

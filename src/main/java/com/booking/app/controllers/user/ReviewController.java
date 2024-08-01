@@ -2,10 +2,10 @@ package com.booking.app.controllers.user;
 
 import com.booking.app.annotations.GlobalApiResponses;
 import com.booking.app.constants.ApiMessagesConstants;
-import com.booking.app.dto.CreateReviewDto;
-import com.booking.app.dto.ReviewDto;
+import com.booking.app.dto.ErrorDetailsDto;
+import com.booking.app.dto.users.CreateReviewDto;
+import com.booking.app.dto.users.ReviewDto;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.ErrorDetailsDto;
 import com.booking.app.services.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

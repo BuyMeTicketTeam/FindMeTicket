@@ -2,11 +2,11 @@ package com.booking.app.controllers.auth;
 
 import com.booking.app.annotations.GlobalApiResponses;
 import com.booking.app.constants.ApiMessagesConstants;
-import com.booking.app.dto.AuthenticatedUserDto;
-import com.booking.app.dto.BasicLoginDto;
-import com.booking.app.dto.SocialLoginDto;
+import com.booking.app.dto.ErrorDetailsDto;
+import com.booking.app.dto.users.AuthenticatedUserDto;
+import com.booking.app.dto.users.BasicLoginDto;
+import com.booking.app.dto.users.SocialLoginDto;
 import com.booking.app.entities.user.AuthProvider;
-import com.booking.app.exceptions.ErrorDetailsDto;
 import com.booking.app.services.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -1,7 +1,7 @@
 package com.booking.app.constants.converters;
 
 import com.booking.app.constants.ContentLanguage;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

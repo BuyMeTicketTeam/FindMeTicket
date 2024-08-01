@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.users.RegistrationDTO;
 import jakarta.mail.MessagingException;
 import org.springframework.validation.annotation.Validated;
 

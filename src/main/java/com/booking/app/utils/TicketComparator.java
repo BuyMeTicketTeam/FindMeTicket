@@ -2,9 +2,9 @@ package com.booking.app.utils;
 
 import com.booking.app.constants.SortCriteria;
 import com.booking.app.constants.SortType;
-import com.booking.app.dto.RequestSortedTicketsDto;
+import com.booking.app.dto.tickets.RequestSortedTicketsDto;
 import com.booking.app.entities.ticket.Ticket;
-import com.booking.app.exception.exception.UndefinedSortingCriteriaException;
+import com.booking.app.exceptions.badrequest.UndefinedSortingCriteriaException;
 import lombok.experimental.UtilityClass;
 
 import java.util.Comparator;

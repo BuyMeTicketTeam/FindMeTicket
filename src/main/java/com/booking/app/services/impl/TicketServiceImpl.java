@@ -1,8 +1,8 @@
 package com.booking.app.services.impl;
 
-import com.booking.app.dto.RequestSortedTicketsDto;
-import com.booking.app.dto.RequestTicketsDto;
-import com.booking.app.dto.TicketDto;
+import com.booking.app.dto.tickets.RequestSortedTicketsDto;
+import com.booking.app.dto.tickets.RequestTicketsDto;
+import com.booking.app.dto.tickets.ResponseTicketDto;
 import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.Ticket;
 import com.booking.app.mappers.BusMapper;
@@ -45,7 +45,7 @@ public class TicketServiceImpl implements TicketService {
     TicketMapper ticketMapper;
 
     @Override
-    public <T extends TicketDto> Optional<List<T>> getTickets(RequestTicketsDto dto) throws IOException {
+    public <T extends ResponseTicketDto> Optional<List<T>> getTickets(RequestTicketsDto dto) throws IOException {
         Route route = findRoute(dto);
 
         if (Objects.nonNull(route)) {
@@ -59,7 +59,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<TicketDto> getSortedTickets(RequestSortedTicketsDto dto, String language) {
+    public List<ResponseTicketDto> getSortedTickets(RequestSortedTicketsDto dto, String language) {
         List<Ticket> tickets = new ArrayList<>(routeRepository.findByDepartureCityAndArrivalCityAndDepartureDate(dto.getDepartureCity(), dto.getArrivalCity(), dto.getDepartureDate()).getTickets().stream().toList());
         if (Objects.nonNull(dto.getSortingBy())) {
             tickets = TicketComparator.sort(tickets, dto);
@@ -76,7 +76,7 @@ public class TicketServiceImpl implements TicketService {
      * @param language  the language for the ticket details
      * @param <T>       the type of ticket DTO
      */
-    private <T extends TicketDto> void addTicketsToDto(RequestTicketsDto dto, Route route, List<T> ticketDto, String language) {
+    private <T extends ResponseTicketDto> void addTicketsToDto(RequestTicketsDto dto, Route route, List<T> ticketDto, String language) {
         if (Boolean.TRUE.equals(dto.getBus())) {
             busTicketRepository.findByRoute(route)
                     .ifPresent(busTickets -> busTickets.forEach(bus -> ticketDto.add((T) busMapper.ticketToTicketDto(bus, language))));

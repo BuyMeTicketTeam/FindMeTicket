@@ -1,11 +1,12 @@
 package com.booking.app.services.impl.scraper.bus;
 
 import com.booking.app.constants.SiteConstants;
-import com.booking.app.dto.UrlAndPriceDTO;
+import com.booking.app.dto.tickets.UrlAndPriceDTO;
 import com.booking.app.entities.ticket.Route;
+import com.booking.app.entities.ticket.Ticket;
 import com.booking.app.entities.ticket.bus.BusInfo;
 import com.booking.app.entities.ticket.bus.BusTicket;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import com.booking.app.mappers.BusMapper;
 import com.booking.app.properties.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
@@ -51,9 +52,43 @@ public class ProizdBusServiceImpl implements ScraperService {
 
     private static final String DIV_TICKET_NOT_FOUND = "div.error.card";
 
+    private static void processTicketInfo(SseEmitter emitter, Ticket ticket, String language, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
+        BusTicket busTicket = (BusTicket) ticket;
+        BusInfo priceInfo = busTicket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
+
+        log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
+        for (WebElement element : elements) {
+
+            String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
+            if (language.equals("ua")) price = price.replace("ГРН", "");
+            else price = price.replace("UAH", "");
+
+
+            String departureTime = element.findElements(By.cssSelector("div.trip__time")).get(0).getText();
+            String arrivalTime = element.findElements(By.cssSelector("div.trip__time")).get(1).getText();
+
+            if (ticket.getDepartureTime().equals(LocalTime.parse(departureTime)) &&
+                    ticket.getArrivalDateTime().equals(Instant.parse(arrivalTime)) &&
+                    priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
+                priceInfo.setLink(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
+                log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
+                break;
+            }
+        }
+
+        if (priceInfo.getLink() != null) {
+            if (emitterNotExpired.booleanValue()) {
+                emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(UrlAndPriceDTO.builder()
+                        .price(priceInfo.getPrice())
+                        .url(priceInfo.getLink())
+                        .build()));
+            }
+        } else log.info("PROIZD URL NOT FOUND");
+    }
+
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -78,28 +113,6 @@ public class ProizdBusServiceImpl implements ScraperService {
             driver.quit();
         }
 
-    }
-
-    @Async
-    @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
-        WebDriver driver = webDriverFactory.createInstance();
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-
-        Route route = ticket.getRoute();
-        String url = determineBaseUri(language);
-        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
-
-        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
-
-        waitForTickets(driver);
-
-        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
-        processTicketInfo(emitter, ticket, language, elements, emitterNotExpired);
-
-        driver.quit();
-        return CompletableFuture.completedFuture(true);
     }
 
     private static void waitForTickets(WebDriver driver) {
@@ -142,38 +155,26 @@ public class ProizdBusServiceImpl implements ScraperService {
         }
     }
 
-    private static void processTicketInfo(SseEmitter emitter, BusTicket ticket, String language, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
+    @Async
+    @Override
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, Ticket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
+        WebDriver driver = webDriverFactory.createInstance();
 
-        BusInfo priceInfo = ticket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
-        log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
-        for (WebElement element : elements) {
+        Route route = ticket.getRoute();
+        String url = determineBaseUri(language);
+        requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, url, language);
 
-            String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
-            if (language.equals("ua")) price = price.replace("ГРН", "");
-            else price = price.replace("UAH", "");
+        if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
+        waitForTickets(driver);
 
-            String departureTime = element.findElements(By.cssSelector("div.trip__time")).get(0).getText();
-            String arrivalTime = element.findElements(By.cssSelector("div.trip__time")).get(1).getText();
+        List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+        processTicketInfo(emitter, ticket, language, elements, emitterNotExpired);
 
-            if (ticket.getDepartureTime().equals(LocalTime.parse(departureTime)) &&
-                    ticket.getArrivalDateTime().equals(Instant.parse(arrivalTime)) &&
-                    priceInfo.getPrice().compareTo(new BigDecimal(price)) == 0) {
-                priceInfo.setLink(element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
-                log.info("PROIZD URL: " + element.findElement(By.cssSelector("a.btn")).getAttribute("href"));
-                break;
-            }
-        }
-
-        if (priceInfo.getLink() != null) {
-            if (emitterNotExpired.booleanValue()) {
-                emitter.send(SseEmitter.event().name(SiteConstants.PROIZD_UA).data(UrlAndPriceDTO.builder()
-                        .price(priceInfo.getPrice())
-                        .url(priceInfo.getLink())
-                        .build()));
-            }
-        } else log.info("PROIZD URL NOT FOUND");
+        driver.quit();
+        return CompletableFuture.completedFuture(true);
     }
 
     private String determineBaseUri(String language) {

@@ -1,6 +1,6 @@
 package com.booking.app.mappers;
 
-import com.booking.app.dto.RequestTicketsDto;
+import com.booking.app.dto.tickets.RequestTicketsDto;
 import com.booking.app.entities.ticket.Route;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -11,6 +11,7 @@ import org.mapstruct.MappingConstants;
 public interface RouteMapper {
 
     @Mapping(target = "addingTime", expression = "java(java.time.Instant.now())")
-    Route toRoute(RequestTicketsDto requestTicketsDTO);
+    Route toRoute(RequestTicketsDto dto);
+
 
 }

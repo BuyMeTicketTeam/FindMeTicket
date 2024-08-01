@@ -1,6 +1,6 @@
 package com.booking.app.mappers;
 
-import com.booking.app.dto.TicketDto;
+import com.booking.app.dto.tickets.ResponseTicketDto;
 import com.booking.app.entities.ticket.Ticket;
 import org.mapstruct.*;
 
@@ -73,10 +73,10 @@ public interface TicketMapper {
     @Mapping(source = "arrivalDateTime", target = "arrivalDate", qualifiedByName = "arrivalDateFormatter")
     @Mapping(source = "arrivalDateTime", target = "arrivalTime", qualifiedByName = "arrivalTimeFormatter")
     @Named("ticketToTicketDto")
-    TicketDto ticketToTicketDto(Ticket ticket, @Context String language);
+    ResponseTicketDto ticketToTicketDto(Ticket ticket, @Context String language);
 
     @IterableMapping(qualifiedByName = "ticketToTicketDto")
-    List<TicketDto> toTicketDtoList(List<Ticket> ticketList, @Context String language);
+    List<ResponseTicketDto> toTicketDtoList(List<Ticket> ticketList, @Context String language);
 
 
 }

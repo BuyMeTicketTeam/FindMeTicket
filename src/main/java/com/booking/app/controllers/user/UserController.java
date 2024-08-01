@@ -2,8 +2,8 @@ package com.booking.app.controllers.user;
 
 import com.booking.app.annotations.GlobalApiResponses;
 import com.booking.app.constants.ApiMessagesConstants;
+import com.booking.app.dto.ErrorDetailsDto;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.ErrorDetailsDto;
 import com.booking.app.services.UserService;
 import com.booking.app.utils.CookieUtils;
 import io.swagger.v3.oas.annotations.Operation;

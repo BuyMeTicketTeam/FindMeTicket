@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name ="route")
+@Table(name = "route")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,7 +34,7 @@ public class Route {
     @Column(name = "adding_time")
     private Instant addingTime;
 
-    @OneToMany(mappedBy = "route" ,fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     @Builder.Default
     private Set<Ticket> tickets = Sets.newConcurrentHashSet();
 

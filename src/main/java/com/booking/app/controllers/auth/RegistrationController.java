@@ -2,8 +2,8 @@ package com.booking.app.controllers.auth;
 
 import com.booking.app.annotations.GlobalApiResponses;
 import com.booking.app.constants.ContentLanguage;
-import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.exceptions.ErrorDetailsDto;
+import com.booking.app.dto.ErrorDetailsDto;
+import com.booking.app.dto.users.RegistrationDTO;
 import com.booking.app.services.RegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

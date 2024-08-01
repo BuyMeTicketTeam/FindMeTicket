@@ -1,7 +1,7 @@
 package com.booking.app.annotations.validators;
 
 import com.booking.app.annotations.PasswordMatches;
-import com.booking.app.exceptions.user.PasswordNotMatchesException;
+import com.booking.app.exceptions.badrequest.PasswordNotMatchesException;
 import com.booking.app.utils.ConfirmPasswordUtils;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

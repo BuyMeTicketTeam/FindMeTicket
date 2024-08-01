@@ -1,7 +1,7 @@
 package com.booking.app.services.impl.scraper.train;
 
 import com.booking.app.entities.ticket.Route;
-import com.booking.app.entities.ticket.bus.BusTicket;
+import com.booking.app.entities.ticket.Ticket;
 import com.booking.app.mappers.BusMapper;
 import com.booking.app.properties.LinkProps;
 import com.booking.app.repositories.BusTicketRepository;
@@ -48,7 +48,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doShow, MutableBoolean emitterNotExpired) {
         WebDriver driver = webDriverFactory.createInstance();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
@@ -176,7 +176,7 @@ public class GdticketsScraperServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, Ticket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
         throw new java.lang.UnsupportedOperationException();
     }
 

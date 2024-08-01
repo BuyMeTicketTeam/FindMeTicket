@@ -1,7 +1,7 @@
 package com.booking.app.constants.converters;
 
 import com.booking.app.entities.user.AuthProvider;
-import com.booking.app.exceptions.user.InvalidSocialProviderException;
+import com.booking.app.exceptions.badrequest.InvalidSocialProviderException;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

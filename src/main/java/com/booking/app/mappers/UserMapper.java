@@ -1,9 +1,9 @@
 package com.booking.app.mappers;
 
-import com.booking.app.dto.BasicLoginDto;
-import com.booking.app.dto.EmailDto;
-import com.booking.app.dto.RegistrationDTO;
-import com.booking.app.dto.UserDTO;
+import com.booking.app.dto.users.BasicLoginDto;
+import com.booking.app.dto.users.EmailDto;
+import com.booking.app.dto.users.RegistrationDTO;
+import com.booking.app.dto.users.UserDTO;
 import com.booking.app.entities.user.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
