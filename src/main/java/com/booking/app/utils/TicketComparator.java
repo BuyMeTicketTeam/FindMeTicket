@@ -7,6 +7,8 @@ import com.booking.app.entities.ticket.Ticket;
 import com.booking.app.exception.exception.UndefinedSortingCriteriaException;
 import lombok.experimental.UtilityClass;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,10 @@ public class TicketComparator {
     private static final Comparator<Ticket> compareByDepartureTime =
             (Ticket t1, Ticket t2) -> (t1.getDepartureTime()).compareTo(t2.getDepartureTime());
     private static final Comparator<Ticket> compareByArrivalTime =
-            (Ticket t1, Ticket t2) -> (t1.getArrivalDateTime()).compareTo(t2.getArrivalDateTime());
+            (Ticket t1, Ticket t2) ->
+                    (LocalDateTime.ofInstant(t1.getArrivalDateTime(), ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0))
+                            .compareTo(
+                                    LocalDateTime.ofInstant(t2.getArrivalDateTime(), ZoneId.systemDefault()).toLocalTime().withSecond(0).withNano(0));
 
 
     public List<Ticket> sort(List<Ticket> tickets, RequestSortedTicketsDto dto) {

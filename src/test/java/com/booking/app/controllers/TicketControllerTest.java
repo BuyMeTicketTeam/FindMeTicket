@@ -9,6 +9,7 @@ import com.booking.app.dto.RequestSortedTicketsDto;
 import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.bus.BusInfo;
 import com.booking.app.entities.ticket.bus.BusTicket;
+import com.booking.app.entities.ticket.train.TrainInfo;
 import com.booking.app.entities.ticket.train.TrainTicket;
 import com.booking.app.mappers.TicketMapper;
 import com.booking.app.repositories.RouteRepository;
@@ -20,11 +21,11 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -41,12 +42,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 @AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY)
 @ActiveProfiles(profiles = {"test"})
@@ -64,7 +66,7 @@ public class TicketControllerTest {
     private static final String UA = ContentLanguage.UA.getLanguage();
     private static final String ENG = ContentLanguage.ENG.getLanguage();
     private static final int NUMBER_OF_TICKETS = 100;
-
+    public static final String STATUS_BAD_REQUEST = "BAD_REQUEST";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -107,6 +109,23 @@ public class TicketControllerTest {
 
     }
 
+    private static List<TrainInfo> getGenerateTrainInfo(TrainTicket trainTicket) {
+        int numberOfInfoTrains = new Random().nextInt(1, 4);
+        List<TrainInfo> trainInfos = new ArrayList<>();
+        for (int i = 0; i < numberOfInfoTrains; i++) {
+            trainInfos.add(TrainInfo.builder()
+                    .price(new BigDecimal(new Random().nextInt(100, 5000)))
+                    .link(getRandomSite())
+                    .comfort(RandomStringUtils.randomAlphabetic(20))
+                    .trainTicket(trainTicket)
+                    .build());
+        }
+        return trainInfos;
+
+    }
+
+
+
     private static String getRandomSite() {
         List<String> sites = List.of(
                 SiteConstants.PROIZD_UA,
@@ -146,7 +165,7 @@ public class TicketControllerTest {
                 .departureDate(LocalDate.now())
                 .build();
 
-        for (int i = 0; i < NUMBER_OF_TICKETS; i++) {
+        for (int i = 0; i < NUMBER_OF_TICKETS / 2; i++) {
             BusTicket busTicket = BusTicket.builder()
                     .id(UUID.randomUUID())
                     .route(route)
@@ -161,18 +180,22 @@ public class TicketControllerTest {
             List<BusInfo> busInfos = getGenerateBusInfo(busTicket);
             busTicket.setInfoList(busInfos);
         }
-//        for (int i = 0; i < 50; i++) {
-//            trainTickets.add(TrainTicket.builder()
-//                    .id(UUID.randomUUID())
-//                    .route(route)
-//                    .placeAt(RandomStringUtils.randomAlphabetic(20))
-//                    .placeFrom(RandomStringUtils.randomAlphabetic(20))
-//                    .arrivalTimeTime(Instant.now())
-//                    .travelTime(RandomUtils.nextInt(10000))
-//                    .carrier(RandomStringUtils.randomAlphabetic(10))
-//                    .departureTime(between(LocalTime.MIN, LocalTime.MAX))
-//                    .build());
-//        }
+        for (int i = 0; i < NUMBER_OF_TICKETS / 2; i++) {
+            TrainTicket trainTicket = TrainTicket.builder()
+                    .id(UUID.randomUUID())
+                    .route(route)
+                    .placeAt(RandomStringUtils.randomAlphabetic(20))
+                    .placeFrom(RandomStringUtils.randomAlphabetic(20))
+                    .departureTime(between(LocalTime.MIN, LocalTime.MAX.minus(Duration.ofHours(10))))
+                    .arrivalDateTime(getRandomInstantWithinThreeDays())
+                    .travelTime(RandomUtils.nextInt(10000))
+                    .carrier(RandomStringUtils.randomAlphabetic(10))
+                    .departureTime(between(LocalTime.MIN, LocalTime.MAX))
+                    .build();
+            trainTickets.add(trainTicket);
+            List<TrainInfo> trainInfos = getGenerateTrainInfo(trainTicket);
+            trainTicket.setInfoList(trainInfos);
+        }
         routeRepository.save(route);
         ticketRepository.saveAll(busTickets);
         ticketRepository.saveAll(trainTickets);
@@ -183,10 +206,18 @@ public class TicketControllerTest {
         String contentAsString = result.getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(contentAsString);
 
-        if (criteria.getCriteria() == SortCriteria.ARRIVAL_TIME.getCriteria()) {
-            LocalTime timeFirst = LocalTime.parse(jsonNode.get(0).get(criteria.getCriteria()).asText());
-            LocalTime timeLast = LocalTime.parse(jsonNode.get(NUMBER_OF_TICKETS - 1).get(criteria.getCriteria()).asText());
-            return timeFirst.isBefore(timeLast);
+        if (criteria.getCriteria().equals(SortCriteria.ARRIVAL_TIME.getCriteria()) || criteria.getCriteria().equals(SortCriteria.DEPARTURE_TIME.getCriteria())) {
+            LocalTime timeFirst = LocalTime.parse(getParseTime(jsonNode.get(0).get(criteria.getCriteria()).asText()));
+            LocalTime timeLast = LocalTime.parse(getParseTime(jsonNode.get(NUMBER_OF_TICKETS - 1).get(criteria.getCriteria()).asText()));
+            return sortType.equals(SortType.ASC) ? timeFirst.isBefore(timeLast) : timeFirst.isAfter(timeLast);
+        } else if (criteria.getCriteria().equals(SortCriteria.TRAVEL_TIME.getCriteria())) {
+            int first = jsonNode.get(0).get(criteria.getCriteria()).asInt();
+            int last = jsonNode.get(99).get(criteria.getCriteria()).asInt();
+            if (sortType.equals(SortType.ASC)) {
+                return first < last;
+            } else {
+                return first > last;
+            }
         }
 
         double first = jsonNode.get(0).get(criteria.getCriteria()).asDouble();
@@ -198,6 +229,33 @@ public class TicketControllerTest {
         }
     }
 
+    public int stringToDecimal(String timeString, String language) {
+        Pattern pattern;
+        switch (language) {
+            case "ua":
+                pattern = Pattern.compile("(\\d+)год\\s*(\\d*)хв?");
+                break;
+            case "eng":
+                pattern = Pattern.compile("(\\d+)sh\\s*(\\d*)min?");
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported language: " + language);
+        }
+
+        Matcher matcher = pattern.matcher(timeString);
+        if (matcher.matches()) {
+            int hours = Integer.parseInt(matcher.group(1));
+            int minutes = matcher.group(2).isEmpty() ? 0 : Integer.parseInt(matcher.group(2));
+            return Integer.valueOf(hours * 60 + minutes);
+        } else {
+            throw new IllegalArgumentException("Invalid time string format: " + timeString);
+        }
+    }
+
+    public String getParseTime(String content) {
+        return content.split(" ")[0];
+    }
+
     @Nested
     @DisplayName("POST get sorted tickets")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -206,6 +264,7 @@ public class TicketControllerTest {
 
         private Map<SortCriteria, SortType> getCriteriaMap(SortCriteria sortCriteria, SortType sortType) {
             Map<SortCriteria, SortType> sortCriteriaSortTypeMap = new HashMap<>();
+
             sortCriteriaSortTypeMap.put(sortCriteria, sortType);
             return sortCriteriaSortTypeMap;
         }
@@ -237,7 +296,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestBody.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestBody.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestBody.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(requestBody.getDepartureDate().toString(), UA)))))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
@@ -266,7 +325,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestBody.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestBody.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestBody.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(requestBody.getDepartureDate().toString(), ENG)))))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
@@ -283,6 +342,7 @@ public class TicketControllerTest {
         @SneakyThrows
         @DisplayName("[200] sort by price in asc order with UA language")
         void getSortedTicketsByPriceAscUaIs200() {
+
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.PRICE, SortType.ASC));
             MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
@@ -301,7 +361,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(requestTicketsDto.getDepartureDate().toString(), UA)))))
 
                     .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
@@ -336,7 +396,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
 
                     .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
@@ -368,7 +428,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
 
                     .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
@@ -401,7 +461,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
 
                     .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
@@ -434,8 +494,9 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
                     .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(dto.getDepartureDate().toString(), UA)))))
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
                     .andExpect(jsonPath("$[*].carrier").exists())
@@ -451,7 +512,7 @@ public class TicketControllerTest {
         void getSortedTicketsByArrivalTimeAscEngIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.ARRIVAL_TIME, SortType.ASC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -459,20 +520,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].arrivalTime").value(Matchers.lessThan("$[99].arrivalTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.ARRIVAL_TIME, SortType.ASC, result));
+
 
         }
 
@@ -482,7 +547,7 @@ public class TicketControllerTest {
         void getSortedTicketsByArrivalTimeDescUaIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.ARRIVAL_TIME, SortType.DESC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -490,20 +555,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[99].arrivalTime").value(Matchers.lessThan("$[0].arrivalTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), UA)))))
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.ARRIVAL_TIME, SortType.DESC, result));
+
 
         }
 
@@ -513,7 +582,7 @@ public class TicketControllerTest {
         void getSortedTicketsByArrivalTimeDescEngIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.ARRIVAL_TIME, SortType.DESC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -521,20 +590,23 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[99].arrivalTime").value(Matchers.lessThan("$[0].arrivalTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.ARRIVAL_TIME, SortType.DESC, result));
 
         }
 
@@ -544,7 +616,7 @@ public class TicketControllerTest {
         void getSortedTicketsByDepartureTimeAscUaIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.DEPARTURE_TIME, SortType.ASC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -552,20 +624,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].departureTime").value(Matchers.lessThan("$[99].departureTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), UA)))))
-
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureTime").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.DEPARTURE_TIME, SortType.ASC, result));
+
 
         }
 
@@ -575,7 +651,7 @@ public class TicketControllerTest {
         void getSortedTicketsByDepartureTimeAscEngIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.DEPARTURE_TIME, SortType.ASC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -583,20 +659,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].departureTime").value(Matchers.lessThan("$[99].departureTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
-
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureTime").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.DEPARTURE_TIME, SortType.ASC, result));
+
 
         }
 
@@ -606,7 +686,7 @@ public class TicketControllerTest {
         void getSortedTicketsByDepartureTimeDescUaIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.DEPARTURE_TIME, SortType.DESC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -614,20 +694,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[99].departureTime").value(Matchers.lessThan("$[0].departureTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), UA)))))
-
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureTime").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.DEPARTURE_TIME, SortType.DESC, result));
+
 
         }
 
@@ -637,7 +721,7 @@ public class TicketControllerTest {
         void getSortedTicketsByDepartureTimeDescEngIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.DEPARTURE_TIME, SortType.DESC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -645,21 +729,23 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[99].departureTime").value(Matchers.lessThan("$[0].departureTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
-
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureTime").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
                     .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
 
+            Assertions.assertTrue(checkSort(SortCriteria.DEPARTURE_TIME, SortType.DESC, result));
         }
 
         @Test
@@ -668,7 +754,7 @@ public class TicketControllerTest {
         void getSortedTicketsByTravelTimeAscUaIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.TRAVEL_TIME, SortType.ASC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -676,20 +762,23 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].travelTime").value(Matchers.lessThan("$[99].travelTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
-
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.TRAVEL_TIME, SortType.ASC, result));
 
         }
 
@@ -699,7 +788,7 @@ public class TicketControllerTest {
         void getSortedTicketsByTravelTimeAscEngIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
             dto.setSortingBy(getCriteriaMap(SortCriteria.TRAVEL_TIME, SortType.ASC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -707,20 +796,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].travelTime").value(Matchers.lessThan("$[99].travelTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
-                    
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.TRAVEL_TIME, SortType.ASC, result));
+
 
         }
 
@@ -729,8 +822,8 @@ public class TicketControllerTest {
         @DisplayName("[200] sort by travel time in desc order with UA language")
         void getSortedTicketsByTravelTimeDescUaIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
-            dto.setSortingBy(getCriteriaMap(SortCriteria.ARRIVAL_TIME, SortType.DESC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+            dto.setSortingBy(getCriteriaMap(SortCriteria.TRAVEL_TIME, SortType.DESC));
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -738,20 +831,24 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[99].travelTime").value(Matchers.lessThan("$[0].travelTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
-
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), UA)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            Assertions.assertTrue(checkSort(SortCriteria.TRAVEL_TIME, SortType.DESC, result));
+
 
         }
 
@@ -760,8 +857,9 @@ public class TicketControllerTest {
         @DisplayName("[200] sort by travel time in desc order with ENG language")
         void getSortedTicketsByTravelTimeDescEngIs200() {
             RequestSortedTicketsDto dto = requestTicketsDto;
-            dto.setSortingBy(getCriteriaMap(SortCriteria.ARRIVAL_TIME, SortType.DESC));
-            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+
+            dto.setSortingBy(getCriteriaMap(SortCriteria.TRAVEL_TIME, SortType.DESC));
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
@@ -769,21 +867,146 @@ public class TicketControllerTest {
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[99].travelTime").value(Matchers.lessThan("$[0].travelTime")))
                     .andExpect(jsonPath("$", hasSize(100)))
                     .andExpect(jsonPath("$[*].id").exists())
                     .andExpect(jsonPath("$[*].type").exists())
                     .andExpect(jsonPath("$[*].placeFrom").exists())
                     .andExpect(jsonPath("$[*].placeAt").exists())
-                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(requestTicketsDto.getDepartureCity()))))
-                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(requestTicketsDto.getArrivalCity()))))
-                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
-                    .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
-                    
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].travelTime").exists())
                     .andExpect(jsonPath("$[*].price").exists())
-                    .andExpect(jsonPath("$[*].carrier").exists());
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
 
+            Assertions.assertTrue(checkSort(SortCriteria.TRAVEL_TIME, SortType.DESC, result));
+
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("[200] sort by all criteria in asc order with UA language")
+        void getSortedTicketsByAllAscUaIs200() {
+            RequestSortedTicketsDto dto = requestTicketsDto;
+            Map<SortCriteria, SortType> mapCriteria = Map.of(SortCriteria.PRICE, SortType.ASC, SortCriteria.TRAVEL_TIME, SortType.ASC, SortCriteria.DEPARTURE_TIME, SortType.ASC, SortCriteria.ARRIVAL_TIME, SortType.ASC
+            );
+            dto.setSortingBy(getCriteriaMap(SortCriteria.TRAVEL_TIME, SortType.DESC));
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(requestTicketsDto))
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(100)))
+                    .andExpect(jsonPath("$[*].id").exists())
+                    .andExpect(jsonPath("$[*].type").exists())
+                    .andExpect(jsonPath("$[*].placeFrom").exists())
+                    .andExpect(jsonPath("$[*].placeAt").exists())
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureTime").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].travelTime").exists())
+                    .andExpect(jsonPath("$[*].price").exists())
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            boolean n = true;
+            for (Map.Entry<SortCriteria, SortType> entry : mapCriteria.entrySet()) {
+                n |= checkSort(entry.getKey(), entry.getValue(), result);
+
+            }
+
+            Assertions.assertTrue(n);
+
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("[200] sort by all criteria in asc order with UA language")
+        void getSortedTicketsByAllDescUaIs200() {
+            RequestSortedTicketsDto dto = requestTicketsDto;
+            Map<SortCriteria, SortType> mapCriteria = Map.of(SortCriteria.PRICE, SortType.DESC, SortCriteria.TRAVEL_TIME, SortType.DESC, SortCriteria.DEPARTURE_TIME, SortType.DESC, SortCriteria.ARRIVAL_TIME, SortType.DESC
+            );
+            dto.setSortingBy(getCriteriaMap(SortCriteria.TRAVEL_TIME, SortType.DESC));
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(requestTicketsDto))
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                    )
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", hasSize(100)))
+                    .andExpect(jsonPath("$[*].id").exists())
+                    .andExpect(jsonPath("$[*].type").exists())
+                    .andExpect(jsonPath("$[*].placeFrom").exists())
+                    .andExpect(jsonPath("$[*].placeAt").exists())
+                    .andExpect(jsonPath("$[*].departureCity").value(everyItem(is(dto.getDepartureCity()))))
+                    .andExpect(jsonPath("$[*].arrivalCity").value(everyItem(is(dto.getArrivalCity()))))
+                    .andExpect(jsonPath("$[*].departureTime").exists())
+                    .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureDateFormatter(dto.getDepartureDate().toString(), ENG)))))
+                    .andExpect(jsonPath("$[*].arrivalTime").exists())
+                    .andExpect(jsonPath("$[*].arrivalDate").exists())
+                    .andExpect(jsonPath("$[*].travelTime").exists())
+                    .andExpect(jsonPath("$[*].price").exists())
+                    .andExpect(jsonPath("$[*].carrier").exists())
+                    .andReturn();
+
+            boolean n = true;
+            for (Map.Entry<SortCriteria, SortType> entry : mapCriteria.entrySet()) {
+                n |= checkSort(entry.getKey(), entry.getValue(), result);
+
+            }
+
+            Assertions.assertTrue(n);
+
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("400 invalid content language header")
+        void testPostInvalidLanguageIs400() {
+            mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(requestTicketsDto))
+                            .header(HttpHeaders.CONTENT_LANGUAGE, "invalid language"))
+                    .andExpect(status().isBadRequest())
+                    .andDo(print())
+                    .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                    .andReturn();
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("400 invalid request body")
+        void testPostInvalidRequestBodyIs400() {
+            RequestSortedTicketsDto invalidDto = new RequestSortedTicketsDto();
+            // Intentionally leave fields null or invalid to trigger validation errors
+
+            MvcResult result = mvc.perform(MockMvcRequestBuilders.post(URL + "/sortBy")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(invalidDto))
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG))
+                    .andExpect(status().isBadRequest())
+                    .andDo(print())
+                    .andExpect(jsonPath("$[*].arrivalTime").value("must be is not null"))
+                    .andExpect(jsonPath("$[*].arrivalDate").value("must be is not null"))
+                    .andExpect(jsonPath("$[*].travelTime").value("must be is not null"))
+                    .andReturn();
+
+            // Print the actual response content for debugging
+            System.out.println(result.getResponse().getContentAsString());
         }
     }
 

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
@@ -35,16 +36,16 @@ public class TicketDto {
     @Schema(description = "The city of arrival.", example = "Los Angeles")
     private String arrivalCity;
 
-    @Schema(description = "The time of departure.", example = "10:00 AM")
-    private String departureTime;
+    @Schema(description = "The time of departure.", example = "15:00")
+    private LocalTime departureTime;
 
-    @Schema(description = "The date of departure.", example = "2024-06-01")
+    @Schema(description = "The date of departure.", example = "30.07, Tue")
     private String departureDate;
 
-    @Schema(description = "The time of arrival.", example = "03:00 PM")
-    private String arrivalTime;
+    @Schema(description = "The time of arrival.", example = "15:00")
+    private LocalTime arrivalTime;
 
-    @Schema(description = "The date of arrival.", example = "2024-06-01")
+    @Schema(description = "The date of arrival.", example = "30.07, Tue")
     private String arrivalDate;
 
     @Schema(description = "The total travel time.", example = "5h")
