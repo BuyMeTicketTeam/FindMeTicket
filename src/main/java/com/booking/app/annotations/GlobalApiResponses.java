@@ -1,6 +1,6 @@
 package com.booking.app.annotations;
 
-import com.booking.app.exceptions.ErrorDetailsDto;
+import com.booking.app.dto.ErrorDetailsDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

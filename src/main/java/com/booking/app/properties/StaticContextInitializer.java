@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StaticContextInitializer {
 
-    private final CurrencyRateProps currencyRateProps;
+    private final ApiProps apiProps;
 
     @PostConstruct
     void init() {
-        ExchangeRateUtils.setCurrencyRateProps(currencyRateProps);
+        ExchangeRateUtils.setApiProps(apiProps);
     }
 
 }

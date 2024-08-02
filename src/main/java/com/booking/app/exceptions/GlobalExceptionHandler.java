@@ -1,11 +1,22 @@
 package com.booking.app.exceptions;
 
-import com.booking.app.exceptions.user.*;
+import com.booking.app.dto.ErrorDetailsDto;
+import com.booking.app.exceptions.badrequest.InvalidConfirmationCodeException;
+import com.booking.app.exceptions.badrequest.LastPasswordIsNotRightException;
+import com.booking.app.exceptions.badrequest.PasswordNotMatchesException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
+import com.booking.app.exceptions.forbidden.ForbiddenDeleteUserException;
+import com.booking.app.exceptions.notfound.ResourceNotFoundException;
+import com.booking.app.exceptions.notfound.ReviewNotFoundException;
+import com.booking.app.exceptions.notfound.UserNotConfirmedException;
+import com.booking.app.exceptions.notfound.UserNotFoundException;
+import com.booking.app.exceptions.ok.EmailAlreadyTakenException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,6 +35,17 @@ import java.util.StringJoiner;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ErrorDetailsDto errorDetailsDto = new ErrorDetailsDto(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                request.getDescription(false),
+                HttpStatus.valueOf(status.value())
+        );
+        return new ResponseEntity<>(errorDetailsDto, status);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMissingPathVariable(MissingPathVariableException ex, @NotNull HttpHeaders headers, @NotNull HttpStatusCode status, WebRequest request) {

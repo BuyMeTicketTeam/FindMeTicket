@@ -1,6 +1,6 @@
 package com.booking.app.utils;
 
-import com.booking.app.properties.CurrencyRateProps;
+import com.booking.app.properties.ApiProps;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.AccessLevel;
@@ -10,7 +10,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,13 +18,13 @@ public class ExchangeRateUtils {
 
     public static final String RESULT = "result";
 
-    private static CurrencyRateProps currencyRateProps;
+    private static ApiProps apiProps;
 
-    public static void setCurrencyRateProps(CurrencyRateProps currencyRateProps) {
-        ExchangeRateUtils.currencyRateProps = currencyRateProps;
+    public static void setApiProps(ApiProps apiProps) {
+        ExchangeRateUtils.apiProps = apiProps;
     }
 
-    public static BigDecimal getCurrentExchangeRate(String convertFrom, String convertTo) throws IOException {
+    public static BigDecimal getCurrentExchangeRate(String convertFrom, String convertTo) {
         try {
             String urlString = String.format("https://api.apilayer.com/exchangerates_data/convert?to=%s&from=%s&amount=%d", convertTo, convertFrom, 1);
 
@@ -33,7 +32,7 @@ public class ExchangeRateUtils {
 
             Request request = new Request.Builder()
                     .url(urlString)
-                    .addHeader("apikey", currencyRateProps.getCurrencyRateKey())
+                    .addHeader("apikey", apiProps.getCurrencyRate())
                     .method("GET", null)
                     .build();
 
@@ -46,7 +45,7 @@ public class ExchangeRateUtils {
                 }
             }
         } catch (Exception e) {
-            log.error("Api key is invalid or Json result is null");
+            log.error("API currencyRate key is invalid or Json result is null");
         }
         return null;
     }

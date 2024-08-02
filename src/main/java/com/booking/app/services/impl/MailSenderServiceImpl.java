@@ -2,7 +2,7 @@ package com.booking.app.services.impl;
 
 import com.booking.app.entities.user.ConfirmationCode;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.user.UserNotFoundException;
+import com.booking.app.exceptions.notfound.UserNotFoundException;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.UserService;

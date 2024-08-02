@@ -2,7 +2,7 @@ package com.booking.app.mappers;
 
 import com.booking.app.dto.CityDto;
 import com.booking.app.entities.UkrainianCities;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

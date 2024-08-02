@@ -1,8 +1,8 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.AuthenticatedUserDto;
-import com.booking.app.dto.BasicLoginDto;
-import com.booking.app.dto.SocialLoginDto;
+import com.booking.app.dto.users.AuthenticatedUserDto;
+import com.booking.app.dto.users.BasicLoginDto;
+import com.booking.app.dto.users.SocialLoginDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

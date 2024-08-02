@@ -1,9 +1,9 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.CodeConfirmationDto;
-import com.booking.app.dto.RegistrationDTO;
+import com.booking.app.dto.users.CodeConfirmationDto;
+import com.booking.app.dto.users.RegistrationDTO;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.user.UserNotConfirmedException;
+import com.booking.app.exceptions.notfound.UserNotConfirmedException;
 
 import java.util.Optional;
 import java.util.UUID;

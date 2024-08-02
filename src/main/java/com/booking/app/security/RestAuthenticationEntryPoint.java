@@ -1,6 +1,6 @@
 package com.booking.app.security;
 
-import com.booking.app.exceptions.ErrorDetailsDto;
+import com.booking.app.dto.ErrorDetailsDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletResponse;

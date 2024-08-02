@@ -1,6 +1,6 @@
 package com.booking.app.services;
 
-import com.booking.app.exceptions.user.UserNotFoundException;
+import com.booking.app.exceptions.notfound.UserNotFoundException;
 
 
 public interface MailSenderService {

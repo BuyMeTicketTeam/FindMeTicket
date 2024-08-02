@@ -1,8 +1,8 @@
 package com.booking.app.services.impl.user;
 
 import com.booking.app.constants.TransportType;
-import com.booking.app.dto.HistoryDto;
-import com.booking.app.dto.RequestTicketsDto;
+import com.booking.app.dto.tickets.RequestTicketsDto;
+import com.booking.app.dto.users.HistoryDto;
 import com.booking.app.entities.user.SearchHistory;
 import com.booking.app.entities.user.User;
 import com.booking.app.mappers.SearchHistoryMapper;

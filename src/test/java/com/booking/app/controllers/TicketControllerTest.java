@@ -5,7 +5,7 @@ import com.booking.app.constants.ContentLanguage;
 import com.booking.app.constants.SiteConstants;
 import com.booking.app.constants.SortCriteria;
 import com.booking.app.constants.SortType;
-import com.booking.app.dto.RequestSortedTicketsDto;
+import com.booking.app.dto.tickets.RequestSortedTicketsDto;
 import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.bus.BusInfo;
 import com.booking.app.entities.ticket.bus.BusTicket;

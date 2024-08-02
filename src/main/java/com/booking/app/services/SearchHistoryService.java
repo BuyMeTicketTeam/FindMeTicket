@@ -1,7 +1,7 @@
 package com.booking.app.services;
 
-import com.booking.app.dto.HistoryDto;
-import com.booking.app.dto.RequestTicketsDto;
+import com.booking.app.dto.tickets.RequestTicketsDto;
+import com.booking.app.dto.users.HistoryDto;
 import com.booking.app.entities.user.User;
 
 import java.util.List;

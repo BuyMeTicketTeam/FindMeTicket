@@ -1,7 +1,7 @@
 package com.booking.app.mappers;
 
 import com.booking.app.constants.TransportType;
-import com.booking.app.dto.HistoryDto;
+import com.booking.app.dto.users.HistoryDto;
 import com.booking.app.entities.user.SearchHistory;
 import com.booking.app.mappers.model.ArrivalCity;
 import com.booking.app.mappers.model.DepartureCity;

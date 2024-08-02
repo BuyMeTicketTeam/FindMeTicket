@@ -1,10 +1,10 @@
 package com.booking.app.mappers;
 
-import com.booking.app.dto.TicketDto;
-import com.booking.app.dto.TrainComfortInfoDTO;
+import com.booking.app.dto.tickets.ResponseTicketDto;
+import com.booking.app.dto.tickets.TrainComfortInfoDTO;
 import com.booking.app.entities.ticket.train.TrainInfo;
 import com.booking.app.entities.ticket.train.TrainTicket;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
@@ -22,7 +22,7 @@ public interface TrainMapper {
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(source = "carrier", target = "carrier")
     @Mapping(target = "type", constant = "TRAIN")
-    TicketDto toTrainTicketDto(TrainTicket ticket, @Context String language);
+    ResponseTicketDto toTrainTicketDto(TrainTicket ticket, @Context String language);
 
     @Mapping(source = "link", target = "url")
     TrainComfortInfoDTO toTrainComfortInfoDTO(TrainInfo ticket);
@@ -57,8 +57,8 @@ public interface TrainMapper {
     }
 
     @AfterMapping
-    default void getPrice(TrainTicket ticket, @MappingTarget TicketDto ticketDTO) {
-        ticketDTO.setPrice(ticket.getPrice());
+    default void getPrice(TrainTicket ticket, @MappingTarget ResponseTicketDto ticketDto) {
+        ticketDto.setPrice(ticket.getPrice());
     }
 
 

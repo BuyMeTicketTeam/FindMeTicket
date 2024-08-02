@@ -1,6 +1,7 @@
 package com.booking.app.configurations;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -26,4 +27,8 @@ public class AsyncConfig implements AsyncConfigurer {
         return executor;
     }
 
+    @Override
+    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+        return (ex, method, params) -> log.error("[ASYNC-ERROR] method: {} exception: {}", method.getName(), ex);
+    }
 }

@@ -28,7 +28,7 @@ public class BusTicket extends Ticket {
     @Builder.Default
     List<BusInfo> infoList = new ArrayList<>();
 
-    public boolean linksAreScraped() {
+    public boolean linksPresent() {
         return infoList.stream().anyMatch(t -> t.getLink() != null);
     }
 

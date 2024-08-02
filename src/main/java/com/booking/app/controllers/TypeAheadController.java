@@ -2,7 +2,7 @@ package com.booking.app.controllers;
 
 import com.booking.app.constants.ContentLanguage;
 import com.booking.app.dto.CityDto;
-import com.booking.app.exceptions.ErrorDetailsDto;
+import com.booking.app.dto.ErrorDetailsDto;
 import com.booking.app.services.TypeAheadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

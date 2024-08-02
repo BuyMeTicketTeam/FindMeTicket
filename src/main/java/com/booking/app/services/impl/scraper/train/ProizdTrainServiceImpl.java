@@ -1,10 +1,10 @@
 package com.booking.app.services.impl.scraper.train;
 
 import com.booking.app.entities.ticket.Route;
-import com.booking.app.entities.ticket.bus.BusTicket;
+import com.booking.app.entities.ticket.Ticket;
 import com.booking.app.entities.ticket.train.TrainInfo;
 import com.booking.app.entities.ticket.train.TrainTicket;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import com.booking.app.mappers.TrainMapper;
 import com.booking.app.properties.LinkProps;
 import com.booking.app.repositories.TrainTicketRepository;
@@ -23,7 +23,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,7 +53,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
     @Async
     @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, MutableBoolean emitterNotExpired) throws ParseException, IOException {
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, MutableBoolean emitterNotExpired) {
 
         WebDriver driver = webDriverFactory.createInstance();
 
@@ -96,7 +95,7 @@ public class ProizdTrainServiceImpl implements ScraperService {
     }
 
     @Override
-    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, BusTicket ticket, String language, MutableBoolean emitterNotExpired) {
+    public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, Ticket ticket, String language, MutableBoolean emitterNotExpired) {
         throw new java.lang.UnsupportedOperationException();
     }
 

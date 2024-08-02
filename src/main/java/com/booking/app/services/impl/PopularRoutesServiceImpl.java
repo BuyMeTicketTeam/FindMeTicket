@@ -3,7 +3,7 @@ package com.booking.app.services.impl;
 
 import com.booking.app.constants.PopularRoutesConstants;
 import com.booking.app.dto.City;
-import com.booking.app.dto.RequestTicketsDto;
+import com.booking.app.dto.tickets.RequestTicketsDto;
 import com.booking.app.entities.UkrainianCities;
 import com.booking.app.repositories.UkrainianCitiesRepository;
 import com.booking.app.services.PopularRoutesService;
@@ -72,7 +72,7 @@ public class PopularRoutesServiceImpl implements PopularRoutesService {
                 .departureCity(departureCity)
                 .arrivalCity(arrivalCity)
                 .departureDate(LocalDate.now())
-                .build(), null, language);
+                .build(), null, null, language);
     }
 
 }

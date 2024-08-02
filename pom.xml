@@ -200,6 +200,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.optimaize.languagedetector</groupId>
             <artifactId>language-detector</artifactId>
             <version>0.6</version>

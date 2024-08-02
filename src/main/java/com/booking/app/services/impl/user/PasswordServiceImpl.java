@@ -1,10 +1,10 @@
 package com.booking.app.services.impl.user;
 
-import com.booking.app.dto.PasswordDto;
-import com.booking.app.dto.RequestUpdatePasswordDTO;
+import com.booking.app.dto.users.PasswordDto;
+import com.booking.app.dto.users.RequestUpdatePasswordDTO;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.user.LastPasswordIsNotRightException;
-import com.booking.app.exceptions.user.UserNotFoundException;
+import com.booking.app.exceptions.badrequest.LastPasswordIsNotRightException;
+import com.booking.app.exceptions.notfound.UserNotFoundException;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.MailSenderService;
 import com.booking.app.services.PasswordService;

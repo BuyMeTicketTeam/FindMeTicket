@@ -1,8 +1,8 @@
 package com.booking.app.mappers;
 
-import com.booking.app.dto.TicketDto;
+import com.booking.app.dto.tickets.ResponseTicketDto;
 import com.booking.app.entities.ticket.bus.BusTicket;
-import com.booking.app.exceptions.UndefinedLanguageException;
+import com.booking.app.exceptions.badrequest.UndefinedLanguageException;
 import org.mapstruct.*;
 
 import java.math.BigDecimal;
@@ -18,7 +18,7 @@ public interface BusMapper {
     @Mapping(source = "route.departureDate", target = "departureDate", qualifiedByName = "departureTimeMapping")
     @Mapping(source = "travelTime", target = "travelTime", qualifiedByName = "decimalToString")
     @Mapping(target = "type", constant = "BUS")
-    TicketDto ticketToTicketDto(BusTicket ticket, @Context String language);
+    ResponseTicketDto ticketToTicketDto(BusTicket ticket, @Context String language);
 
     @Named("decimalToString")
     static String decimalToString(BigDecimal travelTime, @Context String language) {
@@ -50,8 +50,8 @@ public interface BusMapper {
     }
 
     @AfterMapping
-    default void getPrice(BusTicket ticket, @MappingTarget TicketDto ticketDTO) {
-        ticketDTO.setPrice(ticket.getPrice());
+    default void getPrice(BusTicket ticket, @MappingTarget ResponseTicketDto ticketDto) {
+        ticketDto.setPrice(ticket.getPrice());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.booking.app.services.impl;
 
+import com.booking.app.properties.LanguageProps;
 import com.booking.app.services.LanguageDetectorService;
 import com.optimaize.langdetect.LanguageDetector;
 import com.optimaize.langdetect.LanguageDetectorBuilder;
@@ -10,8 +11,7 @@ import com.optimaize.langdetect.profiles.LanguageProfileReader;
 import com.optimaize.langdetect.text.CommonTextObjectFactories;
 import com.optimaize.langdetect.text.TextObject;
 import com.optimaize.langdetect.text.TextObjectFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,11 +22,14 @@ import java.util.Optional;
  * Service implementation for language detection.
  */
 @Service
-@RequiredArgsConstructor
 public class LanguageDetectorServiceImpl implements LanguageDetectorService {
 
-    @Value("${languages}")
     private final List<String> languageProfiles;
+
+    @Autowired
+    public LanguageDetectorServiceImpl(LanguageProps languageProps) {
+        this.languageProfiles = languageProps.getProfiles();
+    }
 
     @Override
     public Optional<String> detectLanguage(String letters) throws IOException {

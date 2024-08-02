@@ -1,10 +1,10 @@
 package com.booking.app.services.impl.user;
 
-import com.booking.app.dto.CreateReviewDto;
-import com.booking.app.dto.ReviewDto;
+import com.booking.app.dto.users.CreateReviewDto;
+import com.booking.app.dto.users.ReviewDto;
 import com.booking.app.entities.user.Review;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.user.ReviewNotFoundException;
+import com.booking.app.exceptions.notfound.ReviewNotFoundException;
 import com.booking.app.repositories.ReviewRepository;
 import com.booking.app.services.ReviewService;
 import lombok.RequiredArgsConstructor;

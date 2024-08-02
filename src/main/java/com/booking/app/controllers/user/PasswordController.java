@@ -3,10 +3,10 @@ package com.booking.app.controllers.user;
 import com.booking.app.annotations.GlobalApiResponses;
 import com.booking.app.constants.ApiMessagesConstants;
 import com.booking.app.constants.RegistrationConstantMessages;
-import com.booking.app.dto.PasswordDto;
-import com.booking.app.dto.RequestUpdatePasswordDTO;
+import com.booking.app.dto.ErrorDetailsDto;
+import com.booking.app.dto.users.PasswordDto;
+import com.booking.app.dto.users.RequestUpdatePasswordDTO;
 import com.booking.app.entities.user.User;
-import com.booking.app.exceptions.ErrorDetailsDto;
 import com.booking.app.services.PasswordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,7 +26,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import static com.booking.app.constants.PasswordConstantMessages.*;
-import static com.booking.app.exceptions.user.InvalidConfirmationCodeException.MESSAGE_INVALID_CONFIRMATION_CODE_IS_PROVIDED;
+import static com.booking.app.exceptions.badrequest.InvalidConfirmationCodeException.MESSAGE_INVALID_CONFIRMATION_CODE_IS_PROVIDED;
 
 @RestController
 @RequiredArgsConstructor

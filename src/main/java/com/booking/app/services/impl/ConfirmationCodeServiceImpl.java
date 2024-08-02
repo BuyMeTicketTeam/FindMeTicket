@@ -1,7 +1,7 @@
 package com.booking.app.services.impl;
 
 import com.booking.app.entities.user.ConfirmationCode;
-import com.booking.app.exceptions.user.InvalidConfirmationCodeException;
+import com.booking.app.exceptions.badrequest.InvalidConfirmationCodeException;
 import com.booking.app.repositories.ConfirmationCodeRepository;
 import com.booking.app.services.ConfirmationCodeService;
 import lombok.RequiredArgsConstructor;
