@@ -2,7 +2,7 @@ import React, { useCallback, useState, useRef } from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { useTranslation } from "react-i18next";
 import PlacePreviewList from "../../../utils/PlacePreviewList/placePreviewList";
-import PlacePreview from "../../../utils/PlacePreview/placePreview";
+import PlacePreview from "../../../utils/PlacePreview/PlacePreview";
 import "./Map.scss";
 
 const containerStyle = {
@@ -18,7 +18,7 @@ export default function Map({ address }) {
   const [placesInfo, setPlacesInfo] = useState([]);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [nextPage, setNextPage] = useState(null);
-  const { t } = useTranslation("translation", { keyPrefix: "tourist-places" });
+  const { t } = useTranslation("translation", { keyPrefix: "touristPlaces" });
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",

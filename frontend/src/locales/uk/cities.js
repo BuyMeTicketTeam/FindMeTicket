@@ -1,0 +1,16 @@
+export const cities = {
+  Kiev: "Київ",
+  Kharkiv: "Харків",
+  Dnipro: "Дніпро",
+  Chernivtsi: "Чернівці",
+  IvanoFrankivsk: "Івано-Франківськ",
+  Lviv: "Львів",
+  Odessa: "Одеса",
+  Poltava: "Полтава",
+  Ternopil: "Тернопіль",
+  Zaporizhzhya: "Запоріжжя",
+  Kherson: "Херсон",
+  KrivyiRih: "Кривий Ріг",
+  Vinnytsya: "Вінниця",
+  PrivacyPolicy: "Політика конфіденційності",
+};

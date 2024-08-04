@@ -7,10 +7,10 @@ import addressIcon from "./location.svg";
 import websiteIcon from "./websiteIcon.svg";
 import arrowIcon from "./arrowIcon.svg";
 import loadingIcon from "../img/spinning-loading.svg";
-import "./placePreview.scss";
+import "./PlacePreview.scss";
 
 function View({ placeData, renderStars }) {
-  const { t } = useTranslation("translation", { keyPrefix: "ticket-page" });
+  const { t } = useTranslation("translation", { keyPrefix: "ticketPwage" });
   const {
     name,
     website,
@@ -58,7 +58,7 @@ function View({ placeData, renderStars }) {
       {openingHours && (
         <div className="place-preview__working-hours">
           <h3 className="place-preview-working-hours__title">
-            {t("working-hours")}
+            {t("workingHours")}
           </h3>
           <ul>
             {openingHours.weekday_text.map((day) => (
@@ -144,7 +144,7 @@ export default function PlacePreview({ placeId, setCurrentPlaceId, map }) {
         onClick={() => setCurrentPlaceId(null)}
       >
         <img src={arrowIcon} alt="Arrow" />
-        {t("back-btn")}
+        {t("backBtn")}
       </button>
       {placeData ? (
         <View

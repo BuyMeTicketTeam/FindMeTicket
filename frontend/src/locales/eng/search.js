@@ -1,0 +1,17 @@
+export const search = {
+  adult: "Adult",
+  child: "Child",
+  adults: "Adults",
+  children: "Children",
+  childrens: "Children",
+  find: "Find",
+  passengers: "Passengers",
+  loading: "Loading...",
+  where: "From",
+  whereTo: "To",
+  error: "Nothing was found for your request",
+  error2: "The field must not be empty",
+  ticketNotFound: "Sorry, no tickets found for this route",
+  fromPlaceholder: "Kyiv",
+  toPlaceholder: "Odesa",
+};

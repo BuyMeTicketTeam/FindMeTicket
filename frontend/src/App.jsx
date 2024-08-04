@@ -2,15 +2,16 @@
 /* eslint-disable max-len */
 import React, { useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import Header from "./common/Header";
+import Header from "./common/Header/Header";
 import useAuthCheck from "./hook/useAuthCheck";
-import Routers from "./components/routers/index";
-import CookieBanner from "./components/cookieBanner/cookie";
+import Routers from "./routers/Routers";
+import CookieBanner from "./components/cookieBanner/CoockieBanner";
 import "./testServer";
 // import Footer from './footer';
 import "./App.scss";
 import "./locales/i18n";
-import ScrollButton from "./components/scrollButton/index";
+import ScrollButton from "./common/ScrollButton/ScrollButton";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const { auth, updateAuthValue } = useAuthCheck();
@@ -35,7 +36,7 @@ function App() {
       />
       <CookieBanner />
       <ScrollButton />
-      {/* <Footer /> */}
+      <Footer />
     </Router>
   );
 }

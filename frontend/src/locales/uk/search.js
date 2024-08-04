@@ -1,0 +1,17 @@
+export const search = {
+  adult: "Дорослий",
+  child: "Дитина",
+  adults: "Дорослих",
+  children: "Дитини",
+  childrens: "Дітей",
+  find: "Знайти",
+  passengers: "Пасажири",
+  loading: "Завантаження...",
+  where: "Звідки",
+  whereTo: "Куди",
+  error: "За вашим запитом нічого не знайдено",
+  error2: "Поле не повинно бути порожнім",
+  ticketNotFound: "Нажаль квитків за цим маршрутом не знайдено",
+  fromPlaceholder: "Kиїв",
+  toPlaceholder: "Одеса",
+};

@@ -1,15 +1,19 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import SearchField from './SearchField';
-import Transport from './Transport';
-import Ad from '../Ad/index';
-import './main.scss';
-import TicketsBody from './Body';
-import Partner from './Partner';
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
+import SearchField from "./SearchField";
+import Transport from "./Transport";
+import Ad from "../../common/Ad/index";
+import "./main.scss";
+import TicketsBody from "./Body";
+import Partner from "./Partner";
+import Footer from "../footer/index";
 
 export default function Index({
-  ticketsData, setTicketsData, selectedTransport, setSelectedTransport,
+  ticketsData,
+  setTicketsData,
+  selectedTransport,
+  setSelectedTransport,
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,6 +50,7 @@ export default function Index({
           selectedTransport={selectedTransport}
         />
         <Partner />
+        <Footer />
       </div>
       <Outlet />
     </div>

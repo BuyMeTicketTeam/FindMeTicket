@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import makeQuery from "../../helper/querry";
 
 // import noImage from './no-image.jpg';
-import lockIcon from "./lock.svg";
+import lockIcon from "../../images/lock.svg";
 
 export default function ReviewsForm({ status, setReviews }) {
   const [reviewText, setReviewText] = useState("");
@@ -70,30 +70,30 @@ export default function ReviewsForm({ status, setReviews }) {
       {!status && (
         <div className="reviews-lock">
           <img className="reviews-lock__img" src={lockIcon} alt="Lock img" />
-          <h2 className="reviews-lock__title">{t("lock-message")}</h2>
+          <h2 className="reviews-lock__title">{t("lockMessage")}</h2>
           <Link
             to="/login"
             className="reviews-lock__btn button"
             state={{ successNavigate: "/reviews", closeNavigate: "/reviews" }}
           >
-            {t("lock-button")}
+            {t("lockButton")}
           </Link>
         </div>
       )}
       <div className={`reviews-form__body ${!status ? "blur" : ""}`}>
-        <h2 className="reviews-form__title">{t("form-title")}</h2>
+        <h2 className="reviews-form__title">{t("formTitle")}</h2>
         {success && <p className="confirm__success">Review saved</p>}
         {(formError.inputError || formError.ratingError || error) && (
           <p className="error">
-            <span>{formError.inputError && t("textarea_placeholder")}</span>
-            <span>{formError.ratingError && t("rating__error")}</span>
-            <span>{error && t("error-add-review")}</span>
+            <span>{formError.inputError && t("textareaPlaceholder")}</span>
+            <span>{formError.ratingError && t("ratingError")}</span>
+            <span>{error && t("errorAddReview")}</span>
           </p>
         )}
         <textarea
           disabled={!status}
           value={reviewText}
-          placeholder={t("textarea_placeholder")}
+          placeholder={t("textareaPlaceholder")}
           onChange={(event) => {
             setReviewText(event.target.value);
             setFormError((prevErrors) => ({
@@ -129,7 +129,7 @@ export default function ReviewsForm({ status, setReviews }) {
             className="reviews-form__submit-btn button"
             onClick={submitReview}
           >
-            {loading ? t("loading-review") : t("form-submit-btn")}
+            {loading ? t("loadingReview") : t("formSubmitBtn")}
           </button>
         </div>
       </div>

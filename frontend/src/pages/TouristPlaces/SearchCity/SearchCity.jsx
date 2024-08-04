@@ -10,7 +10,7 @@ export default function SearchCity() {
   const [city, setCity] = useState("");
   const [errorCity, setErrorCity] = useState(false);
   const getCities = useGetCities();
-  const { t } = useTranslation("translation", { keyPrefix: "tourist-places" });
+  const { t } = useTranslation("translation", { keyPrefix: "touristPlaces" });
   const navigate = useNavigate();
   const noOptionsMessage = (target) =>
     target.inputValue.length > 1 ? t("error") : null;
@@ -27,7 +27,7 @@ export default function SearchCity() {
     <div className="search-city">
       <div className="tourist-places-background" />
       <div className="search-city-form">
-        <h1 className="search-city-form__title">{t("search-title")}</h1>
+        <h1 className="search-city-form__title">{t("searchTitle")}</h1>
         <AsyncSelect
           isClearable
           value={city}

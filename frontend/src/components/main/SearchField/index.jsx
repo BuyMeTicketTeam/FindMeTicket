@@ -77,7 +77,7 @@ export default function SearchField({
           console.log("open successfully");
           break;
         case 404:
-          setError(t("ticket-not-found"));
+          setError(t("ticketNotFound"));
           break;
         default:
           setError(true);
@@ -228,7 +228,7 @@ export default function SearchField({
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityFrom)}
-          placeholder={t("from-placeholder")}
+          placeholder={t("fromPlaceholder")}
           onChange={setCityFrom}
           onInputChange={() => onErrorCityFrom(false)}
         />
@@ -246,7 +246,7 @@ export default function SearchField({
         <img src={arrowsImg} alt="arrows" />
       </button>
       <div className={`field ${errorCityTo ? "error-select" : ""}`}>
-        <div className="field__name">{t("where-t")}</div>
+        <div className="field__name">{t("whereTo")}</div>
         <AsyncSelect
           isClearable
           aria-label="cityToSelect"
@@ -256,7 +256,7 @@ export default function SearchField({
           cacheOptions
           classNamePrefix="react-select"
           loadOptions={(inputValue) => getCities(inputValue, setCityTo)}
-          placeholder={t("to-placeholder")}
+          placeholder={t("toPlaceholder")}
           onChange={setCityTo}
           onInputChange={() => onErrorCityTo(false)}
         />
