@@ -15,7 +15,6 @@ import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TicketRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import lombok.SneakyThrows;
 import org.apache.commons.lang.RandomStringUtils;
@@ -35,6 +34,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -87,9 +87,6 @@ public class TicketControllerTest {
         initData();
 
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
     }
 
     private static List<BusInfo> getGenerateBusInfo(BusTicket busTicket) {
@@ -183,7 +180,7 @@ public class TicketControllerTest {
         String contentAsString = result.getResponse().getContentAsString();
         JsonNode jsonNode = objectMapper.readTree(contentAsString);
 
-        if (criteria.getCriteria() == SortCriteria.ARRIVAL_TIME.getCriteria()) {
+        if (Objects.equals(criteria.getCriteria(), SortCriteria.ARRIVAL_TIME.getCriteria())) {
             LocalTime timeFirst = LocalTime.parse(jsonNode.get(0).get(criteria.getCriteria()).asText());
             LocalTime timeLast = LocalTime.parse(jsonNode.get(NUMBER_OF_TICKETS - 1).get(criteria.getCriteria()).asText());
             return timeFirst.isBefore(timeLast);
@@ -218,7 +215,6 @@ public class TicketControllerTest {
                     .departureCity(DEPARTURE_CITY)
                     .departureDate(LocalDate.now())
                     .build();
-
         }
 
         @Test
@@ -230,7 +226,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -259,7 +255,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -289,7 +285,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -324,7 +320,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -356,7 +352,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -389,7 +385,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -422,7 +418,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -455,7 +451,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -486,7 +482,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -517,7 +513,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -548,7 +544,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -579,7 +575,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -610,7 +606,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -641,7 +637,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -672,7 +668,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -703,7 +699,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -718,7 +714,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
                     .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
-                    
+
                     .andExpect(jsonPath("$[*].price").exists())
                     .andExpect(jsonPath("$[*].carrier").exists());
 
@@ -734,7 +730,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, UA)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, UA).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -765,7 +761,7 @@ public class TicketControllerTest {
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(requestTicketsDto))
-                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG)
+                            .header(HttpHeaders.CONTENT_LANGUAGE, ENG).characterEncoding(StandardCharsets.UTF_8)
                     )
                     .andDo(print())
                     .andExpect(status().isOk())
@@ -780,7 +776,7 @@ public class TicketControllerTest {
                     .andExpect(jsonPath("$[*].departureDate").value(everyItem(is(TicketMapper.departureTimeMapping(requestTicketsDto.getDepartureDate().toString(), ENG)))))
                     .andExpect(jsonPath("$[*].departureTime").exists())
                     .andExpect(jsonPath("$[*].arrivalTime").exists()).andExpect(jsonPath("$[*].arrivalDate").exists())
-                    
+
                     .andExpect(jsonPath("$[*].price").exists())
                     .andExpect(jsonPath("$[*].carrier").exists());
 
