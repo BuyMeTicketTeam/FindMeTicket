@@ -1,0 +1,90 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_ticket?
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    schema: find_me_ticket_schema
+  liquibase:
+    change-log: classpath:/liquibase/master.yaml
+    default-schema: find_me_ticket_schema
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+        default_schema: find_me_ticket_schema
+        generate_statistics: false
+        jdbc:
+          batch_size: 100
+        order_updates: true
+        order_inserts: true
+
+  ##-------------------------
+  ## Email Sender configuration
+  ##-------------------------
+  mail:
+    host: smtp.gmail.com
+    port: '587'
+    username: findmeticketweb@gmail.com
+    password: lgyn zgeb yowy vbam
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+#-------------------------
+# Encoding
+#-------------------------
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  error:
+    include-message: always
+
+##-------------------------
+## JWT Properties
+##-------------------------
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpirationMin: '1440'
+    refreshTokenExpirationMin: '43200'
+
+##-------------------------
+## Language detection file-configurations
+##-------------------------
+languages:
+  files:
+    profiles: eng.txt, ua.txt
+
+#-------------------------
+# Third-party ticket's services
+#-------------------------
+ticket:
+  source:
+    uri:
+      busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+      busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
+      proizd-ua-bus: 'https://bus.proizd.ua/'
+      proizd-eng-bus: 'https://bus.proizd.ua/en'
+      infobus-ua-bus: 'https://infobus.eu/ua/bus'
+      infobus-eng-bus: 'https://infobus.eu/en/bus'
+      infobus-eng-train: 'https://infobus.eu/en/train'
+      infobus-ua-train: 'https://infobus.eu/ua/train'
+      proizd-eng-train: 'https://proizd.ua/en'
+      proizd-ua-train: 'https://proizd.ua/'
+
+#-------------------------
+# API keys
+#-------------------------
+api:
+  key:
+    currency-rate: ${CURRENCY_API_KEY}
+    google-client-id: ${GOOGLE_AUTH_KEY}

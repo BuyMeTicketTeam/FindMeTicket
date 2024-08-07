@@ -1,6 +1,7 @@
 package com.booking.app.security.filter;
 
-import com.booking.app.constant.JwtTokenConstants;
+import com.booking.app.constants.AuthenticatedUserConstants;
+import com.booking.app.properties.JwtProps;
 import com.google.api.client.util.Strings;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -9,7 +10,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -21,14 +22,18 @@ import java.util.Date;
 @Getter
 public class JwtProvider {
 
-    @Value("${jwtSecret}")
-    private String jwtSecret;
+    private final String jwtSecret;
 
-    @Value("${accessTokenExpirationMs}")
-    private int accessTokenExpirationMs;
+    private final int accessTokenExpirationMs;
 
-    @Value("${refreshTokenExpirationMs}")
-    private int refreshTokenExpirationMs;
+    private final int refreshTokenExpirationMs;
+
+    @Autowired
+    public JwtProvider(JwtProps jwtProps) {
+        this.jwtSecret = jwtProps.getSecret();
+        this.accessTokenExpirationMs = jwtProps.getAccessTokenExpirationMin();
+        this.refreshTokenExpirationMs = jwtProps.getRefreshTokenExpirationMin();
+    }
 
     public boolean validateAccessToken(String accessToken) {
         return validateToken(accessToken);
@@ -63,10 +68,9 @@ public class JwtProvider {
         return generateToken(email, refreshTokenExpirationMs);
     }
 
-    private String generateToken(String email, int expirationMs) {
+    private String generateToken(String email, int expirationMin) {
         Date now = new Date();
-        long expirationMillis = expirationMs * 60L * 1000L;
-        Date expiryDate = new Date(now.getTime() + expirationMillis);
+        Date expiryDate = new Date(now.getTime() + expirationMin * 60000L);
 
         return Jwts.builder()
                 .setSubject(email)
@@ -101,7 +105,7 @@ public class JwtProvider {
     public static String extractAccessToken(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (!Strings.isNullOrEmpty(token) && token.startsWith(JwtTokenConstants.BEARER.trim())) {
+        if (!Strings.isNullOrEmpty(token) && token.startsWith(AuthenticatedUserConstants.BEARER.trim())) {
             return token.substring(7);
         }
         return null;
@@ -111,7 +115,7 @@ public class JwtProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(JwtTokenConstants.REFRESH_TOKEN)) {
+                if (cookie.getName().equals(AuthenticatedUserConstants.REFRESH_TOKEN)) {
                     return cookie.getValue();
                 }
             }
