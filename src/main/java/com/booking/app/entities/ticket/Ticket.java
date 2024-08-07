@@ -1,10 +1,15 @@
 package com.booking.app.entities.ticket;
 
+import com.booking.app.constants.TransportType;
+import com.booking.app.entities.converters.DurationConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -13,7 +18,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "ticket")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@DiscriminatorColumn(
+        name = "type",
+        discriminatorType = DiscriminatorType.STRING
+)
 @Setter
 @Getter
 @ToString
@@ -30,14 +38,21 @@ public class Ticket {
     @Column(name = "place_at")
     private String placeAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "transport", insertable = false, updatable = false)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    private TransportType type;
+
     @Column(name = "departure_time")
     @EqualsAndHashCode.Include
     private LocalTime departureTime;
 
+    @Column(name = "arrival_date_time")
     private Instant arrivalDateTime;
 
     @Column(name = "travel_time")
-    private Integer travelTime;
+    @Convert(converter = DurationConverter.class)
+    private Duration travelTime;
 
     @Column(name = "carrier")
     @EqualsAndHashCode.Include

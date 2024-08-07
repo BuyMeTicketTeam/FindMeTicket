@@ -1,5 +1,6 @@
 package com.booking.app.entities.ticket.train;
 
+import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.Ticket;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,9 +9,13 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @DiscriminatorValue("TRAIN")
@@ -46,17 +51,33 @@ public class TrainTicket extends Ticket {
         return super.hashCode();
     }
 
-    public TrainTicket addPrices(List<TrainInfo> trainInfos) {
+    public static TrainTicket createInstance(Route route,
+                                             String placeFrom,
+                                             String placeAt,
+                                             LocalTime departureTime,
+                                             Instant arrivalDateTime,
+                                             Duration travelTime,
+                                             String carrier,
+                                             List<TrainInfo> infoList) {
+        TrainTicket trainTicket = TrainTicket.builder()
+                .id(UUID.randomUUID())
+                .route(route)
+                .placeFrom(placeFrom)
+                .placeAt(placeAt)
+                .arrivalDateTime(arrivalDateTime)
+                .departureTime(departureTime)
+                .travelTime(travelTime)
+                .carrier(carrier)
+                .build();
+        trainTicket.addTrainInfo(infoList);
+        return trainTicket;
+    }
+
+    public void addTrainInfo(List<TrainInfo> trainInfos) {
         trainInfos.forEach(t -> {
             t.setTrainTicket(this);
             infoList.add(t);
         });
-        return this;
     }
 
-    public TrainTicket addPrice(TrainInfo busInfo) {
-        busInfo.setTrainTicket(this);
-        infoList.add(busInfo);
-        return this;
-    }
 }

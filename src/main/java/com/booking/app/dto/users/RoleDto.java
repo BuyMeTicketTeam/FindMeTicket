@@ -1,6 +1,6 @@
 package com.booking.app.dto.users;
 
-import com.booking.app.entities.user.Role;
+import com.booking.app.constants.RoleType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +14,6 @@ public class RoleDto {
     private final int id;
 
     @NotNull
-    private final Role.RoleType type;
+    private final RoleType type;
 
 }

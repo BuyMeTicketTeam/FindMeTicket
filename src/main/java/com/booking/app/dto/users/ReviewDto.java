@@ -1,6 +1,6 @@
 package com.booking.app.dto.users;
 
-import com.booking.app.entities.user.AuthProvider;
+import com.booking.app.constants.AuthProvider;
 import com.booking.app.entities.user.Review;
 import com.booking.app.entities.user.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,10 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bouncycastle.util.Arrays;
 import org.springframework.security.authentication.ProviderNotFoundException;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -51,9 +51,9 @@ public class ReviewDto {
                 .reviewText(review.getReviewText())
                 .username(user.getUsername())
                 .build();
-        Set<AuthProvider> providers = user.getProviders();
+        AuthProvider[] providers = user.getProviders();
 
-        if (providers.isEmpty()) {
+        if (Arrays.isNullOrEmpty(providers)) {
             throw new ProviderNotFoundException("Third party service provider is not provided");
         } else {
             if (user.getSocialMediaAvatar() != null) {

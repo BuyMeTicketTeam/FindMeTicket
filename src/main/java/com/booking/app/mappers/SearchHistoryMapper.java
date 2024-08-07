@@ -9,18 +9,25 @@ import org.mapstruct.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, imports = {TransportType.class})
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel = MappingConstants.ComponentModel.SPRING,
+        imports = {
+                TransportType.class,
+                Arrays.class
+        }
+)
 public interface SearchHistoryMapper {
 
     @Mapping(source = "departureDate", target = "departureDate")
     @Mapping(source = "addingTime", target = "addingTime", qualifiedByName = "timeToString")
     @Mapping(source = "departureCityId", target = "departureCity", qualifiedByName = "getDepartureCity")
     @Mapping(source = "arrivalCityId", target = "arrivalCity", qualifiedByName = "getArrivalCity")
-    @Mapping(target = "bus", expression = "java(searchHistory.getTypeTransport().contains(TransportType.BUS))")
-    @Mapping(target = "train", expression = "java(searchHistory.getTypeTransport().contains(TransportType.TRAIN))")
-    @Mapping(target = "airplane", expression = "java(searchHistory.getTypeTransport().contains(TransportType.AIRPLANE))")
-    @Mapping(target = "ferry", expression = "java(searchHistory.getTypeTransport().contains(TransportType.FERRY))")
+    @Mapping(target = "bus", expression = "java(Arrays.stream(searchHistory.getTypeTransport()).anyMatch(type -> type.equals(TransportType.BUS)))")
+    @Mapping(target = "train", expression = "java(Arrays.stream(searchHistory.getTypeTransport()).anyMatch(type -> type.equals(TransportType.TRAIN)))")
+    @Mapping(target = "airplane", expression = "java(Arrays.stream(searchHistory.getTypeTransport()).anyMatch(type -> type.equals(TransportType.AIRPLANE)))")
+    @Mapping(target = "ferry", expression = "java(Arrays.stream(searchHistory.getTypeTransport()).anyMatch(type -> type.equals(TransportType.FERRY)))")
     HistoryDto historyToDto(SearchHistory searchHistory, @Context DepartureCity departureCity, @Context ArrivalCity arrivalCity);
 
     @Named("timeToString")

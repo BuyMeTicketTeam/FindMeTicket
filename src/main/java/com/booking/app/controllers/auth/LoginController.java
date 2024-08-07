@@ -2,11 +2,11 @@ package com.booking.app.controllers.auth;
 
 import com.booking.app.annotations.GlobalApiResponses;
 import com.booking.app.constants.ApiMessagesConstants;
+import com.booking.app.constants.AuthProvider;
 import com.booking.app.dto.ErrorDetailsDto;
 import com.booking.app.dto.users.AuthenticatedUserDto;
 import com.booking.app.dto.users.BasicLoginDto;
 import com.booking.app.dto.users.SocialLoginDto;
-import com.booking.app.entities.user.AuthProvider;
 import com.booking.app.services.LoginService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -70,13 +70,13 @@ public class LoginController {
                     description = ApiMessagesConstants.INVALID_CLIENT_PROVIDER_ID_MESSAGE,
                     content = {@Content(schema = @Schema(implementation = ErrorDetailsDto.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
     })
-    public AuthenticatedUserDto socialLogin(@PathVariable("provider") @Parameter(required = true, description = "Provider type", schema = @Schema(type = "string", allowableValues = {"google", "facebook"})) AuthProvider.AuthProviderType provider,
+    public AuthenticatedUserDto socialLogin(@PathVariable("provider") @Parameter(required = true, description = "Provider type", schema = @Schema(type = "string", allowableValues = {"google", "facebook"})) AuthProvider provider,
                                             @RequestBody @Valid @NotNull SocialLoginDto dto,
                                             HttpServletRequest request,
                                             HttpServletResponse response) {
-        if (provider == AuthProvider.AuthProviderType.GOOGLE) {
+        if (provider.equals(AuthProvider.GOOGLE)) {
             return loginService.loginWithGoogle(dto, request, response);
-        } else if (provider == AuthProvider.AuthProviderType.FACEBOOK) {
+        } else if (provider.equals(AuthProvider.FACEBOOK)) {
             // TODO complete authentication via Facebook
         }
         throw new UnsupportedOperationException();

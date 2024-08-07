@@ -1,5 +1,6 @@
 package com.booking.app.entities.ticket.bus;
 
+import com.booking.app.constants.Website;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +22,9 @@ public class BusInfo {
     @Column(columnDefinition = "varchar(1000)")
     private String link;
 
-    private String sourceWebsite;
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "website", insertable = false, updatable = false)
+    private Website website;
 
     @Column(precision = 10, scale = 2)
     private BigDecimal price;

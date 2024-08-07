@@ -1,5 +1,6 @@
 package com.booking.app.entities.ticket.train;
 
+import com.booking.app.constants.Website;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,10 @@ public class TrainInfo {
 
     @Column(columnDefinition = "varchar(1000)")
     private String link;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "website", insertable = false, updatable = false)
+    private Website website;
 
     private String comfort;
 

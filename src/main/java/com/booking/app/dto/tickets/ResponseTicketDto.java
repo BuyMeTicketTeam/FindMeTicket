@@ -1,5 +1,6 @@
 package com.booking.app.dto.tickets;
 
+import com.booking.app.constants.TransportType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +21,8 @@ public class ResponseTicketDto {
     @Schema(description = "The unique identifier of the ticket.", example = "123e4567-e89b-12d3-a456-556642440000")
     private UUID id;
 
-    @Schema(description = "The type of the ticket.", example = "Single")
-    private String type;
+    @Schema(description = "The type of the ticket.", example = "BUS")
+    private TransportType type;
 
     @Schema(description = "The place from where the journey starts.", example = "New York")
     private String placeFrom;

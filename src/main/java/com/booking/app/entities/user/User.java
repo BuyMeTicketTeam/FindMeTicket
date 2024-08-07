@@ -1,12 +1,18 @@
 package com.booking.app.entities.user;
 
+import com.booking.app.constants.AuthProvider;
+import com.booking.app.constants.RoleType;
+import com.booking.app.entities.converters.AuthProviderArrayConverter;
 import com.booking.app.utils.AvatarUtils;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.File;
@@ -17,7 +23,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(indexes = {@Index(name = "idx_email", columnList = "email", unique = true)})
+@Table(name = "user", indexes =
+        {
+                @Index(name = "idx_email", columnList = "email", unique = true)
+        }
+)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,29 +63,28 @@ public class User implements UserDetails {
 
     private boolean notification = false;
 
+    @Column(name = "expired")
     private boolean accountNonExpired;
 
+    @Column(name = "locked")
     private boolean accountNonLocked;
 
+    @Column(name = "credentials_expired")
     private boolean credentialsNonExpired;
 
+    @Column(name = "enabled")
     private boolean enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_provider",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "provider_id")
-    )
-    private Set<AuthProvider> providers = new HashSet<>();
+    @Column(name = "providers", columnDefinition = "auth_provider[]")
+//    @Enumerated(EnumType.STRING)
+//    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Convert(converter = AuthProviderArrayConverter.class)
+    private AuthProvider[] providers;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
+    @Column(name = "roles", columnDefinition = "role[]")
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    private RoleType[] roles;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id", name = "code_id")
@@ -87,44 +96,39 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Review review;
 
-    public static User createBasicAdmin(Role role, ConfirmationCode confirmationCode, String email, String password, String username, Boolean notification) throws IOException {
-        Set<Role> setRoles = Role.createRoles(role);
-        File fi = new File("image/admin_avatar.png");
-        byte[] fileContent = Files.readAllBytes(fi.toPath());
+    public static User createBasicAdmin(ConfirmationCode confirmationCode, String email, String password, String username, Boolean notification) throws IOException {
+        File adminAvatar = new File("image/admin_avatar.png");
+        byte[] fileContent = Files.readAllBytes(adminAvatar.toPath());
         return User.builder()
                 .email(email)
                 .username(username)
                 .password(password)
-                .roles(setRoles)
+                .roles(new RoleType[]{RoleType.ADMIN})
                 .confirmationCode(confirmationCode)
                 .notification(notification)
                 .defaultAvatar(fileContent).build();
     }
 
-    public static User createBasicUser(AuthProvider authProvider, Role role, ConfirmationCode confirmationCode, String email, String password, String username, Boolean notification) {
-        Set<Role> setRoles = Role.createRoles(role);
-        Set<AuthProvider> setAuthProviders = AuthProvider.createProvider(authProvider);
+    public static User createBasicUser(ConfirmationCode confirmationCode, String email, String password, String username, Boolean notification) {
         byte[] avatarAsBytes = AvatarUtils.createRandomAvatarAsBytes();
         return User.builder()
-                .providers(setAuthProviders)
+                .providers(new AuthProvider[]{AuthProvider.BASIC})
                 .email(email)
                 .username(username)
                 .password(password)
-                .roles(setRoles)
+                .roles(new RoleType[]{RoleType.USER})
                 .confirmationCode(confirmationCode)
                 .notification(notification)
                 .defaultAvatar(avatarAsBytes).build();
     }
 
-    public static User createGoogleUser(AuthProvider authProvider, Role role, String username, String email, String urlPicture) {
-        Set<Role> setRoles = Role.createRoles(role);
-        Set<AuthProvider> setAuthProviders = AuthProvider.createProvider(authProvider);
+    public static User createGoogleUser(String username, String email, String urlPicture) {
         return User.builder()
-                .providers(setAuthProviders)
+                .providers(new AuthProvider[]{AuthProvider.GOOGLE})
                 .username(username)
                 .email(email)
                 .socialMediaAvatar(urlPicture)
-                .roles(setRoles)
+                .roles(new RoleType[]{RoleType.USER})
                 .enabled(true)
                 .accountNonExpired(true)
                 .credentialsNonExpired(true)
@@ -134,9 +138,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .flatMap(r -> r.getGrantedAuthorities().stream())
-                .collect(Collectors.toSet());
+        return Arrays.stream(roles).map(role -> new SimpleGrantedAuthority(("ROLE_" + role))).collect(Collectors.toSet());
     }
 
 }

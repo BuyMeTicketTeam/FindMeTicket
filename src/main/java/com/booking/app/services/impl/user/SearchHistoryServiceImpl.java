@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class SearchHistoryServiceImpl implements SearchHistoryService {
     @Override
     public void addHistory(RequestTicketsDto dto, String language, @Nullable User user) {
         Optional.ofNullable(user).ifPresent(u -> {
-            Set<TransportType> types = TransportType.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
+            TransportType[] types = TransportType.getTypes(dto.getBus(), dto.getTrain(), dto.getAirplane(), dto.getFerry());
             searchHistoryRepository.save(SearchHistory.builder()
                     .user(u)
                     .departureCityId(typeAheadService.getCityId(dto.getDepartureCity(), language))

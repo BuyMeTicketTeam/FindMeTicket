@@ -1,5 +1,6 @@
 package com.booking.app.services.impl.scraper.bus;
 
+import com.booking.app.constants.Website;
 import com.booking.app.dto.tickets.UrlAndPriceDTO;
 import com.booking.app.entities.ticket.bus.BusTicket;
 import com.booking.app.mappers.BusMapper;
@@ -20,8 +21,6 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-
-import static com.booking.app.constants.SiteConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,13 +55,13 @@ public class BusSenderService {
         } else {
             busTicket.getInfoList().forEach(t -> {
                 try {
-                    emitter.send(SseEmitter.event().name(t.getSourceWebsite()).data(
+                    emitter.send(SseEmitter.event().name(String.valueOf(t.getWebsite())).data(
                             UrlAndPriceDTO.builder()
                                     .price(t.getPrice())
                                     .url(t.getLink())
                                     .build())
                     );
-                    log.info("Bus ticket from {} instantly returned by link: {}", t.getSourceWebsite(), t.getLink());
+                    log.info("Bus ticket from {} instantly returned by link: {}", t.getWebsite(), t.getLink());
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
                 }
@@ -77,12 +76,12 @@ public class BusSenderService {
 
         busTicket.getInfoList().forEach(t -> {
             try {
-                switch (t.getSourceWebsite()) {
-                    case PROIZD_UA ->
+                switch (t.getWebsite()) {
+                    case Website.PROIZD ->
                             completableFutureListBus.add(proizdBusService.scrapeTicketUri(emitter, busTicket, language, emitterExpiration));
-                    case BUSFOR_UA ->
+                    case Website.BUSFOR ->
                             completableFutureListBus.add(busforBusService.scrapeTicketUri(emitter, busTicket, language, emitterExpiration));
-                    case INFOBUS ->
+                    case Website.INFOBUS ->
                             completableFutureListBus.add(infobusBusService.scrapeTicketUri(emitter, busTicket, language, emitterExpiration));
                     default -> throw new IllegalArgumentException();
                 }

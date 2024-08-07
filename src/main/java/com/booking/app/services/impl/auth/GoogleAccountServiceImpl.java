@@ -1,14 +1,10 @@
 package com.booking.app.services.impl.auth;
 
 import com.booking.app.dto.users.SocialLoginDto;
-import com.booking.app.entities.user.AuthProvider;
-import com.booking.app.entities.user.Role;
 import com.booking.app.entities.user.User;
 import com.booking.app.properties.ApiProps;
 import com.booking.app.repositories.UserRepository;
-import com.booking.app.services.AuthProviderService;
 import com.booking.app.services.GoogleAccountService;
-import com.booking.app.services.RoleService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -29,17 +25,12 @@ import java.util.Optional;
 @Service
 public class GoogleAccountServiceImpl implements GoogleAccountService {
 
-    private final RoleService roleService;
-    private final AuthProviderService authProviderService;
-
     private final UserRepository userRepository;
 
     private final String clientId;
 
     @Autowired
-    public GoogleAccountServiceImpl(RoleService roleService, AuthProviderService authProviderService, UserRepository userRepository, ApiProps apiProps) {
-        this.roleService = roleService;
-        this.authProviderService = authProviderService;
+    public GoogleAccountServiceImpl(UserRepository userRepository, ApiProps apiProps) {
         this.userRepository = userRepository;
         this.clientId = apiProps.getGoogleClientId();
     }
@@ -81,11 +72,7 @@ public class GoogleAccountServiceImpl implements GoogleAccountService {
         User existingAccount = userRepository.findByEmail(payload.getEmail()).orElse(null);
 
         if (existingAccount == null) {
-            Role role = roleService.findByType(Role.RoleType.USER);
-            AuthProvider provider = authProviderService.findByType(AuthProvider.AuthProviderType.GOOGLE);
             User user = User.createGoogleUser(
-                    provider,
-                    role,
                     payload.get("given_name") + " " + payload.get("family_name"),
                     payload.getEmail(),
                     (String) payload.get("picture")

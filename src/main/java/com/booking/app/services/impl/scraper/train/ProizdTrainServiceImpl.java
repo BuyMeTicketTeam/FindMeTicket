@@ -31,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service("proizdTrainService")
@@ -51,47 +50,52 @@ public class ProizdTrainServiceImpl implements ScraperService {
 
     private static final String DIV_TICKET_NOT_FOUND = "div.error.card";
 
-    @Async
-    @Override
-    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, MutableBoolean emitterNotExpired) {
+    private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language) {
+        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
+        arrivalDate = arrivalDate.substring(4);
 
-        WebDriver driver = webDriverFactory.createInstance();
+        DateTimeFormatter ticketDate;
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("MMMM dd yyyy", new Locale("en"))
+                : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
 
-        try {
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-            requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUri(language), language);
+        LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
 
-            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"))
+                : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
+        String formattedDate = date.format(ticketDate);
 
-            waitForTickets(driver);
+        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
 
-            List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
+        String[] parts = travelTime.split("[^\\d]+");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int totalMinutes = hours * 60 + minutes;
 
-            log.info("Train tickets on proizd: " + elements.size());
-
-            for (int i = 0; i < elements.size() && i < 150; i++) {
-                TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
-                TrainTicket trainTicket = scrapedTicket;
-
-                if (route.getTickets().add(scrapedTicket)) {
-                    if (BooleanUtils.isTrue(doDisplay) && emitterNotExpired.booleanValue())
-                        emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
-
-                } else
-                    scrapedTicket = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(trainTicket)).findFirst().get()).addPrices(trainTicket.getInfoList());
-
-                trainRepository.save(scrapedTicket);
-            }
+        String carrier = language.equals("eng") ? "Ukrainian Railways" : "Укрзалізниця";
 
 
-            return CompletableFuture.completedFuture(true);
-        } catch (Exception e) {
-            log.error("Error in PROIZD TRAIN service: " + e.getMessage() + e.getCause() + e.getStackTrace());
-            return CompletableFuture.completedFuture(false);
-        } finally {
-            driver.quit();
+        List<WebElement> elements = element.findElements(By.cssSelector("div.carriage"));
+
+        List<TrainInfo> list = new LinkedList<>();
+
+        for (WebElement webElement : elements) {
+
+            String price = webElement.findElement(By.cssSelector("div.carriage__price ")).getText().replaceAll("[^\\d\\.]+", "");
+            String cleanedPrice = reformatPrice(price);
+            list.add(TrainInfo.builder()
+                    .comfort(webElement.findElement(By.cssSelector("span.carriage__type")).getText())
+                    .price(new BigDecimal(cleanedPrice))
+                    .link(webElement.findElement(By.cssSelector("a.btn")).getAttribute("href")).build());
         }
-
+        String[] places = element.findElement(By.cssSelector("div.trip-item__route")).getText().split(" — ");
+        return TrainTicket.createInstance(route,
+                places[0],
+                places[1],
+                LocalTime.parse(element.findElements(By.cssSelector("div.trip__time ")).get(0).getText()),
+                Instant.parse(element.findElements(By.cssSelector("div.trip__time ")).get(1).getText()),
+                Duration.ofMinutes(totalMinutes),
+                carrier,
+                list);
     }
 
     @Override
@@ -139,61 +143,50 @@ public class ProizdTrainServiceImpl implements ScraperService {
         };
     }
 
-    private static TrainTicket scrapeTicketInfo(WebElement element, Route route, String language) {
-        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
-        arrivalDate = arrivalDate.substring(4);
+    @Async
+    @Override
+    public CompletableFuture<Boolean> scrapeTickets(SseEmitter emitter, Route route, String language, Boolean doDisplay, MutableBoolean emitterNotExpired) {
 
-        DateTimeFormatter ticketDate;
-        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("MMMM dd yyyy", new Locale("en"))
-                : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
+        WebDriver driver = webDriverFactory.createInstance();
 
-        LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            requestTickets(route.getDepartureCity(), route.getArrivalCity(), route.getDepartureDate(), driver, determineBaseUri(language), language);
 
-        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("d.MM, EE", new Locale("en"))
-                : DateTimeFormatter.ofPattern("d.MM, EE", new Locale("uk"));
-        String formattedDate = date.format(ticketDate);
+            if (!areTicketsPresent(wait, driver)) return CompletableFuture.completedFuture(false);
 
-        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
+            waitForTickets(driver);
 
-        String[] parts = travelTime.split("[^\\d]+");
-        int hours = Integer.parseInt(parts[0]);
-        int minutes = Integer.parseInt(parts[1]);
-        int totalMinutes = hours * 60 + minutes;
+            List<WebElement> elements = driver.findElements(By.cssSelector(DIV_TICKET));
 
-        String carrier = language.equals("eng") ? "Ukrainian Railways" : "Укрзалізниця";
+            log.info("Train tickets on proizd: " + elements.size());
+
+            for (int i = 0; i < elements.size() && i < 150; i++) {
+                TrainTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
+                TrainTicket trainTicket = scrapedTicket;
+
+                if (route.getTickets().add(scrapedTicket)) {
+                    if (BooleanUtils.isTrue(doDisplay) && emitterNotExpired.booleanValue())
+                        emitter.send(SseEmitter.event().name("Proizd train: ").data(trainMapper.toTrainTicketDto(scrapedTicket, language)));
+
+                } else {
+                    scrapedTicket = ((TrainTicket) route.getTickets().stream().filter(t -> t.equals(trainTicket)).findFirst().get());
+                    scrapedTicket.addTrainInfo(trainTicket.getInfoList());
+                }
 
 
-        List<WebElement> elements = element.findElements(By.cssSelector("div.carriage"));
+                trainRepository.save(scrapedTicket);
+            }
 
-        List<TrainInfo> list = new LinkedList<>();
 
-        for (WebElement webElement : elements) {
-
-            String price = webElement.findElement(By.cssSelector("div.carriage__price ")).getText().replaceAll("[^\\d\\.]+", "");
-            String cleanedPrice = reformatPrice(price);
-            list.add(TrainInfo.builder()
-                    .comfort(webElement.findElement(By.cssSelector("span.carriage__type")).getText())
-                    .price(new BigDecimal(cleanedPrice))
-                    .link(webElement.findElement(By.cssSelector("a.btn")).getAttribute("href")).build());
+            return CompletableFuture.completedFuture(true);
+        } catch (Exception e) {
+            log.error("Error in PROIZD TRAIN service: " + e.getMessage() + e.getCause() + e.getStackTrace());
+            return CompletableFuture.completedFuture(false);
+        } finally {
+            driver.quit();
         }
 
-        return createTicket(element, route, totalMinutes, formattedDate, carrier, list);
-    }
-
-    private static TrainTicket createTicket(WebElement element, Route route, int totalMinutes, String formattedTime, String carrier, List<TrainInfo> trainInfos) {
-        String[] places = element.findElement(By.cssSelector("div.trip-item__route")).getText().split(" — ");
-        return TrainTicket.builder()
-                .id(UUID.randomUUID())
-                .route(route)
-                .arrivalDateTime(Instant.parse(formattedTime))
-                .placeFrom(places[0])
-                .placeAt(places[1])
-                .travelTime(totalMinutes)
-                .departureTime(LocalTime.parse(element.findElements(By.cssSelector("div.trip__time ")).get(0).getText()))
-                .arrivalDateTime(Instant.parse(element.findElements(By.cssSelector("div.trip__time ")).get(1).getText()))
-                .carrier(carrier)
-                .build()
-                .addPrices(trainInfos);
     }
 
     private static void requestTickets(String departureCity, String arrivalCity, LocalDate departureDate, WebDriver driver, String url, String language) throws ParseException {

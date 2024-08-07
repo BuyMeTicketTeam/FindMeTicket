@@ -1,6 +1,7 @@
 package com.booking.app.services.impl.scraper.bus;
 
 import com.booking.app.constants.SiteConstants;
+import com.booking.app.constants.Website;
 import com.booking.app.dto.tickets.UrlAndPriceDTO;
 import com.booking.app.entities.ticket.Route;
 import com.booking.app.entities.ticket.Ticket;
@@ -32,7 +33,6 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service("proizdBusService")
@@ -54,7 +54,9 @@ public class ProizdBusServiceImpl implements ScraperService {
 
     private static void processTicketInfo(SseEmitter emitter, Ticket ticket, String language, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
         BusTicket busTicket = (BusTicket) ticket;
-        BusInfo priceInfo = busTicket.getInfoList().stream().filter(t -> t.getSourceWebsite().equals(SiteConstants.PROIZD_UA)).findFirst().get();
+        BusInfo priceInfo = busTicket.getInfoList().stream()
+                .filter(t -> t.getWebsite().equals(Website.PROIZD))
+                .findFirst().get();
 
         log.info("PROIZD TICKETS IN single getTicket(): " + elements.size());
         for (WebElement element : elements) {
@@ -84,6 +86,50 @@ public class ProizdBusServiceImpl implements ScraperService {
                         .build()));
             }
         } else log.info("PROIZD URL NOT FOUND");
+    }
+
+    private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
+        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
+        arrivalDate = arrivalDate.substring(4);
+
+        DateTimeFormatter ticketDate;
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("MMMM dd yyyy", new Locale("en"))
+                : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
+
+        LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
+        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("dd.MM, EE", new Locale("en"))
+                : DateTimeFormatter.ofPattern("dd.MM, EE", new Locale("uk"));
+        String formattedDate = date.format(ticketDate);
+
+        String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
+        price = language.equals("eng") ? price.replace("UAH", "")
+                : price.replace("ГРН", "");
+
+        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
+
+        String[] parts = travelTime.split("[^\\d]+");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int totalMinutes = hours * 60 + minutes;
+
+        String carrier = "";
+        try {
+            carrier = element.findElement(By.cssSelector("div.bus-info__header > div.transporter > div.transporter__name")).getText().toUpperCase();
+        } catch (Exception e) {
+
+        }
+        // There's no carrier on site... insert most predictable
+        if (carrier.isEmpty()) carrier = "Стецик Т.В. Гречанюк В.І.";
+        return BusTicket.createInstance(route,
+                element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText(),
+                element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText(),
+                LocalTime.parse(element.findElements(By.cssSelector("div.trip__time")).get(0).getText()),
+                Instant.parse(element.findElements(By.cssSelector("div.trip__time")).get(1).getText()),
+                Duration.ofMinutes(totalMinutes),
+                carrier,
+                new BigDecimal(price),
+                Website.PROIZD,
+                null);
     }
 
     @Async
@@ -135,26 +181,6 @@ public class ProizdBusServiceImpl implements ScraperService {
         }
     }
 
-    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
-        log.info("Bus tickets on proizd: " + elements.size());
-
-        for (int i = 0; i < elements.size() && i < 150; i++) {
-            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
-
-
-            BusTicket busTicket = scrapedTicket;
-
-            if (route.getTickets().add(scrapedTicket)) {
-                if (BooleanUtils.isTrue(doShow) && emitterNotExpired.booleanValue())
-                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
-
-            } else
-                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get()).addPrice(busTicket.getInfoList().get(0));
-
-            repository.save(scrapedTicket);
-        }
-    }
-
     @Async
     @Override
     public CompletableFuture<Boolean> scrapeTicketUri(SseEmitter emitter, Ticket ticket, String language, MutableBoolean emitterNotExpired) throws IOException, ParseException {
@@ -197,39 +223,25 @@ public class ProizdBusServiceImpl implements ScraperService {
         }
     }
 
-    private static BusTicket scrapeTicketInfo(WebElement element, Route route, String language) {
-        String arrivalDate = element.findElements(By.cssSelector("div.trip__date")).get(1).getText();
-        arrivalDate = arrivalDate.substring(4);
+    private void processScrapedTickets(SseEmitter emitter, Route route, String language, Boolean doShow, List<WebElement> elements, MutableBoolean emitterNotExpired) throws IOException {
+        log.info("Bus tickets on proizd: " + elements.size());
 
-        DateTimeFormatter ticketDate;
-        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("MMMM dd yyyy", new Locale("en"))
-                : DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("uk"));
+        for (int i = 0; i < elements.size() && i < 150; i++) {
+            BusTicket scrapedTicket = scrapeTicketInfo(elements.get(i), route, language);
 
-        LocalDate date = LocalDate.parse(arrivalDate.trim() + " " + Year.now().getValue(), ticketDate);
-        ticketDate = language.equals("eng") ? DateTimeFormatter.ofPattern("dd.MM, EE", new Locale("en"))
-                : DateTimeFormatter.ofPattern("dd.MM, EE", new Locale("uk"));
-        String formattedDate = date.format(ticketDate);
 
-        String price = element.findElement(By.cssSelector("div.carriage-bus__price")).getText();
-        price = language.equals("eng") ? price.replace("UAH", "")
-                : price.replace("ГРН", "");
+            BusTicket busTicket = scrapedTicket;
 
-        String travelTime = element.findElement(By.cssSelector("div.travel-time__value")).getText();
+            if (route.getTickets().add(scrapedTicket)) {
+                if (BooleanUtils.isTrue(doShow) && emitterNotExpired.booleanValue())
+                    emitter.send(SseEmitter.event().name("Proizd bus: ").data(busMapper.ticketToTicketDto(scrapedTicket, language)));
 
-        String[] parts = travelTime.split("[^\\d]+");
-        int hours = Integer.parseInt(parts[0]);
-        int minutes = Integer.parseInt(parts[1]);
-        int totalMinutes = hours * 60 + minutes;
-
-        String carrier = "";
-        try {
-            carrier = element.findElement(By.cssSelector("div.bus-info__header > div.transporter > div.transporter__name")).getText().toUpperCase();
-        } catch (Exception e) {
-
+            } else {
+                scrapedTicket = ((BusTicket) route.getTickets().stream().filter(t -> t.equals(busTicket)).findFirst().get());
+                scrapedTicket.addBusInfo(busTicket.getInfoList().getFirst());
+            }
+            repository.save(scrapedTicket);
         }
-        // There's no carrier on site... insert most predictable
-        if (carrier.isEmpty()) carrier = "Стецик Т.В. Гречанюк В.І.";
-        return createTicket(element, route, price, totalMinutes, formattedDate, carrier);
     }
 
     private static void requestTickets(String departureCity, String arrivalCity, LocalDate departureDate, WebDriver driver, String url, String language) throws ParseException {
@@ -308,18 +320,6 @@ public class ProizdBusServiceImpl implements ScraperService {
         List<WebElement> filteredLi = dates.subList(indexOfFirstDay, dates.size());
         WebElement liDate = filteredLi.stream().filter(el -> el.getText().equals(requestDay)).findFirst().orElse(null);
         actions.moveToElement(liDate).doubleClick().build().perform();
-    }
-
-    private static BusTicket createTicket(WebElement element, Route route, String price, int totalMinutes, String formattedTime, String carrier) {
-        return BusTicket.builder()
-                .id(UUID.randomUUID())
-                .route(route)
-                .placeFrom(element.findElements(By.cssSelector("div.trip__station-address")).get(0).getText())
-                .placeAt(element.findElements(By.cssSelector("div.trip__station-address")).get(1).getText())
-                .travelTime(totalMinutes)
-                .departureTime(LocalTime.parse(element.findElements(By.cssSelector("div.trip__time")).get(0).getText()))
-                .arrivalDateTime(Instant.parse(element.findElements(By.cssSelector("div.trip__time")).get(1).getText()))
-                .carrier(carrier).build().addPrice(BusInfo.builder().price(new BigDecimal(price)).sourceWebsite(SiteConstants.PROIZD_UA).build());
     }
 
 }

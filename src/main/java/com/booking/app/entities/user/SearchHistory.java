@@ -3,11 +3,11 @@ package com.booking.app.entities.user;
 import com.booking.app.constants.TransportType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -35,11 +35,10 @@ public class SearchHistory {
     @Builder.Default
     private LocalDateTime addingTime = LocalDateTime.now();
 
-    @ElementCollection(targetClass = TransportType.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "type_transport")
+    @Column(name = "type", columnDefinition = "transport[]")
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private Set<TransportType> typeTransport = new HashSet<>();
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    private TransportType[] typeTransport;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -2,14 +2,10 @@ package com.booking.app.services.impl.user;
 
 import com.booking.app.dto.users.CodeConfirmationDto;
 import com.booking.app.dto.users.RegistrationDTO;
-import com.booking.app.entities.user.AuthProvider;
 import com.booking.app.entities.user.ConfirmationCode;
-import com.booking.app.entities.user.Role;
 import com.booking.app.entities.user.User;
 import com.booking.app.exceptions.notfound.UserNotConfirmedException;
 import com.booking.app.exceptions.notfound.UserNotFoundException;
-import com.booking.app.repositories.ProviderRepository;
-import com.booking.app.repositories.RoleRepository;
 import com.booking.app.repositories.UserRepository;
 import com.booking.app.services.ConfirmationCodeService;
 import com.booking.app.services.UserService;
@@ -33,9 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final ProviderRepository providerRepository;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
 
     @Override
     public void confirmCode(CodeConfirmationDto dto) {
@@ -89,12 +83,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(RegistrationDTO dto) {
-        Role role = roleRepository.findByType(Role.RoleType.USER);
-        AuthProvider provider = providerRepository.findByType(AuthProvider.AuthProviderType.BASIC);
         ConfirmationCode confirmationCode = ConfirmationCode.createCode();
         User user = User.createBasicUser(
-                provider,
-                role,
                 confirmationCode, dto.getEmail(),
                 passwordEncoder.encode(dto.getPassword()),
                 dto.getUsername(), dto.getNotification()
