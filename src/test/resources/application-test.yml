@@ -6,7 +6,7 @@ spring:
     driverClassName: org.postgresql.Driver
     schema: find_me_ticket_schema
   liquibase:
-    change-log: classpath:/liquibase/master.yaml
+    change-log: classpath:/liquibase/master-test.yaml
     default-schema: find_me_ticket_schema
   jpa:
     database: postgresql
@@ -20,7 +20,8 @@ spring:
           batch_size: 100
         order_updates: true
         order_inserts: true
-
+  #    hibernate:
+  #      ddl-auto: none
   ##-------------------------
   ## Email Sender configuration
   ##-------------------------
@@ -35,7 +36,6 @@ spring:
           auth: true
           starttls:
             enable: true
-
 #-------------------------
 # Encoding
 #-------------------------

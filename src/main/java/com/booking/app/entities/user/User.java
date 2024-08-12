@@ -2,13 +2,13 @@ package com.booking.app.entities.user;
 
 import com.booking.app.constants.AuthProvider;
 import com.booking.app.constants.RoleType;
-import com.booking.app.entities.converters.AuthProviderArrayConverter;
 import com.booking.app.utils.AvatarUtils;
+import io.hypersistence.utils.hibernate.type.array.EnumArrayType;
+import io.hypersistence.utils.hibernate.type.array.internal.AbstractArrayType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
+
 public class User implements UserDetails {
 
     @Id
@@ -61,29 +62,49 @@ public class User implements UserDetails {
 
     private String socialMediaAvatar;
 
+    @Builder.Default
     private boolean notification = false;
 
     @Column(name = "expired")
-    private boolean accountNonExpired;
+    @Builder.Default
+    private boolean accountNonExpired = false;
 
     @Column(name = "locked")
-    private boolean accountNonLocked;
+    @Builder.Default
+    private boolean accountNonLocked = false;
 
     @Column(name = "credentials_expired")
-    private boolean credentialsNonExpired;
+    @Builder.Default
+    private boolean credentialsNonExpired = false;
 
     @Column(name = "enabled")
-    private boolean enabled;
+    @Builder.Default
+    private boolean enabled = false;
 
-    @Column(name = "providers", columnDefinition = "auth_provider[]")
-//    @Enumerated(EnumType.STRING)
-//    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Convert(converter = AuthProviderArrayConverter.class)
+    @Type(
+            value = EnumArrayType.class,
+            parameters = @org.hibernate.annotations.Parameter(
+                    name = AbstractArrayType.SQL_ARRAY_TYPE,
+                    value = "auth_provider"
+            )
+    )
+    @Column(
+            name = "providers",
+            columnDefinition = "auth_provider[]"
+    )
     private AuthProvider[] providers;
 
-    @Column(name = "roles", columnDefinition = "role[]")
-    @Enumerated(EnumType.STRING)
-    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Type(
+            value = EnumArrayType.class,
+            parameters = @org.hibernate.annotations.Parameter(
+                    name = AbstractArrayType.SQL_ARRAY_TYPE,
+                    value = "role"
+            )
+    )
+    @Column(
+            name = "roles",
+            columnDefinition = "role[]"
+    )
     private RoleType[] roles;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
