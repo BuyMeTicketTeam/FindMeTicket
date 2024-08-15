@@ -10,7 +10,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        default_schema: find_me_ticket_schema
+        default_schema: ${DATABASE_SCHEMA}
   web:
     resources:
       add-mappings: false
@@ -34,18 +34,18 @@ spring:
   ## Database configuration
   ##-------------------------
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_ticket?
+    url: jdbc:postgresql://localhost:5432/db_ticket?currentSchema=${DATABASE_SCHEMA}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driverClassName: org.postgresql.Driver
-    schema: find_me_ticket_schema
+    schema: ${DATABASE_SCHEMA}
 
   ##-------------------------
   ## Liquibase configuration
   ##-------------------------
   liquibase:
     change-log: classpath:/liquibase/master.yaml
-    default-schema: find_me_ticket_schema
+    default-schema: ${DATABASE_SCHEMA}
 
 ##-------------------------
 ## Spring documentation
@@ -80,7 +80,7 @@ server:
 logging:
   level:
     liquibase: DEBUG
-    ROOT: INFO
+    ROOT: DEBUG
     org:
       springframework:
         orm:

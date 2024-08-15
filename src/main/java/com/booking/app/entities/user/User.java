@@ -2,9 +2,9 @@ package com.booking.app.entities.user;
 
 import com.booking.app.constants.AuthProvider;
 import com.booking.app.constants.RoleType;
+import com.booking.app.entities.user.types.ColumnAuthProviderType;
+import com.booking.app.entities.user.types.ColumnRoleType;
 import com.booking.app.utils.AvatarUtils;
-import io.hypersistence.utils.hibernate.type.array.EnumArrayType;
-import io.hypersistence.utils.hibernate.type.array.internal.AbstractArrayType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @Setter
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-
 public class User implements UserDetails {
 
     @Id
@@ -81,30 +80,12 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean enabled = false;
 
-    @Type(
-            value = EnumArrayType.class,
-            parameters = @org.hibernate.annotations.Parameter(
-                    name = AbstractArrayType.SQL_ARRAY_TYPE,
-                    value = "auth_provider"
-            )
-    )
-    @Column(
-            name = "providers",
-            columnDefinition = "auth_provider[]"
-    )
+    @Type(value = ColumnAuthProviderType.class)
+    @Column(columnDefinition = "auth_provider[]", nullable = true)
     private AuthProvider[] providers;
 
-    @Type(
-            value = EnumArrayType.class,
-            parameters = @org.hibernate.annotations.Parameter(
-                    name = AbstractArrayType.SQL_ARRAY_TYPE,
-                    value = "role"
-            )
-    )
-    @Column(
-            name = "roles",
-            columnDefinition = "role[]"
-    )
+    @Type(value = ColumnRoleType.class)
+    @Column(columnDefinition = "roles[]")
     private RoleType[] roles;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
