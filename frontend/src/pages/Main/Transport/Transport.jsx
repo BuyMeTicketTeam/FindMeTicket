@@ -1,21 +1,15 @@
 /* eslint-disable no-useless-concat */
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import React, {useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useDispatch, useSelector} from "react-redux";
 
-import { setTransportType } from "../../../redux/store/tickets/ticketsSlice";
+import {setTransportType} from "../../../redux/store/tickets/ticketsSlice";
 
 import InProgress from "../../../common/InProgress/InProgress";
 import TransportButton from "../TransportBtn/TransportBtn";
 
-import "./transport.scss";
-import {
-  busIcon,
-  trainIcon,
-  everythingIcon,
-  planeIcon,
-  boatIcon,
-} from "../../../images/transport-img/img";
+import "./Transport.scss";
+import {boatIcon, busIcon, everythingIcon, planeIcon, trainIcon,} from "../../../images/transport-img/img";
 
 function Transport({ loading }) {
   const [isOpen, setIsOpen] = useState(false);

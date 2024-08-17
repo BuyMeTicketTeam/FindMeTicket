@@ -1,5 +1,5 @@
 import React from 'react';
-import './filters.scss';
+import './Filters.scss';
 import loaderAnim from '../../../images/loader.svg';
 
 export default function FiltersBtn({

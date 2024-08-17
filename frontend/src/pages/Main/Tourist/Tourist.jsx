@@ -1,7 +1,7 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router-dom";
-import "./tourist.scss";
+import {useTranslation} from "react-i18next";
+import {Link, useSearchParams} from "react-router-dom";
+import "./Tourist.scss";
 
 function Banner() {
   const [searchParams] = useSearchParams();

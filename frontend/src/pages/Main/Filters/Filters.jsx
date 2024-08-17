@@ -1,11 +1,11 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
-import { setSorting } from "../../../redux/store/tickets/ticketsSlice";
+import {setSorting} from "../../../redux/store/tickets/ticketsSlice";
 
 import FiltersBtn from "./FiltersBtn";
 
-import "./filters.scss";
+import "./Filters.scss";
 
 export default function Filters({ loading }) {
   const { sortBy, ascending } = useSelector((state) => state.tickets);

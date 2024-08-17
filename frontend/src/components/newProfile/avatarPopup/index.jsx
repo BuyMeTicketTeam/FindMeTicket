@@ -1,9 +1,7 @@
 /* eslint-disable max-len */
 import React from 'react';
-import './style.scss';
-import {
-  rank1, rank2, rank3, rank4, rank5, lockImage,
-} from './img/img';
+import './Style.scss';
+import {lockImage, rank1, rank2, rank3, rank4, rank5,} from './img/img';
 
 function AvatarPopup({ closeAvatarPopup, avatar }) {
   return (

@@ -1,26 +1,22 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { GoogleLogin } from "@react-oauth/google";
-import { useForm } from "react-hook-form";
+import React, {useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {GoogleLogin} from "@react-oauth/google";
+import {useForm} from "react-hook-form";
 import FacebookLogin from "@greatsumini/react-facebook-login";
 
-import {
-  useLoginMutation,
-  useLoginGoogleMutation,
-  useLoginFacebookMutation,
-} from "../../services/userApi";
+import {useLoginFacebookMutation, useLoginGoogleMutation, useLoginMutation,} from "../../services/userApi";
 
-import { PASSWORD_PATTERN, EMAIL_PATTERN } from "../../constants/regex";
+import {EMAIL_PATTERN, PASSWORD_PATTERN} from "../../constants/regex";
 
 import Input from "../../common/Input/Input";
 import Checkbox from "../../common/Checkbox/Checkbox";
 
 import facebookIcon from "../../images/facebook.png";
 
-import "./login.scss";
+import "./Login.scss";
 
 export default function Login() {
   const [error, setError] = useState(null);

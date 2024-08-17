@@ -3,22 +3,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable react/jsx-no-bind */
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import AsyncSelect from "react-select/async";
-import { useTranslation } from "react-i18next";
-import {
-  useSearchParams,
-  Link,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useLocation, useNavigate, useSearchParams,} from "react-router-dom";
 import Button from "../../../utils/Button";
 import Calendar from "../Calendar";
 import arrowsImg from "./arrows.svg";
 import eventSourceQuery2 from "../../../helper/eventSourceQuery";
 import makeQuerry from "../../../helper/querry";
 import useGetCities from "../../../hook/useGetCities";
-import "./searchField.scss";
+import "./SearchField.scss";
 
 const dateFormat = new Intl.DateTimeFormat("ru", {
   year: "numeric",

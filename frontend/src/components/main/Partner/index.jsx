@@ -1,6 +1,6 @@
 import React from 'react';
-import './style.scss';
-import { useTranslation } from 'react-i18next';
+import './Style.scss';
+import {useTranslation} from 'react-i18next';
 import Proizd from './proizd.webp';
 import BusFor from './busfor.png';
 import Infobus from './infobus.png';

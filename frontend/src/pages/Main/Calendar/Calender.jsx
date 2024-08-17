@@ -1,9 +1,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React from "react";
 import DatePicker from "react-datepicker";
-import { useTranslation } from "react-i18next";
+import {useTranslation} from "react-i18next";
 import "react-datepicker/dist/react-datepicker.css";
-import "./calendar.scss";
+import "./Calendar.scss";
 
 export default function Calendar({ date, onDate }) {
   const { t } = useTranslation("translation", { keyPrefix: "mainCalendar" });

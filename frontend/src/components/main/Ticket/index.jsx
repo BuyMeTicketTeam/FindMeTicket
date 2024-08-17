@@ -1,11 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import './ticket.scss';
+import {useTranslation} from 'react-i18next';
+import {Link} from 'react-router-dom';
+import './Ticket.scss';
 import scheduleIcon from './schedule.svg';
-import {
-  busIcon, trainIcon, everythingIcon,
-} from '../Transport/transport-img/img';
+import {busIcon, everythingIcon, trainIcon,} from '../Transport/transport-img/img';
 
 export default function Ticket({ data }) {
   const placeFrom = data.placeFrom.length > 25 ? `${data.placeFrom.slice(0, 20)}...` : data.placeFrom;
