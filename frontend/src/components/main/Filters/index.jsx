@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-array-index-key */
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {useNavigate, useSearchParams} from 'react-router-dom';
 import FiltersBtn from './FiltersBtn';
-import './filters.scss';
+import './Filters.scss';
 
 export default function Filters({ loading }) {
   const { t } = useTranslation('translation', { keyPrefix: 'filters' });

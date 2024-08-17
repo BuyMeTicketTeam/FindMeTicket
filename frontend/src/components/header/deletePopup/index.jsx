@@ -1,5 +1,5 @@
 import React from 'react';
-import './style.scss';
+import './Style.scss';
 
 function DeleteConfirmationPopup({ onCancel, onConfirm }) {
   return (

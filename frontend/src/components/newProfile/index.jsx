@@ -1,11 +1,11 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useEffect, useRef, useState } from "react";
-import "./profile.scss";
-import { useTranslation } from "react-i18next";
+import React, {useEffect, useRef, useState} from "react";
+import "./Profile.scss";
+import {useTranslation} from "react-i18next";
 import Cookies from "universal-cookie";
-import { Link, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+import {Link, useNavigate} from "react-router-dom";
+import {v4 as uuidv4} from "uuid";
 import makeQuerry from "../../helper/querry";
 import DeleteConfirmationPopup from "../header/deletePopup";
 import Frame from "./Frame.svg";
@@ -14,7 +14,7 @@ import Email from "./email.svg";
 import Phone from "./phone.svg";
 import Address from "./address.svg";
 import Ellipse from "./Ellipse 9.png";
-import { busIcon, trainIcon, everythingIcon } from "./transport-img/img";
+import {busIcon, everythingIcon, trainIcon} from "./transport-img/img";
 import loaderIcon from "./spinning-loading.svg";
 import AvatarPopup from "./avatarPopup";
 import mark from "./image 12.svg";

@@ -4,21 +4,18 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable import/named */
 import React from "react";
-import { useLocation, Navigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import { useForm } from "react-hook-form";
+import {Navigate, useLocation} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useForm} from "react-hook-form";
 
 import useTimeout from "../../hook/useTimeout";
-import {
-  useConfirmMutation,
-  useResendConfirmTokenMutation,
-} from "../../services/userApi";
-import { CODE_PATTERN } from "../../constants/regex";
+import {useConfirmMutation, useResendConfirmTokenMutation,} from "../../services/userApi";
+import {CODE_PATTERN} from "../../constants/regex";
 
 import Input from "../../common/Input/Input";
 import SuccessPopup from "../../common/SuccessPopup/SuccessPopup";
 
-import "./confirm.scss";
+import "./Confirm.scss";
 
 export default function Confirm() {
   const [confirm, { isSuccess, isLoading, isError, error }] =

@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import AsyncSelect from "react-select/async";
-import { useTranslation } from "react-i18next";
-import { useSelector, useDispatch } from "react-redux";
+import {useTranslation} from "react-i18next";
+import {useDispatch, useSelector} from "react-redux";
 
 import useGetCities from "../../../hook/useGetCities";
-import {
-  setCities,
-  setDepartureDate,
-} from "../../../redux/store/tickets/ticketsSlice";
+import {setCities, setDepartureDate,} from "../../../redux/store/tickets/ticketsSlice";
 
 import Calendar from "../Calendar/Calender";
 
 import arrowsImg from "../../../images/arrow/arrows.svg";
 
-import "./searchField.scss";
+import "./SearchField.scss";
 
 export default function SearchField({ loading }) {
   const { t } = useTranslation("translation", { keyPrefix: "search" });

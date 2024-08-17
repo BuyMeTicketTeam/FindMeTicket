@@ -1,16 +1,10 @@
 /* eslint-disable no-useless-concat */
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import React, {useState} from "react";
+import {useTranslation} from "react-i18next";
+import {useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import InProgress from "../../../common/InProgress/InProgress";
-import "./transport.scss";
-import {
-  busIcon,
-  trainIcon,
-  planeIcon,
-  boatIcon,
-  everythingIcon,
-} from "./transport-img/img";
+import "./Transport.scss";
+import {boatIcon, busIcon, everythingIcon, planeIcon, trainIcon,} from "./transport-img/img";
 import loaderAnim from "../loader.svg";
 
 function TransportButton({ label, isActive, onClick, img, disabled, loading }) {

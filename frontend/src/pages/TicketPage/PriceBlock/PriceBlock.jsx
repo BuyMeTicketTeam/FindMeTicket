@@ -1,6 +1,6 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
-// import './style.scss';
+import {useTranslation} from "react-i18next";
+// import './Style.scss';
 
 export default function PriceBlock({ title, price, url, img }) {
   const { t } = useTranslation("translation", { keyPrefix: "ticketPage" });

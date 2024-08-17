@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React, {useState} from "react";
+import {Outlet} from "react-router-dom";
 import SearchField from "./SearchField";
 import Transport from "./Transport";
 import Ad from "../../common/Ad/index";
-import "./main.scss";
+import "./Main.scss";
 import TicketsBody from "./Body";
 import Partner from "./Partner";
 import Footer from "../footer/index";

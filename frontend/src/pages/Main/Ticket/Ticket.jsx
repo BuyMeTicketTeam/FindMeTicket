@@ -1,10 +1,10 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {Link} from 'react-router-dom';
 
-import { getIcon } from '../../../helper/getIcon';
+import {getIcon} from '../../../helper/getIcon';
 
-import './ticket.scss';
+import './Ticket.scss';
 import scheduleIcon from '../../../images/schedule.svg';
 
 export default function Ticket({ data }) {

@@ -1,16 +1,12 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useSearchParams} from "react-router-dom";
+import {useSelector} from "react-redux";
 
-import {
-  useLazySearchTicketsQuery,
-  useLazySortByQuery,
-} from "../../services/ticketsApi";
+import {useLazySearchTicketsQuery, useLazySortByQuery,} from "../../services/ticketsApi";
 // import { paramsToObject } from '../../helper/paramsToObject';
 // import { setSearchPayload } from '../../store/tickets/ticketsSlice';
-
 import SearchField from "./SearchField/SearchField";
 import Transport from "./Transport/Transport";
 import Ad from "../../common/Ad/Ad";
@@ -21,7 +17,7 @@ import Ticket from "./Ticket/Ticket";
 import Loader from "../../common/Loader/Loader";
 import Error from "../../common/Error/Error";
 
-import "./main.scss";
+import "./Main.scss";
 
 const dateFormat = new Intl.DateTimeFormat("ru", {
   year: "numeric",
