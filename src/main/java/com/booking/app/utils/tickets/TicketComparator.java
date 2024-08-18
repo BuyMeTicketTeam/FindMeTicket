@@ -1,4 +1,4 @@
-package com.booking.app.utils;
+package com.booking.app.utils.tickets;
 
 import com.booking.app.constants.SortCriteria;
 import com.booking.app.constants.SortType;

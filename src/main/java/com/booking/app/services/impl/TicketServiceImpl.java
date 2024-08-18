@@ -13,7 +13,7 @@ import com.booking.app.repositories.RouteRepository;
 import com.booking.app.repositories.TrainTicketRepository;
 import com.booking.app.services.LanguageDetectorService;
 import com.booking.app.services.TicketService;
-import com.booking.app.utils.TicketComparator;
+import com.booking.app.utils.tickets.TicketComparator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
