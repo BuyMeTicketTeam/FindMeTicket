@@ -1,4 +1,4 @@
-package com.booking.app.exceptions;
+package com.booking.app.controllers;
 
 import com.booking.app.dto.ErrorDetailsDto;
 import com.booking.app.exceptions.badrequest.InvalidConfirmationCodeException;
@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.method.ParameterErrors;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -63,6 +65,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetailsDto errorDetailsDto = new ErrorDetailsDto(
                 LocalDateTime.now(),
                 ex.getMessage(),
+                request.getDescription(false),
+                HttpStatus.BAD_REQUEST
+        );
+        return new ResponseEntity<>(errorDetailsDto, status);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(HandlerMethodValidationException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        List<ParameterErrors> beanResults = ex.getBeanResults();
+        StringJoiner stringJoiner = new StringJoiner(", ");
+
+        for (ParameterErrors parameterErrors : beanResults) {
+            List<FieldError> fieldErrors = parameterErrors.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                stringJoiner.add(fieldError.getDefaultMessage());
+            }
+        }
+
+        ErrorDetailsDto errorDetailsDto = new ErrorDetailsDto(
+                LocalDateTime.now(),
+                stringJoiner.toString(),
                 request.getDescription(false),
                 HttpStatus.BAD_REQUEST
         );
