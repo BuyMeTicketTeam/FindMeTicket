@@ -14,13 +14,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
@@ -34,14 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestClassOrder(ClassOrderer.OrderAnnotation.class)
+@AutoConfigureMockMvc
 @DisplayName("Registration Controller API tests")
 public class RegistrationControllerTest {
 
     private static final String URL = "/auth/sign-up";
     private static final String ENG = ContentLanguage.ENG.getLanguage();
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -52,20 +49,18 @@ public class RegistrationControllerTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
     private MockMvc mvc;
 
     private RegistrationDTO presentUser;
 
-
     @BeforeAll
     public void setup() {
         userRepository.deleteAll();
-        saveUser();
-
-        this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+        createAndSaveUser();
     }
 
-    private void saveUser() {
+    private void createAndSaveUser() {
         ConfirmationCode confirmationCode = ConfirmationCode.createCode();
         String password = "Password333";
         presentUser = userMapper.toRegistrationDto(userRepository.save(User.createBasicUser(
@@ -91,17 +86,6 @@ public class RegistrationControllerTest {
                     Arguments.of("valid-email@gmail.com", "valid-username", "invalid", "invalid", true, 400),
                     Arguments.of("valid-email@gmail.com", "valid-username", "ValidPassword777", "DifferentPassword777", true, 400)
             );
-        }
-
-        @BeforeEach
-        void beforeAll() {
-            requestBody = RegistrationDTO.builder()
-                    .email("test-email@gmail.com")
-                    .username("test-username")
-                    .password("TestPassword777")
-                    .confirmPassword("TestPassword777")
-                    .notification(true)
-                    .build();
         }
 
         @Test
@@ -179,5 +163,17 @@ public class RegistrationControllerTest {
                     .andExpect(status().is(expectedStatus));
         }
 
+        @BeforeAll
+        void beforeAll() {
+            requestBody = RegistrationDTO.builder()
+                    .email("test-email@gmail.com")
+                    .username("test-username")
+                    .password("TestPassword777")
+                    .confirmPassword("TestPassword777")
+                    .notification(true)
+                    .build();
+        }
+
     }
+
 }
