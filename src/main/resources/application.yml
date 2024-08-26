@@ -1,3 +1,52 @@
+spring:
+  ##-------------------------
+  ## JPA
+  ##-------------------------
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: ${DATABASE_SCHEMA}
+  web:
+    resources:
+      add-mappings: false
+
+  ##-------------------------
+  ## Mail sender configuration
+  ##-------------------------
+  mail:
+    host: smtp.gmail.com
+    port: '587'
+    username: ${EMAIL_SENDER_USERNAME}
+    password: ${EMAIL_SENDER_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  ##-------------------------
+  ## Database configuration
+  ##-------------------------
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_ticket?currentSchema=${DATABASE_SCHEMA}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driverClassName: org.postgresql.Driver
+    schema: ${DATABASE_SCHEMA}
+
+  ##-------------------------
+  ## Liquibase configuration
+  ##-------------------------
+  liquibase:
+    change-log: classpath:/liquibase/master.yaml
+    default-schema: ${DATABASE_SCHEMA}
+
 ##-------------------------
 ## Spring documentation
 ##-------------------------
@@ -13,86 +62,6 @@ management:
       exposure:
         include: '*'
 
-##-------------------------
-## Logging level
-##-------------------------
-logging:
-  level:
-    ROOT: INFO
-    org:
-      springframework:
-        orm:
-          jpa: DEBUG
-        transaction: DEBUG
-        web: DEBUG
-        security: TRACE
-      hibernate: ERROR
-
-##-------------------------
-## String configuration
-##-------------------------
-spring:
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        default_schema: find_me_ticket_schema
-  web:
-    resources:
-      add-mappings: false
-
-  ##-------------------------
-  ## Email Sender configuration
-  ##-------------------------
-  mail:
-    host: smtp.gmail.com
-    port: '587'
-    username: findmeticketweb@gmail.com
-    password: lgyn zgeb yowy vbam
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-  ##-------------------------
-  ## Liquibase
-  ##-------------------------
-  liquibase:
-    change-log: classpath:/liquibase/master.yaml
-    liquibase-schema: find_me_ticket_schema
-  ##-------------------------
-  ## Database configuration
-  ##-------------------------
-  datasource:
-    url: jdbc:postgresql://localhost:5432/db_ticket?
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
-    driverClassName: org.postgresql.Driver
-    hikari:
-      schema: find_me_ticket_schema
-
-##-------------------------
-## JWT Properties
-##-------------------------
-jwtSecret: ${JWT_SECRET}
-accessTokenExpirationMs: '1440'
-refreshTokenExpirationMs: '43200'
-##-------------------------
-## Language detection file-configurations
-##-------------------------
-languages: eng.txt, ua.txt
-
-#-------------------------
-# OAuth 2.0 configuration
-#-------------------------
-app:
-  googleClientId: ${GOOGLE_AUTH_KEY}
-
 #-------------------------
 # Encoding
 #-------------------------
@@ -105,22 +74,63 @@ server:
   error:
     include-message: always
 
+##-------------------------
+## Logging level
+##-------------------------
+logging:
+  level:
+    liquibase: DEBUG
+    ROOT: DEBUG
+    org:
+      springframework:
+        orm:
+          jpa: DEBUG
+        transaction: DEBUG
+        web: DEBUG
+        security: TRACE
+      hibernate: ERROR
+
+##-------------------------
+## JWT Properties
+##-------------------------
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    accessTokenExpirationMin: '1440'
+    refreshTokenExpirationMin: '43200'
+
+##-------------------------
+## Language detection file-configurations
+##-------------------------
+languages:
+  files:
+    profiles: eng.txt, ua.txt
+
 #-------------------------
 # Third-party ticket's services
 #-------------------------
-link:
-  busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
-  busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
-  proizd-ua-bus: 'https://bus.proizd.ua/'
-  proizd-eng-bus: 'https://bus.proizd.ua/en'
-  infobus-ua-bus: 'https://infobus.eu/ua/bus'
-  infobus-eng-bus: 'https://infobus.eu/en/bus'
-  infobus-eng-train: 'https://infobus.eu/en/train'
-  infobus-ua-train: 'https://infobus.eu/ua/train'
-  proizd-eng-train: 'https://proizd.ua/en'
-  proizd-ua-train: 'https://proizd.ua/'
+ticket:
+  source:
+    uri:
+      busfor-ua-bus: 'https://busfor.ua/автобуси/%s/%s?on=%s&passengers=1&search=true'
+      busfor-eng-bus: 'https://busfor.pl/buses/%s/%s?on=%s&passengers=1&search=true'
+      proizd-ua-bus: 'https://bus.proizd.ua/'
+      proizd-eng-bus: 'https://bus.proizd.ua/en'
+      infobus-ua-bus: 'https://infobus.eu/ua/bus'
+      infobus-eng-bus: 'https://infobus.eu/en/bus'
+      infobus-eng-train: 'https://infobus.eu/en/train'
+      infobus-ua-train: 'https://infobus.eu/ua/train'
+      proizd-eng-train: 'https://proizd.ua/en'
+      proizd-ua-train: 'https://proizd.ua/'
+
 #-------------------------
-# API Key Configuration
+# API keys
 #-------------------------
 api:
-  currency-rate-key: ${CURRENCY_API_KEY}
+  key:
+    currency-rate: ${CURRENCY_API_KEY}
+    google-client-id: ${GOOGLE_AUTH_KEY}
+
+webdriver:
+  selenium:
+    url: 'http://selenium-hub:4444'

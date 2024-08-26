@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/scripts/create-types.sql
+  - include:
+      file: liquibase/scripts/create-tables.sql

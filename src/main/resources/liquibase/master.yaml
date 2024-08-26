@@ -1,3 +1,9 @@
 databaseChangeLog:
-  - includeAll:
-      path: liquibase/scripts
+  - include:
+      file: liquibase/scripts/create-types.sql
+  - include:
+      file: liquibase/scripts/create-tables.sql
+  - include:
+      file: liquibase/scripts/init-ukrainian-cities.yaml
+  - include:
+      file: liquibase/scripts/init-users.sql
