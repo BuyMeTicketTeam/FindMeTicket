@@ -15,20 +15,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegistrationDTO implements ConfirmPasswordUtils {
 
-    @NotBlank(message = "Invalid Login: Empty login")
-    @NotNull(message = "Invalid Login: Login is NULL")
-    @Size(min = 5, max = 30, message = "Invalid Login: Must be of 5 - 30 characters")
+    @NotBlank(message = "Empty username")
+    @Size(min = 5, max = 30, message = "Username must be between 8 and 30 characters")
     private String username;
 
-    @NotNull(message = "Email is NULL")
+    @NotBlank(message = "Empty email")
     @Email(message = "This is not a valid email format")
     private String email;
 
     @NotBlank(message = "Empty password")
-    @NotNull(message = "Password is NULL")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,30}$", message = "Password must be of 8 - 30 characters and contain at least one letter and one number")
     private String password;
 
+    @NotBlank(message = "Empty confirm password")
     private String confirmPassword;
 
     @NotNull(message = "Boolean notification is required")

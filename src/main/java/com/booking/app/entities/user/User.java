@@ -98,26 +98,26 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Review review;
 
-    public static User createBasicAdmin(ConfirmationCode confirmationCode, String email, String password, String username, Boolean notification) throws IOException {
+    public static User createBasicAdmin(ConfirmationCode confirmationCode, String email, String encodedPassword, String username, Boolean notification) throws IOException {
         File adminAvatar = new File("image/admin_avatar.png");
         byte[] fileContent = Files.readAllBytes(adminAvatar.toPath());
         return User.builder()
                 .email(email)
                 .username(username)
-                .password(password)
+                .password(encodedPassword)
                 .roles(new RoleType[]{RoleType.ADMIN})
                 .confirmationCode(confirmationCode)
                 .notification(notification)
                 .defaultAvatar(fileContent).build();
     }
 
-    public static User createBasicUser(ConfirmationCode confirmationCode, String email, String password, String username, Boolean notification) {
+    public static User createBasicUser(ConfirmationCode confirmationCode, String email, String encodedPassword, String username, Boolean notification) {
         byte[] avatarAsBytes = AvatarUtils.createRandomAvatarAsBytes();
         return User.builder()
                 .providers(new AuthProvider[]{AuthProvider.BASIC})
                 .email(email)
                 .username(username)
-                .password(password)
+                .password(encodedPassword)
                 .roles(new RoleType[]{RoleType.USER})
                 .confirmationCode(confirmationCode)
                 .notification(notification)
